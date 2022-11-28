@@ -1,2 +1,2 @@
 # padkit
-Portable Application Development KIT (padkit) for C 
+Portable Application Development KIT for C 
