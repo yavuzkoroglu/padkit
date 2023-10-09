@@ -23,28 +23,28 @@ DYLIB_DEBUG_LIB=lib/padkit_debug.${VERSION_PADKIT_CUR}.dylib
 TEST_RELEASE_OUT=bin/tests_release.out
 TEST_DEBUG_OUT=bin/tests_debug.out
 
-dylibrelease: padkit_h; \
-    ${CC} ${DYLIBFLAGS} ${RELEASEFLAGS} ${INCS} ${LIBS} ${PADKIT_C} -o ${DYLIB_RELEASE_LIB}
+default: dylibrelease
 
-bin: ; \
-    mkdir bin
+all: clean dylib tests documentation
 
-documentation: padkit_h; \
-    doxygen
+bin: ; mkdir bin
+
+clean: ; rm -rf include/padkit.h *.gcno *.gcda *.gcov bin/* lib/* html latex
+
+debugtests: bin clean padkit_h; ${CC} ${COVARGS} ${RELEASEFLAGS} ${INCS} ${LIBS} ${PADKIT_C} ${TESTS_C} -o ${TEST_RELEASE_OUT}
+
+documentation: padkit_h; doxygen
 
 dylib: dylibrelease dylibdebug
 
-dylibdebug: padkit_h; \
-    ${CC} ${DYLIBFLAGS} ${DEBUGFLAGS} ${INCS} ${LIBS} ${PADKIT_C} -o ${DYLIB_DEBUG_LIB}
+dylibdebug: lib padkit_h; ${CC} ${DYLIBFLAGS} ${DEBUGFLAGS} ${INCS} ${LIBS} ${PADKIT_C} -o ${DYLIB_DEBUG_LIB}
 
-lib: ; \
-    mkdir lib
+dylibrelease: lib padkit_h; ${CC} ${DYLIBFLAGS} ${RELEASEFLAGS} ${INCS} ${LIBS} ${PADKIT_C} -o ${DYLIB_RELEASE_LIB}
 
-padkit_h: ; ./generate_padkit_h.sh
+lib: ; mkdir lib
 
-tests: padkit_h; \
-    ${CC} ${COVARGS} ${RELEASEFLAGS} ${INCS} ${LIBS} ${PADKIT_C} ${TESTS_C} -o ${TEST_RELEASE_OUT}; \
-    ${CC} ${COVARGS} ${DEBUGFLAGS}   ${INCS} ${LIBS} ${PADKIT_C} ${TESTS_C} -o ${TEST_DEBUG_OUT}
+padkit_h: ; @ ./generate_padkit_h.sh
 
-clean: ; \
-    rm -rf include/padkit.h *.gcno *.gcda *.gcov bin/* lib/* html latex
+releasetests: bin clean padkit_h; ${CC} ${COVARGS} ${DEBUGFLAGS} ${INCS} ${LIBS} ${PADKIT_C} ${TESTS_C} -o ${TEST_DEBUG_OUT}
+
+tests: releasetests debugtests

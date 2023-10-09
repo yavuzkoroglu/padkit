@@ -139,21 +139,35 @@ concat_chunk(Chunk* const to, Chunk const* const from) {
         if (!isValid_chunk(from)) return 0;
     #endif
 
-    char* const append_start = appendSpace_chunk(to, from->len);
+    if (from->nStrings == 0)
+        #ifndef NDEBUG
+            return 1;
+        #else
+            return;
+        #endif
+
+    uint64_t const hasStrings = (to->nStrings > 0);
+    char* const append_start = appendSpace_chunk(to, from->len + hasStrings) + hasStrings;
     #ifndef NDEBUG
         if (append_start < to->start) return 0;
     #endif
     memcpy(append_start, from->start, from->len + 1);
-    to->len += from->len;
 
+    uint32_t const old_str_count = to->nStrings;
     to->nStrings += from->nStrings;
     REALLOC_IF_NECESSARY(
         uint64_t, to->stringOffsets,
         uint32_t, to->stringsCap, to->nStrings,
         return 0;
     )
-    size_t const diff = to->nStrings - from->nStrings;
-    memcpy(to->stringOffsets + diff, from->stringOffsets, diff * sizeof(uint64_t));
+
+    uint64_t const diff = (uint64_t)(append_start - to->start);
+    for (uint32_t from_str_id = 0; from_str_id < from->nStrings; from_str_id++) {
+        uint32_t const to_str_id = from_str_id + old_str_count;
+        to->stringOffsets[to_str_id] = diff + from->stringOffsets[from_str_id];
+    }
+
+    to->len += from->len;
 
     #ifndef NDEBUG
         return 1;
