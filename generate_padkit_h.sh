@@ -8,8 +8,8 @@ echo '/**
     #define PADKIT_H' > include/padkit.h
 for header in $(ls include/padkit)
 do
-    if   [ "${header}" = "chunk.h" ]; then :;
-    elif [ "${header}" = "debug.h" ]; then :;
+    if   [ "${header}" = 'chunk.h' ]; then :;
+    elif [ "${header}" = 'debug.h' ]; then :;
     else
         echo "    #include \"padkit/${header}\"" >> include/padkit.h
     fi

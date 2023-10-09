@@ -20,8 +20,8 @@ DYLIBFLAGS=-dynamiclib -current_version ${VERSION_PADKIT_CUR} -compatibility_ver
 DYLIB_RELEASE_LIB=lib/padkit.${VERSION_PADKIT_CUR}.dylib
 DYLIB_DEBUG_LIB=lib/padkit_debug.${VERSION_PADKIT_CUR}.dylib
 
-TEST_RELEASE_OUT=bin/tests_release.out
-TEST_DEBUG_OUT=bin/tests_debug.out
+TEST_RELEASE_OUT=bin/tests.out
+TEST_DEBUG_OUT=bin/tests.out
 
 default: dylibrelease
 
@@ -46,5 +46,3 @@ lib: ; mkdir lib
 padkit_h: ; @ ./generate_padkit_h.sh
 
 releasetests: bin clean padkit_h; ${CC} ${COVARGS} ${DEBUGFLAGS} ${INCS} ${LIBS} ${PADKIT_C} ${TESTS_C} -o ${TEST_DEBUG_OUT}
-
-tests: releasetests debugtests
