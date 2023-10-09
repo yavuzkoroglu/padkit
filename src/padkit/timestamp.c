@@ -5,7 +5,7 @@
  * @author Yavuz Koroglu
  */
 #include <time.h>
-#include "util/timestamp.h"
+#include "padkit/timestamp.h"
 
 char const* get_timestamp(void) {
     static char timebuffer[18];

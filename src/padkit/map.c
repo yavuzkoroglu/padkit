@@ -6,8 +6,8 @@
  */
 #include <stdio.h>
 #include <string.h>
-#include "util/map.h"
-#include "util/reallocate.h"
+#include "padkit/map.h"
+#include "padkit/reallocate.h"
 
 uint32_t binarySearchLeftmostKey_map(Map const* const map, uint32_t const key_id) {
     #ifndef NDEBUG

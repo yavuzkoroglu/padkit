@@ -1,7 +1,12 @@
+/**
+ * @file graphmatrix.c
+ * @brief Implements GraphMatrix functions.
+ * @author Yavuz Koroglu
+ */
 #include <string.h>
-#include "util/bliterals.h"
-#include "util/debug.h"
-#include "util/graphmatrix.h"
+#include "padkit/bliterals.h"
+#include "padkit/debug.h"
+#include "padkit/graphmatrix.h"
 
 #ifndef NDEBUG
 bool

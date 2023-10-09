@@ -1,15 +1,15 @@
 /**
-1 * @file chunktablew.c
+ * @file chunktable.c
  * @brief Implements the functions defined in chunktable.h.
  * @see ChunkTable
  * @author Yavuz Koroglu
  */
 #include <string.h>
-#include "util/chunktable.h"
-#include "util/hash.h"
-#include "util/prime.h"
-#include "util/reallocate.h"
-#include "util/streq.h"
+#include "padkit/chunktable.h"
+#include "padkit/hash.h"
+#include "padkit/prime.h"
+#include "padkit/reallocate.h"
+#include "padkit/streq.h"
 
 static uint32_t determineNRows(uint32_t const key_count, uint32_t const loadPercent) {
     #ifndef NDEBUG

@@ -9,7 +9,7 @@
  */
 #include <stdlib.h>
 #include <string.h>
-#include "util/reallocate.h"
+#include "padkit/reallocate.h"
 
 void* reallocate(
     void** ptrptr, size_t const old_element_count,

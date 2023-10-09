@@ -3,8 +3,8 @@
  * @brief Implements the functions defined in streq.h.
  * @author Yavuz Koroglu
  */
-#include "util/debug.h"
-#include "util/streq.h"
+#include "padkit/debug.h"
+#include "padkit/streq.h"
 
 #ifdef __SIZEOF_INT128__
     typedef __uint128_t block_t __attribute((aligned(1)));

@@ -8,8 +8,8 @@
  *
  * @author Yavuz Koroglu
  */
-#include "util/debug.h"
-#include "util/hash.h"
+#include "padkit/debug.h"
+#include "padkit/hash.h"
 
 uint_fast64_t hash_str(char const* restrict str, size_t register n) {
     DEBUG_ERROR_IF(str == NULL)

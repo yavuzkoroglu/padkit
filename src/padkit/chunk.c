@@ -6,8 +6,8 @@
  */
 #include <ctype.h>
 #include <string.h>
-#include "util/chunk.h"
-#include "util/reallocate.h"
+#include "padkit/chunk.h"
+#include "padkit/reallocate.h"
 
 Chunk strings[1] = { NOT_A_CHUNK };
 
@@ -139,7 +139,7 @@ concat_chunk(Chunk* const to, Chunk const* const from) {
         if (!isValid_chunk(from)) return 0;
     #endif
 
-    char* const append_start = appendSpace(to, from->len);
+    char* const append_start = appendSpace_chunk(to, from->len);
     #ifndef NDEBUG
         if (append_start < to->start) return 0;
     #endif
@@ -152,7 +152,7 @@ concat_chunk(Chunk* const to, Chunk const* const from) {
         uint32_t, to->stringsCap, to->nStrings,
         return 0;
     )
-    ptrdiff_t const diff = to->nStrings - from->nStrings;
+    size_t const diff = to->nStrings - from->nStrings;
     memcpy(to->stringOffsets + diff, from->stringOffsets, diff * sizeof(uint64_t));
 
     #ifndef NDEBUG

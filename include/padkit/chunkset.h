@@ -5,7 +5,7 @@
  */
 #ifndef CHUNKSET_H
     #define CHUNKSET_H
-    #include "util/chunk.h"
+    #include "padkit/chunk.h"
 
     /**
      * @def NOT_A_CHUNK_SET

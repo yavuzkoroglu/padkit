@@ -5,7 +5,7 @@
 #ifndef REALLOCATE_H
     #define REALLOCATE_H
     #include <stdbool.h>
-    #include "util/debug.h"
+    #include "padkit/debug.h"
 
     #ifndef NDEBUG
         #define REALLOC_ERROR TERMINATE_ERROR_MSG("%s", "Error Because => REALLOCATE_ERROR")

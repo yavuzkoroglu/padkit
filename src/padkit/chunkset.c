@@ -5,11 +5,11 @@
  * @author Yavuz Koroglu
  */
 #include <string.h>
-#include "util/chunkset.h"
-#include "util/hash.h"
-#include "util/prime.h"
-#include "util/reallocate.h"
-#include "util/streq.h"
+#include "padkit/chunkset.h"
+#include "padkit/hash.h"
+#include "padkit/prime.h"
+#include "padkit/reallocate.h"
+#include "padkit/streq.h"
 
 static uint32_t determineNRows(uint32_t const str_count, uint32_t const loadPercent) {
     #ifndef NDEBUG

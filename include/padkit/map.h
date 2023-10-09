@@ -6,7 +6,7 @@
  */
 #ifndef MAP_H
     #define MAP_H
-    #include "util/mapping.h"
+    #include "padkit/mapping.h"
 
     /**
      * @def NOT_A_MAP

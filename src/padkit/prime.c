@@ -3,8 +3,8 @@
  * @brief Implements the functions defined in prime.h.
  * @author Yavuz Koroglu
  */
-#include "util/debug.h"
-#include "util/prime.h"
+#include "padkit/debug.h"
+#include "padkit/prime.h"
 
 bool isPrime(uint32_t const odd_x) {
     DEBUG_ERROR_IF(odd_x % 2 == 0)
