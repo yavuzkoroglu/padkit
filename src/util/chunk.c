@@ -14,6 +14,7 @@ Chunk strings[1] = { NOT_A_CHUNK };
 uint32_t add_chunk(Chunk* const chunk, char const* const str, uint64_t const n) {
     #ifndef NDEBUG
         if (!isValid_chunk(chunk)) return 0xFFFFFFFF;
+        if (str == NULL)           return 0xFFFFFFFF;
     #endif
 
     uint32_t const id     = chunk->nStrings++;
@@ -32,6 +33,7 @@ uint32_t add_chunk(Chunk* const chunk, char const* const str, uint64_t const n) 
 uint32_t addIndex_chunk(Chunk* const chunk, uint32_t const str_id) {
     #ifndef NDEBUG
         if (!isValid_chunk(chunk)) return 0xFFFFFFFF;
+        if (str_id == 0xFFFFFFFF)  return 0xFFFFFFFF;
     #endif
 
     uint32_t const id = add_chunk(chunk, "", 0);
@@ -49,6 +51,7 @@ uint32_t addIndex_chunk(Chunk* const chunk, uint32_t const str_id) {
 char const* append_chunk(Chunk* const chunk, char const* const str, uint64_t const n) {
     #ifndef NDEBUG
         if (!isValid_chunk(chunk)) return NULL;
+        if (str == NULL)           return NULL;
     #endif
 
     char* const append_start = appendSpace_chunk(chunk, n);
@@ -123,6 +126,38 @@ char* appendSpace_chunk(Chunk* const chunk, uint64_t const size) {
     )
 
     return chunk->start + chunk->len;
+}
+
+#ifndef NDEBUG
+bool
+#else
+void
+#endif
+concat_chunk(Chunk* const to, Chunk const* const from) {
+    #ifndef NDEBUG
+        if (!isValid_chunk(to))   return 0;
+        if (!isValid_chunk(from)) return 0;
+    #endif
+
+    char* const append_start = appendSpace(to, from->len);
+    #ifndef NDEBUG
+        if (append_start < to->start) return 0;
+    #endif
+    memcpy(append_start, from->start, from->len + 1);
+    to->len += from->len;
+
+    to->nStrings += from->nStrings;
+    REALLOC_IF_NECESSARY(
+        uint64_t, to->stringOffsets,
+        uint32_t, to->stringsCap, to->nStrings,
+        return 0;
+    )
+    ptrdiff_t const diff = to->nStrings - from->nStrings;
+    memcpy(to->stringOffsets + diff, from->stringOffsets, diff * sizeof(uint64_t));
+
+    #ifndef NDEBUG
+        return 1;
+    #endif
 }
 
 #ifndef NDEBUG

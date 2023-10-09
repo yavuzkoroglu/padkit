@@ -125,6 +125,18 @@
     char* appendSpace_chunk(Chunk* const chunk, uint64_t const size);
 
     /**
+     * @brief Adds all the strings from a Chunk to another Chunk.
+     * @param to The destination Chunk.
+     * @param from The source Chunk.
+     */
+    #ifndef NDEBUG
+    bool
+    #else
+    void
+    #endif
+    concat_chunk(Chunk* const to, Chunk const* const from);
+
+    /**
      * @brief Constructs an empty Chunk.
      * @param chunk A pointer to the Chunk.
      * @param initial_cap The initial capacity of the Chunk.

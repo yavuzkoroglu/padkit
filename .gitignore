@@ -24,6 +24,7 @@
 
 # Binaries
 bin/**
+lib/**
 
 # Doxyfiles
 html/**
