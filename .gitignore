@@ -57,6 +57,7 @@ latex/**
 *.gcno
 *.gcda
 *.gcov
+coverage.info
 
 # Program outputs
 *.csv
