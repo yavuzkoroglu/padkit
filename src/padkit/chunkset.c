@@ -151,13 +151,10 @@ uint32_t addKey_cset(ChunkSet* const set, char const* const key, uint64_t const 
 
     #ifndef NDEBUG
         if (!adjust(set)) return 0xFFFFFFFF;
+        if (set->start[0] == '\0') return 0xFFFFFFFF;
     #else
         adjust(set);
     #endif
-
-    if (set->start[0] == '\0') {
-        TERMINATE_ERROR;
-    }
 
     return key_id;
 }

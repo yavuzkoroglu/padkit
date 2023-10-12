@@ -51,7 +51,7 @@ all: clean lib tests documentation
 
 bin: ; mkdir bin
 
-clean: ; rm -rf include/padkit.h *.gcno *.gcda *.gcov bin/* lib/* html latex
+clean: ; rm -rf include/padkit.h coverage.info *.gcno *.gcda *.gcov bin/* lib/* html latex
 
 documentation: padkit_h; doxygen
 

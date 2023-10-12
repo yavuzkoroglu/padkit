@@ -167,7 +167,7 @@ concat_chunk(Chunk* const to, Chunk const* const from) {
         to->stringOffsets[to_str_id] = diff + from->stringOffsets[from_str_id];
     }
 
-    to->len += from->len;
+    to->len += from->len + hasStrings;
 
     #ifndef NDEBUG
         return 1;
@@ -263,6 +263,7 @@ deleteLast_chunk(Chunk* const chunk) {
         #ifndef NDEBUG
             return flush_chunk(chunk);
         #else
+            flush_chunk(chunk);
             return;
         #endif
     }
