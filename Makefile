@@ -1,5 +1,6 @@
 #ARCH=arm64
-ARCH=x86_64
+#ARCH=x86_64
+ARCH=${shell uname -m}
 
 # win => ?
 # linux => ?
@@ -15,14 +16,18 @@ CLANG_SILENCED=                         \
     -Wno-padded -Wno-unused-parameter   \
     -Wno-unsafe-buffer-usage
 
+GCC_SILENCED=                           \
+    -Wno-unused-parameter               \
+    -Wno-nullability-completeness
+
 CLANG_ARGS=-arch ${ARCH} -std=c99 -Weverything ${CLANG_SILENCED}
 CLANG=clang ${CLANG_ARGS}
 
-GCCARGS=-arch ${ARCH} -std=c99 -Wall -Wextra
+GCC_ARGS=-arch ${ARCH} -std=c99 -Wall -Wextra ${GCC_SILENCED}
 GCC=gcc ${GCC_ARGS}
 
-#CC=${GCC}
-CC=${CLANG}
+CC=${GCC}
+#CC=${CLANG}
 
 INCS=-Iinclude
 PADKIT_C=src/padkit/*.c
