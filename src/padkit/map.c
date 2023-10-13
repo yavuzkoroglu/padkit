@@ -156,8 +156,10 @@ uint32_t linearSearchBackward_map(
     uint32_t id = search_start_id;
     while (
         id != 0xFFFFFFFF && (
-            map->mappings[id].key_id >= key_id ||
-            !areEqual_val(map->mappings[id].value, value)
+            map->mappings[id].key_id > key_id || (
+                map->mappings[id].key_id == key_id &&
+                !areEqual_val(map->mappings[id].value, value)
+            )
         )
     ) id--;
     return id;
@@ -203,8 +205,10 @@ uint32_t linearSearchForward_map(
     uint32_t id = search_start_id;
     while (
         id != map->size && (
-            map->mappings[id].key_id <= key_id ||
-            !areEqual_val(map->mappings[id].value, value)
+            map->mappings[id].key_id < key_id || (
+                map->mappings[id].key_id == key_id &&
+                !areEqual_val(map->mappings[id].value, value)
+            )
         )
     ) id++;
     return id;

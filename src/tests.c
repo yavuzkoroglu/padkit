@@ -13,12 +13,14 @@
     printf("PASS => %s():%d\n", __func__, __LINE__)
 
 #define TEST_FAIL_IF(condition) \
-    if (condition) {TEST_FAIL_MESSAGE(#condition); exit(EXIT_FAILURE);}
+    if (condition) { TEST_FAIL_MESSAGE(#condition); return; }
 
 #define TEST_PASS TEST_PASS_MESSAGE;
 
 static void test_chunk_add(void) {
-    DEBUG_ASSERT_NDEBUG_EXECUTE(constructEmpty_chunk(strings, CHUNK_RECOMMENDED_PARAMETERS))
+    DEBUG_ASSERT_NDEBUG_EXECUTE(
+        constructEmpty_chunk(strings, CHUNK_RECOMMENDED_PARAMETERS)
+    )
 
     DEBUG_ERROR_IF(add_chunk(strings, "abc", 3) == 0xFFFFFFFF)
     NDEBUG_EXECUTE(add_chunk(strings, "abc", 3))
@@ -37,7 +39,9 @@ static void test_chunk_add(void) {
 }
 
 static void test_chunk_addIndex(void) {
-    DEBUG_ASSERT_NDEBUG_EXECUTE(constructEmpty_chunk(strings, CHUNK_RECOMMENDED_PARAMETERS))
+    DEBUG_ASSERT_NDEBUG_EXECUTE(
+        constructEmpty_chunk(strings, CHUNK_RECOMMENDED_PARAMETERS)
+    )
 
     DEBUG_ERROR_IF(add_chunk(strings, "abc", 3) == 0xFFFFFFFF)
     NDEBUG_EXECUTE(add_chunk(strings, "abc", 3))
@@ -54,7 +58,9 @@ static void test_chunk_addIndex(void) {
 }
 
 static void test_chunk_append(void) {
-    DEBUG_ASSERT_NDEBUG_EXECUTE(constructEmpty_chunk(strings, CHUNK_RECOMMENDED_PARAMETERS))
+    DEBUG_ASSERT_NDEBUG_EXECUTE(
+        constructEmpty_chunk(strings, CHUNK_RECOMMENDED_PARAMETERS)
+    )
 
     DEBUG_ERROR_IF(append_chunk(strings, "abc", 3) == NULL)
     NDEBUG_EXECUTE(append_chunk(strings, "abc", 3))
@@ -74,7 +80,9 @@ static void test_chunk_append(void) {
 }
 
 static void test_chunk_appendIndex(void) {
-    DEBUG_ASSERT_NDEBUG_EXECUTE(constructEmpty_chunk(strings, CHUNK_RECOMMENDED_PARAMETERS))
+    DEBUG_ASSERT_NDEBUG_EXECUTE(
+        constructEmpty_chunk(strings, CHUNK_RECOMMENDED_PARAMETERS)
+    )
 
     DEBUG_ERROR_IF(append_chunk(strings, "abc", 3) == NULL)
     NDEBUG_EXECUTE(append_chunk(strings, "abc", 3))
@@ -91,7 +99,9 @@ static void test_chunk_appendIndex(void) {
 }
 
 static void test_chunk_appendSpace(void) {
-    DEBUG_ASSERT_NDEBUG_EXECUTE(constructEmpty_chunk(strings, CHUNK_RECOMMENDED_PARAMETERS))
+    DEBUG_ASSERT_NDEBUG_EXECUTE(
+        constructEmpty_chunk(strings, CHUNK_RECOMMENDED_PARAMETERS)
+    )
 
     DEBUG_ERROR_IF(appendSpace_chunk(strings, 131072) == NULL)
     NDEBUG_EXECUTE(appendSpace_chunk(strings, 131072))
@@ -104,12 +114,16 @@ static void test_chunk_appendSpace(void) {
 }
 
 static void test_chunk_concat(void) {
-    DEBUG_ASSERT_NDEBUG_EXECUTE(constructEmpty_chunk(strings, CHUNK_RECOMMENDED_PARAMETERS))
+    DEBUG_ASSERT_NDEBUG_EXECUTE(
+        constructEmpty_chunk(strings, CHUNK_RECOMMENDED_PARAMETERS)
+    )
 
     Chunk chunk[2][1] = { { NOT_A_CHUNK }, { NOT_A_CHUNK } };
 
     for (int i = 0; i < 2; i++) {
-        DEBUG_ASSERT_NDEBUG_EXECUTE(constructEmpty_chunk(chunk[i], CHUNK_RECOMMENDED_PARAMETERS))
+        DEBUG_ASSERT_NDEBUG_EXECUTE(
+            constructEmpty_chunk(chunk[i], CHUNK_RECOMMENDED_PARAMETERS)
+        )
         DEBUG_ASSERT_NDEBUG_EXECUTE(concat_chunk(strings, chunk[i]))
     }
 
@@ -132,7 +146,9 @@ static void test_chunk_concat(void) {
 }
 
 static void test_chunk_delete(void) {
-    DEBUG_ASSERT_NDEBUG_EXECUTE(constructEmpty_chunk(strings, CHUNK_RECOMMENDED_PARAMETERS))
+    DEBUG_ASSERT_NDEBUG_EXECUTE(
+        constructEmpty_chunk(strings, CHUNK_RECOMMENDED_PARAMETERS)
+    )
 
     DEBUG_ERROR_IF(add_chunk(strings, "abc", 3) == 0xFFFFFFFF)
     NDEBUG_EXECUTE(add_chunk(strings, "abc", 3))
@@ -154,7 +170,9 @@ static void test_chunk_delete(void) {
 }
 
 static void test_chunk_deleteLast(void) {
-    DEBUG_ASSERT_NDEBUG_EXECUTE(constructEmpty_chunk(strings, CHUNK_RECOMMENDED_PARAMETERS))
+    DEBUG_ASSERT_NDEBUG_EXECUTE(
+        constructEmpty_chunk(strings, CHUNK_RECOMMENDED_PARAMETERS)
+    )
 
     DEBUG_ERROR_IF(add_chunk(strings, "abc", 3) == 0xFFFFFFFF)
     NDEBUG_EXECUTE(add_chunk(strings, "abc", 3))
@@ -182,7 +200,9 @@ static void test_chunk_deleteLast(void) {
 }
 
 static void test_chunk_fromStream(void) {
-    DEBUG_ASSERT_NDEBUG_EXECUTE(constructEmpty_chunk(strings, CHUNK_RECOMMENDED_PARAMETERS))
+    DEBUG_ASSERT_NDEBUG_EXECUTE(
+        constructEmpty_chunk(strings, CHUNK_RECOMMENDED_PARAMETERS)
+    )
 
     FILE* const stream = fopen("src/tests.c", "r");
     DEBUG_ERROR_IF(stream == NULL)
@@ -201,7 +221,9 @@ static void test_chunk_fromStream(void) {
 }
 
 static void test_chunk_strlen(void) {
-    DEBUG_ASSERT_NDEBUG_EXECUTE(constructEmpty_chunk(strings, CHUNK_RECOMMENDED_PARAMETERS))
+    DEBUG_ASSERT_NDEBUG_EXECUTE(
+        constructEmpty_chunk(strings, CHUNK_RECOMMENDED_PARAMETERS)
+    )
 
     DEBUG_ERROR_IF(add_chunk(strings, "abc", 3) == 0xFFFFFFFF)
     NDEBUG_EXECUTE(add_chunk(strings, "abc", 3))
@@ -220,7 +242,9 @@ static void test_chunk_strlen(void) {
 }
 
 static void test_chunk_strlenLast(void) {
-    DEBUG_ASSERT_NDEBUG_EXECUTE(constructEmpty_chunk(strings, CHUNK_RECOMMENDED_PARAMETERS))
+    DEBUG_ASSERT_NDEBUG_EXECUTE(
+        constructEmpty_chunk(strings, CHUNK_RECOMMENDED_PARAMETERS)
+    )
 
     DEBUG_ERROR_IF(add_chunk(strings, "abc", 3) == 0xFFFFFFFF)
     NDEBUG_EXECUTE(add_chunk(strings, "abc", 3))
@@ -240,7 +264,9 @@ static void test_chunk_strlenLast(void) {
 static void test_cset(void) {
     ChunkSet set[1] = { NOT_A_CHUNK_SET };
 
-    DEBUG_ASSERT_NDEBUG_EXECUTE(constructEmpty_cset(set, CHUNK_SET_RECOMMENDED_PARAMETERS))
+    DEBUG_ASSERT_NDEBUG_EXECUTE(
+        constructEmpty_cset(set, CHUNK_SET_RECOMMENDED_PARAMETERS)
+    )
 
     DEBUG_ERROR_IF(addKey_cset(set, "Apples", 6) == 0xFFFFFFFF)
     NDEBUG_EXECUTE(addKey_cset(set, "Apples", 6))
@@ -283,20 +309,32 @@ static void test_ctbl(void) {
     uint32_t person_id[PEOPLE_COUNT];
 
     Chunk people[1] = { NOT_A_CHUNK };
-    DEBUG_ASSERT_NDEBUG_EXECUTE(constructEmpty_chunk(people, CHUNK_RECOMMENDED_PARAMETERS))
+    DEBUG_ASSERT_NDEBUG_EXECUTE(
+        constructEmpty_chunk(people, CHUNK_RECOMMENDED_PARAMETERS)
+    )
 
     ChunkTable ages[1] = { NOT_A_CHUNK_TABLE };
-    DEBUG_ASSERT_NDEBUG_EXECUTE(constructEmpty_ctbl(ages, CHUNK_TABLE_RECOMMENDED_PARAMETERS))
+    DEBUG_ASSERT_NDEBUG_EXECUTE(
+        constructEmpty_ctbl(ages, CHUNK_TABLE_RECOMMENDED_PARAMETERS)
+    )
 
     ChunkTable scores[1] = { NOT_A_CHUNK_TABLE };
-    DEBUG_ASSERT_NDEBUG_EXECUTE(constructEmpty_ctbl(scores, CHUNK_TABLE_RECOMMENDED_PARAMETERS))
+    DEBUG_ASSERT_NDEBUG_EXECUTE(
+        constructEmpty_ctbl(scores, CHUNK_TABLE_RECOMMENDED_PARAMETERS)
+    )
 
     for (unsigned person = ALICE; person < PEOPLE_COUNT; person++) {
         person_id[person] = add_chunk(people, name[person], 5);
         DEBUG_ERROR_IF(person_id[person] != person)
     }
 
-    switch (insert_ctbl(ages, people, ALICE, 725, CTBL_BEHAVIOR_UNIQUE)) {
+    switch (
+        insert_ctbl(
+            ages, people,
+            ALICE, 725,
+            CTBL_BEHAVIOR_UNIQUE
+        )
+    ) {
         case CTBL_INSERT_OK:
             break;
         #ifndef NDEBUG
@@ -310,7 +348,13 @@ static void test_ctbl(void) {
             goto END_TEST_CTBL;
     }
 
-    switch (insert_ctbl(ages, people, ALICE, age[ALICE], CTBL_BEHAVIOR_REPLACE)) {
+    switch (
+        insert_ctbl(
+            ages, people,
+            ALICE, age[ALICE],
+            CTBL_BEHAVIOR_REPLACE
+        )
+    ) {
         case CTBL_INSERT_DUPLICATE_KEY:
         case CTBL_INSERT_OK:
             break;
@@ -323,7 +367,13 @@ static void test_ctbl(void) {
     }
 
     for (unsigned person = HARRY; person < PEOPLE_COUNT; person++) {
-        switch (insert_ctbl(ages, people, person, age[person], CTBL_BEHAVIOR_UNIQUE)) {
+        switch (
+            insert_ctbl(
+                ages, people,
+                person, age[person],
+                CTBL_BEHAVIOR_UNIQUE
+            )
+        ) {
             case CTBL_INSERT_OK:
                 break;
             #ifndef NDEBUG
@@ -339,7 +389,13 @@ static void test_ctbl(void) {
     for (unsigned exam = 0; exam < EXAM_COUNT; exam++) {
         for (unsigned person = ALICE; person < PEOPLE_COUNT; person++) {
             #ifndef NDEBUG
-                switch (insert_ctbl(scores, people, person, score[exam][person], CTBL_BEHAVIOR_MULTIPLE)) {
+                switch (
+                    insert_ctbl(
+                        scores, people, person,
+                        score[exam][person],
+                        CTBL_BEHAVIOR_MULTIPLE
+                    )
+                ) {
                     case CTBL_INSERT_DUPLICATE_ENTRY:
                     case CTBL_INSERT_OK:
                         break;
@@ -348,7 +404,11 @@ static void test_ctbl(void) {
                         TEST_FAIL_MESSAGE(insert_ctbl);
                 }
             #else
-                insert_ctbl(scores, people, person, score[exam][person], CTBL_BEHAVIOR_MULTIPLE);
+                insert_ctbl(
+                    scores, people,
+                    person, score[exam][person],
+                    CTBL_BEHAVIOR_MULTIPLE
+                );
             #endif
         }
     }
@@ -382,11 +442,152 @@ END_TEST_CTBL:
 #undef WENDY
 
 static void test_gmtx(void) {
+    GraphMatrix gmtx[1] = { NOT_A_GRAPH_MATRIX };
+    DEBUG_ASSERT_NDEBUG_EXECUTE(construct_gmtx(gmtx, 3, 3))
+
+    DEBUG_ASSERT_NDEBUG_EXECUTE(connectAll_gmtx(gmtx))
+
+    DEBUG_ASSERT_NDEBUG_EXECUTE(resizeIfNecessary_gmtx(gmtx, 4, 4))
+
+    for (unsigned i = 0; i < 4; i++) {
+        if (isConnected_gmtx(gmtx, i, i)) {
+            DEBUG_ASSERT_NDEBUG_EXECUTE(disconnect_gmtx(gmtx, i, i))
+        } else {
+            DEBUG_ASSERT_NDEBUG_EXECUTE(connect_gmtx(gmtx, i, i))
+        }
+    }
+
+    TEST_FAIL_IF(findSink_gmtx(gmtx, 3, 3) != 3)
+    TEST_FAIL_IF(findSource_gmtx(gmtx, 3, 3) != 3)
+    TEST_FAIL_IF(findSink_gmtx(gmtx, 0, 3) != 2)
+    TEST_FAIL_IF(findSource_gmtx(gmtx, 2, 3) != 1)
+
     TEST_PASS
+
+    DEBUG_ASSERT_NDEBUG_EXECUTE(disconnectAll_gmtx(gmtx))
+    DEBUG_ASSERT_NDEBUG_EXECUTE(free_gmtx(gmtx))
 }
 
+#define ALISON 0
+#define ARNOLD 1
+#define JAKE   2
+#define JANE   3
 static void test_map(void) {
+    static unsigned const relations[][2] =
+        { { ALISON, JAKE }, { ARNOLD, JAKE } };
+
+    #define RELATIONS_COUNT (sizeof(relations) / sizeof(relations[0]))
+
+    Map colleagues[1] = { NOT_A_MAP };
+    DEBUG_ASSERT_NDEBUG_EXECUTE(constructEmpty_map(colleagues, BUFSIZ))
+
+    for (unsigned i = 0; i < RELATIONS_COUNT; i++) {
+        DEBUG_ASSERT_NDEBUG_EXECUTE(
+            insert_map(colleagues, relations[i][0], VAL_UNSIGNED(relations[i][1]))
+        )
+        DEBUG_ASSERT_NDEBUG_EXECUTE(
+            insert_map(colleagues, relations[i][1], VAL_UNSIGNED(relations[i][0]))
+        )
+    }
+
+    DEBUG_ASSERT_NDEBUG_EXECUTE(
+        insert_map(colleagues, JANE, VAL_UNSIGNED(JANE))
+    )
+    DEBUG_ASSERT_NDEBUG_EXECUTE(deleteLast_map(colleagues))
+
+    TEST_FAIL_IF(colleagues->size != 4)
+    TEST_FAIL_IF(
+        binarySearchLeftmostKey_map(colleagues, ALISON) != ALISON
+    )
+    TEST_FAIL_IF(
+        binarySearchLeftmostKey_map(colleagues, JANE) != colleagues->size
+    )
+    TEST_FAIL_IF(
+        binarySearchRightmostKey_map(colleagues, ARNOLD) != ARNOLD
+    )
+    TEST_FAIL_IF(
+        binarySearchRightmostKey_map(colleagues, JANE) != colleagues->size - 1
+    )
+    TEST_FAIL_IF(
+        linearSearchBackward_map(
+            colleagues, colleagues->size - 1,
+            JAKE, VAL_UNSIGNED(ALISON)
+        ) != 2
+    )
+    TEST_FAIL_IF(
+        linearSearchBackward_map(
+            colleagues, colleagues->size - 1,
+            JANE, VAL_UNSIGNED(ALISON)
+        ) != colleagues->size - 1
+    )
+    TEST_FAIL_IF(
+        linearSearchBackwardKey_map(
+            colleagues, colleagues->size - 1,
+            JAKE
+        ) != 3
+    )
+    TEST_FAIL_IF(
+        linearSearchBackwardKey_map(
+            colleagues, colleagues->size - 1,
+            JANE
+        ) != colleagues->size - 1
+    )
+    TEST_FAIL_IF(
+        linearSearchBackwardValue_map(
+            colleagues, colleagues->size - 1,
+            VAL_UNSIGNED(ARNOLD)
+        ) != 3
+    )
+    TEST_FAIL_IF(
+        linearSearchBackwardValue_map(
+            colleagues, colleagues->size - 1,
+            VAL_UNSIGNED(JANE)
+        ) != 0xFFFFFFFF
+    )
+    TEST_FAIL_IF(
+        linearSearchForward_map(
+            colleagues, 0,
+            JAKE, VAL_UNSIGNED(ALISON)
+        ) != 2
+    )
+    TEST_FAIL_IF(
+        linearSearchForward_map(
+            colleagues, 0,
+            JANE, VAL_UNSIGNED(ALISON)
+        ) != colleagues->size
+    )
+    TEST_FAIL_IF(
+        linearSearchForwardKey_map(
+            colleagues, 0,
+            JAKE
+        ) != 2
+    )
+    TEST_FAIL_IF(
+        linearSearchForwardKey_map(
+            colleagues, 0,
+            JANE
+        ) != colleagues->size
+    )
+    TEST_FAIL_IF(
+        linearSearchForwardValue_map(
+            colleagues, 0,
+            VAL_UNSIGNED(ARNOLD)
+        ) != 3
+    )
+    TEST_FAIL_IF(
+        linearSearchForwardValue_map(
+            colleagues, 0,
+            VAL_UNSIGNED(JANE)
+        ) != colleagues->size
+    )
+
     TEST_PASS
+
+    DEBUG_ASSERT_NDEBUG_EXECUTE(flush_map(colleagues))
+    DEBUG_ASSERT_NDEBUG_EXECUTE(free_map(colleagues))
+
+    #undef RELATIONS_COUNT
+    #undef PEOPLE_COUNT
 }
 
 static void test_reallocate(void) {

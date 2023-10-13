@@ -236,8 +236,8 @@ resizeIfNecessary_gmtx(
     #endif
 
     /* Remake all the previous connections. */
-    for (uint32_t source = 0; source < gmtx->height - 1; source++) {
-        for (uint32_t sink = 0; sink < gmtx->width - 1; sink++) {
+    for (uint32_t source = 0; source < gmtx->height; source++) {
+        for (uint32_t sink = 0; sink < gmtx->width; sink++) {
             if (isConnected_gmtx(gmtx, source, sink)) {
                 #ifndef NDEBUG
                     if (!connect_gmtx(new_gmtx, source, sink)) return 0;
