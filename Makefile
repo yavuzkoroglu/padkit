@@ -29,6 +29,7 @@ SILENCED=                               \
     -Wno-poison-system-directories      \
     -Wno-declaration-after-statement    \
     -Wno-padded -Wno-unused-parameter   \
+    -Wno-unknown-warning-option         \
     -Wno-unsafe-buffer-usage
 ARGS=-arch ${ARCH} ${FLAGS} -Weverything ${SILENCED} -Iinclude
 else
