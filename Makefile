@@ -49,11 +49,12 @@ DYNAMIC_LIB_FLAGS=                                      \
 
 DYNAMIC_LIB=lib/libpadkit.dylib
 TESTS_OUT=bin/tests.out
-endif
+else
 ifeq (${OS},Linux)
 DYNAMIC_LIB_FLAGS=-shared -fPIC
 DYNAMIC_LIB=lib/libpadkit.so
 TESTS_OUT=bin/tests.out
+endif
 endif
 
 default: clean lib/libpadkit.a ${DYNAMIC_LIB}
