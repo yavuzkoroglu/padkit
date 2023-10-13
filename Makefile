@@ -11,7 +11,6 @@ MODE=debug
 
 #OS=Darwin
 #OS=Linux
-#OS=none
 OS=$(shell uname)
 
 STD=c99
