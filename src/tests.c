@@ -3,6 +3,7 @@
  * @brief Tests the padkit library.
  * @author Yavuz Koroglu
  */
+#include <inttypes.h>
 #include "padkit.h"
 
 #define TEST_FAIL_MESSAGE(trigger) \
@@ -16,7 +17,7 @@
 
 #define TEST_PASS TEST_PASS_MESSAGE;
 
-static void test_add_chunk(void) {
+static void test_chunk_add(void) {
     DEBUG_ASSERT_NDEBUG_EXECUTE(constructEmpty_chunk(strings, CHUNK_RECOMMENDED_PARAMETERS))
 
     DEBUG_ERROR_IF(add_chunk(strings, "abc", 3) == 0xFFFFFFFF)
@@ -35,7 +36,7 @@ static void test_add_chunk(void) {
     free_strings();
 }
 
-static void test_addIndex_chunk(void) {
+static void test_chunk_addIndex(void) {
     DEBUG_ASSERT_NDEBUG_EXECUTE(constructEmpty_chunk(strings, CHUNK_RECOMMENDED_PARAMETERS))
 
     DEBUG_ERROR_IF(add_chunk(strings, "abc", 3) == 0xFFFFFFFF)
@@ -52,7 +53,7 @@ static void test_addIndex_chunk(void) {
     free_strings();
 }
 
-static void test_append_chunk(void) {
+static void test_chunk_append(void) {
     DEBUG_ASSERT_NDEBUG_EXECUTE(constructEmpty_chunk(strings, CHUNK_RECOMMENDED_PARAMETERS))
 
     DEBUG_ERROR_IF(append_chunk(strings, "abc", 3) == NULL)
@@ -72,7 +73,7 @@ static void test_append_chunk(void) {
     free_strings();
 }
 
-static void test_appendIndex_chunk(void) {
+static void test_chunk_appendIndex(void) {
     DEBUG_ASSERT_NDEBUG_EXECUTE(constructEmpty_chunk(strings, CHUNK_RECOMMENDED_PARAMETERS))
 
     DEBUG_ERROR_IF(append_chunk(strings, "abc", 3) == NULL)
@@ -89,7 +90,7 @@ static void test_appendIndex_chunk(void) {
     free_strings();
 }
 
-static void test_appendSpace_chunk(void) {
+static void test_chunk_appendSpace(void) {
     DEBUG_ASSERT_NDEBUG_EXECUTE(constructEmpty_chunk(strings, CHUNK_RECOMMENDED_PARAMETERS))
 
     DEBUG_ERROR_IF(appendSpace_chunk(strings, 131072) == NULL)
@@ -102,7 +103,7 @@ static void test_appendSpace_chunk(void) {
     free_strings();
 }
 
-static void test_concat_chunk(void) {
+static void test_chunk_concat(void) {
     DEBUG_ASSERT_NDEBUG_EXECUTE(constructEmpty_chunk(strings, CHUNK_RECOMMENDED_PARAMETERS))
 
     Chunk chunk[2][1] = { { NOT_A_CHUNK }, { NOT_A_CHUNK } };
@@ -130,7 +131,7 @@ static void test_concat_chunk(void) {
     free_strings();
 }
 
-static void test_delete_chunk(void) {
+static void test_chunk_delete(void) {
     DEBUG_ASSERT_NDEBUG_EXECUTE(constructEmpty_chunk(strings, CHUNK_RECOMMENDED_PARAMETERS))
 
     DEBUG_ERROR_IF(add_chunk(strings, "abc", 3) == 0xFFFFFFFF)
@@ -152,7 +153,7 @@ static void test_delete_chunk(void) {
     free_strings();
 }
 
-static void test_deleteLast_chunk(void) {
+static void test_chunk_deleteLast(void) {
     DEBUG_ASSERT_NDEBUG_EXECUTE(constructEmpty_chunk(strings, CHUNK_RECOMMENDED_PARAMETERS))
 
     DEBUG_ERROR_IF(add_chunk(strings, "abc", 3) == 0xFFFFFFFF)
@@ -180,7 +181,7 @@ static void test_deleteLast_chunk(void) {
     free_strings();
 }
 
-static void test_fromStream_chunk(void) {
+static void test_chunk_fromStream(void) {
     DEBUG_ASSERT_NDEBUG_EXECUTE(constructEmpty_chunk(strings, CHUNK_RECOMMENDED_PARAMETERS))
 
     FILE* const stream = fopen("src/tests.c", "r");
@@ -199,7 +200,7 @@ static void test_fromStream_chunk(void) {
     free_strings();
 }
 
-static void test_strlen_chunk(void) {
+static void test_chunk_strlen(void) {
     DEBUG_ASSERT_NDEBUG_EXECUTE(constructEmpty_chunk(strings, CHUNK_RECOMMENDED_PARAMETERS))
 
     DEBUG_ERROR_IF(add_chunk(strings, "abc", 3) == 0xFFFFFFFF)
@@ -218,7 +219,7 @@ static void test_strlen_chunk(void) {
     free_strings();
 }
 
-static void test_strlenLast_chunk(void) {
+static void test_chunk_strlenLast(void) {
     DEBUG_ASSERT_NDEBUG_EXECUTE(constructEmpty_chunk(strings, CHUNK_RECOMMENDED_PARAMETERS))
 
     DEBUG_ERROR_IF(add_chunk(strings, "abc", 3) == 0xFFFFFFFF)
@@ -261,30 +262,320 @@ static void test_cset(void) {
     DEBUG_ASSERT_NDEBUG_EXECUTE(free_cset(set))
 }
 
+#define ALICE 0
+#define HARRY 1
+#define LENNY 2
+#define WENDY 3
+static void test_ctbl(void) {
+    unsigned const age[] = { [ALICE]=12, [HARRY]=33, [LENNY]=3, [WENDY]=24 };
+    #define PEOPLE_COUNT sizeof(age) / sizeof(unsigned)
+
+    unsigned const score[][PEOPLE_COUNT] =
+        {
+            { [ALICE]=135, [HARRY]=124, [LENNY]=165, [WENDY]=122 },
+            { [ALICE]=132, [HARRY]=128, [LENNY]=85, [WENDY]=122 }
+        };
+    #define EXAM_COUNT sizeof(score) / sizeof(score[0])
+
+    char const* const name[PEOPLE_COUNT] =
+        { [ALICE]="Alice", [HARRY]="Harry", [LENNY]="Lenny", [WENDY]="Wendy" };
+
+    uint32_t person_id[PEOPLE_COUNT];
+
+    Chunk people[1] = { NOT_A_CHUNK };
+    DEBUG_ASSERT_NDEBUG_EXECUTE(constructEmpty_chunk(people, CHUNK_RECOMMENDED_PARAMETERS))
+
+    ChunkTable ages[1] = { NOT_A_CHUNK_TABLE };
+    DEBUG_ASSERT_NDEBUG_EXECUTE(constructEmpty_ctbl(ages, CHUNK_TABLE_RECOMMENDED_PARAMETERS))
+
+    ChunkTable scores[1] = { NOT_A_CHUNK_TABLE };
+    DEBUG_ASSERT_NDEBUG_EXECUTE(constructEmpty_ctbl(scores, CHUNK_TABLE_RECOMMENDED_PARAMETERS))
+
+    for (unsigned person = ALICE; person < PEOPLE_COUNT; person++) {
+        person_id[person] = add_chunk(people, name[person], 5);
+        DEBUG_ERROR_IF(person_id[person] != person)
+    }
+
+    switch (insert_ctbl(ages, people, ALICE, 725, CTBL_BEHAVIOR_UNIQUE)) {
+        case CTBL_INSERT_OK:
+            break;
+        #ifndef NDEBUG
+        case CTBL_INSERT_ERROR:
+            TEST_FAIL_MESSAGE(insert_ctbl);
+            goto END_TEST_CTBL;
+        #endif
+        case CTBL_INSERT_DUPLICATE_KEY:
+        default:
+            TEST_FAIL_MESSAGE(insert_ctbl);
+            goto END_TEST_CTBL;
+    }
+
+    switch (insert_ctbl(ages, people, ALICE, age[ALICE], CTBL_BEHAVIOR_REPLACE)) {
+        case CTBL_INSERT_DUPLICATE_KEY:
+        case CTBL_INSERT_OK:
+            break;
+        #ifndef NDEBUG
+        case CTBL_INSERT_ERROR:
+        #endif
+        default:
+            TEST_FAIL_MESSAGE(insert_ctbl);
+            goto END_TEST_CTBL;
+    }
+
+    for (unsigned person = HARRY; person < PEOPLE_COUNT; person++) {
+        switch (insert_ctbl(ages, people, person, age[person], CTBL_BEHAVIOR_UNIQUE)) {
+            case CTBL_INSERT_OK:
+                break;
+            #ifndef NDEBUG
+            case CTBL_INSERT_ERROR:
+            #endif
+            case CTBL_INSERT_DUPLICATE_KEY:
+            default:
+                TEST_FAIL_MESSAGE(insert_ctbl);
+                goto END_TEST_CTBL;
+        }
+    }
+
+    for (unsigned exam = 0; exam < EXAM_COUNT; exam++) {
+        for (unsigned person = ALICE; person < PEOPLE_COUNT; person++) {
+            #ifndef NDEBUG
+                switch (insert_ctbl(scores, people, person, score[exam][person], CTBL_BEHAVIOR_MULTIPLE)) {
+                    case CTBL_INSERT_DUPLICATE_ENTRY:
+                    case CTBL_INSERT_OK:
+                        break;
+                    case CTBL_INSERT_ERROR:
+                    default:
+                        TEST_FAIL_MESSAGE(insert_ctbl);
+                }
+            #else
+                insert_ctbl(scores, people, person, score[exam][person], CTBL_BEHAVIOR_MULTIPLE);
+            #endif
+        }
+    }
+
+    TEST_FAIL_IF(getKeyCount_ctbl(ages) != PEOPLE_COUNT)
+    TEST_FAIL_IF(getKeyCount_ctbl(scores) != PEOPLE_COUNT)
+
+    TEST_FAIL_IF(getEntryCount_ctbl(ages) != PEOPLE_COUNT)
+    TEST_FAIL_IF(getEntryCount_ctbl(scores) != PEOPLE_COUNT * EXAM_COUNT - 1)
+
+    TEST_FAIL_IF(get_ctbl(ages, people, "Alice", 5) == NULL)
+    TEST_FAIL_IF(get_ctbl(scores, people, "Luke", 4) != NULL)
+    TEST_FAIL_IF(getExact_ctbl(scores, people, "Wendy", 5, 122) == NULL)
+    TEST_FAIL_IF(getExact_ctbl(ages, people, "Alice", 5, 1) != NULL)
+
+    TEST_PASS
+
+END_TEST_CTBL:
+    DEBUG_ASSERT_NDEBUG_EXECUTE(flush_ctbl(ages))
+    DEBUG_ASSERT_NDEBUG_EXECUTE(flush_ctbl(scores))
+    DEBUG_ASSERT_NDEBUG_EXECUTE(free_ctbl(ages))
+    DEBUG_ASSERT_NDEBUG_EXECUTE(free_ctbl(scores))
+    DEBUG_ASSERT_NDEBUG_EXECUTE(free_chunk(people))
+
+    #undef EXAM_COUNT
+    #undef PEOPLE_COUNT
+}
+#undef ALICE
+#undef HARRY
+#undef LENNY
+#undef WENDY
+
+static void test_gmtx(void) {
+    TEST_PASS
+}
+
+static void test_map(void) {
+    TEST_PASS
+}
+
+static void test_reallocate(void) {
+    #define OLD_SIZE 1024
+    #define NEW_SIZE 131072
+
+    char* buffer = malloc(OLD_SIZE);
+    DEBUG_ERROR_IF(buffer == NULL)
+
+    char* const new_buffer =
+        reallocate((void**)(&buffer), OLD_SIZE, NEW_SIZE, 1);
+
+    DEBUG_ERROR_IF(new_buffer == NULL)
+
+    TEST_FAIL_IF(new_buffer != buffer)
+
+    TEST_PASS
+
+    free(buffer);
+    #undef OLD_SIZE
+    #undef NEW_SIZE
+}
+
+static void test_reallocate_recalloc(void) {
+    #define OLD_SIZE 1024
+    #define NEW_SIZE 131072
+
+    char* buffer = calloc(1024, 1);
+    DEBUG_ERROR_IF(buffer == NULL)
+
+    char* const new_buffer =
+        recalloc((void**)(&buffer), OLD_SIZE, NEW_SIZE, 1);
+
+    DEBUG_ERROR_IF(new_buffer == NULL)
+
+    TEST_FAIL_IF(new_buffer != buffer)
+    for (unsigned i = 0; i < NEW_SIZE; i++)
+        TEST_FAIL_IF(new_buffer[i] != '\0')
+
+    TEST_PASS
+
+    free(buffer);
+    #undef OLD_SIZE
+    #undef NEW_SIZE
+}
+
+static void test_streq_mem_eq_n(void) {
+    static char const* str[] = { "abc", "", "bca", "cab", "abc", "?" };
+    static unsigned const len[] = { 3, 0, 3, 3, 3, 1 };
+
+    #define STRING_COUNT (sizeof(str) / sizeof(char*))
+
+    unsigned eq_count = 0;
+    for (unsigned i = 0; i < STRING_COUNT - 1; i++)
+        for (unsigned j = i + 1; j < STRING_COUNT; j++)
+            eq_count += mem_eq_n(str[i], str[j], len[i] + 1);
+
+    TEST_FAIL_IF(eq_count != 1)
+    TEST_PASS
+
+    #undef STRING_COUNT
+}
+
+static void test_streq_str_eq_n(void) {
+    static char const* str[] = { "abc", "", "bca", "cab", "abc", "?" };
+    static unsigned const len[] = { 3, 0, 3, 3, 3, 1 };
+
+    #define STRING_COUNT (sizeof(str) / sizeof(char*))
+
+    unsigned eq_count = 0;
+    for (unsigned i = 0; i < STRING_COUNT - 1; i++)
+        for (unsigned j = i + 1; j < STRING_COUNT; j++)
+            eq_count += str_eq_n(str[i], str[j], len[i]);
+
+    TEST_FAIL_IF(eq_count != 1)
+    TEST_PASS
+
+    #undef STRING_COUNT
+}
+
+static void test_streq_str_eq(void) {
+    static char const* str[] = { "abc", "", "bca", "cab", "abc", "?" };
+
+    #define STRING_COUNT (sizeof(str) / sizeof(char*))
+
+    unsigned eq_count = 0;
+    for (unsigned i = 0; i < STRING_COUNT - 1; i++)
+        for (unsigned j = i + 1; j < STRING_COUNT; j++)
+            eq_count += str_eq(str[i], str[j]);
+
+    TEST_FAIL_IF(eq_count != 1)
+    TEST_PASS
+
+    #undef STRING_COUNT
+}
+
+#define ONIONS  0
+#define SPINACH 1
+static void test_streq_strcmp_as_comparator(void) {
+    static char const* const vegetables[] =
+        { "Broccoli", "Cabbages", "Carrots", "Onions", "Tomatoes" };
+
+    #define VEGETABLE_COUNT (sizeof(vegetables) / sizeof(char*))
+
+    static char const* const searched_key[] =
+        { "Onions", "Spinach" };
+
+    #define SEARCH_COUNT (sizeof(searched_key) / sizeof(char*))
+
+    for (unsigned i = 0; i < SEARCH_COUNT; i++) {
+        char const* const* const match =
+            bsearch(
+                searched_key[i], vegetables,
+                VEGETABLE_COUNT, sizeof(char*),
+                strcmp_as_comparator
+            );
+
+        switch (i) {
+            case ONIONS:
+                TEST_FAIL_IF(match == NULL)
+                break;
+            case SPINACH:
+                TEST_FAIL_IF(match != NULL)
+        }
+    }
+
+    TEST_PASS
+
+    #undef VEGETABLE_COUNT
+    #undef SEARCH_COUNT
+}
+#undef ONIONS
+#undef SPINACH
+
+static void test_timestamp_get(void) {
+    char const* timestamp = get_timestamp();
+
+    TEST_FAIL_IF(strlen(timestamp) != 17)
+    TEST_PASS
+}
+
+static void test_val_areEqual(void) {
+    Value value[] =
+        { VAL_UNSIGNED(0), VAL_UNSIGNED(12), VAL_FLOAT(0.0f), VAL_INT(12) };
+
+    #define VALUE_COUNT (sizeof(value) / sizeof(Value))
+
+    unsigned eq_count = 0;
+    for (unsigned i = 0; i < VALUE_COUNT; i++) {
+        for (unsigned j = 0; j < VALUE_COUNT; j++) {
+            DEBUG_ASSERT(isValid_val(value[j]))
+            eq_count += areEqual_val(value[i], value[j]);
+        }
+    }
+
+    TEST_FAIL_IF(eq_count != 4)
+    TEST_PASS
+
+    #undef VALUE_COUNT
+}
+
 int main(void) {
     puts("");
     DEBUG_EXECUTE(puts("DEBUG_MODE => "__FILE__))
     NDEBUG_EXECUTE(puts("RELEASE_MODE => "__FILE__))
 
-    puts("");
-    puts("test_..._chunk()");
-    puts("================");
-    test_add_chunk();
-    test_addIndex_chunk();
-    test_append_chunk();
-    test_appendIndex_chunk();
-    test_appendSpace_chunk();
-    test_concat_chunk();
-    test_delete_chunk();
-    test_deleteLast_chunk();
-    test_fromStream_chunk();
-    test_strlen_chunk();
-    test_strlenLast_chunk();
-
-    puts("");
-    puts("test_..._chunkset()");
-    puts("================");
+    test_chunk_add();
+    test_chunk_addIndex();
+    test_chunk_append();
+    test_chunk_appendIndex();
+    test_chunk_appendSpace();
+    test_chunk_concat();
+    test_chunk_delete();
+    test_chunk_deleteLast();
+    test_chunk_fromStream();
+    test_chunk_strlen();
+    test_chunk_strlenLast();
     test_cset();
+    test_ctbl();
+    test_gmtx();
+    test_map();
+    test_reallocate();
+    test_reallocate_recalloc();
+    test_streq_mem_eq_n();
+    test_streq_str_eq_n();
+    test_streq_str_eq();
+    test_streq_strcmp_as_comparator();
+    test_timestamp_get();
+    test_val_areEqual();
 
     puts("");
     return 0;

@@ -28,5 +28,5 @@ bool areEqual_val(Value const a, Value const b) {
 }
 
 bool isValid_val(Value const value) {
-    return value.type_code >= VAL_TC_NOT_A_VALUE;
+    return value.type_code < VAL_TC_NOT_A_VALUE;
 }
