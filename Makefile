@@ -1,73 +1,201 @@
+#ARCH=aarch64
 #ARCH=arm64
 #ARCH=x86_64
 ARCH=${shell uname -m}
 
-# win => ?
-# linux => ?
-# macos => Darwin
+#CC=gcc
+CC=clang
+
+#MODE=release
+MODE=debug
+
+#OS=Darwin
+#OS=Linux
+#OS=none
 OS=$(shell uname)
+
+STD=c99
 
 VERSION_PADKIT_CUR=1.0
 VERSION_PADKIT_COMPAT=1.0
 
-CLANG_SILENCED=                         \
+ifeq (${MODE},debug)
+FLAGS=-std=${STD} -g
+else
+FLAGS=-std=${STD} -Ofast -DNDEBUG
+endif
+
+ifeq (${CC},clang)
+SILENCED=                               \
     -Wno-poison-system-directories      \
     -Wno-declaration-after-statement    \
     -Wno-padded -Wno-unused-parameter   \
     -Wno-unsafe-buffer-usage
-
-GCC_SILENCED=                           \
+ARGS=-arch ${ARCH} ${FLAGS} -Weverything ${SILENCED} -Iinclude
+else
+SILENCED=                               \
     -Wno-unused-parameter               \
     -Wno-nullability-completeness
-
-CLANG_ARGS=-arch ${ARCH} -std=c99 -Weverything ${CLANG_SILENCED}
-CLANG=clang ${CLANG_ARGS}
-
-GCC_ARGS=-arch ${ARCH} -std=c99 -Wall -Wextra ${GCC_SILENCED}
-GCC=gcc ${GCC_ARGS}
-
-#CC=${GCC}
-CC=${CLANG}
-
-INCS=-Iinclude
-PADKIT_C=src/padkit/*.c
-TESTS_C=src/tests.c
-
-COVERAGE=--coverage -fprofile-arcs -ftest-coverage
-
-DEBUGFLAGS=-g
-RELEASEFLAGS=-Ofast -DNDEBUG
-
-ifeq (${OS},Darwin)
-LIBFLAGS=-dynamiclib -current_version ${VERSION_PADKIT_CUR} -compatibility_version ${VERSION_PADKIT_COMPAT} -fvisibility="default"
-
-RELEASE_LIB=lib/padkit.${VERSION_PADKIT_CUR}.dylib
-DEBUG_LIB=lib/padkit_debug.${VERSION_PADKIT_CUR}.dylib
-
-TEST_RELEASE_OUT=bin/tests_release.out
-TEST_DEBUG_OUT=bin/tests_debug.out
+ARGS=-arch ${ARCH} ${FLAGS} -Wall -Wextra ${SILENCED} -Iinclude
 endif
 
-default: lib
+COMPILE=${CC} ${ARGS}
 
-debugtests: bin clean padkit_h; ${CC} ${COVERAGE} ${DEBUGFLAGS} ${INCS} ${PADKIT_C} ${TESTS_C} -o ${TEST_DEBUG_OUT}
+ifeq (${OS},Darwin)
+DYNAMIC_LIB_FLAGS=                                      \
+    -dynamiclib -current_version ${VERSION_PADKIT_CUR}  \
+    -compatibility_version ${VERSION_PADKIT_COMPAT}     \
+    -fvisibility="default"
 
-all: clean lib tests documentation
+DYNAMIC_LIB=lib/libpadkit.dylib
+TESTS_OUT=bin/tests.out
+endif
+ifeq (${OS},Linux)
+DYNAMIC_LIB_FLAGS=-shared -fPIC
+DYNAMIC_LIB=lib/libpadkit.so
+TESTS_OUT=bin/tests.out
+endif
+
+default: clean lib/libpadkit.a ${DYNAMIC_LIB}
+
+.PHONY: all clean default objects tests
+
+all: clean ${TESTS_OUT} lib/libpadkit.a ${DYNAMIC_LIB}
 
 bin: ; mkdir bin
 
-clean: ; rm -rf include/padkit.h coverage.info *.gcno *.gcda *.gcov bin/* lib/* html latex
+include/padkit.h: ;                                                         @\
+    echo '/**'                                           > include/padkit.h; \
+    echo ' * @file padkit.h'                            >> include/padkit.h; \
+    echo ' * @brief An automatically generated header.' >> include/padkit.h; \
+    echo ' * @author Yavuz Koroglu'                     >> include/padkit.h; \
+    echo ' */'                                          >> include/padkit.h; \
+    echo '#ifndef PADKIT_H'                             >> include/padkit.h; \
+    echo '    #define PADKIT_H'                         >> include/padkit.h; \
+    echo '    #include "padkit/bliterals.h"'            >> include/padkit.h; \
+    echo '    #include "padkit/chunkset.h"'             >> include/padkit.h; \
+    echo '    #include "padkit/chunktable.h"'           >> include/padkit.h; \
+    echo '    #include "padkit/csv.h"'                  >> include/padkit.h; \
+    echo '    #include "padkit/graphmatrix.h"'          >> include/padkit.h; \
+    echo '    #include "padkit/hash.h"'                 >> include/padkit.h; \
+    echo '    #include "padkit/map.h"'                  >> include/padkit.h; \
+    echo '    #include "padkit/mapping.h"'              >> include/padkit.h; \
+    echo '    #include "padkit/prime.h"'                >> include/padkit.h; \
+    echo '    #include "padkit/reallocate.h"'           >> include/padkit.h; \
+    echo '    #include "padkit/repeat.h"'               >> include/padkit.h; \
+    echo '    #include "padkit/streq.h"'                >> include/padkit.h; \
+    echo '    #include "padkit/timestamp.h"'            >> include/padkit.h; \
+    echo '    #include "padkit/value.h"'                >> include/padkit.h; \
+    echo '#endif'                                       >> include/padkit.h;
 
-documentation: padkit_h; doxygen
+lib: ; mkdir lib
 
-libdebug: padkit_h; ${CC} ${LIBFLAGS} ${DEBUGFLAGS} ${INCS} ${PADKIT_C} -o ${DEBUG_LIB}
+lib/libpadkit.a: lib objects; ar -rcs lib/libpadkit.a obj/padkit/*.o
 
-librelease: padkit_h; ${CC} ${LIBFLAGS} ${RELEASEFLAGS} ${INCS} ${PADKIT_C} -o ${RELEASE_LIB}
+${DYNAMIC_LIB}: lib; ${COMPILE} ${DYNAMIC_LIB_FLAGS} src/padkit/*.c -o ${DYNAMIC_LIB}
 
-lib: libdebug librelease
+obj: ; mkdir obj
 
-padkit_h: ; @ ./generate_padkit_h.sh
+obj/padkit: obj ; mkdir obj/padkit
 
-releasetests: bin clean padkit_h; ${CC} ${COVERAGE} ${RELEASEFLAGS} ${INCS} ${PADKIT_C} ${TESTS_C} -o ${TEST_RELEASE_OUT}
+obj/padkit/chunk.o: obj/padkit          \
+    include/padkit/chunk.h              \
+    include/padkit/debug.h              \
+    include/padkit/reallocate.h         \
+    src/padkit/chunk.c                  \
+    ; ${COMPILE} src/padkit/chunk.c -c -o obj/padkit/chunk.o
 
-tests: debugtests releasetests
+obj/padkit/chunkset.o: obj/padkit       \
+    include/padkit/chunk.h              \
+    include/padkit/chunkset.h           \
+    include/padkit/debug.h              \
+    include/padkit/hash.h               \
+    include/padkit/prime.h              \
+    include/padkit/reallocate.h         \
+    include/padkit/streq.h              \
+    src/padkit/chunkset.c               \
+    ; ${COMPILE} src/padkit/chunkset.c -c -o obj/padkit/chunkset.o
+
+obj/padkit/chunktable.o: obj/padkit     \
+    include/padkit/chunk.h              \
+    include/padkit/chunktable.h         \
+    include/padkit/debug.h              \
+    include/padkit/hash.h               \
+    include/padkit/prime.h              \
+    include/padkit/reallocate.h         \
+    include/padkit/streq.h              \
+    src/padkit/chunktable.c             \
+    ; ${COMPILE} src/padkit/chunktable.c -c -o obj/padkit/chunktable.o
+
+obj/padkit/graphmatrix.o: obj/padkit    \
+    include/padkit/bliterals.h          \
+    include/padkit/debug.h              \
+    include/padkit/graphmatrix.h        \
+    src/padkit/graphmatrix.c            \
+    ; ${COMPILE} src/padkit/graphmatrix.c -c -o obj/padkit/graphmatrix.o
+
+obj/padkit/hash.o: obj/padkit           \
+    include/padkit/debug.h              \
+    include/padkit/hash.h               \
+    src/padkit/hash.c                   \
+    ; ${COMPILE} src/padkit/hash.c -c -o obj/padkit/hash.o
+
+obj/padkit/map.o: obj/padkit            \
+    include/padkit/debug.h              \
+    include/padkit/map.h                \
+    include/padkit/mapping.h            \
+    include/padkit/reallocate.h         \
+    include/padkit/value.h              \
+    src/padkit/map.c                    \
+    ; ${COMPILE} src/padkit/map.c -c -o obj/padkit/map.o
+
+obj/padkit/prime.o: obj/padkit          \
+    include/padkit/debug.h              \
+    include/padkit/prime.h              \
+    src/padkit/prime.c                  \
+    ; ${COMPILE} src/padkit/prime.c -c -o obj/padkit/prime.o
+
+obj/padkit/reallocate.o: obj/padkit     \
+    include/padkit/debug.h              \
+    include/padkit/reallocate.h         \
+    src/padkit/reallocate.c             \
+    ; ${COMPILE} src/padkit/reallocate.c -c -o obj/padkit/reallocate.o
+
+obj/padkit/streq.o: obj/padkit          \
+    include/padkit/debug.h              \
+    include/padkit/streq.h              \
+    src/padkit/streq.c                  \
+    ; ${COMPILE} src/padkit/streq.c -c -o obj/padkit/streq.o
+
+obj/padkit/timestamp.o: obj/padkit      \
+    include/padkit/timestamp.h          \
+    src/padkit/timestamp.c              \
+    ; ${COMPILE} src/padkit/timestamp.c -c -o obj/padkit/timestamp.o
+
+obj/padkit/value.o: obj/padkit          \
+    include/padkit/value.h              \
+    src/padkit/value.c                  \
+    ; ${COMPILE} src/padkit/value.c -c -o obj/padkit/value.o
+
+${TESTS_OUT}:        \
+    bin              \
+    include/padkit.h \
+    src/tests.c      \
+    ; ${COMPILE} --coverage -fprofile-arcs -ftest-coverage src/padkit/*.c src/tests.c -o ${TESTS_OUT}
+
+clean: ; rm -rf include/padkit.h obj/* bin/* lib/* *.gcno *.gcda *.gcov
+
+objects:                        \
+    obj/padkit/chunk.o          \
+    obj/padkit/chunkset.o       \
+    obj/padkit/chunktable.o     \
+    obj/padkit/graphmatrix.o    \
+    obj/padkit/hash.o           \
+    obj/padkit/map.o            \
+    obj/padkit/prime.o          \
+    obj/padkit/reallocate.o     \
+    obj/padkit/streq.o          \
+    obj/padkit/timestamp.o      \
+    obj/padkit/value.o
+
+tests: ${TESTS_OUT}

@@ -30,6 +30,7 @@ include/padkit.h
 
 # Binaries
 bin/**
+obj/**
 lib/**
 
 # Doxyfiles
