@@ -26,8 +26,8 @@ CLANG=clang ${CLANG_ARGS}
 GCC_ARGS=-arch ${ARCH} -std=c99 -Wall -Wextra ${GCC_SILENCED}
 GCC=gcc ${GCC_ARGS}
 
-CC=${GCC}
-#CC=${CLANG}
+#CC=${GCC}
+CC=${CLANG}
 
 INCS=-Iinclude
 PADKIT_C=src/padkit/*.c

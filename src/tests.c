@@ -3,7 +3,6 @@
  * @brief Tests the padkit library.
  * @author Yavuz Koroglu
  */
-#include <inttypes.h>
 #include "padkit.h"
 
 #define TEST_FAIL_MESSAGE(trigger) \
