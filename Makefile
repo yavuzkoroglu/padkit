@@ -1,5 +1,5 @@
-CC=gcc
-#CC=clang
+#CC=gcc
+CC=clang
 
 #MODE=release
 MODE=debug
