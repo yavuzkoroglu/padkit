@@ -10,7 +10,7 @@ OS=$(shell uname)
 
 STD=c99
 
-VERSION_PADKIT_CUR=1.1
+VERSION_PADKIT_CUR=1.1beta
 VERSION_PADKIT_COMPAT=1.0
 
 ifeq (${OS},Darwin)

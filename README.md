@@ -11,7 +11,7 @@ The above steps should produce
 1. The libraries in `lib/` and
 2. The automatically generated headers in `include/`.
 
-## Tested Environments
+## Tested Environments (v1.1beta)
 
 |  # |                  OS |                   `uname -sm` |     Compiler |
 |---:|--------------------:|------------------------------:|-------------:|
@@ -25,3 +25,8 @@ The above steps should produce
 |  8 |  Ubuntu 22.04.3 LTS |                  Linux x86_64 |   gcc 11.4.0 |
 |  9 | Windows 10 Pro 22H2 | MINGW64\_NT-10.0-19045 x86_64 | clang 11.0.0 |
 | 10 | Windows 10 Pro 22H2 | MINGW64\_NT-10.0-19045 x86_64 |   gcc 13.1.0 |
+
+## Changes v1.0 -> v1.1beta
+
+* Improved `Makefile`.
+* Slight code corrections in `src/padkit/hash.c` and `src/padkit/timestamp.c`
