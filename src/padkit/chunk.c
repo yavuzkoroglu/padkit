@@ -426,14 +426,14 @@ size_t splitLast_chunk(Chunk* const chunk, char const* delimeters) {
     for (
         str_end[0] = '\0';
         str_end > str_start && (
-            isspace(str_end[-1]) || str_end[-1] == '\0' || strchr(delimeters, str_end[-1])
+            isspace((unsigned char)str_end[-1]) || str_end[-1] == '\0' || strchr(delimeters, str_end[-1])
         );
         chunk->start[--chunk->len] = '\0', str_end--
     );
 
     /* Trim from the start */
     for (;
-        isspace(str_start[0]) || str_start[0] == '\0' || strchr(delimeters, str_start[0]);
+        isspace((unsigned char)str_start[0]) || str_start[0] == '\0' || strchr(delimeters, str_start[0]);
         chunk->stringOffsets[str_id]++, *(str_start++) = '\0'
     );
 
