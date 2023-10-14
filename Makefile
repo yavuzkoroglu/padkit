@@ -1,8 +1,3 @@
-#ARCH=aarch64
-#ARCH=arm64
-#ARCH=x86_64
-ARCH=${shell uname -m}
-
 #CC=gcc
 CC=clang
 
@@ -18,6 +13,13 @@ STD=c99
 VERSION_PADKIT_CUR=1.0
 VERSION_PADKIT_COMPAT=1.0
 
+ifeq (${OS},Darwin)
+ARCH=$(shell uname -m)
+ARCH_ARGS=-arch ${ARCH}
+else
+ARCH_ARGS=
+endif
+
 ifeq (${MODE},debug)
 FLAGS=-std=${STD} -g
 else
@@ -31,12 +33,12 @@ SILENCED=                               \
     -Wno-padded -Wno-unused-parameter   \
     -Wno-unknown-warning-option         \
     -Wno-unsafe-buffer-usage
-ARGS=-arch ${ARCH} ${FLAGS} -Weverything ${SILENCED} -Iinclude
+ARGS=${ARCH_ARGS} ${FLAGS} -Weverything ${SILENCED} -Iinclude
 else
 SILENCED=                               \
     -Wno-unused-parameter               \
     -Wno-nullability-completeness
-ARGS=-arch ${ARCH} ${FLAGS} -Wall -Wextra ${SILENCED} -Iinclude
+ARGS=${ARCH_ARGS} ${FLAGS} -Wall -Wextra ${SILENCED} -Iinclude
 endif
 
 COMPILE=${CC} ${ARGS}
