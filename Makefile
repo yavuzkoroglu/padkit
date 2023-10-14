@@ -37,6 +37,7 @@ ARGS=${ARCH_ARGS} ${FLAGS} -Weverything ${SILENCED} -Iinclude
 else
 SILENCED=                               \
     -Wno-unused-parameter               \
+    -Wno-old-style-declaration          \
     -Wno-nullability-completeness
 ARGS=${ARCH_ARGS} ${FLAGS} -Wall -Wextra ${SILENCED} -Iinclude
 endif
