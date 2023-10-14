@@ -1,5 +1,5 @@
-#CC=gcc
-CC=clang
+CC=gcc
+#CC=clang
 
 #MODE=release
 MODE=debug
@@ -38,6 +38,7 @@ else
 SILENCED=                               \
     -Wno-unused-parameter               \
     -Wno-old-style-declaration          \
+    -Wno-unknown-warning-option         \
     -Wno-nullability-completeness
 ARGS=${ARCH_ARGS} ${FLAGS} -Wall -Wextra ${SILENCED} -Iinclude
 endif
