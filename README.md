@@ -1,9 +1,5 @@
 # PADKIT: Portable App. Dev. KIT for C 
 
-## How to Use
-
-You may download a suitable prebuilt release or build the source code from scratch.
-
 ## How to Build
 
 1. `git clone https://github.com/yavuzkoroglu/padkit.git`
