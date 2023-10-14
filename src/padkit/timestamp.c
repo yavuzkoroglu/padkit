@@ -8,13 +8,14 @@
 #include "padkit/timestamp.h"
 
 char const* get_timestamp(void) {
-    static char timebuffer[18];
+    static char ts[18];
     time_t const curtime = time(NULL);
+    struct tm* ltm       = localtime(&curtime);
     #ifndef NDEBUG
-        if (strftime(timebuffer, sizeof(timebuffer), "%x %X", localtime(&curtime)) != 17)
+        if (strftime(ts, sizeof(ts), "%x %X", ltm) != sizeof(ts) - 1)
             return NULL;
     #else
-        strftime(timebuffer, sizeof(timebuffer), "%x %X", localtime(&curtime));
+        strftime(ts, sizeof(ts), "%x %X", ltm);
     #endif
-    return timebuffer;
+    return ts;
 }

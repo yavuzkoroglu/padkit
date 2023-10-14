@@ -10,7 +10,7 @@ OS=$(shell uname)
 
 STD=c99
 
-VERSION_PADKIT_CUR=1.0
+VERSION_PADKIT_CUR=1.1
 VERSION_PADKIT_COMPAT=1.0
 
 ifeq (${OS},Darwin)
@@ -65,11 +65,11 @@ TESTS_OUT=bin/tests.exe
 endif
 endif
 
-default: clean lib/libpadkit.a ${DYNAMIC_LIB}
+default: libs
 
-.PHONY: all clean default objects tests
+.PHONY: all clean default libs objects tests
 
-all: clean ${TESTS_OUT} lib/libpadkit.a ${DYNAMIC_LIB}
+all: clean libs tests
 
 bin: ; mkdir bin
 
@@ -101,7 +101,10 @@ lib: ; mkdir lib
 
 lib/libpadkit.a: lib objects; ar -rcs lib/libpadkit.a obj/padkit/*.o
 
-${DYNAMIC_LIB}: lib; ${COMPILE} ${DYNAMIC_LIB_FLAGS} src/padkit/*.c -o ${DYNAMIC_LIB}
+libs: clean lib/libpadkit.a ${DYNAMIC_LIB}
+
+${DYNAMIC_LIB}: lib src/padkit/*.c \
+    ; ${COMPILE} ${DYNAMIC_LIB_FLAGS} src/padkit/*.c -o ${DYNAMIC_LIB}
 
 obj: ; mkdir obj
 
@@ -189,6 +192,7 @@ obj/padkit/value.o: obj/padkit          \
 ${TESTS_OUT}:        \
     bin              \
     include/padkit.h \
+    src/padkit/*.c   \
     src/tests.c      \
     ; ${COMPILE} --coverage -fprofile-arcs -ftest-coverage src/padkit/*.c src/tests.c -o ${TESTS_OUT}
 

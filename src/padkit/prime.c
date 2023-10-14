@@ -11,7 +11,7 @@ bool isPrime(uint32_t const odd_x) {
     DEBUG_ERROR_IF(odd_x == 1)
 
     /* Find the largest n <= sqrt(odd_x). */
-    register uint32_t n = odd_x;
+    uint32_t register n = odd_x;
     while (n > odd_x / n) n >>= 1;
     while (n * n < odd_x) n++;
 
