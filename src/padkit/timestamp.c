@@ -10,7 +10,7 @@
 char const* get_timestamp(void) {
     static char ts[18];
     time_t const curtime = time(NULL);
-    struct tm* ltm       = localtime(&curtime);
+    struct tm* const ltm = localtime(&curtime);
     #ifndef NDEBUG
         if (strftime(ts, sizeof(ts), "%x %X", ltm) != sizeof(ts) - 1)
             return NULL;
