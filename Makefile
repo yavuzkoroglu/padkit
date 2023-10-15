@@ -1,5 +1,17 @@
 include compile.mk
-include dynamiclib.mk
+
+ifeq (${OS},Darwin)
+DYNAMIC_LIB=lib/libpadkit.dylib
+TESTS_OUT=bin/tests.out
+else
+ifeq (${OS},Linux)
+DYNAMIC_LIB=lib/libpadkit.so
+TESTS_OUT=bin/tests.out
+else
+DYNAMIC_LIB=lib/libpadkit.dll
+TESTS_OUT=bin/tests.exe
+endif
+endif
 
 default: libs
 

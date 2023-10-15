@@ -1,13 +1,26 @@
-include cc.mk
-include os.mk
-include mode.mk
-include std.mk
+#CC=gcc
+CC=clang
+
+#OS=Darwin
+#OS=Linux
+OS=$(shell uname)
+
+#MODE=release
+MODE=debug
+
+STD=c99
 
 ifeq (${OS},Darwin)
+DYNAMIC_LIB_FLAGS=-dynamiclib -fvisibility="default"
 ARCH=$(shell uname -m)
 ARCH_ARGS=-arch ${ARCH}
 else
 ARCH_ARGS=
+ifeq (${OS},Linux)
+DYNAMIC_LIB_FLAGS=-shared -fPIC
+else
+DYNAMIC_LIB_FLAGS=-shared
+endif
 endif
 
 ifeq (${MODE},debug)
