@@ -35,7 +35,7 @@ include/padkit.h: ;                                                         @\
 
 lib: ; mkdir lib
 
-lib/libpadkit.a: lib objects; ar -rcs lib/libpadkit.a obj/padkit/*.o
+lib/libpadkit.a: lib objects include/padkit.h; ar -rcs lib/libpadkit.a obj/padkit/*.o
 
 libs: clean lib/libpadkit.a ${DYNAMIC_LIB}
 
