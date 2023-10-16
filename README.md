@@ -30,3 +30,4 @@ The above steps should produce
 
 * Improved `Makefile`.
 * Slight code corrections in `src/padkit/hash.c` and `src/padkit/timestamp.c`
+* Removed `extern Chunk strings[1];` and `void free_strings(void)` from `Chunk`

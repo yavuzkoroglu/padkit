@@ -5,6 +5,8 @@
  */
 #include "padkit.h"
 
+static Chunk strings[1];
+
 #define TEST_FAIL_MESSAGE(trigger) \
     printf("FAIL => %s():%d, Trigger => "#trigger"\n", __func__, __LINE__)
 
@@ -34,7 +36,8 @@ static void test_chunk_add(void) {
     TEST_FAIL_IF(strings->nStrings != 3)
     TEST_PASS
 
-    free_strings();
+    DEBUG_ABORT_IF(!free_chunk(strings))
+    NDEBUG_EXECUTE(free_chunk(strings))
 }
 
 static void test_chunk_addIndex(void) {
@@ -53,7 +56,8 @@ static void test_chunk_addIndex(void) {
     TEST_FAIL_IF(!str_eq(getFirst_chunk(strings), getLast_chunk(strings)))
     TEST_PASS
 
-    free_strings();
+    DEBUG_ABORT_IF(!free_chunk(strings))
+    NDEBUG_EXECUTE(free_chunk(strings))
 }
 
 static void test_chunk_append(void) {
@@ -75,7 +79,8 @@ static void test_chunk_append(void) {
     TEST_FAIL_IF(!STR_EQ_CONST(strings->start, "abcdef"))
     TEST_PASS
 
-    free_strings();
+    DEBUG_ABORT_IF(!free_chunk(strings))
+    NDEBUG_EXECUTE(free_chunk(strings))
 }
 
 static void test_chunk_appendIndex(void) {
@@ -94,7 +99,8 @@ static void test_chunk_appendIndex(void) {
     TEST_FAIL_IF(!STR_EQ_CONST(strings->start, "abcabc"))
     TEST_PASS
 
-    free_strings();
+    DEBUG_ABORT_IF(!free_chunk(strings))
+    NDEBUG_EXECUTE(free_chunk(strings))
 }
 
 static void test_chunk_appendSpace(void) {
@@ -109,7 +115,8 @@ static void test_chunk_appendSpace(void) {
     TEST_FAIL_IF(strings->nStrings != 0)
     TEST_PASS
 
-    free_strings();
+    DEBUG_ABORT_IF(!free_chunk(strings))
+    NDEBUG_EXECUTE(free_chunk(strings))
 }
 
 static void test_chunk_concat(void) {
@@ -141,7 +148,9 @@ static void test_chunk_concat(void) {
 
     for (int i = 0; i < 2; i++)
         DEBUG_ASSERT_NDEBUG_EXECUTE(free_chunk(chunk[i]))
-    free_strings();
+
+    DEBUG_ABORT_IF(!free_chunk(strings))
+    NDEBUG_EXECUTE(free_chunk(strings))
 }
 
 static void test_chunk_delete(void) {
@@ -165,7 +174,8 @@ static void test_chunk_delete(void) {
     TEST_FAIL_IF(strings->nStrings != 1)
     TEST_PASS
 
-    free_strings();
+    DEBUG_ABORT_IF(!free_chunk(strings))
+    NDEBUG_EXECUTE(free_chunk(strings))
 }
 
 static void test_chunk_deleteLast(void) {
@@ -195,7 +205,8 @@ static void test_chunk_deleteLast(void) {
 
     TEST_PASS
 
-    free_strings();
+    DEBUG_ABORT_IF(!free_chunk(strings))
+    NDEBUG_EXECUTE(free_chunk(strings))
 }
 
 static void test_chunk_fromStream(void) {
@@ -216,7 +227,8 @@ static void test_chunk_fromStream(void) {
     DEBUG_ERROR_IF(fclose(stream) == EOF)
     NDEBUG_EXECUTE(fclose(stream))
 
-    free_strings();
+    DEBUG_ABORT_IF(!free_chunk(strings))
+    NDEBUG_EXECUTE(free_chunk(strings))
 }
 
 static void test_chunk_strlen(void) {
@@ -237,7 +249,8 @@ static void test_chunk_strlen(void) {
     TEST_FAIL_IF(strlen_chunk(strings, 2) != 3)
     TEST_PASS
 
-    free_strings();
+    DEBUG_ABORT_IF(!free_chunk(strings))
+    NDEBUG_EXECUTE(free_chunk(strings))
 }
 
 static void test_chunk_strlenLast(void) {
@@ -257,7 +270,8 @@ static void test_chunk_strlenLast(void) {
     TEST_FAIL_IF(strlenLast_chunk(strings) != 0)
     TEST_PASS
 
-    free_strings();
+    DEBUG_ABORT_IF(!free_chunk(strings))
+    NDEBUG_EXECUTE(free_chunk(strings))
 }
 
 static void test_cset(void) {

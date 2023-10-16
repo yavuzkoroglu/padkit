@@ -9,8 +9,6 @@
 #include "padkit/chunk.h"
 #include "padkit/reallocate.h"
 
-Chunk strings[1] = { NOT_A_CHUNK };
-
 uint32_t add_chunk(Chunk* const chunk, char const* const str, uint64_t const n) {
     #ifndef NDEBUG
         if (!isValid_chunk(chunk)) return 0xFFFFFFFF;
@@ -312,14 +310,6 @@ free_chunk(Chunk* const chunk) {
     free(chunk->stringOffsets);
     #ifndef NDEBUG
         return 1;
-    #endif
-}
-
-void free_strings(void) {
-    #ifndef NDEBUG
-        if (!free_chunk(strings)) abort();
-    #else
-        free_chunk(strings);
     #endif
 }
 

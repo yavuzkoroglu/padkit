@@ -195,11 +195,6 @@
     free_chunk(Chunk* const chunk);
 
     /**
-     * @brief Frees the extern Chunk strings.
-     */
-    void free_strings(void);
-
-    /**
      * @brief Reads a whole stream and adds it as strings to a Chunk.
      * @param chunk The Chunk.
      * @param stream The input stream.
@@ -263,6 +258,4 @@
      * @param chunk The Chunk.
      */
     uint64_t strlenLast_chunk(Chunk const* const chunk);
-
-    extern Chunk strings[1];
 #endif
