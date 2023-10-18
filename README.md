@@ -13,21 +13,23 @@ The above steps should produce
 
 ## Tested Environments (v1.1beta)
 
-|  # |                  OS |                   `uname -sm` |     Compiler |
-|---:|--------------------:|------------------------------:|-------------:|
-|  1 |   macOS Sonoma 14.0 |                  Darwin arm64 | clang 17.0.2 |
-|  2 |   macOS Sonoma 14.0 |                  Darwin arm64 |   gcc 13.2.0 |
-|  3 |   macOS Sonoma 14.0 |                 Darwin x86_64 | clang 17.0.2 |
-|  4 |   macOS Sonoma 14.0 |                 Darwin x86_64 |   gcc 13.2.0 |
-|  5 |  Ubuntu 22.04.3 LTS |                 Linux aarch64 | clang 14.0.0 |
-|  6 |  Ubuntu 22.04.3 LTS |                 Linux aarch64 |   gcc 11.4.0 |
-|  7 |  Ubuntu 22.04.3 LTS |                  Linux x86_64 | clang 14.0.0 |
-|  8 |  Ubuntu 22.04.3 LTS |                  Linux x86_64 |   gcc 11.4.0 |
-|  9 | Windows 10 Pro 22H2 | MINGW64\_NT-10.0-19045 x86_64 | clang 11.0.0 |
-| 10 | Windows 10 Pro 22H2 | MINGW64\_NT-10.0-19045 x86_64 |   gcc 13.1.0 |
+| Date (ISO 8601) |                  OS |                   `uname -sm` |     Compiler |
+|----------------:|--------------------:|------------------------------:|-------------:|
+|      2023-10-18 |   macOS Sonoma 14.0 |                  Darwin arm64 | clang 17.0.3 |
+|      2023-10-14 |   macOS Sonoma 14.0 |                  Darwin arm64 | clang 17.0.2 |
+|      2023-10-14 |   macOS Sonoma 14.0 |                  Darwin arm64 |   gcc 13.2.0 |
+|      2023-10-14 |   macOS Sonoma 14.0 |                 Darwin x86_64 | clang 17.0.2 |
+|      2023-10-14 |   macOS Sonoma 14.0 |                 Darwin x86_64 |   gcc 13.2.0 |
+|      2023-10-14 |  Ubuntu 22.04.3 LTS |                 Linux aarch64 | clang 14.0.0 |
+|      2023-10-14 |  Ubuntu 22.04.3 LTS |                 Linux aarch64 |   gcc 11.4.0 |
+|      2023-10-14 |  Ubuntu 22.04.3 LTS |                  Linux x86_64 | clang 14.0.0 |
+|      2023-10-14 |  Ubuntu 22.04.3 LTS |                  Linux x86_64 |   gcc 11.4.0 |
+|      2023-10-14 | Windows 10 Pro 22H2 | MINGW64\_NT-10.0-19045 x86_64 | clang 11.0.0 |
+|      2023-10-14 | Windows 10 Pro 22H2 | MINGW64\_NT-10.0-19045 x86_64 |   gcc 13.1.0 |
 
 ## Changes v1.0 -> v1.1beta
 
-* Improved `Makefile`.
-* Slight code corrections in `src/padkit/hash.c` and `src/padkit/timestamp.c`
-* Removed `extern Chunk strings[1];` and `void free_strings(void)` from `Chunk`
+* External scripts now can import the `${COMPILE}` command in the `Makefile`.
+* In `src/padkit/timestamp.c`, timestamps now conform to ISO 8601.
+* Removed `extern Chunk strings[1];` and `void free_strings(void)` from `Chunk`.
+* Slight code corrections in `src/padkit/hash.c`.
