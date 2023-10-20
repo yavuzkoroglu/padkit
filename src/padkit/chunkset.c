@@ -115,7 +115,7 @@ uint32_t addKey_cset(ChunkSet* const set, char const* const key, uint64_t const 
     unsigned const row_id = hash_str(key, n) % set->nRows;
 
     /* Initialize the row if necessary. */
-    if (set->rowSize[row_id] == 0) {
+    if (set->table[row_id] == NULL) {
         uint32_t* const row_ptr = malloc(
             CHUNK_SET_INITIAL_ROW_CAP * sizeof(uint32_t)
         );

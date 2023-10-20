@@ -738,7 +738,7 @@ static void test_streq_strcmp_as_comparator(void) {
 static void test_timestamp_get(void) {
     char const* timestamp = get_timestamp();
 
-    TEST_FAIL_IF(strlen(timestamp) != 17)
+    TEST_FAIL_IF(strlen(timestamp) != 19)
     TEST_PASS
 }
 
