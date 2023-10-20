@@ -33,7 +33,7 @@ bool str_eq(char const* a, char const* b) {
 bool str_eq_n(char const* a, char const* b, size_t n) {
     DEBUG_ERROR_IF(a == NULL)
     DEBUG_ERROR_IF(b == NULL)
-    for (; *a == *b; a++, b++, n--) if (n == 0 || *a == '\0') return 1;
+    for (n--; *a == *b; a++, b++, n--) if (n == 0 || *a == '\0') return 1;
     return 0;
 }
 

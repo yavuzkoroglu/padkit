@@ -665,8 +665,8 @@ static void test_streq_mem_eq_n(void) {
 }
 
 static void test_streq_str_eq_n(void) {
-    static char const* str[] = { "abc", "", "bca", "cab", "abc", "?" };
-    static unsigned const len[] = { 3, 0, 3, 3, 3, 1 };
+    static char const* str[] = { "abc", "..", "bca", "cab", "abc", "..\n" };
+    static unsigned const len[] = { 3, 2, 3, 3, 3, 3 };
 
     #define STRING_COUNT (sizeof(str) / sizeof(char*))
 
@@ -675,7 +675,7 @@ static void test_streq_str_eq_n(void) {
         for (unsigned j = i + 1; j < STRING_COUNT; j++)
             eq_count += str_eq_n(str[i], str[j], len[i]);
 
-    TEST_FAIL_IF(eq_count != 1)
+    TEST_FAIL_IF(eq_count != 2)
     TEST_PASS
 
     #undef STRING_COUNT
