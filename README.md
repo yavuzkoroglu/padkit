@@ -32,4 +32,5 @@ The above steps should produce
 * External scripts now can import the `${COMPILE}` command in the `Makefile`.
 * In `src/padkit/timestamp.c`, timestamps now conform to ISO 8601.
 * Removed `extern Chunk strings[1];` and `void free_strings(void)` from `Chunk`.
+* Solved a bug in `src/padkit/streq.c::str_eq_n()`.
 * Slight code corrections in `src/padkit/hash.c`.
