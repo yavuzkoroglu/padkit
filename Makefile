@@ -17,9 +17,21 @@ default: libs
 
 .PHONY: all clean default libs objects tests
 
+${DYNAMIC_LIB}: lib src/padkit/*.c \
+    ; ${COMPILE} ${DYNAMIC_LIB_FLAGS} src/padkit/*.c -o ${DYNAMIC_LIB}
+
+${TESTS_OUT}:        \
+    bin              \
+    include/padkit.h \
+    src/padkit/*.c   \
+    src/tests.c      \
+    ; ${COMPILE} --coverage -fprofile-arcs -ftest-coverage src/padkit/*.c src/tests.c -o ${TESTS_OUT}
+
 all: clean libs tests
 
 bin: ; mkdir bin
+
+clean: ; rm -rf include/padkit.h obj/* bin/* lib/* *.gcno *.gcda *.gcov
 
 include/padkit.h: ;                                                         @\
     echo '/**'                                           > include/padkit.h; \
@@ -50,9 +62,6 @@ lib: ; mkdir lib
 lib/libpadkit.a: lib objects; ar -rcs lib/libpadkit.a obj/padkit/*.o
 
 libs: clean lib/libpadkit.a ${DYNAMIC_LIB}
-
-${DYNAMIC_LIB}: lib src/padkit/*.c \
-    ; ${COMPILE} ${DYNAMIC_LIB_FLAGS} src/padkit/*.c -o ${DYNAMIC_LIB}
 
 obj: ; mkdir obj
 
@@ -136,15 +145,6 @@ obj/padkit/value.o: obj/padkit          \
     include/padkit/value.h              \
     src/padkit/value.c                  \
     ; ${COMPILE} src/padkit/value.c -c -o obj/padkit/value.o
-
-${TESTS_OUT}:        \
-    bin              \
-    include/padkit.h \
-    src/padkit/*.c   \
-    src/tests.c      \
-    ; ${COMPILE} --coverage -fprofile-arcs -ftest-coverage src/padkit/*.c src/tests.c -o ${TESTS_OUT}
-
-clean: ; rm -rf include/padkit.h obj/* bin/* lib/* *.gcno *.gcda *.gcov
 
 objects:                        \
     obj/padkit/chunk.o          \
