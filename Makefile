@@ -15,7 +15,7 @@ endif
 
 default: libs
 
-.PHONY: all clean default libs objects tests
+.PHONY: all clean default libs objects tests version
 
 ${DYNAMIC_LIB}: lib src/padkit/*.c \
     ; ${COMPILE} ${DYNAMIC_LIB_FLAGS} src/padkit/*.c -o ${DYNAMIC_LIB}
@@ -160,3 +160,5 @@ objects:                        \
     obj/padkit/value.o
 
 tests: ${TESTS_OUT}
+
+version: ; @echo ${PADKIT_VERSION}

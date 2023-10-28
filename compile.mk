@@ -8,6 +8,8 @@ OS=$(shell uname)
 #MODE=release
 MODE=debug
 
+PADKIT_VERSION=1.1beta
+
 STD=c99
 
 ifeq (${OS},Darwin)
