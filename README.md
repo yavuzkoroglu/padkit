@@ -15,6 +15,7 @@ The above steps should produce
 
 | Date (ISO 8601) |                  OS |                   `uname -sm` |     Compiler |
 |----------------:|--------------------:|------------------------------:|-------------:|
+|      2023-11-05 |   macOS Sonoma 14.0 |                  Darwin arm64 | clang 17.0.4 |
 |      2023-10-18 |   macOS Sonoma 14.0 |                  Darwin arm64 | clang 17.0.3 |
 |      2023-10-14 |   macOS Sonoma 14.0 |                  Darwin arm64 | clang 17.0.2 |
 |      2023-10-14 |   macOS Sonoma 14.0 |                  Darwin arm64 |   gcc 13.2.0 |
@@ -29,6 +30,7 @@ The above steps should produce
 
 ## Changes v1.0 -> v1.1beta
 
+* Added `include/padkit/jsonparser.h` and `src/padkit/jsonparser.c`.
 * External scripts now can import the `${COMPILE}` command in the `Makefile`.
 * In `src/padkit/timestamp.c`, timestamps now conform to ISO 8601.
 * Removed `extern Chunk strings[1];` and `void free_strings(void)` from `Chunk`.
