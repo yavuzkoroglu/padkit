@@ -47,6 +47,7 @@ include/padkit.h: ;                                                         @\
     echo '    #include "padkit/csv.h"'                  >> include/padkit.h; \
     echo '    #include "padkit/graphmatrix.h"'          >> include/padkit.h; \
     echo '    #include "padkit/hash.h"'                 >> include/padkit.h; \
+    echo '    #include "padkit/jsonparser.h"'           >> include/padkit.h; \
     echo '    #include "padkit/map.h"'                  >> include/padkit.h; \
     echo '    #include "padkit/mapping.h"'              >> include/padkit.h; \
     echo '    #include "padkit/prime.h"'                >> include/padkit.h; \
