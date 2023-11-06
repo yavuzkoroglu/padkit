@@ -21,7 +21,8 @@
     #define JSON_PARSER_MEMORY_ERROR        1
     #define JSON_PARSER_STACK_ERROR         2
     #define JSON_PARSER_STREAM_ERROR        3
-    #define JSON_PARSER_SYNTAX_ERROR        4
+    #define JSON_PARSER_STRING_ERROR        4
+    #define JSON_PARSER_SYNTAX_ERROR        5
 
     #define NOT_A_JSON_PARSER ((JSONParser){                        \
         NULL, 0, 0, NULL, 0, NULL, '\0', JSON_PARSER_OK,            \
@@ -40,8 +41,8 @@
         size_t                  stack_size;
         unsigned char*          stack;
         size_t                  str_cap;
+        size_t                  str_len;
         char*                   str;
-        int                     ch;
         int                     errorCode;
         JSONParserVoidEvent*    atArrayEnd;
         JSONParserVoidEvent*    atArrayStart;
