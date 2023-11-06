@@ -35,6 +35,10 @@
 
 typedef void(*ParseFunction)(JSONParser* const);
 
+void emptyNumberEvent_jsonp(double const number) {}
+void emptyStringEvent_jsonp(char const* const string, size_t const len) {}
+void emptyVoidEvent_jsonp(void) {}
+
 static void err_jp(JSONParser* const jp);
 static void s00_jp(JSONParser* const jp);
 static void s01_jp(JSONParser* const jp);
@@ -919,7 +923,7 @@ bool isValid_jsonp(JSONParser const* const jsonParser) {
     return 1;
 }
 
-int parseStream_jsonp(JSONParser* const jsonParser) {
+long parseStream_jsonp(JSONParser* const jsonParser) {
     #ifndef NDEBUG
         if (!isValid_jsonp(jsonParser))
             return JSON_PARSER_INVALID;

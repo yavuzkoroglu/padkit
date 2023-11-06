@@ -35,6 +35,10 @@
     typedef void(*JSONParserStringEvent)(char const* const string, size_t const len);
     typedef void(*JSONParserVoidEvent)(void);
 
+    void emptyNumberEvent_jsonp(double const number);
+    void emptyStringEvent_jsonp(char const* const string, size_t const len);
+    void emptyVoidEvent_jsonp(void);
+
     typedef struct JSONParserBody {
         FILE*                   inputStream;
         size_t                  stack_cap;
@@ -43,7 +47,7 @@
         size_t                  str_cap;
         size_t                  str_len;
         char*                   str;
-        int                     errorCode;
+        long                    errorCode;
         JSONParserVoidEvent*    atArrayEnd;
         JSONParserVoidEvent*    atArrayStart;
         JSONParserVoidEvent*    atFalse;
@@ -88,5 +92,5 @@
 
     bool isValid_jsonp(JSONParser const* const jsonParser);
 
-    int parseStream_jsonp(JSONParser* const jsonParser);
+    long parseStream_jsonp(JSONParser* const jsonParser);
 #endif
