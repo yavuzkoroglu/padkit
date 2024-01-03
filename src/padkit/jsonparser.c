@@ -855,21 +855,21 @@ void
 construct_jsonp(
     JSONParser* const jsonParser,
     FILE* const inputStream,
-    JSONParserVoidEvent* const eventAtArrayEnd,
-    JSONParserVoidEvent* const eventAtArrayStart,
-    JSONParserVoidEvent* const eventAtFalse,
-    JSONParserVoidEvent* const eventAtNameEnd,
-    JSONParserVoidEvent* const eventAtNameStart,
-    JSONParserVoidEvent* const eventAtNull,
-    JSONParserNumberEvent* const eventAtNumber,
-    JSONParserVoidEvent* const eventAtObjectEnd,
-    JSONParserVoidEvent* const eventAtObjectStart,
-    JSONParserVoidEvent* const eventAtRootEnd,
-    JSONParserVoidEvent* const eventAtRootStart,
-    JSONParserStringEvent* const eventAtString,
-    JSONParserVoidEvent* const eventAtTrue,
-    JSONParserVoidEvent* const eventAtValueEnd,
-    JSONParserVoidEvent* const eventAtValueStart
+    JSONParserVoidEvent eventAtArrayEnd,
+    JSONParserVoidEvent eventAtArrayStart,
+    JSONParserVoidEvent eventAtFalse,
+    JSONParserVoidEvent eventAtNameEnd,
+    JSONParserVoidEvent eventAtNameStart,
+    JSONParserVoidEvent eventAtNull,
+    JSONParserNumberEvent eventAtNumber,
+    JSONParserVoidEvent eventAtObjectEnd,
+    JSONParserVoidEvent eventAtObjectStart,
+    JSONParserVoidEvent eventAtRootEnd,
+    JSONParserVoidEvent eventAtRootStart,
+    JSONParserStringEvent eventAtString,
+    JSONParserVoidEvent eventAtTrue,
+    JSONParserVoidEvent eventAtValueEnd,
+    JSONParserVoidEvent eventAtValueStart
 ) {
     #ifndef NDEBUG
         if (jsonParser == NULL) return 0;
@@ -907,6 +907,22 @@ construct_jsonp(
     jsonParser->atValueEnd    = eventAtValueEnd;
     jsonParser->atValueStart  = eventAtValueStart;
 
+    #ifndef NDEBUG
+        return 1;
+    #endif
+}
+
+#ifndef NDEBUG
+bool
+#else
+void
+#endif
+free_jsonp(JSONParser* const jsonParser) {
+    #ifndef NDEBUG
+        if (!isValid_jsonp(jsonParser)) return 0;
+    #endif
+    free(jsonParser->stack);
+    free(jsonParser->str);
     #ifndef NDEBUG
         return 1;
     #endif

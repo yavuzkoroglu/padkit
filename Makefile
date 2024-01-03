@@ -110,6 +110,11 @@ obj/padkit/hash.o: obj/padkit           \
     src/padkit/hash.c                   \
     ; ${COMPILE} src/padkit/hash.c -c -o obj/padkit/hash.o
 
+obj/padkit/jsonparser.o: obj/padkit     \
+    include/padkit/jsonparser.h         \
+    src/padkit/jsonparser.c             \
+    ; ${COMPILE} src/padkit/jsonparser.c -c -o obj/padkit/jsonparser.o
+
 obj/padkit/map.o: obj/padkit            \
     include/padkit/debug.h              \
     include/padkit/map.h                \
@@ -153,6 +158,7 @@ objects:                        \
     obj/padkit/chunktable.o     \
     obj/padkit/graphmatrix.o    \
     obj/padkit/hash.o           \
+    obj/padkit/jsonparser.o     \
     obj/padkit/map.o            \
     obj/padkit/prime.o          \
     obj/padkit/reallocate.o     \

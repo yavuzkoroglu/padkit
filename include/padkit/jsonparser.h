@@ -48,22 +48,39 @@
         size_t                  str_len;
         char*                   str;
         long                    errorCode;
-        JSONParserVoidEvent*    atArrayEnd;
-        JSONParserVoidEvent*    atArrayStart;
-        JSONParserVoidEvent*    atFalse;
-        JSONParserVoidEvent*    atNameEnd;
-        JSONParserVoidEvent*    atNameStart;
-        JSONParserVoidEvent*    atNull;
-        JSONParserNumberEvent*  atNumber;
-        JSONParserVoidEvent*    atObjectEnd;
-        JSONParserVoidEvent*    atObjectStart;
-        JSONParserVoidEvent*    atRootEnd;
-        JSONParserVoidEvent*    atRootStart;
-        JSONParserStringEvent*  atString;
-        JSONParserVoidEvent*    atTrue;
-        JSONParserVoidEvent*    atValueEnd;
-        JSONParserVoidEvent*    atValueStart;
+        JSONParserVoidEvent     atArrayEnd;
+        JSONParserVoidEvent     atArrayStart;
+        JSONParserVoidEvent     atFalse;
+        JSONParserVoidEvent     atNameEnd;
+        JSONParserVoidEvent     atNameStart;
+        JSONParserVoidEvent     atNull;
+        JSONParserNumberEvent   atNumber;
+        JSONParserVoidEvent     atObjectEnd;
+        JSONParserVoidEvent     atObjectStart;
+        JSONParserVoidEvent     atRootEnd;
+        JSONParserVoidEvent     atRootStart;
+        JSONParserStringEvent   atString;
+        JSONParserVoidEvent     atTrue;
+        JSONParserVoidEvent     atValueEnd;
+        JSONParserVoidEvent     atValueStart;
     } JSONParser;
+
+    #define JSON_PARSER_DEFAULT_EVENTS  \
+        &emptyVoidEvent_jsonp,          \
+        &emptyVoidEvent_jsonp,          \
+        &emptyVoidEvent_jsonp,          \
+        &emptyVoidEvent_jsonp,          \
+        &emptyVoidEvent_jsonp,          \
+        &emptyVoidEvent_jsonp,          \
+        &emptyNumberEvent_jsonp,        \
+        &emptyVoidEvent_jsonp,          \
+        &emptyVoidEvent_jsonp,          \
+        &emptyVoidEvent_jsonp,          \
+        &emptyVoidEvent_jsonp,          \
+        &emptyStringEvent_jsonp,        \
+        &emptyVoidEvent_jsonp,          \
+        &emptyVoidEvent_jsonp,          \
+        &emptyVoidEvent_jsonp
 
     #ifndef NDEBUG
     bool
@@ -73,22 +90,29 @@
     construct_jsonp(
         JSONParser* const jsonParser,
         FILE* const inputStream,
-        JSONParserVoidEvent* const atArrayEnd,
-        JSONParserVoidEvent* const atArrayStart,
-        JSONParserVoidEvent* const atFalse,
-        JSONParserVoidEvent* const atNameEnd,
-        JSONParserVoidEvent* const atNameStart,
-        JSONParserVoidEvent* const atNull,
-        JSONParserNumberEvent* const atNumber,
-        JSONParserVoidEvent* const atObjectEnd,
-        JSONParserVoidEvent* const atObjectStart,
-        JSONParserVoidEvent* const atRootEnd,
-        JSONParserVoidEvent* const atRootStart,
-        JSONParserStringEvent* const atString,
-        JSONParserVoidEvent* const atTrue,
-        JSONParserVoidEvent* const atValueEnd,
-        JSONParserVoidEvent* const atValueStart
+        JSONParserVoidEvent atArrayEnd,
+        JSONParserVoidEvent atArrayStart,
+        JSONParserVoidEvent atFalse,
+        JSONParserVoidEvent atNameEnd,
+        JSONParserVoidEvent atNameStart,
+        JSONParserVoidEvent atNull,
+        JSONParserNumberEvent atNumber,
+        JSONParserVoidEvent atObjectEnd,
+        JSONParserVoidEvent atObjectStart,
+        JSONParserVoidEvent atRootEnd,
+        JSONParserVoidEvent atRootStart,
+        JSONParserStringEvent atString,
+        JSONParserVoidEvent atTrue,
+        JSONParserVoidEvent atValueEnd,
+        JSONParserVoidEvent atValueStart
     );
+
+    #ifndef NDEBUG
+    bool
+    #else
+    void
+    #endif
+    free_jsonp(JSONParser* const jsonParser);
 
     bool isValid_jsonp(JSONParser const* const jsonParser);
 

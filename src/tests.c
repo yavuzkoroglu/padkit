@@ -481,6 +481,29 @@ static void test_gmtx(void) {
     DEBUG_ASSERT_NDEBUG_EXECUTE(free_gmtx(gmtx))
 }
 
+static unsigned test_jsonp_objCount = 0;
+static void test_jsonp_countObjects(void) {
+    test_jsonp_objCount++;
+}
+static void test_jsonp(void) {
+    JSONParser jp[1];
+    char const* const filename = "test_artifacts/model001.json";
+    FILE* const fp = fopen(filename, "r");
+    TEST_FAIL_IF(fp == NULL)
+
+    DEBUG_ASSERT_NDEBUG_EXECUTE(construct_jsonp(jp, fp, JSON_PARSER_DEFAULT_EVENTS))
+    jp->atObjectStart = &test_jsonp_countObjects;
+
+    parseStream_jsonp(jp);
+
+    TEST_FAIL_IF(test_jsonp_objCount != 9)
+    TEST_PASS
+
+    DEBUG_ASSERT_NDEBUG_EXECUTE(free_jsonp(jp))
+    DEBUG_ASSERT(fclose(fp) == 0)
+    NDEBUG_EXECUTE(fclose(fp))
+}
+
 #define ALISON 0
 #define ARNOLD 1
 #define JAKE   2
@@ -781,6 +804,7 @@ int main(void) {
     test_cset();
     test_ctbl();
     test_gmtx();
+    test_jsonp();
     test_map();
     test_reallocate();
     test_reallocate_recalloc();
