@@ -226,8 +226,10 @@ void
 free_cset(ChunkSet* const set) {
     #ifndef NDEBUG
         if (!isValid_cset(set)) return 0;
+        if (!free_chunk((Chunk*)set)) return 0;
+    #else
+        free_chunk((Chunk*)set);
     #endif
-    free_chunk((Chunk*)set);
     free(set->rowSize);
     free(set->rowCap);
     for (uint32_t** row = set->table + set->nRows; --row >= set->table; free(*row));

@@ -249,7 +249,11 @@ resizeIfNecessary_gmtx(
     }
 
     /* Replace the old GraphMatrix. */
-    free_gmtx(gmtx);
+    #ifndef NDEBUG
+        if (!free_gmtx(gmtx)) return 0;
+    #else
+        free_gmtx(gmtx);
+    #endif
     *gmtx = *new_gmtx;
 
     #ifndef NDEBUG

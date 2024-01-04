@@ -79,7 +79,11 @@ adjust(ChunkTable* const tbl, Chunk const* const chunk) {
         }
     }
 
-    free_ctbl(tbl);
+    #ifndef NDEBUG
+        if (!free_ctbl(tbl)) return 0;
+    #else
+        free_ctbl(tbl);
+    #endif
     *tbl = newTbl;
 
     #ifndef NDEBUG
