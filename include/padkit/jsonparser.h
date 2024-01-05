@@ -31,39 +31,39 @@
         NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL  \
     })
 
-    typedef void(*JSONParserNumberEvent)(double const number);
-    typedef void(*JSONParserStringEvent)(char const* const string, size_t const len);
-    typedef void(*JSONParserVoidEvent)(void);
-
-    void emptyNumberEvent_jsonp(double const number);
-    void emptyStringEvent_jsonp(char const* const string, size_t const len);
-    void emptyVoidEvent_jsonp(void);
-
     typedef struct JSONParserBody {
-        FILE*                   inputStream;
-        size_t                  stack_cap;
-        size_t                  stack_size;
-        unsigned char*          stack;
-        size_t                  str_cap;
-        size_t                  str_len;
-        char*                   str;
-        long                    errorCode;
-        JSONParserVoidEvent     atArrayEnd;
-        JSONParserVoidEvent     atArrayStart;
-        JSONParserVoidEvent     atFalse;
-        JSONParserVoidEvent     atNameEnd;
-        JSONParserVoidEvent     atNameStart;
-        JSONParserVoidEvent     atNull;
-        JSONParserNumberEvent   atNumber;
-        JSONParserVoidEvent     atObjectEnd;
-        JSONParserVoidEvent     atObjectStart;
-        JSONParserVoidEvent     atRootEnd;
-        JSONParserVoidEvent     atRootStart;
-        JSONParserStringEvent   atString;
-        JSONParserVoidEvent     atTrue;
-        JSONParserVoidEvent     atValueEnd;
-        JSONParserVoidEvent     atValueStart;
+        FILE*           inputStream;
+        size_t          stack_cap;
+        size_t          stack_size;
+        unsigned char*  stack;
+        size_t          str_cap;
+        size_t          str_len;
+        char*           str;
+        long            errorCode;
+        void            (*atArrayEnd)   (struct JSONParserBody const* const);
+        void            (*atArrayStart) (struct JSONParserBody const* const);
+        void            (*atFalse)      (struct JSONParserBody const* const);
+        void            (*atNameEnd)    (struct JSONParserBody const* const);
+        void            (*atNameStart)  (struct JSONParserBody const* const);
+        void            (*atNull)       (struct JSONParserBody const* const);
+        void            (*atNumber)     (struct JSONParserBody const* const, double const);
+        void            (*atObjectEnd)  (struct JSONParserBody const* const);
+        void            (*atObjectStart)(struct JSONParserBody const* const);
+        void            (*atRootEnd)    (struct JSONParserBody const* const);
+        void            (*atRootStart)  (struct JSONParserBody const* const);
+        void            (*atString)     (struct JSONParserBody const* const, char const* const, size_t const);
+        void            (*atTrue)       (struct JSONParserBody const* const);
+        void            (*atValueEnd)   (struct JSONParserBody const* const);
+        void            (*atValueStart) (struct JSONParserBody const* const);
     } JSONParser;
+
+    void emptyNumberEvent_jsonp(JSONParser const* const jsonParser, double const number);
+    void emptyStringEvent_jsonp(JSONParser const* const jsonParser, char const* const string, size_t const len);
+    void emptyVoidEvent_jsonp(JSONParser const* const jsonParser);
+
+    typedef void(*JSONParserNumberEvent)(JSONParser const* const jsonParser, double const number);
+    typedef void(*JSONParserStringEvent)(JSONParser const* const jsonParser, char const* const string, size_t const len);
+    typedef void(*JSONParserVoidEvent)(JSONParser const* const jsonParser);
 
     #define JSON_PARSER_DEFAULT_EVENTS  \
         &emptyVoidEvent_jsonp,          \
@@ -88,23 +88,23 @@
     void
     #endif
     construct_jsonp(
-        JSONParser* const jsonParser,
-        FILE* const inputStream,
-        JSONParserVoidEvent atArrayEnd,
-        JSONParserVoidEvent atArrayStart,
-        JSONParserVoidEvent atFalse,
-        JSONParserVoidEvent atNameEnd,
-        JSONParserVoidEvent atNameStart,
-        JSONParserVoidEvent atNull,
-        JSONParserNumberEvent atNumber,
-        JSONParserVoidEvent atObjectEnd,
-        JSONParserVoidEvent atObjectStart,
-        JSONParserVoidEvent atRootEnd,
-        JSONParserVoidEvent atRootStart,
-        JSONParserStringEvent atString,
-        JSONParserVoidEvent atTrue,
-        JSONParserVoidEvent atValueEnd,
-        JSONParserVoidEvent atValueStart
+        JSONParser* const       jsonParser,
+        FILE* const             inputStream,
+        JSONParserVoidEvent     atArrayEnd,
+        JSONParserVoidEvent     atArrayStart,
+        JSONParserVoidEvent     atFalse,
+        JSONParserVoidEvent     atNameEnd,
+        JSONParserVoidEvent     atNameStart,
+        JSONParserVoidEvent     atNull,
+        JSONParserNumberEvent   atNumber,
+        JSONParserVoidEvent     atObjectEnd,
+        JSONParserVoidEvent     atObjectStart,
+        JSONParserVoidEvent     atRootEnd,
+        JSONParserVoidEvent     atRootStart,
+        JSONParserStringEvent   atString,
+        JSONParserVoidEvent     atTrue,
+        JSONParserVoidEvent     atValueEnd,
+        JSONParserVoidEvent     atValueStart
     );
 
     #ifndef NDEBUG
