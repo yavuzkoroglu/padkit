@@ -11,6 +11,9 @@
     #define DEBUG_ASSERT_NDEBUG_EXECUTE(bool_stmt) \
         DEBUG_ASSERT(bool_stmt) NDEBUG_EXECUTE(bool_stmt)
 
+    #define DEBUG_ABORT_UNLESS_NDEBUG_EXECUTE(bool_stmt) \
+        DEBUG_ABORT_UNLESS(bool_stmt) NDEBUG_EXECUTE(bool_stmt)
+
     #define TERMINATE_ABORT                     \
         fprintf(                                \
             stderr, "Abort in %s::%s():%d\n",   \
@@ -40,6 +43,14 @@
             if(condition) {                     \
                 TERMINATE_ABORT_MSG(            \
                     "Abort Because => (%s)",    \
+                    #condition                  \
+                );                              \
+             }
+
+        #define DEBUG_ABORT_UNLESS(condition)   \
+            if(!(condition)) {                  \
+                TERMINATE_ABORT_MSG(            \
+                    "Abort Because => !(%s)",   \
                     #condition                  \
                 );                              \
              }
