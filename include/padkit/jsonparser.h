@@ -66,21 +66,21 @@
     typedef void(*JSONParserVoidEvent)(JSONParser const* const jsonParser);
 
     #define JSON_PARSER_DEFAULT_EVENTS  \
-        &emptyVoidEvent_jsonp,          \
-        &emptyVoidEvent_jsonp,          \
-        &emptyVoidEvent_jsonp,          \
-        &emptyVoidEvent_jsonp,          \
-        &emptyVoidEvent_jsonp,          \
-        &emptyVoidEvent_jsonp,          \
-        &emptyNumberEvent_jsonp,        \
-        &emptyVoidEvent_jsonp,          \
-        &emptyVoidEvent_jsonp,          \
-        &emptyVoidEvent_jsonp,          \
-        &emptyVoidEvent_jsonp,          \
-        &emptyStringEvent_jsonp,        \
-        &emptyVoidEvent_jsonp,          \
-        &emptyVoidEvent_jsonp,          \
-        &emptyVoidEvent_jsonp
+        emptyVoidEvent_jsonp,           \
+        emptyVoidEvent_jsonp,           \
+        emptyVoidEvent_jsonp,           \
+        emptyVoidEvent_jsonp,           \
+        emptyVoidEvent_jsonp,           \
+        emptyVoidEvent_jsonp,           \
+        emptyNumberEvent_jsonp,         \
+        emptyVoidEvent_jsonp,           \
+        emptyVoidEvent_jsonp,           \
+        emptyVoidEvent_jsonp,           \
+        emptyVoidEvent_jsonp,           \
+        emptyStringEvent_jsonp,         \
+        emptyVoidEvent_jsonp,           \
+        emptyVoidEvent_jsonp,           \
+        emptyVoidEvent_jsonp
 
     #ifndef NDEBUG
     bool
