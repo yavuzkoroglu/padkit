@@ -35,9 +35,9 @@
 
 typedef void(*ParseFunction)(JSONParser* const);
 
-void emptyNumberEvent_jsonp(JSONParser const* const jp, double const number) {}
-void emptyStringEvent_jsonp(JSONParser const* const jp, char const* const string, size_t const len) {}
-void emptyVoidEvent_jsonp(JSONParser const* const jp) {}
+void emptyNumberEvent_jsonp(JSONParser* const jp, double const number) {}
+void emptyStringEvent_jsonp(JSONParser* const jp, char const* const string, size_t const len) {}
+void emptyVoidEvent_jsonp(JSONParser* const jp) {}
 
 static void err_jp(JSONParser* const jp);
 static void s00_jp(JSONParser* const jp);

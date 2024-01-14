@@ -482,7 +482,7 @@ static void test_gmtx(void) {
 }
 
 static unsigned test_jsonp_objCount = 0;
-static void test_jsonp_countObjects(JSONParser const* const jp) {
+static void test_jsonp_countObjects(JSONParser* const jp) {
     test_jsonp_objCount++;
 }
 static void test_jsonp(void) {

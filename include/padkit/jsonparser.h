@@ -40,30 +40,30 @@
         size_t          str_len;
         char*           str;
         long            errorCode;
-        void            (*atArrayEnd)   (struct JSONParserBody const* const);
-        void            (*atArrayStart) (struct JSONParserBody const* const);
-        void            (*atFalse)      (struct JSONParserBody const* const);
-        void            (*atNameEnd)    (struct JSONParserBody const* const);
-        void            (*atNameStart)  (struct JSONParserBody const* const);
-        void            (*atNull)       (struct JSONParserBody const* const);
-        void            (*atNumber)     (struct JSONParserBody const* const, double const);
-        void            (*atObjectEnd)  (struct JSONParserBody const* const);
-        void            (*atObjectStart)(struct JSONParserBody const* const);
-        void            (*atRootEnd)    (struct JSONParserBody const* const);
-        void            (*atRootStart)  (struct JSONParserBody const* const);
-        void            (*atString)     (struct JSONParserBody const* const, char const* const, size_t const);
-        void            (*atTrue)       (struct JSONParserBody const* const);
-        void            (*atValueEnd)   (struct JSONParserBody const* const);
-        void            (*atValueStart) (struct JSONParserBody const* const);
+        void            (*atArrayEnd)   (struct JSONParserBody* const);
+        void            (*atArrayStart) (struct JSONParserBody* const);
+        void            (*atFalse)      (struct JSONParserBody* const);
+        void            (*atNameEnd)    (struct JSONParserBody* const);
+        void            (*atNameStart)  (struct JSONParserBody* const);
+        void            (*atNull)       (struct JSONParserBody* const);
+        void            (*atNumber)     (struct JSONParserBody* const, double const);
+        void            (*atObjectEnd)  (struct JSONParserBody* const);
+        void            (*atObjectStart)(struct JSONParserBody* const);
+        void            (*atRootEnd)    (struct JSONParserBody* const);
+        void            (*atRootStart)  (struct JSONParserBody* const);
+        void            (*atString)     (struct JSONParserBody* const, char const* const, size_t const);
+        void            (*atTrue)       (struct JSONParserBody* const);
+        void            (*atValueEnd)   (struct JSONParserBody* const);
+        void            (*atValueStart) (struct JSONParserBody* const);
     } JSONParser;
 
-    void emptyNumberEvent_jsonp(JSONParser const* const jsonParser, double const number);
-    void emptyStringEvent_jsonp(JSONParser const* const jsonParser, char const* const string, size_t const len);
-    void emptyVoidEvent_jsonp(JSONParser const* const jsonParser);
+    void emptyNumberEvent_jsonp(JSONParser* const jsonParser, double const number);
+    void emptyStringEvent_jsonp(JSONParser* const jsonParser, char const* const string, size_t const len);
+    void emptyVoidEvent_jsonp(JSONParser* const jsonParser);
 
-    typedef void(*JSONParserNumberEvent)(JSONParser const* const jsonParser, double const number);
-    typedef void(*JSONParserStringEvent)(JSONParser const* const jsonParser, char const* const string, size_t const len);
-    typedef void(*JSONParserVoidEvent)(JSONParser const* const jsonParser);
+    typedef void(*JSONParserNumberEvent)(JSONParser* const jsonParser, double const number);
+    typedef void(*JSONParserStringEvent)(JSONParser* const jsonParser, char const* const string, size_t const len);
+    typedef void(*JSONParserVoidEvent)(JSONParser* const jsonParser);
 
     #define JSON_PARSER_DEFAULT_EVENTS  \
         emptyVoidEvent_jsonp,           \
