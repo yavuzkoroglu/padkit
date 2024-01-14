@@ -802,21 +802,21 @@ static void s20_jp(JSONParser* const jp) {
 }
 
 static void s21_jp(JSONParser* const jp) {
-    /* atArrayEnd() */
-    (*jp->atArrayEnd)(jp);
-
     /* pop() */
     POP_JP(jp);
+
+    /* atArrayEnd() */
+    (*jp->atArrayEnd)(jp);
 
     s23_jp(jp);
 }
 
 static void s22_jp(JSONParser* const jp) {
-    /* atObjectEnd() */
-    (*jp->atObjectEnd)(jp);
-
     /* pop() */
     POP_JP(jp);
+
+    /* atObjectEnd() */
+    (*jp->atObjectEnd)(jp);
 
     s23_jp(jp);
 }
@@ -835,11 +835,11 @@ static void s23_jp(JSONParser* const jp) {
 }
 
 static void s24_jp(JSONParser* const jp) {
-    /* atRootEnd() */
-    (*jp->atRootEnd)(jp);
-
     /* pop() */
     POP_JP(jp);
+
+    /* atRootEnd() */
+    (*jp->atRootEnd)(jp);
 
     #ifndef NDEBUG
         if (jp->stack_size != 0) jp->errorCode = JSON_PARSER_STACK_ERROR;
