@@ -37,6 +37,7 @@ SILENCED=                               \
     -Wno-declaration-after-statement    \
     -Wno-padded -Wno-unused-parameter   \
     -Wno-unknown-warning-option         \
+    -Wno-missing-noreturn               \
     -Wno-unsafe-buffer-usage
 ARGS=${ARCH_ARGS} ${FLAGS} -Weverything ${SILENCED} -Iinclude
 else
@@ -44,6 +45,7 @@ SILENCED=                               \
     -Wno-unused-parameter               \
     -Wno-old-style-declaration          \
     -Wno-unknown-warning-option         \
+    -Wno-missing-noreturn               \
     -Wno-nullability-completeness
 ARGS=${ARCH_ARGS} ${FLAGS} -Wall -Wextra ${SILENCED} -Iinclude
 endif
