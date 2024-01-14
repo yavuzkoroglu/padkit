@@ -73,11 +73,14 @@
 
         #define DEBUG_EXECUTE(statement) statement;
         #define NDEBUG_EXECUTE(statement)
+
+        #define DEBUG_MSG(...) fprintf(stderr, __VA_ARGS__);
     #else
         #define DEBUG_ABORT_IF(condition)
         #define DEBUG_ASSERT(condition)
         #define DEBUG_ERROR_IF(condition)
         #define DEBUG_EXECUTE(statement)
         #define NDEBUG_EXECUTE(statement) statement;
+        #define DEBUG_MSG(...)
     #endif
 #endif
