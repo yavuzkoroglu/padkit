@@ -76,7 +76,7 @@
 
         #define DEBUG_MSG(...)                  \
             fprintf(stderr, __VA_ARGS__);       \
-            fputs("\n", stderr)
+            fputs("\n", stderr);
     #else
         #define DEBUG_ABORT_IF(condition)
         #define DEBUG_ASSERT(condition)
