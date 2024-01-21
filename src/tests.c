@@ -487,16 +487,16 @@ static void test_jsonp_countObjects(JSONParser* const jp) {
 }
 static void test_jsonp(void) {
     JSONParser jp[1];
-    char const* const filename = "test_artifacts/model001.json";
+    char const* const filename = "test_artifacts/model002.json";
     FILE* const fp = fopen(filename, "r");
     TEST_FAIL_IF(fp == NULL)
 
     DEBUG_ASSERT_NDEBUG_EXECUTE(construct_jsonp(jp, fp, JSON_PARSER_DEFAULT_EVENTS))
-    jp->atObjectStart = &test_jsonp_countObjects;
+    jp->atObjectStart = test_jsonp_countObjects;
 
-    parseStream_jsonp(jp);
+    TEST_FAIL_IF(parseStream_jsonp(jp) != JSON_PARSER_OK)
 
-    TEST_FAIL_IF(test_jsonp_objCount != 9)
+    TEST_FAIL_IF(test_jsonp_objCount != 27)
     TEST_PASS
 
     DEBUG_ASSERT_NDEBUG_EXECUTE(free_jsonp(jp))

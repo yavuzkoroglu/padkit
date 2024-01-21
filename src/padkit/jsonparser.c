@@ -187,6 +187,7 @@ static void s04_jp(JSONParser* const jp) {
 
     /* read() */
     unsigned char const i = (unsigned char)fgetc(jp->inputStream);
+    jp->str[0] = (char)i;
 
     nextState[i](jp);
 }
@@ -555,6 +556,7 @@ static void s13_jp(JSONParser* const jp) {
 
     /* read() */
     unsigned char const i = (unsigned char)fgetc(jp->inputStream);
+    jp->str[0] = (char)i;
 
     nextState[i](jp);
 }

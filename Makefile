@@ -166,6 +166,6 @@ objects:                        \
     obj/padkit/timestamp.o      \
     obj/padkit/value.o
 
-tests: ${TESTS_OUT}
+tests: clean ${TESTS_OUT}
 
 version: ; @echo ${PADKIT_VERSION}
