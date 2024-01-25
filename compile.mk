@@ -16,8 +16,10 @@ ifeq (${OS},Darwin)
 DYNAMIC_LIB_FLAGS=-dynamiclib -fvisibility="default"
 ARCH=$(shell uname -m)
 ARCH_ARGS=-arch ${ARCH}
+STDLIBS=
 else
 ARCH_ARGS=
+STDLIBS=-luuid
 ifeq (${OS},Linux)
 DYNAMIC_LIB_FLAGS=-shared -fPIC
 else
@@ -39,7 +41,7 @@ SILENCED=                               \
     -Wno-unknown-warning-option         \
     -Wno-missing-noreturn               \
     -Wno-unsafe-buffer-usage
-ARGS=${ARCH_ARGS} ${FLAGS} -Weverything ${SILENCED} -Iinclude
+ARGS=${ARCH_ARGS} ${FLAGS} -Weverything ${SILENCED} -Iinclude ${STDLIBS}
 else
 SILENCED=                               \
     -Wno-unused-parameter               \
@@ -47,7 +49,7 @@ SILENCED=                               \
     -Wno-unknown-warning-option         \
     -Wno-missing-noreturn               \
     -Wno-nullability-completeness
-ARGS=${ARCH_ARGS} ${FLAGS} -Wall -Wextra ${SILENCED} -Iinclude
+ARGS=${ARCH_ARGS} ${FLAGS} -Wall -Wextra ${SILENCED} -Iinclude ${STDLIBS}
 endif
 
 COMPILE=${CC} ${ARGS}

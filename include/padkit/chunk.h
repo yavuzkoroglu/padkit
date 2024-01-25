@@ -37,7 +37,7 @@
 
     /**
      * @def CHUNK_RECOMMENDED_PARAMETERS
-     *   Recommended parameters for a typical Chunk
+     *   Recommended parameters for a typical Chunk.
      */
     #define CHUNK_RECOMMENDED_PARAMETERS \
         CHUNK_RECOMMENDED_INITIAL_CAP, CHUNK_RECOMMENDED_INITIAL_STRINGS_CAP
@@ -91,6 +91,13 @@
      * @param str_id The chunk index of the string.
      */
     uint32_t addIndex_chunk(Chunk* const chunk, uint32_t const str_id);
+
+    /**
+     * @brief Adds a random UUID string to a Chunk.
+     * @param chunk The Chunk.
+     * @param lowerCase 1 if the UUID string should be lowercase.
+     */
+    uint32_t addRandomUUID_chunk(Chunk* const chunk, bool const lowerCase);
 
     /**
      * @brief Appends a string to the final string of a Chunk.

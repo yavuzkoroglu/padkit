@@ -60,6 +60,22 @@ static void test_chunk_addIndex(void) {
     NDEBUG_EXECUTE(free_chunk(strings))
 }
 
+static void test_chunk_addRandomUUID(void) {
+    DEBUG_ASSERT_NDEBUG_EXECUTE(
+        constructEmpty_chunk(strings, CHUNK_RECOMMENDED_PARAMETERS)
+    )
+
+    DEBUG_ERROR_IF(addRandomUUID_chunk(strings, 1) == 0xFFFFFFFF)
+    NDEBUG_EXECUTE(addRandomUUID_chunk(strings, 1))
+
+    TEST_FAIL_IF(strings->len != 37)
+    TEST_FAIL_IF(strings->nStrings != 1)
+    TEST_PASS
+
+    DEBUG_ABORT_IF(!free_chunk(strings))
+    NDEBUG_EXECUTE(free_chunk(strings))
+}
+
 static void test_chunk_append(void) {
     DEBUG_ASSERT_NDEBUG_EXECUTE(
         constructEmpty_chunk(strings, CHUNK_RECOMMENDED_PARAMETERS)
@@ -792,6 +808,7 @@ int main(void) {
 
     test_chunk_add();
     test_chunk_addIndex();
+    test_chunk_addRandomUUID();
     test_chunk_append();
     test_chunk_appendIndex();
     test_chunk_appendSpace();
