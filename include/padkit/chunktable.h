@@ -61,6 +61,12 @@
     } ChunkTableEntry;
 
     /**
+     * @brief Checks if a ChunkTableEntry is valid.
+     * @param entry The ChunkTableEntry.
+     */
+    bool isValid_cte(ChunkTableEntry const* const entry);
+
+    /**
      * @struct ChunkTable
      * @brief A ChunkTable is a full-fledged self-adjusting hash table.
      *
@@ -193,9 +199,58 @@
     bool isValid_ctbl(ChunkTable const* const tbl);
 
     /**
-     * @brief Checks if a ChunkTableEntry is valid.
-     * @param entry The ChunkTableEntry.
+     * @struct CTblConstIterator
+     * @brief A constant ChunkTable iterator.
+     *
+     * @var CTblConstIterator::tbl
+     *   The ChunkTable that is iterated.
+     * @var CTblConstIterator::chunk
+     *   The Chunk where the key is located.
+     * @var CTblConstIterator::key
+     *   The key string that is searched for.
+     * @var CTblConstIterator::key_len
+     *   The key string length.
+     * @var CTblConstIterator::entry
+     *   The current iterated ChunkTableEntry.
      */
-    bool isValid_cte(ChunkTableEntry const* const entry);
+    typedef struct CTblConstIteratorBody {
+        ChunkTable const* tbl;
+        Chunk const* chunk;
+        char const* key;
+        uint64_t key_len;
+        ChunkTableEntry const* entry;
+    } CTblConstIterator;
+
+    /**
+     * @brief Constructs a CTblConstIterator.
+     * @param itr A pointer to the CTblConstIterator.
+     * @param tbl A pointer to the constant ChunkTable.
+     * @param chunk A pointer to the constant Chunk.
+     * @param key A pointer to the constant key.
+     * @param key_len A pointer to the key length.
+     * @param entry A pointer to the current ChunkTableEntry.
+     */
+    #ifndef NDEBUG
+    bool
+    #else
+    void
+    #endif
+    construct_ctblitr(
+        CTblConstIterator* const itr,
+        ChunkTable const* const tbl, Chunk const* const chunk,
+        char const* const key, uint64_t const key_len
+    );
+
+    /**
+     * @brief Checks if a CTblConstIterator is valid.
+     * @param itr A pointer to the CTblConstIterator.
+     */
+    bool isValid_ctblitr(CTblConstIterator const* const itr);
+
+    /**
+     * @brief Iterates to the next ChunkTableEntry.
+     * @param itr A pointer to the CTblConstIterator.
+     */
+    ChunkTableEntry const* next_ctblitr(CTblConstIterator* const itr);
 #endif
 

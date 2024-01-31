@@ -91,6 +91,10 @@ adjust(ChunkTable* const tbl, Chunk const* const chunk) {
     #endif
 }
 
+bool isValid_cte(ChunkTableEntry const* const entry) {
+    return entry && entry->key_id != 0xFFFFFFFF;
+}
+
 #ifndef NDEBUG
 bool
 #else
@@ -342,7 +346,56 @@ bool isValid_ctbl(ChunkTable const* const tbl) {
            tbl->rows != NULL;
 }
 
-bool isValid_cte(ChunkTableEntry const* const entry) {
-    return entry && entry->key_id != 0xFFFFFFFF;
+#ifndef NDEBUG
+bool
+#else
+void
+#endif
+construct_ctblitr(
+    CTblConstIterator* const itr,
+    ChunkTable const* const tbl, Chunk const* const chunk,
+    char const* const key, uint64_t const key_len
+) {
+    #ifndef NDEBUG
+        if (itr == NULL)                    return 0;
+        if (!isValid_ctbl(tbl))             return 0;
+        if (!isValid_chunk(chunk))          return 0;
+        if (key == NULL)                    return 0;
+        if (key_len == 0xFFFFFFFFFFFFFFFF)  return 0;
+    #endif
+
+    itr->tbl        = tbl;
+    itr->chunk      = chunk;
+    itr->key        = key;
+    itr->key_len    = key_len;
+    itr->entry      = get_ctbl(tbl, chunk, key, key_len);
+
+    #ifndef NDEBUG
+        return 1;
+    #endif
 }
 
+bool isValid_ctblitr(CTblConstIterator const* const itr) {
+    return  itr != NULL                 &&
+            isValid_ctbl(itr->tbl)      &&
+            isValid_chunk(itr->chunk)   &&
+            itr->key != NULL            &&
+            itr->key_len != 0xFFFFFFFFFFFFFFFF;
+}
+
+ChunkTableEntry const* next_ctblitr(CTblConstIterator* const itr) {
+    #ifndef NDEBUG
+        if (!isValid_ctblitr(itr)) return NULL;
+    #endif
+
+    if (!isValid_cte(itr->entry)) return NULL;
+
+    ChunkTableEntry const* const entry_to_be_returned = itr->entry;
+    while (isValid_cte(--itr->entry)) {
+        char const* const candidate_key = get_chunk(itr->chunk, itr->entry->key_id);
+        if (candidate_key != NULL && str_eq_n(itr->key, candidate_key, itr->key_len))
+            break;
+    }
+
+    return entry_to_be_returned;
+}

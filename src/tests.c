@@ -442,6 +442,14 @@ static void test_ctbl(void) {
         }
     }
 
+    CTblConstIterator itr[1];
+    DEBUG_ASSERT_NDEBUG_EXECUTE(construct_ctblitr(itr, scores, people, name[ALICE], 5))
+
+    unsigned count_scores = 0;
+    while (next_ctblitr(itr) != NULL) count_scores++;
+
+    TEST_FAIL_IF(count_scores != 2)
+
     TEST_FAIL_IF(getKeyCount_ctbl(ages) != PEOPLE_COUNT)
     TEST_FAIL_IF(getKeyCount_ctbl(scores) != PEOPLE_COUNT)
 
