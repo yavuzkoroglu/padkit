@@ -24,11 +24,9 @@
     #define JSON_PARSER_STRING_ERROR        4
     #define JSON_PARSER_SYNTAX_ERROR        5
 
-    #define NOT_A_JSON_PARSER ((JSONParser){                        \
-        NULL, 0, 0, NULL, 0, NULL, '\0', JSON_PARSER_OK,            \
-        NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, \
-        NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, \
-        NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL  \
+    #define NOT_A_JSON_PARSER ((JSONParser){            \
+        NULL, 0, 0, NULL, 0, 0, NULL, JSON_PARSER_OK,   \
+        JSON_PARSER_DEFAULT_EVENTS                      \
     })
 
     typedef struct JSONParserBody {

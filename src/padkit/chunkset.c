@@ -234,6 +234,7 @@ free_cset(ChunkSet* const set) {
     free(set->rowCap);
     for (uint32_t** row = set->table + set->nRows; --row >= set->table; free(*row));
     free(set->table);
+    *set = NOT_A_CHUNK_SET;
     #ifndef NDEBUG
         return 1;
     #endif

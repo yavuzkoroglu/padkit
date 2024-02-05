@@ -185,6 +185,7 @@ void
 #endif
 free_gmtx(GraphMatrix* const gmtx) {
     free(gmtx->array);
+    *gmtx = NOT_A_GRAPH_MATRIX;
     #ifndef NDEBUG
         return 1;
     #endif

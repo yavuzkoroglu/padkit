@@ -925,6 +925,7 @@ free_jsonp(JSONParser* const jsonParser) {
     #endif
     free(jsonParser->stack);
     free(jsonParser->str);
+    *jsonParser = NOT_A_JSON_PARSER;
     #ifndef NDEBUG
         return 1;
     #endif

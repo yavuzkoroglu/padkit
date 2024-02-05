@@ -105,6 +105,7 @@ free_map(Map* const map) {
         if (!isValid_map(map)) return 0;
     #endif
     free(map->mappings);
+    *map = NOT_A_MAP;
     #ifndef NDEBUG
         return 1;
     #endif

@@ -335,6 +335,7 @@ free_chunk(Chunk* const chunk) {
     #endif
     free(chunk->start);
     free(chunk->stringOffsets);
+    *chunk = NOT_A_CHUNK;
     #ifndef NDEBUG
         return 1;
     #endif

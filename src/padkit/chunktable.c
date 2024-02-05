@@ -169,6 +169,7 @@ free_ctbl(ChunkTable* const tbl) {
         free(tbl->rows[row_id]);
 
     free(tbl->rows);
+    *tbl = NOT_A_CHUNK_TABLE;
     #ifndef NDEBUG
         return 1;
     #endif
