@@ -36,6 +36,7 @@ The above steps should produce
 
 ## Changes v1.0 -> v1.1beta
 
+* Encapsulated debug messages within extra code blocks in `include/padkit/debug.h`.
 * Added `CTblConstIterator` and related functions.
 * Added `addRandomUUID_chunk(Chunk* const chunk)`. **WARNING:** The `libuuid` requirement may break Windows and Ubuntu compilation.
 * Added `include/padkit/jsonparser.h` and `src/padkit/jsonparser.c`.
