@@ -7,10 +7,27 @@
     #include <stdbool.h>
     #include "padkit/debug.h"
 
-    #ifndef NDEBUG
-        #define REALLOC_ERROR TERMINATE_ERROR_MSG("%s", "Error Because => REALLOCATE_ERROR")
-        #define RECALLOC_ERROR TERMINATE_ERROR_MSG("%s", "Error Because => RECALLOC_ERROR")
+    /**
+     * @def REALLOC_ERROR
+     *   The default error raised in case of a reallocate() error.
+     */
+    #define REALLOC_ERROR   TERMINATE_ERROR_MSG("%s", "Error Because => REALLOCATE_ERROR")
 
+    /**
+     * @def RECALLOC_ERROR
+     *   The default error raised in case of a recalloc() error.
+     */
+    #define RECALLOC_ERROR  TERMINATE_ERROR_MSG("%s", "Error Because => RECALLOC_ERROR")
+
+    /**
+     * @def REALLOC_IF_NECESSARY
+     *   Calls reallocate() on an object array if necessary.
+     */
+    /**
+     * @def RECALLOC_IF_NECESSARY
+     *   Calls recalloc() on an object array if necessary.
+     */
+    #ifndef NDEBUG
         #define REALLOC_IF_NECESSARY(obj_t, obj, obj_cap_t, obj_cap, obj_sz, err)           \
             if (obj_cap <= (obj_cap_t)(obj_sz)) {                                           \
                 if (REALLOCATE(obj, obj_cap, ((obj_cap_t)(obj_sz)) * 2, obj_t) == NULL) err \
@@ -36,9 +53,17 @@
             }
     #endif
 
+    /**
+     * @def REALLOCATE
+     *   A wrapper macro for a standard reallocate() call.
+     */
     #define REALLOCATE(ptr, old_n, new_n, type) \
         reallocate((void**)&(ptr), (size_t)(old_n), (size_t)new_n, sizeof(type))
 
+    /**
+     * @def RECALLOC
+     *   A wrapper macro for a standard recalloc() call.
+     */
     #define RECALLOC(ptr, old_n, new_n, type) \
         recalloc((void**)&(ptr), (size_t)(old_n), (size_t)new_n, sizeof(type))
 

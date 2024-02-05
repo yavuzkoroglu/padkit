@@ -15,7 +15,7 @@ endif
 
 default: libs
 
-.PHONY: all clean default libs objects tests version
+.PHONY: all clean default documentation libs objects tests version
 
 ${DYNAMIC_LIB}: lib src/padkit/*.c \
     ; ${COMPILE} ${DYNAMIC_LIB_FLAGS} src/padkit/*.c -o ${DYNAMIC_LIB}
@@ -31,7 +31,9 @@ all: clean libs tests
 
 bin: ; mkdir bin
 
-clean: ; rm -rf include/padkit.h obj/* bin/* lib/* *.gcno *.gcda *.gcov
+clean: ; rm -rf include/padkit.h obj/* bin/* lib/* *.gcno *.gcda *.gcov html latex
+
+documentation: ; doxygen
 
 include/padkit.h: ;                                                         @\
     echo '/**'                                           > include/padkit.h; \

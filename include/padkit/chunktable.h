@@ -34,7 +34,7 @@
     #define CHUNK_TABLE_RECOMMENDED_LOAD_PERCENT 75
 
     /**
-     * @def CHUNK_Table_RECOMMENDED_PARAMETERS
+     * @def CHUNK_TABLE_RECOMMENDED_PARAMETERS
      *   Recommended parameters for a typical ChunkTable
      */
     #define CHUNK_TABLE_RECOMMENDED_PARAMETERS \
@@ -84,8 +84,8 @@
      *   The # of entries in each row.
      * @var ChunkTable::rowCaps
      *   The capacity in each row.
-     * @var ChunkTable::table
-     *   The table of entries
+     * @var ChunkTable::rows
+     *   A pointer to the first row in the array of ChunkTableEntry rows.
      */
     typedef struct ChunkTableBody {
         uint32_t          nKeys;
@@ -228,7 +228,6 @@
      * @param chunk A pointer to the constant Chunk.
      * @param key A pointer to the constant key.
      * @param key_len A pointer to the key length.
-     * @param entry A pointer to the current ChunkTableEntry.
      */
     #ifndef NDEBUG
     bool

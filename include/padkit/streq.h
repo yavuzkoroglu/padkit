@@ -10,13 +10,13 @@
     #include <string.h>
 
     /**
-     * @def str_eq_const(str,strconst)
+     * @def STR_EQ_CONST
      *   Compares any string to a string literal or char[].
      */
     #define STR_EQ_CONST(str,strconst) str_eq_n(str,strconst,sizeof(strconst)-1)
 
     /**
-     * @def str_contains_const(str,strconst)
+     * @def STR_CONTAINS_CONST
      *   Checks if str contains a string literal or char[].
      *   DO NOT DO THIS! EVIL!!! ==> STR_CONTAINS_CONST(some_str,"")
      */

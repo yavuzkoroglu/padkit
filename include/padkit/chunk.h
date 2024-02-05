@@ -78,7 +78,7 @@
      *
      * @param chunk The Chunk.
      * @param str The string.
-     * @param n #characters to copy.
+     * @param n The number of characters to copy.
      */
     uint32_t add_chunk(Chunk* const chunk, char const* const str, uint64_t const n);
 
@@ -107,7 +107,7 @@
      *
      * @param chunk The Chunk.
      * @param str The string.
-     * @param n #characters to copy.
+     * @param n The number of characters to copy.
      */
     char const* append_chunk(Chunk* const chunk, char const* const str, uint64_t const n);
 

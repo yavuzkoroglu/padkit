@@ -21,7 +21,7 @@
     #define CHUNK_SET_RECOMMENDED_LOAD_PERCENT 75
 
     /**
-     * @def INITIAL_CHUNK_SET_ROW_CAP
+     * @def CHUNK_SET_INITIAL_ROW_CAP
      *   This initial capacity should work nicely at all times, we should NOT expect too many collisions.
      */
     #define CHUNK_SET_INITIAL_ROW_CAP 4
@@ -78,7 +78,7 @@
      * @brief Adds a key string to a ChunkSet.
      * @param set The ChunkSet.
      * @param key The key string.
-     * @param n #characters to copy.
+     * @param n The number of characters to copy.
      */
     uint32_t addKey_cset(ChunkSet* const set, char const* const key, uint64_t const n);
 
@@ -138,6 +138,7 @@
      * @brief Gets the chunk index of a key string.
      * @param set The ChunkSet.
      * @param key The key string.
+     * @param n The key string length.
      */
     uint32_t getKeyId_cset(ChunkSet const* const set, char const* const key, uint64_t const n);
 
