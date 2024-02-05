@@ -1,11 +1,6 @@
 /**
  * @file hash.c
  * @brief Implements the famous HASH33/djb2 algorithm.
- *
- * This implementation uses a repeat(n) loop to
- * restrict hashing to n characters. If n == 0,
- * the hash value is always 5381.
- *
  * @author Yavuz Koroglu
  */
 #include "padkit/debug.h"
