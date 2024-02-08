@@ -93,13 +93,6 @@
     uint32_t addIndex_chunk(Chunk* const chunk, uint32_t const str_id);
 
     /**
-     * @brief Adds a random UUID string to a Chunk.
-     * @param chunk The Chunk.
-     * @param lowerCase 1 if the UUID string should be lowercase.
-     */
-    uint32_t addRandomUUID_chunk(Chunk* const chunk, bool const lowerCase);
-
-    /**
      * @brief Appends a string to the final string of a Chunk.
      *
      * This function is similar to add_chunk() but

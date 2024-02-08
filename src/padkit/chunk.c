@@ -47,32 +47,6 @@ uint32_t addIndex_chunk(Chunk* const chunk, uint32_t const str_id) {
     return id;
 }
 
-#ifndef UUID_STR_LEN
-    #define UUID_STR_LEN 37
-#endif
-uint32_t addRandomUUID_chunk(Chunk* const chunk, bool const lowerCase) {
-    #ifndef NDEBUG
-        if (!isValid_chunk(chunk)) return 0xFFFFFFFF;
-    #endif
-
-    uuid_t uuid;
-    uint32_t const id       = chunk->nStrings++;
-    uint64_t const offset   = (chunk->len += !!(chunk->len));
-    char* const uuid_str    = appendSpace_chunk(chunk, UUID_STR_LEN);
-    #ifndef NDEBUG
-        if (uuid_str < chunk->start) return 0xFFFFFFFF;
-    #endif
-
-    uuid_generate_random(uuid);
-
-    if (lowerCase)  uuid_unparse_lower(uuid, uuid_str);
-    else            uuid_unparse_upper(uuid, uuid_str);
-
-    chunk->len += UUID_STR_LEN;
-    chunk->stringOffsets[id] = offset;
-    return id;
-}
-
 char const* append_chunk(Chunk* const chunk, char const* const str, uint64_t const n) {
     #ifndef NDEBUG
         if (!isValid_chunk(chunk)) return NULL;

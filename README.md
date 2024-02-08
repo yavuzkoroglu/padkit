@@ -41,7 +41,6 @@ The above steps should produce
 * Corrected `NOT_A_JSON_PARSER` in `include/padkit/jsonparser.h`.
 * Encapsulated debug messages within extra code blocks in `include/padkit/debug.h`.
 * Added `CTblConstIterator` and related functions.
-* Added `addRandomUUID_chunk(Chunk* const chunk)`. **WARNING:** The `libuuid` requirement may break Windows and Ubuntu compilation.
 * Added `include/padkit/jsonparser.h` and `src/padkit/jsonparser.c`.
 * External scripts now can import the `${COMPILE}` command in the `Makefile`.
 * In `src/padkit/timestamp.c`, timestamps now conform to ISO 8601.
