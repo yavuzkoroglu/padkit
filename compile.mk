@@ -40,6 +40,7 @@ SILENCED=                               \
     -Wno-padded -Wno-unused-parameter   \
     -Wno-unknown-warning-option         \
     -Wno-missing-noreturn               \
+    -Wno-implicit-fallthrough           \
     -Wno-unsafe-buffer-usage
 ARGS=${ARCH_ARGS} ${FLAGS} -Weverything ${SILENCED} -Iinclude ${STDLIBS}
 else
@@ -48,6 +49,7 @@ SILENCED=                               \
     -Wno-old-style-declaration          \
     -Wno-unknown-warning-option         \
     -Wno-missing-noreturn               \
+    -Wno-implicit-fallthrough           \
     -Wno-nullability-completeness
 ARGS=${ARCH_ARGS} ${FLAGS} -Wall -Wextra ${SILENCED} -Iinclude ${STDLIBS}
 endif
