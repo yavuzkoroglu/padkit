@@ -7,7 +7,6 @@
     #define STREQ_H
     #include <stdbool.h>
     #include <stddef.h>
-    #include <string.h>
 
     /**
      * @def STR_EQ_CONST

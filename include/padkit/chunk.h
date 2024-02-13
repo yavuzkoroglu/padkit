@@ -12,7 +12,6 @@
 #ifndef CHUNK_H
     #define CHUNK_H
     #include <stdbool.h>
-    #include <stddef.h>
     #include <stdio.h>
     #include <stdint.h>
 

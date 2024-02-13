@@ -5,7 +5,6 @@
  */
 #ifndef CSV_H
     #define CSV_H
-    #include <stdio.h>
 
     /**
      * @def CSV_INITIAL_DELIMETER

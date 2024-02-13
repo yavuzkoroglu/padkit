@@ -3,6 +3,7 @@
  * @brief Tests the padkit library.
  * @author Yavuz Koroglu
  */
+#include <string.h>
 #include "padkit.h"
 
 static Chunk strings[1];

@@ -3,6 +3,7 @@
  * @brief Implements the functions defined in streq.h.
  * @author Yavuz Koroglu
  */
+#include <string.h>
 #include "padkit/debug.h"
 #include "padkit/streq.h"
 
