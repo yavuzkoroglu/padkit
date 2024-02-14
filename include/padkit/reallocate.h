@@ -28,28 +28,44 @@
      *   Calls recalloc() on an object array if necessary.
      */
     #ifndef NDEBUG
-        #define REALLOC_IF_NECESSARY(obj_t, obj, obj_cap_t, obj_cap, obj_sz, err)           \
-            if (obj_cap <= (obj_cap_t)(obj_sz)) {                                           \
-                if (REALLOCATE(obj, obj_cap, ((obj_cap_t)(obj_sz)) * 2, obj_t) == NULL) err \
-                obj_cap = ((obj_cap_t)(obj_sz)) * 2;                                        \
+        #define REALLOC_IF_NECESSARY(obj_t, obj, obj_cap_t, obj_cap, obj_sz, err)       \
+            if (obj_cap <= (obj_cap_t)(obj_sz)) {                                       \
+                obj_cap_t _new_cap = obj_cap << 1;                                      \
+                if (_new_cap <= obj_cap) err                                            \
+                while (_new_cap <= obj_sz) {                                            \
+                    _new_cap <<= 1;                                                     \
+                    if (_new_cap <= obj_cap) err                                        \
+                }                                                                       \
+                if (REALLOCATE(obj, obj_cap, _new_cap, obj_t) == NULL) err              \
+                obj_cap = _new_cap;                                                     \
             }
 
-        #define RECALLOC_IF_NECESSARY(obj_t, obj, obj_cap_t, obj_cap, obj_sz, err)          \
-            if (obj_cap <= (obj_cap_t)(obj_sz)) {                                           \
-                if (RECALLOC(obj, obj_cap, ((obj_cap_t)(obj_sz)) * 2, obj_t) == NULL) err   \
-                obj_cap = ((obj_cap_t)(obj_sz)) * 2;                                        \
+        #define RECALLOC_IF_NECESSARY(obj_t, obj, obj_cap_t, obj_cap, obj_sz, err)      \
+            if (obj_cap <= (obj_cap_t)(obj_sz)) {                                       \
+                obj_cap_t _new_cap = obj_cap << 1;                                      \
+                if (_new_cap <= obj_cap) err                                            \
+                while (_new_cap <= obj_sz) {                                            \
+                    _new_cap <<= 1;                                                     \
+                    if (_new_cap <= obj_cap) err                                        \
+                }                                                                       \
+                if (RECALLOC(obj, obj_cap, _new_cap, obj_t) == NULL) err                \
+                obj_cap = _new_cap;                                                     \
             }
     #else
-        #define REALLOC_IF_NECESSARY(obj_t, obj, obj_cap_t, obj_cap, obj_sz, err)           \
-            if (obj_cap <= (obj_cap_t)(obj_sz)) {                                           \
-                REALLOCATE(obj, obj_cap, ((obj_cap_t)(obj_sz)) * 2, obj_t);                 \
-                obj_cap = ((obj_cap_t)(obj_sz)) * 2;                                        \
+        #define REALLOC_IF_NECESSARY(obj_t, obj, obj_cap_t, obj_cap, obj_sz, err)       \
+            if (obj_cap <= (obj_cap_t)(obj_sz)) {                                       \
+                obj_cap_t _new_cap = obj_cap << 1;                                      \
+                while (_new_cap <= obj_sz) _new_cap <<= 1;                              \
+                REALLOCATE(obj, obj_cap, _new_cap, obj_t)                               \
+                obj_cap = _new_cap;                                                     \
             }
 
-        #define RECALLOC_IF_NECESSARY(obj_t, obj, obj_cap_t, obj_cap, obj_sz, err)          \
-            if (obj_cap <= (obj_cap_t)(obj_sz)) {                                           \
-                RECALLOC(obj, obj_cap, ((obj_cap_t)(obj_sz)) * 2, obj_t);                   \
-                obj_cap = ((obj_cap_t)(obj_sz)) * 2;                                        \
+        #define RECALLOC_IF_NECESSARY(obj_t, obj, obj_cap_t, obj_cap, obj_sz, err)      \
+            if (obj_cap <= (obj_cap_t)(obj_sz)) {                                       \
+                obj_cap_t _new_cap = obj_cap << 1;                                      \
+                while (_new_cap <= obj_sz) _new_cap <<= 1;                              \
+                RECALLOC(obj, obj_cap, _new_cap, obj_t)                                 \
+                obj_cap = _new_cap;                                                     \
             }
     #endif
 
