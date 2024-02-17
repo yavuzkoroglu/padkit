@@ -26,9 +26,9 @@
      *   The array representation of the matrix.
      */
     typedef struct GraphMatrixBody {
-        uint32_t height;
-        uint32_t width;
-        uint8_t* array;
+        uint32_t    height;
+        uint32_t    width;
+        uint64_t*   array;
     } GraphMatrix;
 
     /**

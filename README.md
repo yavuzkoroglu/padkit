@@ -38,6 +38,7 @@ The above steps should produce
 
 ## Changes v1.0 -> v1.1beta
 
+* `GraphMatrix` objects now allocate bits in 64-bit blocks instead of 8-bit blocks.
 * Updated `include/padkit/reallocate.h`.
 * Corrected `NOT_A_JSON_PARSER` in `include/padkit/jsonparser.h`.
 * Encapsulated debug messages within extra code blocks in `include/padkit/debug.h`.
