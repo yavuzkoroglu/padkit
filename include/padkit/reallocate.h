@@ -56,7 +56,7 @@
             if (obj_cap <= (obj_cap_t)(obj_sz)) {                                       \
                 obj_cap_t _new_cap = obj_cap << 1;                                      \
                 while (_new_cap <= obj_sz) _new_cap <<= 1;                              \
-                REALLOCATE(obj, obj_cap, _new_cap, obj_t)                               \
+                REALLOCATE(obj, obj_cap, _new_cap, obj_t);                              \
                 obj_cap = _new_cap;                                                     \
             }
 
@@ -64,7 +64,7 @@
             if (obj_cap <= (obj_cap_t)(obj_sz)) {                                       \
                 obj_cap_t _new_cap = obj_cap << 1;                                      \
                 while (_new_cap <= obj_sz) _new_cap <<= 1;                              \
-                RECALLOC(obj, obj_cap, _new_cap, obj_t)                                 \
+                RECALLOC(obj, obj_cap, _new_cap, obj_t);                                \
                 obj_cap = _new_cap;                                                     \
             }
     #endif
