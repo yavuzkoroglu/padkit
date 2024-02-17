@@ -130,7 +130,11 @@ void
 #endif
 construct_gmtx(GraphMatrix* gmtx, uint32_t const initial_height, uint32_t const initial_width) {
     #ifndef NDEBUG
-        if (gmtx == NULL) return 0;
+        if (gmtx == NULL)                   return 0;
+        if (initial_height == 0)            return 0;
+        if (initial_height == 0xFFFFFFFF)   return 0;
+        if (initial_width == 0)             return 0;
+        if (initial_width == 0xFFFFFFFF)    return 0;
     #endif
 
     uint64_t const size = (((uint64_t)initial_height * (uint64_t)initial_width) >> 6) + 1;
