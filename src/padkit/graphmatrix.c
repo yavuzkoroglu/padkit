@@ -142,7 +142,7 @@ construct_gmtx(GraphMatrix* gmtx, uint32_t const initial_height, uint32_t const 
         if (size == 0) return 0;
     #endif
 
-    *gmtx = (GraphMatrix){ initial_height, initial_width, calloc(size, sizeof(uint8_t)) };
+    *gmtx = (GraphMatrix){ initial_height, initial_width, calloc(size, sizeof(uint64_t)) };
     #ifndef NDEBUG
         if (gmtx->array == NULL) return 0;
         return 1;
