@@ -63,16 +63,6 @@ latex/**
 *.gcov
 coverage.info
 
-# Program outputs
-*.csv
-*.xml
-*.dot
-*.cg.dot
-*.cg.xml
-*.cfg.dot
-*.cfg.xml
-*.pdf
-
 # Kernel Module Compile Results
 *.mod*
 *.cmd
