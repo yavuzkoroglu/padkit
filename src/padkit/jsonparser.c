@@ -239,13 +239,11 @@ static void s06_jp(JSONParser* const jp) {
     /* atValueStart() */
     (*jp->atValueStart)(jp);
 
-    /* atNull('ull') */
-    nextState[(fread(ull, 1, 3, jp->inputStream) == 3 && ull[0] == 'u' && ull[1] == 'l' && ull[2] == 'l')](jp);
-
     /* atValueEnd() */
     (*jp->atValueEnd)(jp);
 
-    s19_jp(jp);
+    /* atNull('ull') */
+    nextState[(fread(ull, 1, 3, jp->inputStream) == 3 && ull[0] == 'u' && ull[1] == 'l' && ull[2] == 'l')](jp);
 }
 
 static void s07a_jp(JSONParser* const jp) {
@@ -365,13 +363,11 @@ static void s09_jp(JSONParser* const jp) {
     /* atValueStart() */
     (*jp->atValueStart)(jp);
 
-    /* atTrue('rue') */
-    nextState[(fread(rue, 1, 3, jp->inputStream) == 3 && rue[0] == 'r' && rue[1] == 'u' && rue[2] == 'e')](jp);
-
     /* atValueEnd() */
     (*jp->atValueEnd)(jp);
 
-    s19_jp(jp);
+    /* atTrue('rue') */
+    nextState[(fread(rue, 1, 3, jp->inputStream) == 3 && rue[0] == 'r' && rue[1] == 'u' && rue[2] == 'e')](jp);
 }
 
 static void s10_jp(JSONParser* const jp) {
@@ -382,17 +378,15 @@ static void s10_jp(JSONParser* const jp) {
     /* atValueStart() */
     (*jp->atValueStart)(jp);
 
+    /* atValueEnd() */
+    (*jp->atValueEnd)(jp);
+
     /* atFalse('alse') */
     nextState[(
         fread(alse, 1, 4, jp->inputStream) == 4 &&
         alse[0] == 'a' && alse[1] == 'l'        &&
         alse[2] == 's' && alse[3] == 'e'
     )](jp);
-
-    /* atValueEnd() */
-    (*jp->atValueEnd)(jp);
-
-    s19_jp(jp);
 }
 
 static void s11a_jp(JSONParser* const jp) {
@@ -569,13 +563,11 @@ static void s14_jp(JSONParser* const jp) {
     /* atValueStart() */
     (*jp->atValueStart)(jp);
 
-    /* atNull('ull') */
-    nextState[(fread(ull, 1, 3, jp->inputStream) == 3 && ull[0] == 'u' && ull[1] == 'l' && ull[2] == 'l')](jp);
-
     /* atValueEnd() */
     (*jp->atValueEnd)(jp);
 
-    s20_jp(jp);
+    /* atNull('ull') */
+    nextState[(fread(ull, 1, 3, jp->inputStream) == 3 && ull[0] == 'u' && ull[1] == 'l' && ull[2] == 'l')](jp);
 }
 
 static void s15a_jp(JSONParser* const jp) {
@@ -695,19 +687,21 @@ static void s17_jp(JSONParser* const jp) {
     /* atValueStart() */
     (*jp->atValueStart)(jp);
 
-    /* atTrue('rue') */
-    nextState[(fread(rue, 1, 3, jp->inputStream) == 3 && rue[0] == 'r' && rue[1] == 'u' && rue[2] == 'e')](jp);
-
     /* atValueEnd() */
     (*jp->atValueEnd)(jp);
 
-    s20_jp(jp);
+    /* atTrue('rue') */
+    nextState[(fread(rue, 1, 3, jp->inputStream) == 3 && rue[0] == 'r' && rue[1] == 'u' && rue[2] == 'e')](jp);
 }
 
 static void s18_jp(JSONParser* const jp) {
     static ParseFunction nextState[2] = { err_jp, s20_jp };
 
     char alse[4];
+
+    /* atValueEnd() */
+    (*jp->atValueEnd)(jp);
+
 
     /* atValueStart() */
     (*jp->atValueStart)(jp);
@@ -718,11 +712,6 @@ static void s18_jp(JSONParser* const jp) {
         alse[0] == 'a' && alse[1] == 'l'        &&
         alse[2] == 's' && alse[3] == 'e'
     )](jp);
-
-    /* atValueEnd() */
-    (*jp->atValueEnd)(jp);
-
-    s20_jp(jp);
 }
 
 static void s19_jp(JSONParser* const jp) {
