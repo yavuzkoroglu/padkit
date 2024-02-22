@@ -74,14 +74,14 @@
      *   A wrapper macro for a standard reallocate() call.
      */
     #define REALLOCATE(ptr, old_n, new_n, type) \
-        reallocate((void**)&(ptr), (size_t)(old_n), (size_t)new_n, sizeof(type))
+        reallocate((void**)&(ptr), (size_t)(old_n), (size_t)(new_n), sizeof(type))
 
     /**
      * @def RECALLOC
      *   A wrapper macro for a standard recalloc() call.
      */
     #define RECALLOC(ptr, old_n, new_n, type) \
-        recalloc((void**)&(ptr), (size_t)(old_n), (size_t)new_n, sizeof(type))
+        recalloc((void**)&(ptr), (size_t)(old_n), (size_t)(new_n), sizeof(type))
 
     /**
      * @brief A reallocator that uses realloc().

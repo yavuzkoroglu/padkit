@@ -656,11 +656,22 @@ static void test_reallocate(void) {
     #undef NEW_SIZE
 }
 
+typedef struct ObjBody {
+    uint32_t    x;
+    uint32_t    y;
+} Obj;
+
+typedef struct ListBody {
+    uint32_t    cap;
+    uint32_t    size;
+    Obj*        array;
+} List;
+
 static void test_reallocate_recalloc(void) {
-    #define OLD_SIZE 1024
+    #define OLD_SIZE 256
     #define NEW_SIZE 131072
 
-    char* buffer = calloc(1024, 1);
+    char* buffer = calloc(OLD_SIZE, 1);
     DEBUG_ERROR_IF(buffer == NULL)
 
     char* const new_buffer =
@@ -672,9 +683,26 @@ static void test_reallocate_recalloc(void) {
     for (unsigned i = 0; i < NEW_SIZE; i++)
         TEST_FAIL_IF(new_buffer[i] != '\0')
 
+    List list[1];
+    list->cap   = OLD_SIZE;
+    list->size  = 0;
+    list->array = calloc((size_t)list->cap, sizeof(Obj));
+    DEBUG_ERROR_IF(list->array == NULL)
+
+    REPEAT ((NEW_SIZE >> 1) + 1) {
+        RECALLOC_IF_NECESSARY(Obj, list->array, uint32_t, list->cap, list->size, RECALLOC_ERROR)
+        list->array[list->size++] = (Obj){1, 1};
+    }
+
+    TEST_FAIL_IF(list->size != (NEW_SIZE >> 1) + 1)
+    TEST_FAIL_IF(list->cap != NEW_SIZE)
+    TEST_FAIL_IF(list->array[list->size - 1].x != 1 || list->array[list->size - 1].y != 1)
+    TEST_FAIL_IF(list->array[list->cap - 1].x != 0 || list->array[list->cap - 1].y != 0)
+
     TEST_PASS
 
     free(buffer);
+    free(list->array);
     #undef OLD_SIZE
     #undef NEW_SIZE
 }
