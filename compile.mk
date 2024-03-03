@@ -19,7 +19,7 @@ ARCH_ARGS=-arch ${ARCH}
 STDLIBS=
 else
 ARCH_ARGS=
-STDLIBS=-luuid
+STDLIBS=
 ifeq (${OS},Linux)
 DYNAMIC_LIB_FLAGS=-shared -fPIC
 else
