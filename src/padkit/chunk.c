@@ -6,7 +6,6 @@
  */
 #include <ctype.h>
 #include <string.h>
-#include <uuid/uuid.h>
 #include "padkit/chunk.h"
 #include "padkit/reallocate.h"
 
