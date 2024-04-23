@@ -41,7 +41,8 @@ SILENCED=                               \
     -Wno-unknown-warning-option         \
     -Wno-missing-noreturn               \
     -Wno-implicit-fallthrough           \
-    -Wno-unsafe-buffer-usage
+    -Wno-unsafe-buffer-usage            \
+    -Wno-switch-default
 ARGS=${ARCH_ARGS} ${FLAGS} -Weverything ${SILENCED} -Iinclude ${STDLIBS}
 else
 SILENCED=                               \
@@ -50,7 +51,8 @@ SILENCED=                               \
     -Wno-unknown-warning-option         \
     -Wno-missing-noreturn               \
     -Wno-implicit-fallthrough           \
-    -Wno-nullability-completeness
+    -Wno-nullability-completeness       \
+    -Wno-switch-default
 ARGS=${ARCH_ARGS} ${FLAGS} -Wall -Wextra ${SILENCED} -Iinclude ${STDLIBS}
 endif
 
