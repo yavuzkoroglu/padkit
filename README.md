@@ -11,36 +11,21 @@ The above steps should produce
 1. The libraries in `lib/` and
 2. The automatically generated headers in `include/`.
 
-## Tested Environments (v1.1beta)
+## Tested Environments (v1.2beta)
 
 | Date (ISO 8601) |                  OS |                   `uname -sm` |     Compiler |
 |----------------:|--------------------:|------------------------------:|-------------:|
+|      2024-04-27 |  Ubuntu 22.04.3 LTS |                  Linux x86_64 |   gcc 11.4.0 |
+|      2024-04-27 |  Ubuntu 22.04.3 LTS |                 Linux aarch64 | clang 14.0.0 |
 |      2024-04-23 | macOS Sonoma 14.4.1 |                  Darwin arm64 | clang 18.1.4 |
-|      2024-03-09 | macOS Sonoma 14.4.1 |                  Darwin arm64 | clang 17.0.6 |
-|      2024-03-09 |   macOS Sonoma 14.4 |                  Darwin arm64 | clang 17.0.6 |
-|      2024-02-08 | macOS Sonoma 14.3.1 |                  Darwin arm64 | clang 17.0.6 |
-|      2024-02-08 | macOS Sonoma 14.3.1 |                  Darwin arm64 |   gcc 13.2.0 |
-|      2024-01-24 |   macOS Sonoma 14.3 |                  Darwin arm64 | clang 17.0.6 |
-|      2024-01-24 |   macOS Sonoma 14.3 |                  Darwin arm64 |   gcc 13.2.0 |
-|      2023-12-11 | macOS Sonoma 14.2.1 |                  Darwin arm64 | clang 17.0.6 |
-|      2023-12-11 |   macOS Sonoma 14.2 |                  Darwin arm64 | clang 17.0.6 |
-|      2023-12-11 | macOS Sonoma 14.1.2 |                  Darwin arm64 | clang 17.0.6 |
-|      2023-11-30 | macOS Sonoma 14.1.1 |                  Darwin arm64 | clang 17.0.6 |
-|      2023-11-05 |   macOS Sonoma 14.0 |                  Darwin arm64 | clang 17.0.4 |
-|      2023-10-18 |   macOS Sonoma 14.0 |                  Darwin arm64 | clang 17.0.3 |
-|      2023-10-14 |   macOS Sonoma 14.0 |                  Darwin arm64 | clang 17.0.2 |
-|      2023-10-14 |   macOS Sonoma 14.0 |                  Darwin arm64 |   gcc 13.2.0 |
-|      2023-10-14 |   macOS Sonoma 14.0 |                 Darwin x86_64 | clang 17.0.2 |
-|      2023-10-14 |   macOS Sonoma 14.0 |                 Darwin x86_64 |   gcc 13.2.0 |
-|      2023-10-14 |  Ubuntu 22.04.3 LTS |                 Linux aarch64 | clang 14.0.0 |
-|      2023-10-14 |  Ubuntu 22.04.3 LTS |                 Linux aarch64 |   gcc 11.4.0 |
-|      2023-10-14 |  Ubuntu 22.04.3 LTS |                  Linux x86_64 | clang 14.0.0 |
-|      2023-10-14 |  Ubuntu 22.04.3 LTS |                  Linux x86_64 |   gcc 11.4.0 |
-|      2023-10-14 | Windows 10 Pro 22H2 | MINGW64\_NT-10.0-19045 x86_64 | clang 11.0.0 |
-|      2023-10-14 | Windows 10 Pro 22H2 | MINGW64\_NT-10.0-19045 x86_64 |   gcc 13.1.0 |
 
-## Changes v1.0 -> v1.1beta
+## Changes 
 
+### Changes v1.1 -> v1.2beta
+
+### Changes v1.0 -> v1.1
+
+* Silenced some warning messages for `clang` and `gcc` in `compile.mk`.
 * `GraphMatrix` objects now allocate bits in 64-bit blocks instead of 8-bit blocks.
 * Updated `include/padkit/reallocate.h`.
 * Corrected `NOT_A_JSON_PARSER` in `include/padkit/jsonparser.h`.
