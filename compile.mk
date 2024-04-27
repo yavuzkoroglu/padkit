@@ -42,6 +42,7 @@ SILENCED=                               \
     -Wno-missing-noreturn               \
     -Wno-implicit-fallthrough           \
     -Wno-unsafe-buffer-usage            \
+    -Wno-disabled-macro-expansion       \
     -Wno-switch-default
 ARGS=${ARCH_ARGS} ${FLAGS} -Weverything ${SILENCED} -Iinclude ${STDLIBS}
 else
@@ -52,6 +53,7 @@ SILENCED=                               \
     -Wno-missing-noreturn               \
     -Wno-implicit-fallthrough           \
     -Wno-nullability-completeness       \
+    -Wno-disabled-macro-expansion       \
     -Wno-switch-default
 ARGS=${ARCH_ARGS} ${FLAGS} -Wall -Wextra ${SILENCED} -Iinclude ${STDLIBS}
 endif
