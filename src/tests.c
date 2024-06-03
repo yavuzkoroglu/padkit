@@ -718,11 +718,14 @@ static void test_stack(void) {
 
     TEST_FAIL_IF(size_stack != 5)
 
-    REVERSE_STACK(unsigned, stack)
+    DEQUEUE_STACK_D(unsigned, element1, stack)
+    TEST_FAIL_IF(element1 != 1)
 
-    POP_STACK_D(unsigned, element, stack)
+    DEQUEUE_STACK_D(unsigned, element2, stack)
+    TEST_FAIL_IF(element2 != 2)
 
-    TEST_FAIL_IF(element != 1)
+    ENQUEUE_STACK(unsigned, stack, 2)
+    TEST_FAIL_IF(stack[0] != 2)
 
     FLUSH_STACK(stack)
 

@@ -9,6 +9,7 @@
 #ifndef STACK_H
     #define STACK_H
     #include <stdint.h>
+    #include <string.h>
     #include "padkit/reallocate.h"
 
     /**
@@ -53,6 +54,49 @@
         type* stack;
 
     /**
+     * @def DEQUEUE_STACK_D(type, variable, stack)
+     *   Declares a constant variable and pops the first element in the stack to that variable.
+     */
+    #define DEQUEUE_STACK_D(type, variable, stack)                                              \
+        DEBUG_ASSERT(IS_VALID_STACK(stack))                                                     \
+        DEBUG_ASSERT(size_##stack > 0)                                                          \
+        type const variable = stack[0];                                                         \
+        size_##stack--;                                                                         \
+        memmove(stack, stack + 1, (size_t)size_##stack * sizeof(stack[0]));
+
+    /**
+     * @def DEQUEUE_STACK_N(stack)
+     *   Pops the first element in the stack and forgets it.
+     */
+    #define DEQUEUE_STACK_N(stack)                                                              \
+        DEBUG_ASSERT(IS_VALID_STACK(stack))                                                     \
+        DEBUG_ASSERT(size_##stack > 0)                                                          \
+        size_##stack--;                                                                         \
+        memmove(stack, stack + 1, (size_t)size_##stack * sizeof(stack[0]));
+
+    /**
+     * @def DEQUEUE_STACK_V(variable, stack)
+     *   Pops the first element in the stack to a variable.
+     */
+    #define DEQUEUE_STACK_V(variable, stack)                                                    \
+        DEBUG_ASSERT(IS_VALID_STACK(stack))                                                     \
+        DEBUG_ASSERT(size_##stack > 0)                                                          \
+        variable = stack[0];                                                                    \
+        size_##stack--;                                                                         \
+        memmove(stack, stack + 1, (size_t)size_##stack * sizeof(stack[0]));
+
+    /**
+     * @def ENQUEUE_STACK(type, stack, element)
+     *   Pushes an element to the beginning of a stack
+     */
+    #define ENQUEUE_STACK(type, stack, element)                                                 \
+        DEBUG_ASSERT(IS_VALID_STACK(stack))                                                     \
+        RECALLOC_IF_NECESSARY(type, stack, uint32_t, cap_##stack, size_##stack, RECALLOC_ERROR) \
+        memmove(stack + 1, stack, (size_t)size_##stack * sizeof(type));                         \
+        size_##stack++;                                                                         \
+        stack[0] = element;
+
+    /**
      * @def INVALIDATE_STACK(stack)
      *   Makes a stack unable to pass the IS_VALID_STACK(stack) test.
      */
@@ -91,7 +135,7 @@
 
     /**
      * @def PEEK_STACK_D(type, variable, stack)
-     *   Declares a constant variable and sets its value to the last element of the stack.
+     *   Declares a constant variable and sets its value to the top element of the stack.
      */
     #define PEEK_STACK_D(type, variable, stack)                                                 \
         DEBUG_ASSERT(IS_VALID_STACK(stack))                                                     \
@@ -100,7 +144,7 @@
 
     /**
      * @def PEEK_STACK_V(variable, stack)
-     *   Assigns the last element of the stack to a variable.
+     *   Assigns the top element of the stack to a variable.
      */
     #define PEEK_STACK_V(variable, stack)                                                       \
         DEBUG_ASSERT(IS_VALID_STACK(stack))                                                     \
@@ -108,8 +152,24 @@
         variable = stack[size_##stack - 1];
 
     /**
+     * @def PEEK_BOTTOM_STACK_D(type, variable, stack)
+     *   Declares a constant variable and sets its value to the bottom element of the stack.
+     */
+    #define PEEK_BOTTOM_STACK_D(type, variable, stack)                                          \
+        DEBUG_ASSERT(IS_VALID_STACK(stack))                                                     \
+        type const variable = stack[0];
+
+    /**
+     * @def PEEK_BOTTOM_STACK_V(variable, stack)
+     *   Assigns the bottom element of the stack to a variable.
+     */
+    #define PEEK_BOTTOM_STACK_V(variable, stack)                                                \
+        DEBUG_ASSERT(IS_VALID_STACK(stack))                                                     \
+        variable = stack[0];
+
+    /**
      * @def POP_STACK_D(type, variable, stack)
-     *   Declares a constant variable and pops the last element of the stack to that variable.
+     *   Declares a constant variable and pops the top element of the stack to that variable.
      */
     #define POP_STACK_D(type, variable, stack)                                                  \
         DEBUG_ASSERT(IS_VALID_STACK(stack))                                                     \
@@ -118,7 +178,7 @@
 
     /**
      * @def POP_STACK_N(type, variable, stack)
-     *   Pops the last element of the stack and forgets that element.
+     *   Pops the top element of the stack and forgets that element.
      */
     #define POP_STACK_N(stack)                                                                  \
         DEBUG_ASSERT(IS_VALID_STACK(stack))                                                     \
@@ -127,7 +187,7 @@
 
     /**
      * @def POP_STACK_V(variable, stack)
-     *   Pops the last element of the stack to a variable.
+     *   Pops the top element of the stack to a variable.
      */
     #define POP_STACK_V(variable, stack)                                                        \
         DEBUG_ASSERT(IS_VALID_STACK(stack))                                                     \
