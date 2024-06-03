@@ -27,6 +27,8 @@ The above steps should produce
 
 ### Changes v1.1 -> v1.2beta
 
+* Added `include/padkit/stack.h` and a `test_stack()` function to `src/tests.c`.
+
 ### Changes v1.0 -> v1.1
 
 * Silenced some warning messages for `clang` and `gcc` in `compile.mk`.

@@ -55,6 +55,7 @@ include/padkit.h: ;                                                         @\
     echo '    #include "padkit/prime.h"'                >> include/padkit.h; \
     echo '    #include "padkit/reallocate.h"'           >> include/padkit.h; \
     echo '    #include "padkit/repeat.h"'               >> include/padkit.h; \
+    echo '    #include "padkit/stack.h"'                >> include/padkit.h; \
     echo '    #include "padkit/streq.h"'                >> include/padkit.h; \
     echo '    #include "padkit/timestamp.h"'            >> include/padkit.h; \
     echo '    #include "padkit/value.h"'                >> include/padkit.h; \

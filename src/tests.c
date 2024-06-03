@@ -707,6 +707,32 @@ static void test_reallocate_recalloc(void) {
     #undef NEW_SIZE
 }
 
+static void test_stack(void) {
+    CREATE_EMPTY_STACK(unsigned, stack, BUFSIZ)
+
+    PUSH_STACK(unsigned, stack, 1)
+    PUSH_STACK(unsigned, stack, 2)
+    PUSH_STACK(unsigned, stack, 3)
+    PUSH_STACK(unsigned, stack, 4)
+    PUSH_STACK(unsigned, stack, 5)
+
+    TEST_FAIL_IF(size_stack != 5)
+
+    REVERSE_STACK(unsigned, stack)
+
+    POP_STACK_D(unsigned, element, stack)
+
+    TEST_FAIL_IF(element != 1)
+
+    FLUSH_STACK(stack)
+
+    TEST_FAIL_IF(size_stack != 0)
+
+    FREE_STACK(stack)
+
+    TEST_PASS
+}
+
 static void test_streq_mem_eq_n(void) {
     static char const* str[] = { "abc", "", "bca", "cab", "abc", "?" };
     static unsigned const len[] = { 3, 0, 3, 3, 3, 1 };
@@ -845,6 +871,7 @@ int main(void) {
     test_map();
     test_reallocate();
     test_reallocate_recalloc();
+    test_stack();
     test_streq_mem_eq_n();
     test_streq_str_eq_n();
     test_streq_str_eq();
