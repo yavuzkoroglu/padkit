@@ -48,9 +48,18 @@
      *   Declares all the variables related to a stack.
      */
     #define DECLARE_STACK(type, stack)                                                          \
-        uint32_t size_##stack   = 0;                                                            \
-        uint32_t cap_##stack    = 0;                                                            \
-        type* stack             = NULL;
+        uint32_t size_##stack;                                                                  \
+        uint32_t cap_##stack;                                                                   \
+        type* stack;
+
+    /**
+     * @def INVALIDATE_STACK(stack)
+     *   Makes a stack unable to pass the IS_VALID_STACK(stack) test.
+     */
+    #define INVALIDATE_STACK(stack)                                                             \
+        size_##stack    = 0;                                                                    \
+        cap_##stack     = 0;                                                                    \
+        stack           = NULL;
 
     /**
      * @def FLUSH_STACK(stack)
@@ -66,10 +75,8 @@
      */
     #define FREE_STACK(stack)                                                                   \
         DEBUG_ASSERT(IS_VALID_STACK(stack))                                                     \
-        size_##stack    = 0;                                                                    \
-        cap_##stack     = 0;                                                                    \
         free(stack);                                                                            \
-        stack = NULL;
+        INVALIDATE_STACK(stack)
 
     /**
      * @def IS_VALID_STACK(stack)
