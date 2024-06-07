@@ -21,7 +21,7 @@
         DEBUG_ASSERT(buffer == NULL)                                                                                            \
         DEBUG_ASSERT(initial_cap > 0)                                                                                           \
         DEBUG_ASSERT(initial_cap < UINT32_MAX / sizeof(type))                                                                   \
-        cap_##buffer    = (uint32_t)initial_cap;                                                                                \
+        buffer##_cap    = (uint32_t)initial_cap;                                                                                \
         buffer          = malloc(initial_cap * sizeof(type));                                                                   \
         DEBUG_ERROR_IF(buffer == NULL)
 
@@ -31,9 +31,9 @@
      */
     #define CONSTRUCT_EMPTY_CIRCBUFF(type, buffer, initial_cap)                                                                 \
         ALLOCATE_CIRCBUFF(type, buffer, initial_cap)                                                                            \
-        size_##buffer   = 0;                                                                                                    \
-        top_##buffer    = NULL;                                                                                                 \
-        bottom_##buffer = NULL;
+        buffer##_size   = 0;                                                                                                    \
+        buffer##_top    = NULL;                                                                                                 \
+        buffer##_bottom = NULL;
 
     /**
      * @def CREATE_EMPTY_CIRCBUFF(type, buffer, initial_cap)
@@ -42,23 +42,23 @@
     #define CREATE_EMPTY_CIRCBUFF(type, buffer, initial_cap)                                                                    \
         DEBUG_ASSERT(initial_cap > 0)                                                                                           \
         DEBUG_ASSERT(initial_cap < UINT32_MAX / sizeof(type))                                                                   \
-        uint32_t size_##buffer  = 0;                                                                                            \
-        uint32_t cap_##buffer   = (uint32_t)initial_cap;                                                                        \
+        uint32_t buffer##_size  = 0;                                                                                            \
+        uint32_t buffer##_cap   = (uint32_t)initial_cap;                                                                        \
         type* buffer            = malloc((size_t)initial_cap * sizeof(type));                                                   \
         DEBUG_ERROR_IF(buffer == NULL)                                                                                          \
-        type* top_##buffer      = NULL;                                                                                         \
-        type* bottom_##buffer   = NULL;
+        type* buffer##_top      = NULL;                                                                                         \
+        type* buffer##_bottom   = NULL;
 
     /**
      * @def DECLARE_CIRCBUFF(type, buffer)
      *   Delares all the variables related to a circular buffer.
      */
     #define DECLARE_CIRCBUFF(type, buffer)                                                                                      \
-        uint32_t size_##buffer;                                                                                                 \
-        uint32_t cap_##buffer;                                                                                                  \
+        uint32_t buffer##_size;                                                                                                 \
+        uint32_t buffer##_cap;                                                                                                  \
         type* buffer;                                                                                                           \
-        type* top_##buffer;                                                                                                     \
-        type* bottom_##buffer;
+        type* buffer##_top;                                                                                                     \
+        type* buffer##_bottom;
 
     /**
      * @def DEQUEUE_CIRCBUFF(buffer)
@@ -78,22 +78,22 @@
      */
     #define DOWNGRADE_CIRCBUFF_TO_STACK(type, buffer)                                                                           \
         DEBUG_ASSERT(IS_VALID_CIRCBUFF(buffer))                                                                                 \
-        if (bottom_##buffer > buffer) {                                                                                         \
-            size_t const _size_in_bytes = (size_t)size_##buffer * sizeof(buffer[0]);                                            \
-            DEBUG_ASSERT(_size_in_bytes >= (size_t)size_##buffer)                                                               \
-            if (bottom_##buffer <= top_##buffer) {                                                                              \
-                memmove(buffer, bottom_##buffer, _size_in_bytes);                                                               \
+        if (buffer##_bottom > buffer) {                                                                                         \
+            size_t const _size_in_bytes = (size_t)buffer##_size * sizeof(buffer[0]);                                            \
+            DEBUG_ASSERT(_size_in_bytes >= (size_t)buffer##_size)                                                               \
+            if (buffer##_bottom <= buffer##_top) {                                                                              \
+                memmove(buffer, buffer##_bottom, _size_in_bytes);                                                               \
             } else {                                                                                                            \
                 type* const _tmp = malloc(_size_in_bytes);                                                                      \
                 DEBUG_ERROR_IF(_tmp == NULL)                                                                                    \
-                memcpy(_tmp, bottom_##buffer, (size_t)(buffer + cap_##buffer - bottom_##buffer) * sizeof(buffer[0]));           \
-                memcpy(_tmp, (type*)(_tmp+cap_##buffer-bottom_##buffer), (size_t)(top_##buffer-buffer+1) * sizeof(buffer[0]));  \
+                memcpy(_tmp, buffer##_bottom, (size_t)(buffer + buffer##_cap - buffer##_bottom) * sizeof(buffer[0]));           \
+                memcpy(_tmp, (type*)(_tmp+buffer##_cap-buffer##_bottom), (size_t)(buffer##_top-buffer+1) * sizeof(buffer[0]));  \
                 memcpy(buffer, _tmp, _size_in_bytes);                                                                           \
                 free(_tmp);                                                                                                     \
             }                                                                                                                   \
         }                                                                                                                       \
-        bottom_##buffer = NULL;                                                                                                 \
-        top_##buffer    = NULL;
+        buffer##_bottom = NULL;                                                                                                 \
+        buffer##_top    = NULL;
 
     /**
      * @def ENQUEUE_CIRCBUFF(type, buffer, ptr)
@@ -125,9 +125,9 @@
      */
     #define FLUSH_CIRCBUFF(buffer)                                                                                              \
         DEBUG_ASSERT(IS_VALID_CIRCBUFF(buffer))                                                                                 \
-        size_##buffer   = 0;                                                                                                    \
-        top_##buffer    = NULL;                                                                                                 \
-        bottom_##buffer = NULL;
+        buffer##_size   = 0;                                                                                                    \
+        buffer##_top    = NULL;                                                                                                 \
+        buffer##_bottom = NULL;
 
     /**
      * @def FREE_CIRCBUFF(buffer)
@@ -144,19 +144,19 @@
      */
     #define GET_CIRCBUFF(ptr, buffer, i)                                                                                        \
         DEBUG_ASSERT(IS_VALID_CIRCBUFF(buffer))                                                                                 \
-        DEBUG_ASSERT(i < size_##buffer)                                                                                         \
-        ptr = ((bottom_##buffer + i < buffer + cap_##buffer) ? bottom_##buffer + i : top_##buffer - (size_##buffer - i - 1));
+        DEBUG_ASSERT(i < buffer##_size)                                                                                         \
+        ptr = ((buffer##_bottom + i < buffer + buffer##_cap) ? buffer##_bottom + i : buffer##_top - (buffer##_size - i - 1));
 
     /**
      * @def INVALIDATE_CIRCBUFF(buffer)
      *   Invalidates a circular buffer so it cannot pass the IS_VALID_CIRCBUFF(buffer) test.
      */
     #define INVALIDATE_CIRCBUFF(buffer)                                                                                         \
-        size_##buffer   = 0;                                                                                                    \
-        cap_##buffer    = 0;                                                                                                    \
+        buffer##_size   = 0;                                                                                                    \
+        buffer##_cap    = 0;                                                                                                    \
         buffer          = NULL;                                                                                                 \
-        top_##buffer    = NULL;                                                                                                 \
-        bottom_##buffer = NULL;
+        buffer##_top    = NULL;                                                                                                 \
+        buffer##_bottom = NULL;
 
     /**
      * @def IS_VALID_CIRCBUFF(buffer)
@@ -164,23 +164,23 @@
      */
     #define IS_VALID_CIRCBUFF(buffer) (                                                                                         \
             (buffer != NULL)                                &&                                                                  \
-            (size_##buffer <= cap_##buffer)                 &&                                                                  \
-            (cap_##buffer > 0)                              &&                                                                  \
-            (cap_##buffer < UINT32_MAX / sizeof(buffer[0]))   &&                                                                \
+            (buffer##_size <= buffer##_cap)                 &&                                                                  \
+            (buffer##_cap > 0)                              &&                                                                  \
+            (buffer##_cap < UINT32_MAX / sizeof(buffer[0]))   &&                                                                \
             (                                                                                                                   \
                 (                                                                                                               \
-                    (bottom_##buffer == top_##buffer)                                                                       &&  \
-                    (size_##buffer <= 1)                                                                                        \
+                    (buffer##_bottom == buffer##_top)                                                                       &&  \
+                    (buffer##_size <= 1)                                                                                        \
                 ) || (                                                                                                          \
-                    (top_##buffer < bottom_##buffer)                                                                        &&  \
-                    (top_##buffer >= buffer)                                                                                &&  \
-                    (bottom_##buffer < buffer + cap_##buffer)                                                               &&  \
-                    ((uint32_t)((top_##buffer - buffer + 1) + (buffer + cap_##buffer - bottom_##buffer)) == size_##buffer)      \
+                    (buffer##_top < buffer##_bottom)                                                                        &&  \
+                    (buffer##_top >= buffer)                                                                                &&  \
+                    (buffer##_bottom < buffer + buffer##_cap)                                                               &&  \
+                    ((uint32_t)((buffer##_top - buffer + 1) + (buffer + buffer##_cap - buffer##_bottom)) == buffer##_size)      \
                 ) || (                                                                                                          \
-                    (bottom_##buffer < top_##buffer)                                                                        &&  \
-                    (bottom_##buffer >= buffer)                                                                             &&  \
-                    (top_##buffer < buffer + cap_##buffer)                                                                  &&  \
-                    ((uint32_t)(top_##buffer - bottom_##buffer + 1) == size_##buffer)                                           \
+                    (buffer##_bottom < buffer##_top)                                                                        &&  \
+                    (buffer##_bottom >= buffer)                                                                             &&  \
+                    (buffer##_top < buffer + buffer##_cap)                                                                  &&  \
+                    ((uint32_t)(buffer##_top - buffer##_bottom + 1) == buffer##_size)                                           \
                 )                                                                                                               \
             )                                                                                                                   \
         )
@@ -191,8 +191,8 @@
      */
     #define PEEK_BOTTOM_CIRCBUFF(ptr, buffer)                                                                                   \
         DEBUG_ASSERT(IS_VALID_CIRCBUFF(buffer))                                                                                 \
-        DEBUG_ERROR_IF(bottom_##buffer == NULL)                                                                                 \
-        ptr = bottom_##buffer;
+        DEBUG_ERROR_IF(buffer##_bottom == NULL)                                                                                 \
+        ptr = buffer##_bottom;
 
     /**
      * @def PEEK_CIRCBUFF(ptr, buffer)
@@ -206,8 +206,8 @@
      */
     #define PEEK_TOP_CIRCBUFF(ptr, buffer)                                                                                      \
         DEBUG_ASSERT(IS_VALID_CIRCBUFF(buffer))                                                                                 \
-        DEBUG_ERROR_IF(top_##buffer == NULL)                                                                                    \
-        ptr = top_##buffer;
+        DEBUG_ERROR_IF(buffer##_top == NULL)                                                                                    \
+        ptr = buffer##_top;
 
     /**
      * @def POP_BOTTOM_CIRCBUFF(buffer)
@@ -215,14 +215,14 @@
      */
     #define POP_BOTTOM_CIRCBUFF(buffer)                                                                                         \
         DEBUG_ASSERT(IS_VALID_CIRCBUFF(buffer))                                                                                 \
-        DEBUG_ASSERT(size_##buffer > 0)                                                                                         \
-        if (size_##buffer == 1) {                                                                                               \
-            bottom_##buffer = NULL;                                                                                             \
-            top_##buffer    = NULL;                                                                                             \
+        DEBUG_ASSERT(buffer##_size > 0)                                                                                         \
+        if (buffer##_size == 1) {                                                                                               \
+            buffer##_bottom = NULL;                                                                                             \
+            buffer##_top    = NULL;                                                                                             \
         } else {                                                                                                                \
-            bottom_##buffer = (bottom_##buffer == buffer + cap_##buffer - 1) ? buffer: bottom_##buffer + 1;                     \
+            buffer##_bottom = (buffer##_bottom == buffer + buffer##_cap - 1) ? buffer: buffer##_bottom + 1;                     \
         }                                                                                                                       \
-        size_##buffer--;
+        buffer##_size--;
 
     /**
      * @def POP_BOTTOM_CIRCBUFF_V(ptr, buffer)
@@ -244,14 +244,14 @@
      */
     #define POP_TOP_CIRCBUFF(buffer)                                                                                            \
         DEBUG_ASSERT(IS_VALID_CIRCBUFF(buffer))                                                                                 \
-        DEBUG_ASSERT(size_##buffer > 0)                                                                                         \
-        if (size_##buffer == 1) {                                                                                               \
-            top_##buffer    = NULL;                                                                                             \
-            bottom_##buffer = NULL;                                                                                             \
+        DEBUG_ASSERT(buffer##_size > 0)                                                                                         \
+        if (buffer##_size == 1) {                                                                                               \
+            buffer##_top    = NULL;                                                                                             \
+            buffer##_bottom = NULL;                                                                                             \
         } else {                                                                                                                \
-            top_##buffer    = (top_##buffer == buffer) ? buffer + cap_##buffer - 1 : top_##buffer - 1;                          \
+            buffer##_top    = (buffer##_top == buffer) ? buffer + buffer##_cap - 1 : buffer##_top - 1;                          \
         }                                                                                                                       \
-        size_##buffer--;
+        buffer##_size--;
 
     /**
      * @def POP_TOP_CIRCBUFF_V(ptr, buffer)
@@ -267,19 +267,19 @@
      */
     #define PUSH_BOTTOM_CIRCBUFF(type, buffer, ptr)                                                                             \
         DEBUG_ASSERT(IS_VALID_CIRCBUFF(buffer))                                                                                 \
-        if (bottom_##buffer == NULL) {                                                                                          \
-            bottom_##buffer = buffer;                                                                                           \
-            top_##buffer    = buffer;                                                                                           \
+        if (buffer##_bottom == NULL) {                                                                                          \
+            buffer##_bottom = buffer;                                                                                           \
+            buffer##_top    = buffer;                                                                                           \
         } else {                                                                                                                \
             REALLOC_CIRCBUFF_IF_NECESSARY(type, buffer)                                                                         \
-            bottom_##buffer = (bottom_##buffer == buffer) ? buffer + cap_##buffer - 1 : bottom_##buffer - 1;                    \
+            buffer##_bottom = (buffer##_bottom == buffer) ? buffer + buffer##_cap - 1 : buffer##_bottom - 1;                    \
         }                                                                                                                       \
         if (ptr == NULL) {                                                                                                      \
-            memset(bottom_##buffer, 0, sizeof(type));                                                                           \
+            memset(buffer##_bottom, 0, sizeof(type));                                                                           \
         } else {                                                                                                                \
-            memcpy(bottom_##buffer, ptr, sizeof(type));                                                                         \
+            memcpy(buffer##_bottom, ptr, sizeof(type));                                                                         \
         }                                                                                                                       \
-        size_##buffer++;
+        buffer##_size++;
 
     /**
      * @def PUSH_BOTTOM_CIRCBUFF_C(type, buffer, ptr)
@@ -287,22 +287,22 @@
      */
     #define PUSH_BOTTOM_CIRCBUFF_C(type, buffer, ptr)                                                                           \
         DEBUG_ASSERT(IS_VALID_CIRCBUFF(buffer))                                                                                 \
-        if (bottom_##buffer == NULL) {                                                                                          \
-            bottom_##buffer = buffer;                                                                                           \
-            top_##buffer    = buffer;                                                                                           \
+        if (buffer##_bottom == NULL) {                                                                                          \
+            buffer##_bottom = buffer;                                                                                           \
+            buffer##_top    = buffer;                                                                                           \
         } else {                                                                                                                \
-            bottom_##buffer = (bottom_##buffer == buffer) ? buffer + cap_##buffer - 1 : bottom_##buffer - 1;                    \
+            buffer##_bottom = (buffer##_bottom == buffer) ? buffer + buffer##_cap - 1 : buffer##_bottom - 1;                    \
         }                                                                                                                       \
         if (ptr == NULL) {                                                                                                      \
-            memset(bottom_##buffer, 0, sizeof(type));                                                                           \
+            memset(buffer##_bottom, 0, sizeof(type));                                                                           \
         } else {                                                                                                                \
-            memcpy(bottom_##buffer, ptr, sizeof(type));                                                                         \
+            memcpy(buffer##_bottom, ptr, sizeof(type));                                                                         \
         }                                                                                                                       \
-        if (size_##buffer == cap_##buffer) {                                                                                    \
-            DEBUG_ASSERT(top_##buffer == bottom_##buffer)                                                                       \
-            top_##buffer    = (top_##buffer == buffer) ? buffer + cap_##buffer - 1 : top_##buffer - 1;                          \
+        if (buffer##_size == buffer##_cap) {                                                                                    \
+            DEBUG_ASSERT(buffer##_top == buffer##_bottom)                                                                       \
+            buffer##_top    = (buffer##_top == buffer) ? buffer + buffer##_cap - 1 : buffer##_top - 1;                          \
         } else {                                                                                                                \
-            size_##buffer++;                                                                                                    \
+            buffer##_size++;                                                                                                    \
         }
 
     /**
@@ -311,7 +311,7 @@
      */
     #define PUSH_BOTTOM_CIRCBUFF_N(type, ptr, buffer)                                                                           \
         PUSH_BOTTOM_CIRCBUFF(type, buffer, NULL)                                                                                \
-        ptr = bottom_##buffer;
+        ptr = buffer##_bottom;
 
     /**
      * @def PUSH_BOTTOM_CIRCBUFF_NC(type, ptr, buffer)
@@ -319,7 +319,7 @@
      */
     #define PUSH_BOTTOM_CIRCBUFF_NC(type, ptr, buffer)                                                                          \
         PUSH_BOTTOM_CIRCBUFF_C(type, buffer, NULL)                                                                              \
-        ptr = bottom_##buffer;
+        ptr = buffer##_bottom;
 
     /**
      * @def PUSH_CIRCBUFF(type, buffer, ptr)
@@ -351,19 +351,19 @@
      */
     #define PUSH_TOP_CIRCBUFF(type, buffer, ptr)                                                                                \
         DEBUG_ASSERT(IS_VALID_CIRCBUFF(buffer))                                                                                 \
-        if (top_##buffer == NULL) {                                                                                             \
-            top_##buffer    = buffer;                                                                                           \
-            bottom_##buffer = buffer;                                                                                           \
+        if (buffer##_top == NULL) {                                                                                             \
+            buffer##_top    = buffer;                                                                                           \
+            buffer##_bottom = buffer;                                                                                           \
         } else {                                                                                                                \
             REALLOC_CIRCBUFF_IF_NECESSARY(type, buffer)                                                                         \
-            top_##buffer    = (top_##buffer == buffer + cap_##buffer - 1) ? buffer : top_##buffer + 1;                          \
+            buffer##_top    = (buffer##_top == buffer + buffer##_cap - 1) ? buffer : buffer##_top + 1;                          \
         }                                                                                                                       \
         if (ptr == NULL) {                                                                                                      \
-            memset(top_##buffer, 0, sizeof(type));                                                                              \
+            memset(buffer##_top, 0, sizeof(type));                                                                              \
         } else {                                                                                                                \
-            memcpy(top_##buffer, ptr, sizeof(type));                                                                            \
+            memcpy(buffer##_top, ptr, sizeof(type));                                                                            \
         }                                                                                                                       \
-        size_##buffer++;
+        buffer##_size++;
 
     /**
      * @def PUSH_TOP_CIRCBUFF_C(type, buffer, ptr)
@@ -371,22 +371,22 @@
      */
     #define PUSH_TOP_CIRCBUFF_C(type, buffer, ptr)                                                                              \
         DEBUG_ASSERT(IS_VALID_CIRCBUFF(buffer))                                                                                 \
-        if (top_##buffer == NULL) {                                                                                             \
-            top_##buffer    = buffer;                                                                                           \
-            bottom_##buffer = buffer;                                                                                           \
+        if (buffer##_top == NULL) {                                                                                             \
+            buffer##_top    = buffer;                                                                                           \
+            buffer##_bottom = buffer;                                                                                           \
         } else {                                                                                                                \
-            top_##buffer    = (top_##buffer == buffer + cap_##buffer - 1) ? buffer : top_##buffer + 1;                          \
+            buffer##_top    = (buffer##_top == buffer + buffer##_cap - 1) ? buffer : buffer##_top + 1;                          \
         }                                                                                                                       \
         if (ptr == NULL) {                                                                                                      \
-            memset(top_##buffer, 0, sizeof(type));                                                                              \
+            memset(buffer##_top, 0, sizeof(type));                                                                              \
         } else {                                                                                                                \
-            memcpy(top_##buffer, ptr, sizeof(type));                                                                            \
+            memcpy(buffer##_top, ptr, sizeof(type));                                                                            \
         }                                                                                                                       \
-        if (size_##buffer == cap_##buffer) {                                                                                    \
-            DEBUG_ASSERT(bottom_##buffer == top_##buffer)                                                                       \
-            bottom_##buffer = (bottom_##buffer == buffer + cap_##buffer - 1) ? buffer : bottom_##buffer + 1;                    \
+        if (buffer##_size == buffer##_cap) {                                                                                    \
+            DEBUG_ASSERT(buffer##_bottom == buffer##_top)                                                                       \
+            buffer##_bottom = (buffer##_bottom == buffer + buffer##_cap - 1) ? buffer : buffer##_bottom + 1;                    \
         } else {                                                                                                                \
-            size_##buffer++;                                                                                                    \
+            buffer##_size++;                                                                                                    \
         }
 
     /**
@@ -395,7 +395,7 @@
      */
     #define PUSH_TOP_CIRCBUFF_N(type, ptr, buffer)                                                                              \
         PUSH_TOP_CIRCBUFF(type, buffer, NULL)                                                                                   \
-        ptr = top_##buffer;
+        ptr = buffer##_top;
 
     /**
      * @def PUSH_TOP_CIRCBUFF_NC(type, ptr, buffer)
@@ -403,7 +403,7 @@
      */
     #define PUSH_TOP_CIRCBUFF_NC(type, ptr, buffer)                                                                             \
         PUSH_TOP_CIRCBUFF_C(type, buffer, NULL)                                                                                 \
-        ptr = top_##buffer;
+        ptr = buffer##_top;
 
     /**
      * @def REALLOC_CIRCBUFF_IF_NECESSARY(type, buffer)
@@ -411,23 +411,23 @@
      */
     #define REALLOC_CIRCBUFF_IF_NECESSARY(type, buffer)                                                                         \
         DEBUG_ASSERT(IS_VALID_CIRCBUFF(buffer))                                                                                 \
-        if (size_##buffer == cap_##buffer) {                                                                                    \
-            DEBUG_ASSERT(cap_##buffer < UINT32_MAX >> 1)                                                                        \
-            cap_##buffer <<= 1;                                                                                                 \
-            type* const _new_buffer = malloc(cap_##buffer * sizeof(type));                                                      \
+        if (buffer##_size == buffer##_cap) {                                                                                    \
+            DEBUG_ASSERT(buffer##_cap < UINT32_MAX >> 1)                                                                        \
+            buffer##_cap <<= 1;                                                                                                 \
+            type* const _new_buffer = malloc(buffer##_cap * sizeof(type));                                                      \
             DEBUG_EXECUTE(if (_new_buffer == NULL) REALLOC_ERROR)                                                               \
-            if (bottom_##buffer < top_##buffer) {                                                                               \
-                DEBUG_ASSERT(bottom_##buffer == buffer)                                                                         \
-                memcpy(_new_buffer, buffer, size_##buffer * sizeof(type));                                                      \
+            if (buffer##_bottom < buffer##_top) {                                                                               \
+                DEBUG_ASSERT(buffer##_bottom == buffer)                                                                         \
+                memcpy(_new_buffer, buffer, buffer##_size * sizeof(type));                                                      \
             } else {                                                                                                            \
-                size_t const _size = (size_t)(buffer + cap_##buffer - bottom_##buffer);                                         \
-                memcpy(_new_buffer, bottom_##buffer, _size * sizeof(type));                                                     \
-                memcpy(_new_buffer + _size, buffer, (size_t)(top_##buffer - buffer + 1) * sizeof(type));                        \
+                size_t const _size = (size_t)(buffer + buffer##_cap - buffer##_bottom);                                         \
+                memcpy(_new_buffer, buffer##_bottom, _size * sizeof(type));                                                     \
+                memcpy(_new_buffer + _size, buffer, (size_t)(buffer##_top - buffer + 1) * sizeof(type));                        \
             }                                                                                                                   \
             free(buffer);                                                                                                       \
             buffer          = _new_buffer;                                                                                      \
-            bottom_##buffer = buffer;                                                                                           \
-            top_##buffer    = buffer + size_##buffer - 1;                                                                       \
+            buffer##_bottom = buffer;                                                                                           \
+            buffer##_top    = buffer + buffer##_size - 1;                                                                       \
         }
 
     /**
@@ -491,8 +491,8 @@
      */
     #define UPGRADE_STACK_TO_CIRCBUFF_D(type, stack)                                                                            \
         DEBUG_ASSERT(IS_VALID_STACK(stack))                                                                                     \
-        type* bottom_##stack;                                                                                                   \
-        type* top_##stack;                                                                                                      \
+        type* stack##_bottom;                                                                                                   \
+        type* stack##_top;                                                                                                      \
         UPGRADE_STACK_TO_CIRCBUFF(type, stack)
 
     /**
@@ -501,12 +501,12 @@
      */
     #define UPGRADE_STACK_TO_CIRCBUFF(type, stack)                                                                              \
         DEBUG_ASSERT(IS_VALID_STACK(stack))                                                                                     \
-        if (size_##stack == 0) {                                                                                                \
-            bottom_##stack  = NULL;                                                                                             \
-            top_##stack     = NULL;                                                                                             \
+        if (stack##_size == 0) {                                                                                                \
+            stack##_bottom  = NULL;                                                                                             \
+            stack##_top     = NULL;                                                                                             \
         } else {                                                                                                                \
-            bottom_##stack  = (size_##stack == 0) ? NULL : stack;                                                               \
-            top_##stack     = (size_##stack == 0) ? NULL : stack + size_##stack - 1;                                            \
+            stack##_bottom  = (stack##_size == 0) ? NULL : stack;                                                               \
+            stack##_top     = (stack##_size == 0) ? NULL : stack + stack##_size - 1;                                            \
         }
 
 #endif

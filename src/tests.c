@@ -287,7 +287,7 @@ static void test_circbuff(void) {
     PUSH_TOP_CIRCBUFF_N(int, element, buffer)
     *element = 3;
 
-    TEST_FAIL_IF(size_buffer != 3)
+    TEST_FAIL_IF(buffer_size != 3)
 
     GET_CIRCBUFF(element, buffer, 0)
     TEST_FAIL_IF(*element != 5)
