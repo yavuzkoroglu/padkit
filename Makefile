@@ -46,6 +46,7 @@ include/padkit.h: ;                                                         @\
     echo '    #include "padkit/bliterals.h"'            >> include/padkit.h; \
     echo '    #include "padkit/chunkset.h"'             >> include/padkit.h; \
     echo '    #include "padkit/chunktable.h"'           >> include/padkit.h; \
+    echo '    #include "padkit/circbuff.h"'           	>> include/padkit.h; \
     echo '    #include "padkit/csv.h"'                  >> include/padkit.h; \
     echo '    #include "padkit/graphmatrix.h"'          >> include/padkit.h; \
     echo '    #include "padkit/hash.h"'                 >> include/padkit.h; \

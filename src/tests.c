@@ -275,6 +275,51 @@ static void test_chunk_strlenLast(void) {
     NDEBUG_EXECUTE(free_chunk(strings))
 }
 
+static void test_circbuff(void) {
+    CREATE_EMPTY_CIRCBUFF(int, buffer, 1)
+
+    PUSH_TOP_CIRCBUFF_N(int, int* element, buffer)
+    *element = 0;
+
+    PUSH_BOTTOM_CIRCBUFF_N(int, element, buffer)
+    *element = 5;
+
+    PUSH_TOP_CIRCBUFF_N(int, element, buffer)
+    *element = 3;
+
+    TEST_FAIL_IF(size_buffer != 3)
+
+    GET_CIRCBUFF(element, buffer, 0)
+    TEST_FAIL_IF(*element != 5)
+
+    GET_CIRCBUFF(element, buffer, 1)
+    TEST_FAIL_IF(*element != 0)
+
+    DOWNGRADE_CIRCBUFF_TO_STACK(int, buffer)
+    PUSH_STACK_N(int, element, buffer)
+    TEST_FAIL_IF(*element != 0)
+    *element = 8;
+    UPGRADE_STACK_TO_CIRCBUFF(int, buffer)
+
+    GET_CIRCBUFF(element, buffer, 2)
+    TEST_FAIL_IF(*element != 3)
+
+    GET_CIRCBUFF(element, buffer, 3)
+    TEST_FAIL_IF(*element != 8)
+
+    ROTATE_CIRCBUFF(int, buffer, 1)
+
+    DEQUEUE_CIRCBUFF_V(element, buffer)
+    TEST_FAIL_IF(*element != 0)
+
+    POP_CIRCBUFF_V(element, buffer)
+    TEST_FAIL_IF(*element != 5)
+
+    FREE_CIRCBUFF(buffer)
+
+    TEST_PASS
+}
+
 static void test_cset(void) {
     ChunkSet set[1] = { NOT_A_CHUNK_SET };
 
@@ -707,35 +752,6 @@ static void test_reallocate_recalloc(void) {
     #undef NEW_SIZE
 }
 
-static void test_stack(void) {
-    CREATE_EMPTY_STACK(unsigned, stack, BUFSIZ)
-
-    PUSH_STACK(unsigned, stack, 1)
-    PUSH_STACK(unsigned, stack, 2)
-    PUSH_STACK(unsigned, stack, 3)
-    PUSH_STACK(unsigned, stack, 4)
-    PUSH_STACK(unsigned, stack, 5)
-
-    TEST_FAIL_IF(size_stack != 5)
-
-    DEQUEUE_STACK_D(unsigned, element1, stack)
-    TEST_FAIL_IF(element1 != 1)
-
-    DEQUEUE_STACK_D(unsigned, element2, stack)
-    TEST_FAIL_IF(element2 != 2)
-
-    ENQUEUE_STACK(unsigned, stack, 2)
-    TEST_FAIL_IF(stack[0] != 2)
-
-    FLUSH_STACK(stack)
-
-    TEST_FAIL_IF(size_stack != 0)
-
-    FREE_STACK(stack)
-
-    TEST_PASS
-}
-
 static void test_streq_mem_eq_n(void) {
     static char const* str[] = { "abc", "", "bca", "cab", "abc", "?" };
     static unsigned const len[] = { 3, 0, 3, 3, 3, 1 };
@@ -867,6 +883,7 @@ int main(void) {
     test_chunk_fromStream();
     test_chunk_strlen();
     test_chunk_strlenLast();
+    test_circbuff();
     test_cset();
     test_ctbl();
     test_gmtx();
@@ -874,7 +891,6 @@ int main(void) {
     test_map();
     test_reallocate();
     test_reallocate_recalloc();
-    test_stack();
     test_streq_mem_eq_n();
     test_streq_str_eq_n();
     test_streq_str_eq();

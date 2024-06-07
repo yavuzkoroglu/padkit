@@ -1,6 +1,6 @@
 /**
  * @file stack.h
- * @brief Declares stack macros to define a practical stack paradigm for C arrays on heap.
+ * @brief Declares stack macros that establishes a practical stack paradigm for C arrays on heap memory.
  *
  * A stack is a LIFO (Last-In-First-Out) array. In contrast, a queue is a FIFO (First-In-First-Out) array.
  *
@@ -14,14 +14,14 @@
 
     /**
      * @def ALLOCATE_STACK(type, stack, initial_cap)
-     *   Allocates a stack of zeros (or NULLs, if it is a pointer stack).
+     *   Allocates a stack on heap memory.
      */
     #define ALLOCATE_STACK(type, stack, initial_cap)                                            \
         DEBUG_ASSERT(stack == NULL)                                                             \
         DEBUG_ASSERT(initial_cap > 0)                                                           \
-        DEBUG_ASSERT(initial_cap < 0xFFFFFFFF)                                                  \
+        DEBUG_ASSERT(initial_cap < UINT32_MAX / sizeof(type))                                   \
         cap_##stack = initial_cap;                                                              \
-        stack       = calloc(initial_cap, sizeof(type));                                        \
+        stack       = malloc(initial_cap * sizeof(type));                                       \
         DEBUG_ERROR_IF(stack == NULL)
 
     /**
@@ -38,10 +38,10 @@
      */
     #define CREATE_EMPTY_STACK(type, stack, initial_cap)                                        \
         DEBUG_ASSERT(initial_cap > 0)                                                           \
-        DEBUG_ASSERT(initial_cap < 0xFFFFFFFF)                                                  \
-        uint32_t size_##stack   = 0;                                                            \
-        uint32_t cap_##stack    = initial_cap;                                                  \
-        type* stack             = calloc(initial_cap, sizeof(type));                            \
+        DEBUG_ASSERT(initial_cap < UINT32_MAX / sizeof(type))                                   \
+        uint32_t size_##stack = 0;                                                              \
+        uint32_t cap_##stack  = initial_cap;                                                    \
+        type* stack         = malloc(initial_cap * sizeof(type));                               \
         DEBUG_ERROR_IF(stack == NULL)
 
     /**
@@ -52,58 +52,6 @@
         uint32_t size_##stack;                                                                  \
         uint32_t cap_##stack;                                                                   \
         type* stack;
-
-    /**
-     * @def DEQUEUE_STACK_D(type, variable, stack)
-     *   Declares a constant variable and pops the first element in the stack to that variable.
-     */
-    #define DEQUEUE_STACK_D(type, variable, stack)                                              \
-        DEBUG_ASSERT(IS_VALID_STACK(stack))                                                     \
-        DEBUG_ASSERT(size_##stack > 0)                                                          \
-        type const variable = stack[0];                                                         \
-        size_##stack--;                                                                         \
-        memmove(stack, stack + 1, (size_t)size_##stack * sizeof(stack[0]));
-
-    /**
-     * @def DEQUEUE_STACK_N(stack)
-     *   Pops the first element in the stack and forgets it.
-     */
-    #define DEQUEUE_STACK_N(stack)                                                              \
-        DEBUG_ASSERT(IS_VALID_STACK(stack))                                                     \
-        DEBUG_ASSERT(size_##stack > 0)                                                          \
-        size_##stack--;                                                                         \
-        memmove(stack, stack + 1, (size_t)size_##stack * sizeof(stack[0]));
-
-    /**
-     * @def DEQUEUE_STACK_V(variable, stack)
-     *   Pops the first element in the stack to a variable.
-     */
-    #define DEQUEUE_STACK_V(variable, stack)                                                    \
-        DEBUG_ASSERT(IS_VALID_STACK(stack))                                                     \
-        DEBUG_ASSERT(size_##stack > 0)                                                          \
-        variable = stack[0];                                                                    \
-        size_##stack--;                                                                         \
-        memmove(stack, stack + 1, (size_t)size_##stack * sizeof(stack[0]));
-
-    /**
-     * @def ENQUEUE_STACK(type, stack, element)
-     *   Pushes an element to the beginning of a stack
-     */
-    #define ENQUEUE_STACK(type, stack, element)                                                 \
-        DEBUG_ASSERT(IS_VALID_STACK(stack))                                                     \
-        RECALLOC_IF_NECESSARY(type, stack, uint32_t, cap_##stack, size_##stack, RECALLOC_ERROR) \
-        memmove(stack + 1, stack, (size_t)size_##stack * sizeof(type));                         \
-        size_##stack++;                                                                         \
-        stack[0] = element;
-
-    /**
-     * @def INVALIDATE_STACK(stack)
-     *   Makes a stack unable to pass the IS_VALID_STACK(stack) test.
-     */
-    #define INVALIDATE_STACK(stack)                                                             \
-        size_##stack    = 0;                                                                    \
-        cap_##stack     = 0;                                                                    \
-        stack           = NULL;
 
     /**
      * @def FLUSH_STACK(stack)
@@ -123,6 +71,15 @@
         INVALIDATE_STACK(stack)
 
     /**
+     * @def INVALIDATE_STACK(stack)
+     *   Makes a stack unable to pass the IS_VALID_STACK(stack) test.
+     */
+    #define INVALIDATE_STACK(stack)                                                             \
+        size_##stack    = 0;                                                                    \
+        cap_##stack     = 0;                                                                    \
+        stack           = NULL;
+
+    /**
      * @def IS_VALID_STACK(stack)
      *   A Boolean expression that checks if a stack is valid.
      */
@@ -130,78 +87,98 @@
         (stack != NULL)                 &&                                                      \
         (size_##stack <= cap_##stack)   &&                                                      \
         (cap_##stack > 0)               &&                                                      \
-        (cap_##stack < 0xFFFFFFFF)                                                              \
+        (cap_##stack < UINT32_MAX)                                                              \
     )
 
     /**
-     * @def PEEK_STACK_D(type, variable, stack)
-     *   Declares a constant variable and sets its value to the top element of the stack.
+     * @def PEEK_BOTTOM_STACK(ptr, stack)
+     *   Peeks the bottom element of a stack.
      */
-    #define PEEK_STACK_D(type, variable, stack)                                                 \
+    #define PEEK_BOTTOM_STACK(ptr, stack)                                                       \
         DEBUG_ASSERT(IS_VALID_STACK(stack))                                                     \
         DEBUG_ASSERT(size_##stack > 0)                                                          \
-        type const variable = stack[size_##stack - 1];
+        ptr = stack;
 
     /**
-     * @def PEEK_STACK_V(variable, stack)
-     *   Assigns the top element of the stack to a variable.
+     * @def PEEK_STACK(ptr, stack)
+     *   A synonym for PEEK_TOP_STACK(ptr, stack).
      */
-    #define PEEK_STACK_V(variable, stack)                                                       \
+    #define PEEK_STACK(ptr, stack) PEEK_TOP_STACK(ptr, stack)
+
+    /**
+     * @def PEEK_TOP_STACK(ptr, stack)
+     *   Peeks the top element of a stack.
+     */
+    #define PEEK_TOP_STACK(ptr, stack)                                                          \
         DEBUG_ASSERT(IS_VALID_STACK(stack))                                                     \
         DEBUG_ASSERT(size_##stack > 0)                                                          \
-        variable = stack[size_##stack - 1];
+        ptr = stack + size_##stack - 1;
 
     /**
-     * @def PEEK_BOTTOM_STACK_D(type, variable, stack)
-     *   Declares a constant variable and sets its value to the bottom element of the stack.
+     * @def POP_STACK(stack)
+     *   A synonym for POP_TOP_STACK(stack).
      */
-    #define PEEK_BOTTOM_STACK_D(type, variable, stack)                                          \
-        DEBUG_ASSERT(IS_VALID_STACK(stack))                                                     \
-        type const variable = stack[0];
+    #define POP_STACK(stack) POP_TOP_STACK(stack)
 
     /**
-     * @def PEEK_BOTTOM_STACK_V(variable, stack)
-     *   Assigns the bottom element of the stack to a variable.
+     * @def POP_STACK_V(ptr, stack)
+     *   A synonym for POP_TOP_STACK_V(ptr, stack).
      */
-    #define PEEK_BOTTOM_STACK_V(variable, stack)                                                \
-        DEBUG_ASSERT(IS_VALID_STACK(stack))                                                     \
-        variable = stack[0];
+    #define POP_STACK_V(ptr, stack) POP_TOP_STACK_V(ptr, stack)
 
     /**
-     * @def POP_STACK_D(type, variable, stack)
-     *   Declares a constant variable and pops the top element of the stack to that variable.
+     * @def POP_TOP_STACK(stack)
+     *   Pops the top element of a stack.
      */
-    #define POP_STACK_D(type, variable, stack)                                                  \
-        DEBUG_ASSERT(IS_VALID_STACK(stack))                                                     \
-        DEBUG_ASSERT(size_##stack > 0)                                                          \
-        type const variable = stack[--size_##stack];
-
-    /**
-     * @def POP_STACK_N(type, variable, stack)
-     *   Pops the top element of the stack and forgets that element.
-     */
-    #define POP_STACK_N(stack)                                                                  \
+    #define POP_TOP_STACK(stack)                                                                \
         DEBUG_ASSERT(IS_VALID_STACK(stack))                                                     \
         DEBUG_ASSERT(size_##stack > 0)                                                          \
         size_##stack--;
 
     /**
-     * @def POP_STACK_V(variable, stack)
-     *   Pops the top element of the stack to a variable.
+     * @def POP_TOP_STACK_V(ptr, stack)
+     *   Gets the top element of a stack and pops it.
      */
-    #define POP_STACK_V(variable, stack)                                                        \
+    #define POP_TOP_STACK_V(ptr, stack)                                                         \
         DEBUG_ASSERT(IS_VALID_STACK(stack))                                                     \
         DEBUG_ASSERT(size_##stack > 0)                                                          \
-        variable = stack[--size_##stack];
+        ptr = stack + --size_##stack;
 
     /**
-     * @def PUSH_STACK(type, stack, element)
-     *   Pushes a new element to a stack (reallocates the stack if necessary).
+     * @def PUSH_STACK(type, stack, ptr)
+     *   A synonym for PUSH_TOP_STACK(type, stack, ptr).
      */
-    #define PUSH_STACK(type, stack, element)                                                    \
+    #define PUSH_STACK(type, stack, ptr) PUSH_TOP_STACK(type, stack, ptr)
+
+    /**
+     * @def PUSH_STACK_N(type, ptr, stack)
+     *   A synonym for PUSH_TOP_STACK_N(type, ptr, stack).
+     */
+    #define PUSH_STACK_N(type, ptr, stack) PUSH_TOP_STACK_N(type, ptr, stack)
+
+    /**
+     * @def PUSH_TOP_STACK(type, stack, ptr)
+     *   Pushes an element to the top of a stack.
+     */
+    #define PUSH_TOP_STACK(type, stack, ptr)                                                    \
         DEBUG_ASSERT(IS_VALID_STACK(stack))                                                     \
-        RECALLOC_IF_NECESSARY(type, stack, uint32_t, cap_##stack, size_##stack, RECALLOC_ERROR) \
-        stack[size_##stack++] = element;
+        REALLOC_IF_NECESSARY(type, stack, uint32_t, cap_##stack, size_##stack, REALLOC_ERROR)   \
+        if (ptr == NULL) {                                                                      \
+            memset(stack + size_##stack, 0, sizeof(type));                                      \
+        } else {                                                                                \
+            memcpy(stack + size_##stack, ptr, sizeof(type));                                    \
+        }                                                                                       \
+        size_##stack++;
+
+    /**
+     * @def PUSH_TOP_STACK_N(type, ptr, stack)
+     *   Pushes a zero (or NULL) element to the top of a stack and then peeks it.
+     */
+    #define PUSH_TOP_STACK_N(type, ptr, stack)                                                  \
+        DEBUG_ASSERT(IS_VALID_STACK(stack))                                                     \
+        REALLOC_IF_NECESSARY(type, stack, uint32_t, cap_##stack, size_##stack, REALLOC_ERROR)   \
+        memset(stack + size_##stack, 0, sizeof(type));                                          \
+        ptr = stack + size_##stack++;
 
     /**
      * @def REVERSE_STACK(type, stack)
@@ -211,9 +188,10 @@
         DEBUG_ASSERT(IS_VALID_STACK(stack))                                                     \
         if (size_##stack > 0) {                                                                 \
             for (uint32_t i = 0, j = size_##stack - 1; i < j; i++, j--) {                       \
-                type const tmp = stack[i];                                                      \
-                stack[i] = stack[j];                                                            \
-                stack[j] = tmp;                                                                 \
+                type const tmp[1];                                                              \
+                memcpy(tmp, stack + i, sizeof(type));                                           \
+                memcpy(stack + i, stack + j, sizeof(type));                                     \
+                memcpy(stack + j, tmp, sizeof(type));                                           \
             }                                                                                   \
         }
 
@@ -222,14 +200,10 @@
      *   Swaps two stacks, which is a good way to implement a Breadth-First Search (BFS) in C.
      */
     #define SWAP_STACKS(type, stack_A, stack_B) {                                               \
-        type* tmp_stack     = stack_A;                                                          \
-        uint32_t tmp_cap    = cap_##stack_A;                                                    \
-        uint32_t tmp_size   = size_##stack_A;                                                   \
-        stack_A             = stack_B;                                                          \
-        cap_##stack_A       = cap_##stack_B;                                                    \
-        size_##stack_A      = size_##stack_B;                                                   \
-        stack_B             = tmp_stack;                                                        \
-        cap_##stack_B       = tmp_cap;                                                          \
-        size_##stack_B      = tmp_size;                                                         \
+        type* const _tmp = stack_A; stack_A = stack_B; stack_B = _tmp;                          \
+    } {                                                                                         \
+        uint32_t _tmp;                                                                          \
+        _tmp = cap_##stack_A;   cap_##stack_A   = cap_##stack_B;    cap_##stack_B   = _tmp;     \
+        _tmp = size_##stack_A;  size_##stack_A  = size_##stack_B;   size_##stack_B  = _tmp;     \
     }
 #endif
