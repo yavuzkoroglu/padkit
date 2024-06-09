@@ -15,6 +15,7 @@ The above steps should produce
 
 | Date (ISO 8601) |                  OS |                   `uname -sm` |     Compiler |
 |----------------:|--------------------:|------------------------------:|-------------:|
+|      2024-06-09 |   macOS Sonoma 14.5 |                  Darwin arm64 | clang 18.1.7 |
 |      2024-05-26 |   macOS Sonoma 14.5 |                  Darwin arm64 | clang 18.1.6 |
 |      2024-05-14 |   macOS Sonoma 14.5 |                  Darwin arm64 | clang 18.1.5 |
 |      2024-05-08 | macOS Sonoma 14.4.1 |                  Darwin arm64 |   gcc 14.1.0 |
