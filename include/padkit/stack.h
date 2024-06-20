@@ -157,12 +157,6 @@
     #define PUSH_STACK_N(type, ptr, stack) PUSH_TOP_STACK_N(type, ptr, stack)
 
     /**
-     * @def PUSH_STACK_S(ptr, stack, size_in_bytes)
-     *   A synonym for PUSH_TOP_STACK_S(type, ptr, stack).
-     */
-    #define PUSH_STACK_S(ptr, stack, size_in_bytes) PUSH_TOP_STACK_S(ptr, stack, size_in_bytes)
-
-    /**
      * @def PUSH_TOP_STACK(type, stack, ptr)
      *   Pushes an element to the top of a stack.
      */
