@@ -39,9 +39,9 @@
     #define CREATE_EMPTY_STACK(type, stack, initial_cap)                                        \
         DEBUG_ASSERT(initial_cap > 0)                                                           \
         DEBUG_ASSERT(initial_cap < UINT32_MAX / sizeof(type))                                   \
-        uint32_t stack##_size = 0;                                                              \
-        uint32_t stack##_cap  = initial_cap;                                                    \
-        type* stack         = malloc(initial_cap * sizeof(type));                               \
+        uint32_t stack##_size   = 0;                                                            \
+        uint32_t stack##_cap    = initial_cap;                                                  \
+        type* stack             = malloc(initial_cap * sizeof(type));                           \
         DEBUG_ERROR_IF(stack == NULL)
 
     /**
@@ -155,6 +155,12 @@
      *   A synonym for PUSH_TOP_STACK_N(type, ptr, stack).
      */
     #define PUSH_STACK_N(type, ptr, stack) PUSH_TOP_STACK_N(type, ptr, stack)
+
+    /**
+     * @def PUSH_STACK_S(ptr, stack, size_in_bytes)
+     *   A synonym for PUSH_TOP_STACK_S(type, ptr, stack).
+     */
+    #define PUSH_STACK_S(ptr, stack, size_in_bytes) PUSH_TOP_STACK_S(ptr, stack, size_in_bytes)
 
     /**
      * @def PUSH_TOP_STACK(type, stack, ptr)
