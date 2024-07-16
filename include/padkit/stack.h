@@ -41,7 +41,7 @@
         DEBUG_ASSERT(initial_cap < UINT32_MAX / sizeof(type))                                   \
         uint32_t stack##_size   = 0;                                                            \
         uint32_t stack##_cap    = initial_cap;                                                  \
-        type* const stack       = malloc(initial_cap * sizeof(type));                           \
+        type* stack             = malloc(initial_cap * sizeof(type));                           \
         DEBUG_ERROR_IF(stack == NULL)
 
     /**
