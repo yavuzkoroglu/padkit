@@ -53,6 +53,7 @@ include/padkit.h: ;                                                         @\
     echo '    #include "padkit/jsonparser.h"'           >> include/padkit.h; \
     echo '    #include "padkit/map.h"'                  >> include/padkit.h; \
     echo '    #include "padkit/mapping.h"'              >> include/padkit.h; \
+    echo '    #include "padkit/preprocessor.h"'         >> include/padkit.h; \
     echo '    #include "padkit/prime.h"'                >> include/padkit.h; \
     echo '    #include "padkit/reallocate.h"'           >> include/padkit.h; \
     echo '    #include "padkit/repeat.h"'               >> include/padkit.h; \

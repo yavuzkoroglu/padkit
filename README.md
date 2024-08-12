@@ -31,6 +31,7 @@ The above steps should produce
 
 * Added `include/padkit/circbuff.h` and a `test_circbuff()` function to `src/tests.c`.
 * Added `include/padkit/stack.h` and a `test_stack()` function to `src/tests.c`.
+* Added `include/padkit/preprocessor.h`.
 
 ### Changes v1.0 -> v1.1
 
