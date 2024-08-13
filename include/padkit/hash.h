@@ -13,5 +13,5 @@
      * @param str The string.
      * @param n The string length.
      */
-    uint_fast64_t hash_str(char const* restrict str, size_t register n);
+    uint_fast64_t hash_str(char const* restrict str, uint64_t register n);
 #endif

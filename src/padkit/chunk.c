@@ -11,15 +11,15 @@
 
 uint32_t add_chunk(Chunk* const chunk, char const* const str, uint64_t const n) {
     #ifndef NDEBUG
-        if (!isValid_chunk(chunk)) return 0xFFFFFFFF;
-        if (str == NULL)           return 0xFFFFFFFF;
+        if (!isValid_chunk(chunk)) return UINT32_MAX;
+        if (str == NULL)           return UINT32_MAX;
     #endif
 
     uint32_t const id     = chunk->nStrings++;
     uint64_t const offset = (chunk->len += !!(chunk->len));
 
     #ifndef NDEBUG
-        if (append_chunk(chunk, str, n) == NULL) return 0xFFFFFFFF;
+        if (append_chunk(chunk, str, n) == NULL) return UINT32_MAX;
     #else
         append_chunk(chunk, str, n);
     #endif
@@ -30,15 +30,15 @@ uint32_t add_chunk(Chunk* const chunk, char const* const str, uint64_t const n) 
 
 uint32_t addIndex_chunk(Chunk* const chunk, uint32_t const str_id) {
     #ifndef NDEBUG
-        if (!isValid_chunk(chunk)) return 0xFFFFFFFF;
-        if (str_id == 0xFFFFFFFF)  return 0xFFFFFFFF;
+        if (!isValid_chunk(chunk)) return UINT32_MAX;
+        if (str_id == UINT32_MAX)  return UINT32_MAX;
     #endif
 
     uint32_t const id = add_chunk(chunk, "", 0);
 
     #ifndef NDEBUG
-        if (id == 0xFFFFFFFF)                         return 0xFFFFFFFF;
-        if (appendIndex_chunk(chunk, str_id) == NULL) return 0xFFFFFFFF;
+        if (id == UINT32_MAX)                         return UINT32_MAX;
+        if (appendIndex_chunk(chunk, str_id) == NULL) return UINT32_MAX;
     #else
         appendIndex_chunk(chunk, str_id);
     #endif
@@ -179,11 +179,11 @@ void
 #endif
 constructEmpty_chunk(Chunk* chunk, uint64_t const initial_cap, uint32_t const initial_stringsCap) {
     #ifndef NDEBUG
-        if (chunk == NULL)                     return 0;
-        if (initial_cap == 0)                  return 0;
-        if (initial_cap == 0xFFFFFFFFFFFFFFFF) return 0;
-        if (initial_stringsCap == 0)           return 0;
-        if (initial_stringsCap == 0xFFFFFFFF)  return 0;
+        if (chunk == NULL)                      return 0;
+        if (initial_cap == 0)                   return 0;
+        if (initial_cap == UINT64_MAX)          return 0;
+        if (initial_stringsCap == 0)            return 0;
+        if (initial_stringsCap == UINT32_MAX)   return 0;
     #endif
 
     chunk->cap        = initial_cap;
@@ -322,8 +322,8 @@ uint32_t fromStream_chunk(
 
     uint32_t const str_id = fromStreamAsWhole_chunk(chunk, stream);
     #ifndef NDEBUG
-        if (str_id == 0xFFFFFFFF) return 0xFFFFFFFF;
-        if (splitLast_chunk(chunk, delimeters) == 0) return 0xFFFFFFFF;
+        if (str_id == UINT32_MAX) return UINT32_MAX;
+        if (splitLast_chunk(chunk, delimeters) == 0) return UINT32_MAX;
     #else
         splitLast_chunk(chunk, delimeters);
     #endif
@@ -333,29 +333,29 @@ uint32_t fromStream_chunk(
 
 uint32_t fromStreamAsWhole_chunk(Chunk* const chunk, FILE* const stream) {
     #ifndef NDEBUG
-        if (stream == NULL) return 0xFFFFFFFF;
+        if (stream == NULL) return UINT32_MAX;
     #endif
 
     uint32_t str_id = add_chunk(chunk, "", 0);
     #ifndef NDEBUG
-        if (str_id == 0xFFFFFFFF)             return 0xFFFFFFFF;
-        if (fseek(stream, 0L, SEEK_END) != 0) return 0xFFFFFFFF;
+        if (str_id == UINT32_MAX)             return UINT32_MAX;
+        if (fseek(stream, 0L, SEEK_END) != 0) return UINT32_MAX;
     #else
         fseek(stream, 0L, SEEK_END);
     #endif
 
     long size = ftell(stream);
     #ifndef NDEBUG
-        if (size < 0L)                        return 0xFFFFFFFF;
-        if (fseek(stream, 0L, SEEK_SET) != 0) return 0xFFFFFFFF;
+        if (size < 0L)                        return UINT32_MAX;
+        if (fseek(stream, 0L, SEEK_SET) != 0) return UINT32_MAX;
     #else
         fseek(stream, 0L, SEEK_SET);
     #endif
 
     char* append_start = appendSpace_chunk(chunk, (uint64_t)size);
     #ifndef NDEBUG
-        if (append_start == NULL)                              return 0xFFFFFFFF;
-        if (fread(append_start, (size_t)size, 1, stream) != 1) return 0xFFFFFFFF;
+        if (append_start == NULL)                              return UINT32_MAX;
+        if (fread(append_start, (size_t)size, 1, stream) != 1) return UINT32_MAX;
     #else
         fread(append_start, (size_t)size, 1, stream);
     #endif
@@ -389,21 +389,21 @@ char const* getLast_chunk(Chunk const* const chunk) {
 }
 
 bool isValid_chunk(Chunk const* const chunk) {
-    return chunk != NULL                         &&
-           chunk->cap != 0                       &&
-           chunk->cap != 0xFFFFFFFFFFFFFFFF      &&
-           chunk->stringsCap != 0                &&
-           chunk->stringsCap != 0xFFFFFFFF       &&
-           chunk->stringOffsets != NULL          &&
-           chunk->start != NULL                  &&
-           chunk->len <= chunk->cap              &&
+    return chunk != NULL                            &&
+           chunk->cap != 0                          &&
+           chunk->cap != UINT64_MAX                 &&
+           chunk->stringsCap != 0                   &&
+           chunk->stringsCap != UINT32_MAX          &&
+           chunk->stringOffsets != NULL             &&
+           chunk->start != NULL                     &&
+           chunk->len <= chunk->cap                 &&
            chunk->nStrings <= chunk->stringsCap;
 }
 
-size_t splitLast_chunk(Chunk* const chunk, char const* delimeters) {
+uint32_t splitLast_chunk(Chunk* const chunk, char const* delimeters) {
     #ifndef NDEBUG
-        if (!isValid_chunk(chunk)) return 0xFFFFFFFFFFFFFFFF;
-        if (chunk->nStrings == 0) return 0;
+        if (!isValid_chunk(chunk))  return UINT32_MAX;
+        if (chunk->nStrings == 0)   return 0;
     #endif
 
     static char const defaultDelimeters[] = " \t\n\v\f\r";
@@ -429,7 +429,7 @@ size_t splitLast_chunk(Chunk* const chunk, char const* delimeters) {
     );
 
     /* In-Place Split */
-    size_t nSplitted = 1;
+    uint32_t nSplitted = 1;
     for (char* chr = str_start; chr < str_end; chr++) {
         if (strchr(delimeters, *chr) == NULL) continue;
 
@@ -455,13 +455,13 @@ size_t splitLast_chunk(Chunk* const chunk, char const* delimeters) {
 
 uint64_t strlen_chunk(Chunk const* const chunk, uint32_t const str_id) {
     #ifndef NDEBUG
-        if (!isValid_chunk(chunk)) return 0xFFFFFFFFFFFFFFFF;
-        if (chunk->nStrings == 0) return 0xFFFFFFFFFFFFFFFF;
+        if (!isValid_chunk(chunk))  return UINT64_MAX;
+        if (chunk->nStrings == 0)   return UINT64_MAX;
     #endif
 
     uint32_t const last_str_id = chunk->nStrings - 1;
     #ifndef NDEBUG
-        if (str_id > last_str_id) return 0xFFFFFFFFFFFFFFFF;
+        if (str_id > last_str_id)   return UINT64_MAX;
     #endif
 
     if (str_id == last_str_id) {
@@ -473,8 +473,8 @@ uint64_t strlen_chunk(Chunk const* const chunk, uint32_t const str_id) {
 
 uint64_t strlenLast_chunk(Chunk const* const chunk) {
     #ifndef NDEBUG
-        if (!isValid_chunk(chunk)) return 0xFFFFFFFFFFFFFFFF;
-        if (chunk->nStrings == 0)  return 0xFFFFFFFFFFFFFFFF;
+        if (!isValid_chunk(chunk))  return UINT64_MAX;
+        if (chunk->nStrings == 0)   return UINT64_MAX;
     #endif
     return chunk->len - chunk->stringOffsets[chunk->nStrings - 1];
 }

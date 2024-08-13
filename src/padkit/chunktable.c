@@ -13,8 +13,8 @@
 
 static uint32_t determineNRows(uint32_t const key_count, uint32_t const loadPercent) {
     #ifndef NDEBUG
-        if (key_count >= 0xFFFFFFFF / 100) return 0xFFFFFFFF;
-        if (loadPercent == 0)              return 0xFFFFFFFF;
+        if (key_count >= UINT32_MAX / 100) return UINT32_MAX;
+        if (loadPercent == 0)              return UINT32_MAX;
     #endif
     uint32_t nRows = (key_count > loadPercent)
         ? (key_count / loadPercent) * 100
@@ -40,7 +40,7 @@ adjust(ChunkTable* const tbl, Chunk const* const chunk) {
 
     uint32_t const newNRows = determineNRows(tbl->nKeys, tbl->loadPercent);
     #ifndef NDEBUG
-        if (newNRows == 0xFFFFFFFF) return 0;
+        if (newNRows == UINT32_MAX) return 0;
     #endif
 
     if (newNRows <= tbl->nRows)
@@ -92,7 +92,7 @@ adjust(ChunkTable* const tbl, Chunk const* const chunk) {
 }
 
 bool isValid_cte(ChunkTableEntry const* const entry) {
-    return entry && entry->key_id != 0xFFFFFFFF;
+    return entry && entry->key_id != UINT32_MAX;
 }
 
 #ifndef NDEBUG
@@ -104,7 +104,7 @@ constructEmpty_ctbl(ChunkTable* tbl, uint32_t const initial_cap, uint32_t const 
     #ifndef NDEBUG
         if (tbl == NULL)                     return 0;
         if (initial_cap == 0)                return 0;
-        if (initial_cap >= 0xFFFFFFFF / 100) return 0;
+        if (initial_cap >= UINT32_MAX / 100) return 0;
         if (loadPercent == 0)                return 0;
     #endif
 
@@ -146,7 +146,7 @@ flush_ctbl(ChunkTable* const tbl) {
         if (!isValid_ctbl(tbl)) return 0;
     #endif
     tbl->nKeys = 0;
-    memset(tbl->rowSizes, 0, tbl->nRows * sizeof(unsigned));
+    memset(tbl->rowSizes, 0, tbl->nRows * sizeof(uint32_t));
     #ifndef NDEBUG
         return 1;
     #endif
@@ -165,7 +165,7 @@ free_ctbl(ChunkTable* const tbl) {
     free(tbl->rowSizes);
     free(tbl->rowCaps);
 
-    for (uint32_t row_id = tbl->nRows - 1; row_id != 0xFFFFFFFF; row_id--)
+    for (uint32_t row_id = tbl->nRows - 1; row_id != UINT32_MAX; row_id--)
         free(tbl->rows[row_id]);
 
     free(tbl->rows);
@@ -185,7 +185,7 @@ ChunkTableEntry* get_ctbl(
         if (key == NULL) return NULL;
     #endif
 
-    unsigned const row_id = hash_str(key, key_len) % tbl->nRows;
+    uint32_t const row_id = hash_str(key, key_len) % tbl->nRows;
     if (tbl->rows[row_id] == NULL) return NULL;
 
     for (
@@ -204,7 +204,7 @@ ChunkTableEntry* get_ctbl(
 
 uint32_t getEntryCount_ctbl(ChunkTable const* const tbl) {
     #ifndef NDEBUG
-        if (!isValid_ctbl(tbl)) return 0xFFFFFFFF;
+        if (!isValid_ctbl(tbl)) return UINT32_MAX;
     #endif
     uint32_t count = 0;
     for (
@@ -225,7 +225,7 @@ ChunkTableEntry* getExact_ctbl(
         if (key == NULL) return NULL;
     #endif
 
-    unsigned const row_id = hash_str(key, key_len) % tbl->nRows;
+    uint32_t const row_id = hash_str(key, key_len) % tbl->nRows;
     if (tbl->rows[row_id] == NULL) return NULL;
 
     for (
@@ -245,7 +245,7 @@ ChunkTableEntry* getExact_ctbl(
 
 uint32_t getKeyCount_ctbl(ChunkTable const* const tbl) {
     #ifndef NDEBUG
-        if (!isValid_ctbl(tbl)) return 0xFFFFFFFF;
+        if (!isValid_ctbl(tbl)) return UINT32_MAX;
     #endif
     return tbl->nKeys;
 }
@@ -266,7 +266,7 @@ int insert_ctbl(
     #endif
 
     uint64_t const key_len = strlen_chunk(chunk, key_id);
-    unsigned const row_id  = hash_str(key, key_len) % tbl->nRows;
+    uint32_t const row_id  = hash_str(key, key_len) % tbl->nRows;
 
     /* Initialize a new row if necessary. */
     if (tbl->rows[row_id] == NULL) {
@@ -337,7 +337,7 @@ int insert_ctbl(
 bool isValid_ctbl(ChunkTable const* const tbl) {
     return tbl != NULL                     &&
            tbl->capKeys > 0                &&
-           tbl->capKeys < 0xFFFFFFFF / 100 &&
+           tbl->capKeys < UINT32_MAX / 100 &&
            tbl->nKeys <= tbl->capKeys      &&
            tbl->keys != NULL               &&
            tbl->loadPercent != 0           &&
@@ -358,11 +358,11 @@ construct_ctblitr(
     char const* const key, uint64_t const key_len
 ) {
     #ifndef NDEBUG
-        if (itr == NULL)                    return 0;
-        if (!isValid_ctbl(tbl))             return 0;
-        if (!isValid_chunk(chunk))          return 0;
-        if (key == NULL)                    return 0;
-        if (key_len == 0xFFFFFFFFFFFFFFFF)  return 0;
+        if (itr == NULL)            return 0;
+        if (!isValid_ctbl(tbl))     return 0;
+        if (!isValid_chunk(chunk))  return 0;
+        if (key == NULL)            return 0;
+        if (key_len == UINT64_MAX)  return 0;
     #endif
 
     itr->tbl        = tbl;
@@ -381,7 +381,7 @@ bool isValid_ctblitr(CTblConstIterator const* const itr) {
             isValid_ctbl(itr->tbl)      &&
             isValid_chunk(itr->chunk)   &&
             itr->key != NULL            &&
-            itr->key_len != 0xFFFFFFFFFFFFFFFF;
+            itr->key_len != UINT64_MAX;
 }
 
 ChunkTableEntry const* next_ctblitr(CTblConstIterator* const itr) {

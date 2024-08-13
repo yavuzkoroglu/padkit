@@ -241,7 +241,7 @@
      * @param chunk The Chunk.
      * @param delimeters The list of delimeter characters. Will use isspace() if NULL given.
      */
-    size_t splitLast_chunk(Chunk* const chunk, char const* delimeters);
+    uint32_t splitLast_chunk(Chunk* const chunk, char const* delimeters);
 
     /* @brief Returns the length of a string in a Chunk.
      *

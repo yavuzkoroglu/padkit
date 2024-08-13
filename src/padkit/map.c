@@ -11,7 +11,7 @@
 
 uint32_t binarySearchLeftmostKey_map(Map const* const map, uint32_t const key_id) {
     #ifndef NDEBUG
-        if (!isValid_map(map)) return 0xFFFFFFFF;
+        if (!isValid_map(map)) return UINT32_MAX;
     #endif
     uint32_t l = 0;
     uint32_t r = map->size;
@@ -27,7 +27,7 @@ uint32_t binarySearchLeftmostKey_map(Map const* const map, uint32_t const key_id
 
 uint32_t binarySearchRightmostKey_map(Map const* const map, uint32_t const key_id) {
     #ifndef NDEBUG
-        if (!isValid_map(map)) return 0xFFFFFFFF;
+        if (!isValid_map(map)) return UINT32_MAX;
     #endif
     uint32_t l = 0;
     uint32_t r = map->size;
@@ -50,7 +50,7 @@ constructEmpty_map(Map* map, uint32_t const initial_cap) {
     #ifndef NDEBUG
         if (map == NULL)               return 0;
         if (initial_cap == 0)          return 0;
-        if (initial_cap == 0xFFFFFFFF) return 0;
+        if (initial_cap == UINT32_MAX) return 0;
     #endif
 
     map->size = 0;
@@ -140,7 +140,7 @@ insert_map(Map* const map, uint32_t const key_id, Value const value) {
 bool isValid_map(Map const* const map) {
     return map != NULL            &&
            map->cap != 0          &&
-           map->cap != 0xFFFFFFFF &&
+           map->cap != UINT32_MAX &&
            map->size <= map->cap  &&
            map->mappings != NULL;
 }
@@ -150,13 +150,13 @@ uint32_t linearSearchBackward_map(
     uint32_t const key_id, Value const value
 ) {
     #ifndef NDEBUG
-        if (!isValid_map(map))            return 0xFFFFFFFF;
-        if (search_start_id >= map->size) return 0xFFFFFFFF;
+        if (!isValid_map(map))            return UINT32_MAX;
+        if (search_start_id >= map->size) return UINT32_MAX;
     #endif
 
     uint32_t id = search_start_id;
     while (
-        id != 0xFFFFFFFF && (
+        id != UINT32_MAX && (
             map->mappings[id].key_id > key_id || (
                 map->mappings[id].key_id == key_id &&
                 !areEqual_val(map->mappings[id].value, value)
@@ -170,12 +170,12 @@ uint32_t linearSearchBackwardKey_map(
     Map const* const map, uint32_t const search_start_id, uint32_t const key_id
 ) {
     #ifndef NDEBUG
-        if (!isValid_map(map))            return 0xFFFFFFFF;
-        if (search_start_id >= map->size) return 0xFFFFFFFF;
+        if (!isValid_map(map))            return UINT32_MAX;
+        if (search_start_id >= map->size) return UINT32_MAX;
     #endif
 
     uint32_t id = search_start_id;
-    while (id != 0xFFFFFFFF && map->mappings[id].key_id > key_id)
+    while (id != UINT32_MAX && map->mappings[id].key_id > key_id)
         id--;
     return id;
 }
@@ -184,12 +184,12 @@ uint32_t linearSearchBackwardValue_map(
     Map const* const map, uint32_t const search_start_id, Value const value
 ) {
     #ifndef NDEBUG
-        if (!isValid_map(map))            return 0xFFFFFFFF;
-        if (search_start_id >= map->size) return 0xFFFFFFFF;
+        if (!isValid_map(map))            return UINT32_MAX;
+        if (search_start_id >= map->size) return UINT32_MAX;
     #endif
 
     uint32_t id = search_start_id;
-    while (id != 0xFFFFFFFF && !areEqual_val(map->mappings[id].value, value))
+    while (id != UINT32_MAX && !areEqual_val(map->mappings[id].value, value))
         id--;
     return id;
 }
@@ -199,8 +199,8 @@ uint32_t linearSearchForward_map(
     uint32_t const key_id, Value const value
 ) {
     #ifndef NDEBUG
-        if (!isValid_map(map))            return 0xFFFFFFFF;
-        if (search_start_id >= map->size) return 0xFFFFFFFF;
+        if (!isValid_map(map))            return UINT32_MAX;
+        if (search_start_id >= map->size) return UINT32_MAX;
     #endif
 
     uint32_t id = search_start_id;
@@ -219,12 +219,12 @@ uint32_t linearSearchForwardKey_map(
     Map const* const map, uint32_t const search_start_id, uint32_t const key_id
 ) {
     #ifndef NDEBUG
-        if (!isValid_map(map))            return 0xFFFFFFFF;
-        if (search_start_id >= map->size) return 0xFFFFFFFF;
+        if (!isValid_map(map))            return UINT32_MAX;
+        if (search_start_id >= map->size) return UINT32_MAX;
     #endif
 
     uint32_t id = search_start_id;
-    while (id != 0xFFFFFFFF && map->mappings[id].key_id < key_id) id++;
+    while (id != UINT32_MAX && map->mappings[id].key_id < key_id) id++;
     return id;
 }
 
@@ -232,11 +232,11 @@ uint32_t linearSearchForwardValue_map(
     Map const* const map, uint32_t const search_start_id, Value const value
 ) {
     #ifndef NDEBUG
-        if (!isValid_map(map))            return 0xFFFFFFFF;
-        if (search_start_id >= map->size) return 0xFFFFFFFF;
+        if (!isValid_map(map))            return UINT32_MAX;
+        if (search_start_id >= map->size) return UINT32_MAX;
     #endif
 
     uint32_t id = search_start_id;
-    while (id != 0xFFFFFFFF && !areEqual_val(map->mappings[id].value, value)) id++;
+    while (id != UINT32_MAX && !areEqual_val(map->mappings[id].value, value)) id++;
     return id;
 }

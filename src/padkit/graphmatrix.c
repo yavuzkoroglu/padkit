@@ -132,9 +132,9 @@ construct_gmtx(GraphMatrix* gmtx, uint32_t const initial_height, uint32_t const 
     #ifndef NDEBUG
         if (gmtx == NULL)                   return 0;
         if (initial_height == 0)            return 0;
-        if (initial_height == 0xFFFFFFFF)   return 0;
+        if (initial_height == UINT32_MAX)   return 0;
         if (initial_width == 0)             return 0;
-        if (initial_width == 0xFFFFFFFF)    return 0;
+        if (initial_width == UINT32_MAX)    return 0;
     #endif
 
     uint64_t const size = (((uint64_t)initial_height * (uint64_t)initial_width) >> 6) + 1;
@@ -202,17 +202,17 @@ uint32_t findSink_gmtx(
     uint32_t const highest_possible_sink
 ) {
     #ifndef NDEBUG
-        if (!isValid_gmtx(gmtx)) return 0xFFFFFFFF;
+        if (!isValid_gmtx(gmtx)) return UINT32_MAX;
     #endif
 
     uint32_t sink = highest_possible_sink;
 
     #ifndef NDEBUG
-        if (source >= gmtx->height) return 0xFFFFFFFF;
-        if (sink >= gmtx->width)    return 0xFFFFFFFF;
+        if (source >= gmtx->height) return UINT32_MAX;
+        if (sink >= gmtx->width)    return UINT32_MAX;
     #endif
 
-    while (sink != 0xFFFFFFFF && !isConnected_gmtx(gmtx, source, sink))
+    while (sink != UINT32_MAX && !isConnected_gmtx(gmtx, source, sink))
         sink--;
 
     return sink;
@@ -223,17 +223,17 @@ uint32_t findSource_gmtx(
     uint32_t const highest_possible_source
 ) {
     #ifndef NDEBUG
-        if (!isValid_gmtx(gmtx)) return 0xFFFFFFFF;
+        if (!isValid_gmtx(gmtx)) return UINT32_MAX;
     #endif
 
     uint32_t source = highest_possible_source;
 
     #ifndef NDEBUG
-        if (source >= gmtx->height) return 0xFFFFFFFF;
-        if (sink >= gmtx->width)    return 0xFFFFFFFF;
+        if (source >= gmtx->height) return UINT32_MAX;
+        if (sink >= gmtx->width)    return UINT32_MAX;
     #endif
 
-    while (source != 0xFFFFFFFF && !isConnected_gmtx(gmtx, source, sink))
+    while (source != UINT32_MAX && !isConnected_gmtx(gmtx, source, sink))
         source--;
 
     return source;
