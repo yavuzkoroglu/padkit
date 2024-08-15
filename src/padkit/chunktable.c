@@ -111,7 +111,7 @@ constructEmpty_ctbl(ChunkTable* tbl, uint32_t const initial_cap, uint32_t const 
     tbl->nKeys   = 0;
     tbl->capKeys = initial_cap;
 
-    tbl->keys = malloc(initial_cap * sizeof(int));
+    tbl->keys = malloc((size_t)initial_cap * sizeof(int));
     #ifndef NDEBUG
         if (tbl->keys == NULL) return 0;
     #endif
@@ -119,17 +119,17 @@ constructEmpty_ctbl(ChunkTable* tbl, uint32_t const initial_cap, uint32_t const 
     tbl->loadPercent = loadPercent;
     tbl->nRows       = determineNRows(initial_cap, loadPercent);
 
-    tbl->rowSizes = calloc(tbl->nRows, sizeof(uint32_t));
+    tbl->rowSizes = calloc((size_t)tbl->nRows, sizeof(uint32_t));
     #ifndef NDEBUG
         if (tbl->rowSizes == NULL) return 0;
     #endif
 
-    tbl->rowCaps = calloc(tbl->nRows, sizeof(uint32_t));
+    tbl->rowCaps = calloc((size_t)tbl->nRows, sizeof(uint32_t));
     #ifndef NDEBUG
         if (tbl->rowCaps == NULL) return 0;
     #endif
 
-    tbl->rows = calloc(tbl->nRows, sizeof(uint32_t*));
+    tbl->rows = calloc((size_t)tbl->nRows, sizeof(uint32_t*));
     #ifndef NDEBUG
         if (tbl->rows == NULL) return 0;
         return 1;
@@ -272,7 +272,7 @@ int insert_ctbl(
     if (tbl->rows[row_id] == NULL) {
         tbl->rowCaps[row_id] = CHUNK_TABLE_INITIAL_ROW_CAP;
         tbl->rows[row_id] = malloc(
-            tbl->rowCaps[row_id] * sizeof(ChunkTableEntry)
+            (size_t)tbl->rowCaps[row_id] * sizeof(ChunkTableEntry)
         );
         #ifndef NDEBUG
             if (tbl->rows[row_id] == NULL) return CTBL_INSERT_ERROR;

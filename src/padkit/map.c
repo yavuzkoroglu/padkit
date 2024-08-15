@@ -56,7 +56,7 @@ constructEmpty_map(Map* map, uint32_t const initial_cap) {
     map->size = 0;
     map->cap  = initial_cap;
 
-    map->mappings = malloc(initial_cap * sizeof(Mapping));
+    map->mappings = malloc((size_t)initial_cap * sizeof(Mapping));
 
     #ifndef NDEBUG
         if (map->mappings == NULL) return 0;

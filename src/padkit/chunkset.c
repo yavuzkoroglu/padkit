@@ -57,17 +57,17 @@ adjust(ChunkSet* const set) {
     free(set->table);
     set->nRows = newNRows;
 
-    set->rowSize = calloc(newNRows, sizeof(uint32_t));
+    set->rowSize = calloc((size_t)newNRows, sizeof(uint32_t));
     #ifndef NDEBUG
         if (set->rowSize == NULL) return 0;
     #endif
 
-    set->rowCap = calloc(newNRows, sizeof(uint32_t));
+    set->rowCap = calloc((size_t)newNRows, sizeof(uint32_t));
     #ifndef NDEBUG
         if (set->rowCap == NULL) return 0;
     #endif
 
-    set->table = calloc(newNRows, sizeof(uint32_t*));
+    set->table = calloc((size_t)newNRows, sizeof(uint32_t*));
     #ifndef NDEBUG
         if (set->table == NULL) return 0;
     #endif
@@ -80,7 +80,7 @@ adjust(ChunkSet* const set) {
         /* Initialize the row if necessary. */
         if (set->rowSize[row_id] == 0) {
             uint32_t* const row_ptr = malloc(
-                CHUNK_SET_INITIAL_ROW_CAP * sizeof(uint32_t)
+                (size_t)CHUNK_SET_INITIAL_ROW_CAP * sizeof(uint32_t)
             );
             #ifndef NDEBUG
                 if (row_ptr == NULL) return 0;
@@ -117,7 +117,7 @@ uint32_t addKey_cset(ChunkSet* const set, char const* const key, uint64_t const 
     /* Initialize the row if necessary. */
     if (set->table[row_id] == NULL) {
         uint32_t* const row_ptr = malloc(
-            CHUNK_SET_INITIAL_ROW_CAP * sizeof(uint32_t)
+            (size_t)CHUNK_SET_INITIAL_ROW_CAP * sizeof(uint32_t)
         );
         #ifndef NDEBUG
             if (row_ptr == NULL) return UINT32_MAX;
@@ -183,17 +183,17 @@ constructEmpty_cset(
         if (set->nRows == UINT32_MAX) return 0;
     #endif
 
-    set->rowSize = calloc(set->nRows, sizeof(uint32_t));
+    set->rowSize = calloc((size_t)set->nRows, sizeof(uint32_t));
     #ifndef NDEBUG
         if (set->rowSize == NULL) return 0;
     #endif
 
-    set->rowCap = calloc(set->nRows, sizeof(uint32_t));
+    set->rowCap = calloc((size_t)set->nRows, sizeof(uint32_t));
     #ifndef NDEBUG
         if (set->rowCap == NULL) return 0;
     #endif
 
-    set->table = calloc(set->nRows, sizeof(uint32_t*));
+    set->table = calloc((size_t)set->nRows, sizeof(uint32_t*));
     #ifndef NDEBUG
         if (set->table == NULL) return 0;
         return 1;

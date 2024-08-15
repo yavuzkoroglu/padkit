@@ -191,12 +191,12 @@ constructEmpty_chunk(Chunk* chunk, uint64_t const initial_cap, uint32_t const in
     chunk->nStrings   = 0;
     chunk->len        = 0;
 
-    chunk->stringOffsets = malloc(initial_stringsCap * sizeof(uint64_t));
+    chunk->stringOffsets = malloc((size_t)initial_stringsCap * sizeof(uint64_t));
     #ifndef NDEBUG
         if (chunk->stringOffsets == NULL) return 0;
     #endif
 
-    chunk->start = malloc(initial_cap);
+    chunk->start = malloc((size_t)initial_cap);
     #ifndef NDEBUG
         if (chunk->start == NULL) return 0;
     #endif

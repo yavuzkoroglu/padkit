@@ -26,7 +26,7 @@ void* reallocate(
         size_t const size = new_element_count * element_size;
         if (size < new_element_count || size < element_size) return NULL;
 
-        void* const ptr = realloc(*ptrptr, new_element_count * element_size);
+        void* const ptr = realloc(*ptrptr, size);
         if (ptr == NULL) return NULL;
         *ptrptr = ptr;
     #else
