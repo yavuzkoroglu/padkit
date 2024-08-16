@@ -75,7 +75,7 @@
      * The new string is '\0' separated from the
      * previous string.
      *
-     * @param chunk The Chunk.
+     * @param chunk A pointer to the Chunk.
      * @param str The string.
      * @param n The number of characters to copy.
      */
@@ -86,7 +86,7 @@
      *
      * WARNING: The string must be located at the same Chunk!
      *
-     * @param chunk The Chunk.
+     * @param chunk A pointer to the Chunk.
      * @param str_id The chunk index of the string.
      */
     uint32_t addIndex_chunk(Chunk* const chunk, uint32_t const str_id);
@@ -97,7 +97,7 @@
      * This function is similar to add_chunk() but
      * does NOT respect the '\0' separator.
      *
-     * @param chunk The Chunk.
+     * @param chunk A pointer to the Chunk.
      * @param str The string.
      * @param n The number of characters to copy.
      */
@@ -108,7 +108,7 @@
      *
      * WARNING: The string must be located at the same Chunk!
      *
-     * @param chunk The Chunk.
+     * @param chunk A pointer to the Chunk.
      * @param str_id The chunk index of the string.
      */
     char const* appendIndex_chunk(Chunk* const chunk, uint32_t const str_id);
@@ -150,7 +150,7 @@
 
     /**
      * @brief Deletes an element from a Chunk.
-     * @param chunk The chunk.
+     * @param chunk A pointer to the Chunk.
      * @param str_id The string index.
      */
     #ifndef NDEBUG
@@ -162,7 +162,7 @@
 
     /**
      * @brief Deletes the last element in a Chunk.
-     * @param chunk The chunk.
+     * @param chunk A pointer to the Chunk.
      */
     #ifndef NDEBUG
     bool
@@ -173,7 +173,7 @@
 
     /**
      * @brief Flushes the contents of a Chunk.
-     * @param chunk The Chunk.
+     * @param chunk A pointer to the Chunk.
      */
     #ifndef NDEBUG
     bool
@@ -184,7 +184,7 @@
 
     /**
      * @brief Frees all the strings in a Chunk.
-     * @param chunk The Chunk.
+     * @param chunk A pointer to the Chunk.
      */
     #ifndef NDEBUG
     bool
@@ -195,7 +195,7 @@
 
     /**
      * @brief Reads a whole stream and adds it as strings to a Chunk.
-     * @param chunk The Chunk.
+     * @param chunk A pointer to the Chunk.
      * @param stream The input stream.
      * @param delimeters The list of delimeter characters. Will use isspace() if NULL given.
      */
@@ -203,33 +203,33 @@
 
     /**
      * @brief Reads a whole stream and adds it as one whole string to a Chunk.
-     * @param chunk The Chunk.
+     * @param chunk A pointer to the Chunk.
      * @param stream The input stream.
      */
     uint32_t fromStreamAsWhole_chunk(Chunk* const chunk, FILE* const stream);
 
     /**
      * @brief Gets a string with the given index from a chunk.
-     * @param chunk The chunk.
+     * @param chunk A pointer to the constant Chunk.
      * @param str_id The string index.
      */
     char const* get_chunk(Chunk const* const chunk, uint32_t const str_id);
 
     /**
      * @brief Gets the first string from the chunk.
-     * @param chunk The chunk.
+     * @param chunk A pointer to the constant Chunk.
      */
     char const* getFirst_chunk(Chunk const* const chunk);
 
     /**
      * @brief Gets the last string from the chunk.
-     * @param chunk The chunk.
+     * @param chunk A pointer to the constant Chunk.
      */
     char const* getLast_chunk(Chunk const* const chunk);
 
     /**
      * @brief Checks if a Chunk is valid.
-     * @param chunk The Chunk.
+     * @param chunk A pointer to the constant Chunk.
      */
     bool isValid_chunk(Chunk const* const chunk);
 
@@ -238,7 +238,7 @@
      *
      * Default delimeters are equivalent to a check using isspace() function.
      *
-     * @param chunk The Chunk.
+     * @param chunk A pointer to the Chunk.
      * @param delimeters The list of delimeter characters. Will use isspace() if NULL given.
      */
     uint32_t splitLast_chunk(Chunk* const chunk, char const* delimeters);
@@ -248,13 +248,13 @@
      * Normally, strlen() traverses the string to compute the length.
      * This function takes the difference between the end and the beginning of the string.
      *
-     * @param chunk The Chunk.
+     * @param chunk A pointer to the constant Chunk.
      * @param str_id The string index.
      */
     uint64_t strlen_chunk(Chunk const* const chunk, uint32_t const str_id);
 
     /* @brief Returns the length of the last string in a Chunk.
-     * @param chunk The Chunk.
+     * @param chunk A pointer to the constant Chunk.
      */
     uint64_t strlenLast_chunk(Chunk const* const chunk);
 #endif

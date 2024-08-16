@@ -66,6 +66,15 @@ free_stack(Stack* const stack) {
     #endif
 }
 
+void* get_stack(Stack const* const stack, uint32_t const elementId) {
+    #ifndef NDEBUG
+        if (!isValid_stack(stack))      return NULL;
+        if (elementId >= stack->size)   return NULL;
+    #endif
+
+    return stack->array + (size_t)elementId * stack->element_size_in_bytes;
+}
+
 bool isValid_stack(Stack const* const stack) {
     if (stack == NULL)                              return 0;
     if (stack->element_size_in_bytes == 0)          return 0;
@@ -323,8 +332,8 @@ rotateUp_stack(Stack* const stack) {
         stack->element_size_in_bytes
     );
     memmove(
-        stack->array,
         stack->array + stack->element_size_in_bytes,
+        stack->array,
         (size_t)(stack->size - 1) * stack->element_size_in_bytes
     );
     memcpy(stack->array, buffer, stack->element_size_in_bytes);

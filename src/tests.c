@@ -701,6 +701,59 @@ static void test_reallocate_recalloc(void) {
     #undef NEW_SIZE
 }
 
+static void test_stack(void) {
+    int a = 1;
+    int b = 5;
+    int c = 3;
+    int d = 4;
+
+    Stack stack[1];
+    DEBUG_ASSERT_NDEBUG_EXECUTE(constructEmpty_stack(stack, sizeof(int), 1))
+
+    TEST_FAIL_IF(stack->size != 0)
+
+    DEBUG_ERROR_IF(push_stack(stack, &a) == NULL)
+    NDEBUG_EXECUTE(push_stack(stack, &a))
+
+    TEST_FAIL_IF(stack->size != 1)
+    TEST_FAIL_IF(*(int*)(peek_stack(stack)) != a)
+
+    DEBUG_ERROR_IF(pushBottom_stack(stack, &b) == NULL)
+    NDEBUG_EXECUTE(pushBottom_stack(stack, &b))
+
+    TEST_FAIL_IF(stack->size != 2)
+    TEST_FAIL_IF(*(int*)(peekTop_stack(stack)) != a)
+    TEST_FAIL_IF(*(int*)(peekBottom_stack(stack)) != b)
+
+    DEBUG_ERROR_IF(pop_stack(stack) == NULL)
+    NDEBUG_EXECUTE(pop_stack(stack))
+
+    DEBUG_ERROR_IF(pushTop_stack(stack, &c) == NULL)
+    NDEBUG_EXECUTE(pushTop_stack(stack, &c))
+
+    DEBUG_ASSERT_NDEBUG_EXECUTE(reverse_stack(stack))
+
+    TEST_FAIL_IF(stack->size != 2)
+    TEST_FAIL_IF(*(int*)(peekTop_stack(stack)) != b)
+    TEST_FAIL_IF(*(int*)(peekBottom_stack(stack)) != c)
+
+    DEBUG_ERROR_IF(pushTop_stack(stack, &d) == NULL)
+    NDEBUG_EXECUTE(pushTop_stack(stack, &d))
+
+    DEBUG_ASSERT_NDEBUG_EXECUTE(rotate_stack(stack))
+
+    TEST_FAIL_IF(stack->size != 3)
+    TEST_FAIL_IF(*(int*)(get_stack(stack, 0)) != b)
+    TEST_FAIL_IF(*(int*)(get_stack(stack, 1)) != d)
+    TEST_FAIL_IF(*(int*)(get_stack(stack, 2)) != c)
+
+    TEST_PASS
+
+    DEBUG_ASSERT_NDEBUG_EXECUTE(
+        free_stack(stack)
+    )
+}
+
 static void test_streq_mem_eq_n(void) {
     static char const* str[] = { "abc", "", "bca", "cab", "abc", "?" };
     static unsigned const len[] = { 3, 0, 3, 3, 3, 1 };
@@ -839,6 +892,7 @@ int main(void) {
     test_map();
     test_reallocate();
     test_reallocate_recalloc();
+    test_stack();
     test_streq_mem_eq_n();
     test_streq_str_eq_n();
     test_streq_str_eq();
