@@ -147,7 +147,6 @@ void* popTop_stack(Stack* const stack) {
 void* push_stack(Stack* const stack, void* const ptr) {
     #ifndef NDEBUG
         if (!isValid_stack(stack))      return NULL;
-        if (ptr == NULL)                return NULL;
     #endif
 
     return pushTop_stack(stack, ptr);
