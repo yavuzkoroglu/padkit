@@ -11,6 +11,13 @@
     #include <stdio.h>
 
     /**
+     * @def NOT_A_STACK
+     *   A special Stack denoting a NOT-Stack. It cannot pass the isValid_stack() test.
+     */
+    #define NOT_A_STACK \
+        ((Stack){ 0, 0, 0, NULL })
+
+    /**
      * @def STACK_RECOMMENDED_INITIAL_CAP
      *   This initial capacity should work nicely in most situations.
      */
@@ -40,7 +47,7 @@
      * @brief Constructs an empty Stack.
      * @param stack A pointer to the Stack.
      * @param element_size_in_bytes Size of one element in bytes.
-     * @param initial_cap The initial capacity of the stack.
+     * @param initial_cap The initial capacity of the Stack.
      */
     #ifndef NDEBUG
     bool
@@ -125,25 +132,25 @@
     void* popTop_stack(Stack* const stack);
 
     /**
-     * @brief Pushes an element to the top of a Stack.
+     * @brief Pushes the copy of an element to the top of a Stack.
      * @param stack A pointer to the Stack.
-     * @param ptr A pointer to the element.
+     * @param ptr A pointer to the constant element.
      */
-    void* push_stack(Stack* const stack, void* const ptr);
+    void* push_stack(Stack* const stack, void const* const ptr);
 
     /**
-     * @brief Pushes an element to the bottom of a Stack.
+     * @brief Pushes the copy of an element to the bottom of a Stack.
      * @param stack A pointer to the Stack.
-     * @param ptr A pointer to the element.
+     * @param ptr A pointer to the constant element.
      */
-    void* pushBottom_stack(Stack* const stack, void* const ptr);
+    void* pushBottom_stack(Stack* const stack, void const* const ptr);
 
     /**
-     * @brief Pushes an element to the top of a Stack.
+     * @brief Pushes the copy of an element to the top of a Stack.
      * @param stack A pointer to the Stack.
-     * @param ptr A pointer to the element.
+     * @param ptr A pointer to the constant element.
      */
-    void* pushTop_stack(Stack* const stack, void* const ptr);
+    void* pushTop_stack(Stack* const stack, void const* const ptr);
 
     /**
      * @brief Pushes one element of zeros to the top of a Stack.
@@ -217,6 +224,19 @@
     void
     #endif
     reverse_stack(Stack* const stack);
+
+    /**
+     * @brief Sets one element of a Stack to a value.
+     * @param stack A pointer to the Stack.
+     * @param elementId The element index.
+     * @param ptr A pointer to the constant value.
+     */
+    #ifndef NDEBUG
+    bool
+    #else
+    void
+    #endif
+    set_stack(Stack* const stack, uint32_t const elementId, void const* const ptr);
 
     /**
      * @brief Swaps two Stack objects.

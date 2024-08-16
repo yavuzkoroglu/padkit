@@ -1,3 +1,8 @@
+/**
+ * @file stack.c
+ * @brief Implements the functions defined stack.h
+ * @author Yavuz Koroglu
+ */
 #include <string.h>
 #include "padkit/memalloc.h"
 #include "padkit/reallocate.h"
@@ -59,7 +64,7 @@ free_stack(Stack* const stack) {
     #endif
 
     free(stack->array);
-    stack->array = NULL;
+    *stack = NOT_A_STACK;
 
     #ifndef NDEBUG
         return 1;
@@ -144,7 +149,7 @@ void* popTop_stack(Stack* const stack) {
     return stack->array + (size_t)(--stack->size) * stack->element_size_in_bytes;
 }
 
-void* push_stack(Stack* const stack, void* const ptr) {
+void* push_stack(Stack* const stack, void const* const ptr) {
     #ifndef NDEBUG
         if (!isValid_stack(stack))      return NULL;
     #endif
@@ -152,7 +157,7 @@ void* push_stack(Stack* const stack, void* const ptr) {
     return pushTop_stack(stack, ptr);
 }
 
-void* pushBottom_stack(Stack* const stack, void* const ptr) {
+void* pushBottom_stack(Stack* const stack, void const* const ptr) {
     #ifndef NDEBUG
         if (!isValid_stack(stack))              return NULL;
         if (pushTop_stack(stack, ptr) == NULL)  return NULL;
@@ -165,13 +170,15 @@ void* pushBottom_stack(Stack* const stack, void* const ptr) {
     return stack->array;
 }
 
-void* pushTop_stack(Stack* const stack, void* const ptr) {
+void* pushTop_stack(Stack* const stack, void const* const ptr) {
     #ifndef NDEBUG
         if (!isValid_stack(stack))  return NULL;
     #endif
 
-    bool const isPtrInStack = (stack->array <= (char*)ptr && (char*)ptr < stack->array + stack->size);
-    size_t const offset     = (size_t)((char*)ptr - stack->array);
+    bool const isPtrInStack
+        = (stack->array <= (char const*)ptr && (char const*)ptr < stack->array + stack->size);
+
+    size_t const offset = (size_t)((char const*)ptr - stack->array);
 
     #ifndef NDEBUG
         if (isPtrInStack && offset % stack->element_size_in_bytes != 0) return NULL;
@@ -366,6 +373,35 @@ reverse_stack(Stack* const stack) {
         second -= stack->element_size_in_bytes;
     }
     free(buffer);
+
+    #ifndef NDEBUG
+        return 1;
+    #endif
+}
+
+#ifndef NDEBUG
+bool
+#else
+void
+#endif
+set_stack(Stack* const stack, uint32_t const elementId, void const* const ptr) {
+    #ifndef NDEBUG
+        if (!isValid_stack(stack))      return 0;
+        if (elementId >= stack->size)   return 0;
+        if (ptr == NULL)                return 0;
+        if (stack->array <= (char const*)ptr && (char const*)ptr < stack->array + stack->size) {
+            size_t const offset = (size_t)((char const*)ptr - stack->array);
+
+            if (offset % stack->element_size_in_bytes != 0)                 return 0;
+            if (offset / stack->element_size_in_bytes == (size_t)elementId) return 0;
+        }
+    #endif
+
+    memcpy(
+        stack->array + (size_t)elementId * stack->element_size_in_bytes,
+        ptr,
+        stack->element_size_in_bytes
+    );
 
     #ifndef NDEBUG
         return 1;
