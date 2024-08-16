@@ -21,7 +21,7 @@
         DEBUG_ASSERT(initial_cap > 0)                                                           \
         DEBUG_ASSERT(initial_cap < UINT32_MAX / sizeof(type))                                   \
         stack##_cap = initial_cap;                                                              \
-        stack       = malloc(initial_cap * sizeof(type));                                       \
+        stack       = malloc((size_t)initial_cap * sizeof(type));                               \
         DEBUG_ERROR_IF(stack == NULL)                                                           \
     }
 
@@ -32,20 +32,34 @@
     #define CONSTRUCT_EMPTY_STACK(type, stack, initial_cap) {                                   \
         ALLOCATE_STACK(type, stack, initial_cap)                                                \
         stack##_size = 0;                                                                       \
+        DEBUG_ASSERT(IS_VALID_STACK(stack))                                                     \
     }
 
     /**
      * @def CREATE_EMPTY_STACK(type, stack, initial_cap)
      *   Declares and constructs an empty stack.
      */
-    #define CREATE_EMPTY_STACK(type, stack, initial_cap) {                                      \
+    #define CREATE_EMPTY_STACK(type, stack, initial_cap)                                        \
         DEBUG_ASSERT(initial_cap > 0)                                                           \
         DEBUG_ASSERT(initial_cap < UINT32_MAX / sizeof(type))                                   \
         uint32_t stack##_size   = 0;                                                            \
         uint32_t stack##_cap    = initial_cap;                                                  \
-        type* stack             = malloc(initial_cap * sizeof(type));                           \
-        DEBUG_ERROR_IF(stack == NULL)                                                           \
-    }
+        type* stack             = malloc((size_t)initial_cap * sizeof(type));                   \
+        DEBUG_ASSERT(IS_VALID_STACK(stack))
+
+    /**
+     * @def CREATE_EMPTY_STATIC_STACK(type, stack, initial_cap)
+     *   Declares and constructs an empty static stack.
+     */
+    #define CREATE_EMPTY_STATIC_STACK(type, stack, initial_cap)                                 \
+        DEBUG_ASSERT(initial_cap > 0)                                                           \
+        DEBUG_ASSERT(initial_cap < UINT32_MAX / sizeof(type))                                   \
+        static uint32_t stack##_size   = 0;                                                     \
+        static uint32_t stack##_cap    = initial_cap;                                           \
+        static type* stack             = NULL;                                                  \
+        if (!IS_VALID_STACK(stack))                                                             \
+            stack = malloc((size_t)initial_cap * sizeof(type));                                 \
+        DEBUG_ASSERT(IS_VALID_STACK(stack))
 
     /**
      * @def DECLARE_STACK(type, stack)
@@ -72,6 +86,7 @@
     #define FLUSH_STACK(stack) {                                                                \
         DEBUG_ASSERT(IS_VALID_STACK(stack))                                                     \
         stack##_size = 0;                                                                       \
+        DEBUG_ASSERT(IS_VALID_STACK(stack))                                                     \
     }
 
     /**
@@ -82,6 +97,7 @@
         DEBUG_ASSERT(IS_VALID_STACK(stack))                                                     \
         free(stack);                                                                            \
         INVALIDATE_STACK(stack)                                                                 \
+        DEBUG_ASSERT(IS_VALID_STACK(stack))                                                     \
     }
 
     /**
@@ -89,9 +105,11 @@
      *   Makes a stack unable to pass the IS_VALID_STACK(stack) test.
      */
     #define INVALIDATE_STACK(stack) {                                                           \
+        DEBUG_ASSERT(IS_VALID_STACK(stack))                                                     \
         stack##_size    = 0;                                                                    \
         stack##_cap     = 0;                                                                    \
         stack           = NULL;                                                                 \
+        DEBUG_ERROR_IF(IS_VALID_STACK(stack))                                                   \
     }
 
     /**
@@ -109,11 +127,11 @@
      * @def PEEK_BOTTOM_STACK(ptr, stack)
      *   Peeks the bottom element of a stack.
      */
-    #define PEEK_BOTTOM_STACK(ptr, stack) {                                                     \
+    #define PEEK_BOTTOM_STACK(ptr, stack)                                                       \
         DEBUG_ASSERT(IS_VALID_STACK(stack))                                                     \
         DEBUG_ASSERT(stack##_size > 0)                                                          \
         ptr = stack;                                                                            \
-    }
+        DEBUG_ASSERT(IS_VALID_STACK(stack))
 
     /**
      * @def PEEK_STACK(ptr, stack)
@@ -125,11 +143,11 @@
      * @def PEEK_TOP_STACK(ptr, stack)
      *   Peeks the top element of a stack.
      */
-    #define PEEK_TOP_STACK(ptr, stack) {                                                        \
+    #define PEEK_TOP_STACK(ptr, stack)                                                          \
         DEBUG_ASSERT(IS_VALID_STACK(stack))                                                     \
         DEBUG_ASSERT(stack##_size > 0)                                                          \
         ptr = stack + stack##_size - 1;                                                         \
-    }
+        DEBUG_ASSERT(IS_VALID_STACK(stack))
 
     /**
      * @def POP_STACK(stack)
@@ -151,17 +169,18 @@
         DEBUG_ASSERT(IS_VALID_STACK(stack))                                                     \
         DEBUG_ASSERT(stack##_size > 0)                                                          \
         stack##_size--;                                                                         \
+        DEBUG_ASSERT(IS_VALID_STACK(stack))                                                     \
     }
 
     /**
      * @def POP_TOP_STACK_V(ptr, stack)
      *   Gets the top element of a stack and pops it.
      */
-    #define POP_TOP_STACK_V(ptr, stack) {                                                       \
+    #define POP_TOP_STACK_V(ptr, stack)                                                         \
         DEBUG_ASSERT(IS_VALID_STACK(stack))                                                     \
         DEBUG_ASSERT(stack##_size > 0)                                                          \
         ptr = stack + --stack##_size;                                                           \
-    }
+        DEBUG_ASSERT(IS_VALID_STACK(stack))
 
     /**
      * @def PUSH_STACK(type, stack, ptr)
@@ -188,18 +207,19 @@
             memcpy(stack + stack##_size, ptr, sizeof(type));                                    \
         }                                                                                       \
         stack##_size++;                                                                         \
+        DEBUG_ASSERT(IS_VALID_STACK(stack))                                                     \
     }
 
     /**
      * @def PUSH_TOP_STACK_N(type, ptr, stack)
      *   Pushes a zero (or NULL) element to the top of a stack and then peeks it.
      */
-    #define PUSH_TOP_STACK_N(type, ptr, stack) {                                                \
+    #define PUSH_TOP_STACK_N(type, ptr, stack)                                                  \
         DEBUG_ASSERT(IS_VALID_STACK(stack))                                                     \
         REALLOC_IF_NECESSARY(type, stack, uint32_t, stack##_cap, stack##_size, REALLOC_ERROR)   \
         memset(stack + stack##_size, 0, sizeof(type));                                          \
         ptr = stack + stack##_size++;                                                           \
-    }
+        DEBUG_ASSERT(IS_VALID_STACK(stack))
 
     /**
      * @def REVERSE_STACK(type, stack)
@@ -215,6 +235,7 @@
                 memcpy(stack + j, tmp, sizeof(type));                                           \
             }                                                                                   \
         }                                                                                       \
+        DEBUG_ASSERT(IS_VALID_STACK(stack))                                                     \
     }
 
     /**
@@ -222,6 +243,8 @@
      *   Swaps two stacks, which is a good way to implement a Breadth-First Search (BFS) in C.
      */
     #define SWAP_STACKS(type, stack_A, stack_B) {                                               \
+        DEBUG_ASSERT(IS_VALID_STACK(stack_A))                                                   \
+        DEBUG_ASSERT(IS_VALID_STACK(stack_B))                                                   \
         {                                                                                       \
             type* const _tmp = stack_A; stack_A = stack_B; stack_B = _tmp;                      \
         } {                                                                                     \
@@ -229,5 +252,7 @@
             _tmp = stack##_cap_A;   stack##_cap_A   = stack##_cap_B;    stack##_cap_B   = _tmp; \
             _tmp = stack##_size_A;  stack##_size_A  = stack##_size_B;   stack##_size_B  = _tmp; \
         }                                                                                       \
+        DEBUG_ASSERT(IS_VALID_STACK(stack_A))                                                   \
+        DEBUG_ASSERT(IS_VALID_STACK(stack_B))                                                   \
     }
 #endif
