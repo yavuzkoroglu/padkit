@@ -162,7 +162,7 @@ obj/padkit/stack.o: obj/padkit          \
     include/padkit/reallocate.h         \
     include/padkit/stack.h              \
     src/padkit/stack.c                  \
-    ; ${COMPILE} src/padkit/stack.c -c -o obj/padkit/stack.c
+    ; ${COMPILE} src/padkit/stack.c -c -o obj/padkit/stack.o
 
 obj/padkit/streq.o: obj/padkit          \
     include/padkit/debug.h              \
