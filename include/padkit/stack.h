@@ -54,6 +54,15 @@
         type* stack;
 
     /**
+     * @def DECLARE_STATIC_STACK(type, stack)
+     *   Declares all the static variables related to a stack.
+     */
+    #define DECLARE_STATIC_STACK(type, stack)                                                   \
+        static uint32_t stack##_size;                                                           \
+        static uint32_t stack##_cap;                                                            \
+        static type* stack;
+
+    /**
      * @def FLUSH_STACK(stack)
      *   Empties a stack.
      */
