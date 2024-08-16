@@ -275,51 +275,6 @@ static void test_chunk_strlenLast(void) {
     NDEBUG_EXECUTE(free_chunk(strings))
 }
 
-static void test_circbuff(void) {
-    CREATE_EMPTY_CIRCBUFF(int, buffer, 1)
-
-    PUSH_TOP_CIRCBUFF_N(int, int* element, buffer)
-    *element = 0;
-
-    PUSH_BOTTOM_CIRCBUFF_N(int, element, buffer)
-    *element = 5;
-
-    PUSH_TOP_CIRCBUFF_N(int, element, buffer)
-    *element = 3;
-
-    TEST_FAIL_IF(buffer_size != 3)
-
-    GET_CIRCBUFF(element, buffer, 0)
-    TEST_FAIL_IF(*element != 5)
-
-    GET_CIRCBUFF(element, buffer, 1)
-    TEST_FAIL_IF(*element != 0)
-
-    DOWNGRADE_CIRCBUFF_TO_STACK(int, buffer)
-    PUSH_STACK_N(int, element, buffer)
-    TEST_FAIL_IF(*element != 0)
-    *element = 8;
-    UPGRADE_STACK_TO_CIRCBUFF(int, buffer)
-
-    GET_CIRCBUFF(element, buffer, 2)
-    TEST_FAIL_IF(*element != 3)
-
-    GET_CIRCBUFF(element, buffer, 3)
-    TEST_FAIL_IF(*element != 8)
-
-    ROTATE_CIRCBUFF(int, buffer, 1)
-
-    DEQUEUE_CIRCBUFF_V(element, buffer)
-    TEST_FAIL_IF(*element != 0)
-
-    POP_CIRCBUFF_V(element, buffer)
-    TEST_FAIL_IF(*element != 5)
-
-    FREE_CIRCBUFF(buffer)
-
-    TEST_PASS
-}
-
 static void test_cset(void) {
     ChunkSet set[1] = { NOT_A_CHUNK_SET };
 
@@ -684,11 +639,8 @@ static void test_reallocate(void) {
     #define OLD_SIZE 1024
     #define NEW_SIZE 131072
 
-    char* buffer = malloc(OLD_SIZE);
-    DEBUG_ERROR_IF(buffer == NULL)
-
-    char* const new_buffer =
-        reallocate((void**)(&buffer), OLD_SIZE, NEW_SIZE, 1);
+    char* buffer            = mem_alloc(OLD_SIZE);
+    char* const new_buffer  = reallocate((void**)(&buffer), OLD_SIZE, NEW_SIZE, 1);
 
     DEBUG_ERROR_IF(new_buffer == NULL)
 
@@ -716,11 +668,8 @@ static void test_reallocate_recalloc(void) {
     #define OLD_SIZE 256
     #define NEW_SIZE 131072
 
-    char* buffer = calloc(OLD_SIZE, 1);
-    DEBUG_ERROR_IF(buffer == NULL)
-
-    char* const new_buffer =
-        recalloc((void**)(&buffer), OLD_SIZE, NEW_SIZE, 1);
+    char* buffer            = mem_calloc(OLD_SIZE, 1);
+    char* const new_buffer  = recalloc((void**)(&buffer), OLD_SIZE, NEW_SIZE, 1);
 
     DEBUG_ERROR_IF(new_buffer == NULL)
 
@@ -735,7 +684,7 @@ static void test_reallocate_recalloc(void) {
     DEBUG_ERROR_IF(list->array == NULL)
 
     REPEAT ((NEW_SIZE >> 1) + 1) {
-        RECALLOC_IF_NECESSARY(Obj, list->array, uint32_t, list->cap, list->size, RECALLOC_ERROR)
+        RECALLOC_IF_NECESSARY(Obj, list->array, uint32_t, list->cap, list->size)
         list->array[list->size++] = (Obj){1, 1};
     }
 
@@ -883,7 +832,6 @@ int main(void) {
     test_chunk_fromStream();
     test_chunk_strlen();
     test_chunk_strlenLast();
-    test_circbuff();
     test_cset();
     test_ctbl();
     test_gmtx();

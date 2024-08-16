@@ -7,6 +7,7 @@
 #include <stdio.h>
 #include <string.h>
 #include "padkit/map.h"
+#include "padkit/memalloc.h"
 #include "padkit/reallocate.h"
 
 uint32_t binarySearchLeftmostKey_map(Map const* const map, uint32_t const key_id) {
@@ -56,10 +57,9 @@ constructEmpty_map(Map* map, uint32_t const initial_cap) {
     map->size = 0;
     map->cap  = initial_cap;
 
-    map->mappings = malloc((size_t)initial_cap * sizeof(Mapping));
+    map->mappings = mem_alloc((size_t)initial_cap * sizeof(Mapping));
 
     #ifndef NDEBUG
-        if (map->mappings == NULL) return 0;
         return 1;
     #endif
 }
@@ -121,7 +121,7 @@ insert_map(Map* const map, uint32_t const key_id, Value const value) {
         if (!isValid_map(map)) return 0;
     #endif
 
-    REALLOC_IF_NECESSARY(Mapping,map->mappings,uint32_t,map->cap,map->size,return 0;)
+    REALLOC_IF_NECESSARY(Mapping, map->mappings, uint32_t, map->cap, map->size)
 
     /* Selection Sort on already sorted list, O(n) worst case. */
     uint32_t const id = linearSearchBackwardKey_map(map, map->size - 1, key_id) + 1;

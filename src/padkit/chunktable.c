@@ -7,6 +7,7 @@
 #include <string.h>
 #include "padkit/chunktable.h"
 #include "padkit/hash.h"
+#include "padkit/memalloc.h"
 #include "padkit/prime.h"
 #include "padkit/reallocate.h"
 #include "padkit/streq.h"
@@ -108,30 +109,16 @@ constructEmpty_ctbl(ChunkTable* tbl, uint32_t const initial_cap, uint32_t const 
         if (loadPercent == 0)                return 0;
     #endif
 
-    tbl->nKeys   = 0;
-    tbl->capKeys = initial_cap;
+    tbl->nKeys          = 0;
+    tbl->capKeys        = initial_cap;
+    tbl->keys           = mem_alloc((size_t)initial_cap * sizeof(int));
+    tbl->loadPercent    = loadPercent;
+    tbl->nRows          = determineNRows(initial_cap, loadPercent);
+    tbl->rowSizes       = mem_calloc((size_t)tbl->nRows, sizeof(uint32_t));
+    tbl->rowCaps        = mem_calloc((size_t)tbl->nRows, sizeof(uint32_t));
+    tbl->rows           = mem_calloc((size_t)tbl->nRows, sizeof(uint32_t*));
 
-    tbl->keys = malloc((size_t)initial_cap * sizeof(int));
     #ifndef NDEBUG
-        if (tbl->keys == NULL) return 0;
-    #endif
-
-    tbl->loadPercent = loadPercent;
-    tbl->nRows       = determineNRows(initial_cap, loadPercent);
-
-    tbl->rowSizes = calloc((size_t)tbl->nRows, sizeof(uint32_t));
-    #ifndef NDEBUG
-        if (tbl->rowSizes == NULL) return 0;
-    #endif
-
-    tbl->rowCaps = calloc((size_t)tbl->nRows, sizeof(uint32_t));
-    #ifndef NDEBUG
-        if (tbl->rowCaps == NULL) return 0;
-    #endif
-
-    tbl->rows = calloc((size_t)tbl->nRows, sizeof(uint32_t*));
-    #ifndef NDEBUG
-        if (tbl->rows == NULL) return 0;
         return 1;
     #endif
 }
@@ -271,12 +258,9 @@ int insert_ctbl(
     /* Initialize a new row if necessary. */
     if (tbl->rows[row_id] == NULL) {
         tbl->rowCaps[row_id] = CHUNK_TABLE_INITIAL_ROW_CAP;
-        tbl->rows[row_id] = malloc(
+        tbl->rows[row_id] = mem_alloc(
             (size_t)tbl->rowCaps[row_id] * sizeof(ChunkTableEntry)
         );
-        #ifndef NDEBUG
-            if (tbl->rows[row_id] == NULL) return CTBL_INSERT_ERROR;
-        #endif
         tbl->rows[row_id][0] = NOT_A_CHUNK_TABLE_ENTRY;
     }
 
@@ -306,8 +290,7 @@ int insert_ctbl(
         /* Adjust the key cap if necessary. */
         REALLOC_IF_NECESSARY(
             uint32_t, tbl->keys,
-            uint32_t, tbl->capKeys, tbl->nKeys,
-            return CTBL_INSERT_ERROR;
+            uint32_t, tbl->capKeys, tbl->nKeys
         )
 
         /* Insert the key index. */
@@ -318,8 +301,7 @@ int insert_ctbl(
     tbl->rowSizes[row_id]++;
     REALLOC_IF_NECESSARY(
         ChunkTableEntry, tbl->rows[row_id],
-        uint32_t, tbl->rowCaps[row_id], tbl->rowSizes[row_id],
-        return CTBL_INSERT_ERROR;
+        uint32_t, tbl->rowCaps[row_id], tbl->rowSizes[row_id]
     )
 
     /* Insert to the chunktable. */

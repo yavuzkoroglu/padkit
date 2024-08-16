@@ -6,6 +6,8 @@
 #include <ctype.h>
 #include <stdlib.h>
 #include "padkit/jsonparser.h"
+#include "padkit/memalloc.h"
+#include "padkit/reallocate.h"
 
 #define PEEK_JP(jp) jp->stack[jp->stack_size - 1]
 
@@ -19,10 +21,7 @@
             return;                                                     \
         }                                                               \
         unsigned char* new_stack = realloc(jp->stack, jp->stack_cap);   \
-        if (new_stack == NULL) {                                        \
-            jp->errorCode = JSON_PARSER_MEMORY_ERROR;                   \
-            return;                                                     \
-        }                                                               \
+        if (new_stack == NULL) REALLOC_ERROR                            \
         jp->stack = new_stack;                                          \
     }                                                                   \
     jp->stack[jp->stack_size++] = element
@@ -323,10 +322,7 @@ static void s07_jp(JSONParser* const jp) {
         }
         jp->str_cap = new_cap;
         char* new_str = realloc(jp->str, new_cap);
-        if (new_str == NULL) {
-            jp->errorCode = JSON_PARSER_MEMORY_ERROR;
-            return;
-        }
+        if (new_str == NULL) REALLOC_ERROR
         jp->str = new_str;
     }
 
@@ -466,10 +462,7 @@ static void s11_jp(JSONParser* const jp) {
         }
         jp->str_cap = new_cap;
         char* new_str = realloc(jp->str, new_cap);
-        if (new_str == NULL) {
-            jp->errorCode = JSON_PARSER_MEMORY_ERROR;
-            return;
-        }
+        if (new_str == NULL) REALLOC_ERROR
         jp->str = new_str;
     }
 
@@ -647,10 +640,7 @@ static void s15_jp(JSONParser* const jp) {
         }
         jp->str_cap = new_cap;
         char* new_str = realloc(jp->str, new_cap);
-        if (new_str == NULL) {
-            jp->errorCode = JSON_PARSER_MEMORY_ERROR;
-            return;
-        }
+        if (new_str == NULL) REALLOC_ERROR
         jp->str = new_str;
     }
 
@@ -870,18 +860,10 @@ construct_jsonp(
     jsonParser->inputStream   = inputStream;
     jsonParser->stack_cap     = JSON_PARSER_INITIAL_STACK_CAP;
     jsonParser->stack_size    = 0;
-    jsonParser->stack         = malloc(jsonParser->stack_cap);
-    #ifndef NDEBUG
-        if (jsonParser->stack == NULL) return 0;
-    #endif
+    jsonParser->stack         = mem_alloc(jsonParser->stack_cap);
     jsonParser->str_cap       = JSON_PARSER_INITIAL_STR_CAP;
-    jsonParser->str           = malloc(jsonParser->str_cap);
-    #ifndef NDEBUG
-        if (jsonParser->str == NULL) return 0;
-    #endif
-
+    jsonParser->str           = mem_alloc(jsonParser->str_cap);
     jsonParser->errorCode     = JSON_PARSER_OK;
-
     jsonParser->atArrayEnd    = eventAtArrayEnd;
     jsonParser->atArrayStart  = eventAtArrayStart;
     jsonParser->atFalse       = eventAtFalse;

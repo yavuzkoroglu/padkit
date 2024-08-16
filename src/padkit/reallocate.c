@@ -7,8 +7,8 @@
  *
  * @author Yavuz Koroglu
  */
-#include <stdlib.h>
 #include <string.h>
+#include "padkit/memalloc.h"
 #include "padkit/reallocate.h"
 
 void* reallocate(
@@ -22,17 +22,19 @@ void* reallocate(
         if (element_size == 0)                      return NULL;
         if (new_element_count == 0)                 return NULL;
         if (new_element_count <= old_element_count) return NULL;
-
-        size_t const size = new_element_count * element_size;
-        if (size < new_element_count || size < element_size) return NULL;
-
-        void* const ptr = realloc(*ptrptr, size);
-        if (ptr == NULL) return NULL;
-        *ptrptr = ptr;
-    #else
-        *ptrptr = realloc(*ptrptr, new_element_count * element_size);
     #endif
-    return *ptrptr;
+
+    size_t const size = new_element_count * element_size;
+    #ifndef NDEBUG
+        if (size < new_element_count || size < element_size)
+            return NULL;
+    #endif
+
+    void* const ptr = realloc(*ptrptr, size);
+    if (ptr == NULL)
+        return NULL;
+
+    return (*ptrptr = ptr);
 }
 
 void* recalloc(
@@ -54,13 +56,8 @@ void* recalloc(
             return NULL;
     #endif
 
-    void* const ptr = calloc(new_element_count, element_size);
-    #ifndef NDEBUG
-        if (ptr == NULL) return NULL;
-    #endif
-
+    void* const ptr = mem_calloc(new_element_count, element_size);
     memcpy(ptr, *ptrptr, memcpy_size);
     free(*ptrptr);
-    *ptrptr = ptr;
-    return ptr;
+    return (*ptrptr = ptr);
 }

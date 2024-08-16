@@ -7,6 +7,7 @@
 #include <string.h>
 #include "padkit/chunkset.h"
 #include "padkit/hash.h"
+#include "padkit/memalloc.h"
 #include "padkit/prime.h"
 #include "padkit/reallocate.h"
 #include "padkit/streq.h"
@@ -57,20 +58,9 @@ adjust(ChunkSet* const set) {
     free(set->table);
     set->nRows = newNRows;
 
-    set->rowSize = calloc((size_t)newNRows, sizeof(uint32_t));
-    #ifndef NDEBUG
-        if (set->rowSize == NULL) return 0;
-    #endif
-
-    set->rowCap = calloc((size_t)newNRows, sizeof(uint32_t));
-    #ifndef NDEBUG
-        if (set->rowCap == NULL) return 0;
-    #endif
-
-    set->table = calloc((size_t)newNRows, sizeof(uint32_t*));
-    #ifndef NDEBUG
-        if (set->table == NULL) return 0;
-    #endif
+    set->rowSize    = mem_calloc((size_t)newNRows, sizeof(uint32_t));
+    set->rowCap     = mem_calloc((size_t)newNRows, sizeof(uint32_t));
+    set->table      = mem_calloc((size_t)newNRows, sizeof(uint32_t*));
 
     for (uint32_t key_id = 0; key_id < chunk->nStrings; key_id++) {
         char const* const key  = get_chunk(chunk, key_id);
@@ -79,12 +69,9 @@ adjust(ChunkSet* const set) {
 
         /* Initialize the row if necessary. */
         if (set->rowSize[row_id] == 0) {
-            uint32_t* const row_ptr = malloc(
+            uint32_t* const row_ptr = mem_alloc(
                 (size_t)CHUNK_SET_INITIAL_ROW_CAP * sizeof(uint32_t)
             );
-            #ifndef NDEBUG
-                if (row_ptr == NULL) return 0;
-            #endif
             set->rowCap[row_id] = CHUNK_SET_INITIAL_ROW_CAP;
             set->table[row_id] = row_ptr;
         }
@@ -92,8 +79,7 @@ adjust(ChunkSet* const set) {
         /* Adjust Cap */
         REALLOC_IF_NECESSARY(
             uint32_t, set->table[row_id],
-            uint32_t, set->rowCap[row_id], set->rowSize[row_id],
-            return 0;
+            uint32_t, set->rowCap[row_id], set->rowSize[row_id]
         )
 
         /* Adjust Size and Insert Index to Table */
@@ -116,12 +102,9 @@ uint32_t addKey_cset(ChunkSet* const set, char const* const key, uint64_t const 
 
     /* Initialize the row if necessary. */
     if (set->table[row_id] == NULL) {
-        uint32_t* const row_ptr = malloc(
+        uint32_t* const row_ptr = mem_alloc(
             (size_t)CHUNK_SET_INITIAL_ROW_CAP * sizeof(uint32_t)
         );
-        #ifndef NDEBUG
-            if (row_ptr == NULL) return UINT32_MAX;
-        #endif
         set->rowCap[row_id] = CHUNK_SET_INITIAL_ROW_CAP;
         set->table[row_id] = row_ptr;
     }
@@ -139,8 +122,7 @@ uint32_t addKey_cset(ChunkSet* const set, char const* const key, uint64_t const 
     /* Adjust Cap */
     REALLOC_IF_NECESSARY(
         uint32_t, set->table[row_id],
-        uint32_t, set->rowCap[row_id], set->rowSize[row_id],
-        return UINT32_MAX;
+        uint32_t, set->rowCap[row_id], set->rowSize[row_id]
     )
 
     uint32_t const key_id = add_chunk(chunk, key, n);
@@ -183,19 +165,11 @@ constructEmpty_cset(
         if (set->nRows == UINT32_MAX) return 0;
     #endif
 
-    set->rowSize = calloc((size_t)set->nRows, sizeof(uint32_t));
-    #ifndef NDEBUG
-        if (set->rowSize == NULL) return 0;
-    #endif
+    set->rowSize    = mem_calloc((size_t)set->nRows, sizeof(uint32_t));
+    set->rowCap     = mem_calloc((size_t)set->nRows, sizeof(uint32_t));
+    set->table      = mem_calloc((size_t)set->nRows, sizeof(uint32_t*));
 
-    set->rowCap = calloc((size_t)set->nRows, sizeof(uint32_t));
     #ifndef NDEBUG
-        if (set->rowCap == NULL) return 0;
-    #endif
-
-    set->table = calloc((size_t)set->nRows, sizeof(uint32_t*));
-    #ifndef NDEBUG
-        if (set->table == NULL) return 0;
         return 1;
     #endif
 }

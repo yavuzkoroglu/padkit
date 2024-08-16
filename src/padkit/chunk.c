@@ -7,6 +7,7 @@
 #include <ctype.h>
 #include <string.h>
 #include "padkit/chunk.h"
+#include "padkit/memalloc.h"
 #include "padkit/reallocate.h"
 
 uint32_t add_chunk(Chunk* const chunk, char const* const str, uint64_t const n) {
@@ -62,8 +63,7 @@ char const* append_chunk(Chunk* const chunk, char const* const str, uint64_t con
 
     REALLOC_IF_NECESSARY(
         uint64_t, chunk->stringOffsets,
-        uint32_t, chunk->stringsCap, chunk->nStrings,
-        return NULL;
+        uint32_t, chunk->stringsCap, chunk->nStrings
     )
 
     /* May try to append when there are no strings. Then, just add a new string. */
@@ -98,8 +98,7 @@ char const* appendIndex_chunk(Chunk* const chunk, uint32_t const str_id) {
 
     REALLOC_IF_NECESSARY(
         uint64_t, chunk->stringOffsets,
-        uint32_t, chunk->stringsCap, chunk->nStrings,
-        return NULL;
+        uint32_t, chunk->stringsCap, chunk->nStrings
     )
 
     return chunk->start + chunk->stringOffsets[chunk->nStrings - 1];
@@ -119,8 +118,7 @@ char* appendSpace_chunk(Chunk* const chunk, uint64_t const size) {
 
     REALLOC_IF_NECESSARY(
         char, chunk->start,
-        uint64_t, chunk->cap, pseudo_len,
-        return NULL;
+        uint64_t, chunk->cap, pseudo_len
     )
 
     return chunk->start + chunk->len;
@@ -155,8 +153,7 @@ concat_chunk(Chunk* const to, Chunk const* const from) {
     to->nStrings += from->nStrings;
     REALLOC_IF_NECESSARY(
         uint64_t, to->stringOffsets,
-        uint32_t, to->stringsCap, to->nStrings,
-        return 0;
+        uint32_t, to->stringsCap, to->nStrings
     )
 
     uint64_t const diff = (uint64_t)(append_start - to->start);
@@ -186,22 +183,13 @@ constructEmpty_chunk(Chunk* chunk, uint64_t const initial_cap, uint32_t const in
         if (initial_stringsCap == UINT32_MAX)   return 0;
     #endif
 
-    chunk->cap        = initial_cap;
-    chunk->stringsCap = initial_stringsCap;
-    chunk->nStrings   = 0;
-    chunk->len        = 0;
-
-    chunk->stringOffsets = malloc((size_t)initial_stringsCap * sizeof(uint64_t));
-    #ifndef NDEBUG
-        if (chunk->stringOffsets == NULL) return 0;
-    #endif
-
-    chunk->start = malloc((size_t)initial_cap);
-    #ifndef NDEBUG
-        if (chunk->start == NULL) return 0;
-    #endif
-
-    chunk->start[0] = '\0';
+    chunk->cap              = initial_cap;
+    chunk->stringsCap       = initial_stringsCap;
+    chunk->nStrings         = 0;
+    chunk->len              = 0;
+    chunk->stringOffsets    = mem_alloc((size_t)initial_stringsCap * sizeof(uint64_t));
+    chunk->start            = mem_alloc((size_t)initial_cap);
+    chunk->start[0]         = '\0';
 
     #ifndef NDEBUG
         return 1;
@@ -436,8 +424,7 @@ uint32_t splitLast_chunk(Chunk* const chunk, char const* delimeters) {
         /* Realloc stringOffsets if necessary */
         REALLOC_IF_NECESSARY(
             uint64_t, chunk->stringOffsets,
-            uint32_t, chunk->stringsCap, chunk->nStrings,
-            return 0;
+            uint32_t, chunk->stringsCap, chunk->nStrings
         )
 
         for (

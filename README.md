@@ -27,6 +27,12 @@ The above steps should produce
 
 ## Changes 
 
+### Changes v1.2beta -> v1.3beta
+
+* Replaced stack/circbuff macros with objects.
+* `REALLOC_IF_NECESSARY` ceased to take an `err` parameter.
+* `include/padkit/reallocate.h` does NOT include `include/padkit/debug.h`
+
 ### Changes v1.1 -> v1.2beta
 
 * Added `include/padkit/circbuff.h` and a `test_circbuff()` function to `src/tests.c`.

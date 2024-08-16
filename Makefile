@@ -46,13 +46,14 @@ include/padkit.h: ;                                                         @\
     echo '    #include "padkit/bliterals.h"'            >> include/padkit.h; \
     echo '    #include "padkit/chunkset.h"'             >> include/padkit.h; \
     echo '    #include "padkit/chunktable.h"'           >> include/padkit.h; \
-    echo '    #include "padkit/circbuff.h"'           	>> include/padkit.h; \
     echo '    #include "padkit/csv.h"'                  >> include/padkit.h; \
+    echo '    #include "padkit/debug.h"'                >> include/padkit.h; \
     echo '    #include "padkit/graphmatrix.h"'          >> include/padkit.h; \
     echo '    #include "padkit/hash.h"'                 >> include/padkit.h; \
     echo '    #include "padkit/jsonparser.h"'           >> include/padkit.h; \
     echo '    #include "padkit/map.h"'                  >> include/padkit.h; \
     echo '    #include "padkit/mapping.h"'              >> include/padkit.h; \
+    echo '    #include "padkit/memalloc.h"'             >> include/padkit.h; \
     echo '    #include "padkit/preprocessor.h"'         >> include/padkit.h; \
     echo '    #include "padkit/prime.h"'                >> include/padkit.h; \
     echo '    #include "padkit/reallocate.h"'           >> include/padkit.h; \
@@ -76,6 +77,7 @@ obj/padkit: obj ; mkdir obj/padkit
 obj/padkit/chunk.o: obj/padkit          \
     include/padkit/chunk.h              \
     include/padkit/debug.h              \
+    include/padkit/memalloc.h           \
     include/padkit/reallocate.h         \
     src/padkit/chunk.c                  \
     ; ${COMPILE} src/padkit/chunk.c -c -o obj/padkit/chunk.o
@@ -85,6 +87,7 @@ obj/padkit/chunkset.o: obj/padkit       \
     include/padkit/chunkset.h           \
     include/padkit/debug.h              \
     include/padkit/hash.h               \
+    include/padkit/memalloc.h           \
     include/padkit/prime.h              \
     include/padkit/reallocate.h         \
     include/padkit/streq.h              \
@@ -96,6 +99,7 @@ obj/padkit/chunktable.o: obj/padkit     \
     include/padkit/chunktable.h         \
     include/padkit/debug.h              \
     include/padkit/hash.h               \
+    include/padkit/memalloc.h           \
     include/padkit/prime.h              \
     include/padkit/reallocate.h         \
     include/padkit/streq.h              \
@@ -106,6 +110,7 @@ obj/padkit/graphmatrix.o: obj/padkit    \
     include/padkit/bliterals.h          \
     include/padkit/debug.h              \
     include/padkit/graphmatrix.h        \
+    include/padkit/memalloc.h           \
     src/padkit/graphmatrix.c            \
     ; ${COMPILE} src/padkit/graphmatrix.c -c -o obj/padkit/graphmatrix.o
 
@@ -117,6 +122,8 @@ obj/padkit/hash.o: obj/padkit           \
 
 obj/padkit/jsonparser.o: obj/padkit     \
     include/padkit/jsonparser.h         \
+    include/padkit/memalloc.h           \
+    include/padkit/reallocate.h         \
     src/padkit/jsonparser.c             \
     ; ${COMPILE} src/padkit/jsonparser.c -c -o obj/padkit/jsonparser.o
 
@@ -124,10 +131,17 @@ obj/padkit/map.o: obj/padkit            \
     include/padkit/debug.h              \
     include/padkit/map.h                \
     include/padkit/mapping.h            \
+    include/padkit/memalloc.h           \
     include/padkit/reallocate.h         \
     include/padkit/value.h              \
     src/padkit/map.c                    \
     ; ${COMPILE} src/padkit/map.c -c -o obj/padkit/map.o
+
+obj/padkit/memalloc.o: obj/padkit       \
+    include/padkit/debug.h              \
+    include/padkit/memalloc.h           \
+    src/padkit/memalloc.c               \
+    ; ${COMPILE} src/padkit/memalloc.c -c -o obj/padkit/memalloc.o
 
 obj/padkit/prime.o: obj/padkit          \
     include/padkit/debug.h              \
@@ -137,9 +151,18 @@ obj/padkit/prime.o: obj/padkit          \
 
 obj/padkit/reallocate.o: obj/padkit     \
     include/padkit/debug.h              \
+    include/padkit/memalloc.h           \
     include/padkit/reallocate.h         \
     src/padkit/reallocate.c             \
     ; ${COMPILE} src/padkit/reallocate.c -c -o obj/padkit/reallocate.o
+
+obj/padkit/stack.o: obj/padkit          \
+    include/padkit/debug.h              \
+    include/padkit/memalloc.h           \
+    include/padkit/reallocate.h         \
+    include/padkit/stack.h              \
+    src/padkit/stack.c                  \
+    ; ${COMPILE} src/padkit/stack.c -c -o obj/padkit/stack.c
 
 obj/padkit/streq.o: obj/padkit          \
     include/padkit/debug.h              \
@@ -165,8 +188,10 @@ objects:                        \
     obj/padkit/hash.o           \
     obj/padkit/jsonparser.o     \
     obj/padkit/map.o            \
+    obj/padkit/memalloc.o       \
     obj/padkit/prime.o          \
     obj/padkit/reallocate.o     \
+    obj/padkit/stack.o          \
     obj/padkit/streq.o          \
     obj/padkit/timestamp.o      \
     obj/padkit/value.o

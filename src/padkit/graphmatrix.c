@@ -7,6 +7,7 @@
 #include "padkit/bliterals.h"
 #include "padkit/debug.h"
 #include "padkit/graphmatrix.h"
+#include "padkit/memalloc.h"
 
 #ifndef NDEBUG
 bool
@@ -142,9 +143,9 @@ construct_gmtx(GraphMatrix* gmtx, uint32_t const initial_height, uint32_t const 
         if (size == 0) return 0;
     #endif
 
-    *gmtx = (GraphMatrix){ initial_height, initial_width, calloc((size_t)size, sizeof(uint64_t)) };
+    *gmtx = (GraphMatrix){ initial_height, initial_width, mem_calloc((size_t)size, sizeof(uint64_t)) };
+
     #ifndef NDEBUG
-        if (gmtx->array == NULL) return 0;
         return 1;
     #endif
 }
