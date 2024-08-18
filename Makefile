@@ -112,6 +112,7 @@ obj/padkit/circbuff.o: obj/padkit       \
     include/padkit/debug.h              \
     include/padkit/memalloc.h           \
     include/padkit/reallocate.h         \
+    include/padkit/repeat.h             \
     include/padkit/stack.h              \
     src/padkit/circbuff.c               \
     ; ${COMPILE} src/padkit/circbuff.c -c -o obj/padkit/circbuff.o

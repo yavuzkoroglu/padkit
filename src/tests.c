@@ -275,6 +275,18 @@ static void test_chunk_strlenLast(void) {
     NDEBUG_EXECUTE(free_chunk(strings))
 }
 
+static void test_circbuff(void) {
+    CircularBuffer buffer[1] = { NOT_A_CIRCBUFF };
+    DEBUG_ASSERT_NDEBUG_EXECUTE(
+        constructEmpty_cbuff(buffer, sizeof(int), CIRCBUFF_RECOMMENDED_INITIAL_CAP)
+    )
+
+    TEST_PASS
+
+    DEBUG_ABORT_IF(!free_cbuff(buffer))
+    NDEBUG_EXECUTE(free_cbuff(buffer))
+}
+
 static void test_cset(void) {
     ChunkSet set[1] = { NOT_A_CHUNK_SET };
 
@@ -299,7 +311,8 @@ static void test_cset(void) {
     TEST_PASS
 
     DEBUG_ASSERT_NDEBUG_EXECUTE(flush_cset(set))
-    DEBUG_ASSERT_NDEBUG_EXECUTE(free_cset(set))
+    DEBUG_ABORT_IF(!free_cset(set))
+    NDEBUG_EXECUTE(free_cset(set))
 }
 
 #define ALICE 0
@@ -451,9 +464,15 @@ static void test_ctbl(void) {
 END_TEST_CTBL:
     DEBUG_ASSERT_NDEBUG_EXECUTE(flush_ctbl(ages))
     DEBUG_ASSERT_NDEBUG_EXECUTE(flush_ctbl(scores))
-    DEBUG_ASSERT_NDEBUG_EXECUTE(free_ctbl(ages))
-    DEBUG_ASSERT_NDEBUG_EXECUTE(free_ctbl(scores))
-    DEBUG_ASSERT_NDEBUG_EXECUTE(free_chunk(people))
+
+    DEBUG_ABORT_IF(!free_ctbl(ages))
+    NDEBUG_EXECUTE(free_ctbl(ages))
+
+    DEBUG_ABORT_IF(!free_ctbl(scores))
+    NDEBUG_EXECUTE(free_ctbl(scores))
+
+    DEBUG_ABORT_IF(!free_chunk(people))
+    NDEBUG_EXECUTE(free_chunk(peole))
 
     #undef EXAM_COUNT
     #undef PEOPLE_COUNT
@@ -487,7 +506,9 @@ static void test_gmtx(void) {
     TEST_PASS
 
     DEBUG_ASSERT_NDEBUG_EXECUTE(disconnectAll_gmtx(gmtx))
-    DEBUG_ASSERT_NDEBUG_EXECUTE(free_gmtx(gmtx))
+
+    DEBUG_ABORT_IF(!free_gmtx(gmtx))
+    NDEBUG_EXECUTE(free_gmtx(gmtx))
 }
 
 static unsigned test_jsonp_objCount = 0;
@@ -508,9 +529,11 @@ static void test_jsonp(void) {
     TEST_FAIL_IF(test_jsonp_objCount != 27)
     TEST_PASS
 
-    DEBUG_ASSERT_NDEBUG_EXECUTE(free_jsonp(jp))
     DEBUG_ASSERT(fclose(fp) == 0)
     NDEBUG_EXECUTE(fclose(fp))
+
+    DEBUG_ABORT_IF(!free_jsonp(jp))
+    NDEBUG_EXECUTE(free_jsonp(jp))
 }
 
 #define ALISON 0
@@ -629,7 +652,9 @@ static void test_map(void) {
     TEST_PASS
 
     DEBUG_ASSERT_NDEBUG_EXECUTE(flush_map(colleagues))
-    DEBUG_ASSERT_NDEBUG_EXECUTE(free_map(colleagues))
+
+    DEBUG_ABORT_IF(!free_map(colleagues))
+    NDEBUG_EXECUTE(free_map(colleagues))
 
     #undef RELATIONS_COUNT
     #undef PEOPLE_COUNT
@@ -707,7 +732,7 @@ static void test_stack(void) {
     int c = 3;
     int d = 4;
 
-    Stack stack[1];
+    Stack stack[1] = { NOT_A_STACK };
     DEBUG_ASSERT_NDEBUG_EXECUTE(constructEmpty_stack(stack, sizeof(int), 1))
 
     TEST_FAIL_IF(stack->size != 0)
@@ -740,18 +765,17 @@ static void test_stack(void) {
     DEBUG_ERROR_IF(pushTop_stack(stack, &d) == NULL)
     NDEBUG_EXECUTE(pushTop_stack(stack, &d))
 
-    DEBUG_ASSERT_NDEBUG_EXECUTE(rotate_stack(stack))
+    DEBUG_ASSERT_NDEBUG_EXECUTE(rotate_stack(stack,2))
 
     TEST_FAIL_IF(stack->size != 3)
-    TEST_FAIL_IF(*(int*)(get_stack(stack, 0)) != b)
-    TEST_FAIL_IF(*(int*)(get_stack(stack, 1)) != d)
-    TEST_FAIL_IF(*(int*)(get_stack(stack, 2)) != c)
+    TEST_FAIL_IF(*(int*)(get_stack(stack, 0)) != d)
+    TEST_FAIL_IF(*(int*)(get_stack(stack, 1)) != c)
+    TEST_FAIL_IF(*(int*)(get_stack(stack, 2)) != b)
 
     TEST_PASS
 
-    DEBUG_ASSERT_NDEBUG_EXECUTE(
-        free_stack(stack)
-    )
+    DEBUG_ABORT_IF(!free_stack(stack))
+    NDEBUG_EXECUTE(free_stack(stack))
 }
 
 static void test_streq_mem_eq_n(void) {
@@ -885,6 +909,7 @@ int main(void) {
     test_chunk_fromStream();
     test_chunk_strlen();
     test_chunk_strlenLast();
+    test_circbuff();
     test_cset();
     test_ctbl();
     test_gmtx();

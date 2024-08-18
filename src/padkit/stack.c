@@ -8,6 +8,22 @@
 #include "padkit/reallocate.h"
 #include "padkit/stack.h"
 
+static uint32_t calculateNewCap_stack(Stack const* const stack);
+
+static uint32_t calculateNewCap_stack(Stack const* const stack) {
+    #ifndef NDEBUG
+        if (!isValid_stack(stack)) return UINT32_MAX;
+    #endif
+
+    uint32_t newCap = stack->cap;
+    while (newCap <= stack->size) {
+        newCap <<= 1;
+        if (newCap <= stack->cap) return UINT32_MAX;
+    }
+
+    return newCap;
+}
+
 #ifndef NDEBUG
 bool
 #else
@@ -107,7 +123,7 @@ void* peekBottom_stack(Stack const* const stack) {
         if (stack->size == 0)       return NULL;
     #endif
 
-    return stack->array;
+    return get_stack(stack, 0);
 }
 
 void* peekTop_stack(Stack const* const stack) {
@@ -116,7 +132,7 @@ void* peekTop_stack(Stack const* const stack) {
         if (stack->size == 0)       return NULL;
     #endif
 
-    return stack->array + (size_t)(stack->size - 1) * stack->element_size_in_bytes;
+    return get_stack(stack, stack->size - 1);
 }
 
 void* pop_stack(Stack* const stack) {
@@ -132,9 +148,9 @@ void* popBottom_stack(Stack* const stack) {
     #ifndef NDEBUG
         if (!isValid_stack(stack))      return NULL;
         if (stack->size == 0)           return NULL;
-        if (!rotateDown_stack(stack))   return NULL;
+        if (!rotateDown_stack(stack,1)) return NULL;
     #else
-        rotateDown_stack(stack);
+        rotateDown_stack(stack,1);
     #endif
 
     return popTop_stack(stack);
@@ -146,10 +162,12 @@ void* popTop_stack(Stack* const stack) {
         if (stack->size == 0)           return NULL;
     #endif
 
-    return stack->array + (size_t)(--stack->size) * stack->element_size_in_bytes;
+    void* const ptr = get_stack(stack, stack->size - 1);
+    stack->size--;
+    return ptr;
 }
 
-void* push_stack(Stack* const stack, void const* const ptr) {
+void* push_stack(Stack* const stack, void const* const restrict ptr) {
     #ifndef NDEBUG
         if (!isValid_stack(stack))      return NULL;
     #endif
@@ -157,69 +175,48 @@ void* push_stack(Stack* const stack, void const* const ptr) {
     return pushTop_stack(stack, ptr);
 }
 
-void* pushBottom_stack(Stack* const stack, void const* const ptr) {
+void* pushBottom_stack(Stack* const stack, void const* const restrict ptr) {
     #ifndef NDEBUG
         if (!isValid_stack(stack))              return NULL;
         if (pushTop_stack(stack, ptr) == NULL)  return NULL;
-        if (!rotateUp_stack(stack))             return NULL;
+        if (!rotateUp_stack(stack, 1))          return NULL;
     #else
         pushTop_stack(stack, ptr);
-        rotateUp_stack(stack);
+        rotateUp_stack(stack, 1);
     #endif
 
     return stack->array;
 }
 
-void* pushTop_stack(Stack* const stack, void const* const ptr) {
+void* pushTop_stack(Stack* const stack, void const* const restrict ptr) {
     #ifndef NDEBUG
-        if (!isValid_stack(stack))  return NULL;
-    #endif
-
-    bool const isPtrInStack
-        = (stack->array <= (char const*)ptr && (char const*)ptr < stack->array + stack->size);
-
-    size_t const offset = (size_t)((char const*)ptr - stack->array);
-
-    #ifndef NDEBUG
-        if (isPtrInStack && offset % stack->element_size_in_bytes != 0) return NULL;
-        if (!reallocIfNecessary_stack(stack))                           return NULL;
+        if (!isValid_stack(stack))              return NULL;
+        if (!reallocIfNecessary_stack(stack))   return NULL;
     #else
         reallocIfNecessary_stack(stack);
     #endif
 
-    if (ptr == NULL)
-        memset(
-            stack->array + (size_t)stack->size * stack->element_size_in_bytes,
-            0,
-            stack->element_size_in_bytes
-        );
-    else if (isPtrInStack)
-        memcpy(
-            stack->array + (size_t)stack->size * stack->element_size_in_bytes,
-            stack->array + offset,
-            stack->element_size_in_bytes
-        );
-    else
-        memcpy(
-            stack->array + (size_t)stack->size * stack->element_size_in_bytes,
-            ptr,
-            stack->element_size_in_bytes
-        );
+    stack->size++;
+    #ifndef NDEBUG
+        if (!set_stack(stack, stack->size - 1, ptr)) return NULL;
+    #else
+        set_stack(stack, stack->size - 1, ptr);
+    #endif
 
-    return stack->array + (size_t)stack->size++ * stack->element_size_in_bytes;
+    return peekTop_stack(stack);
 }
 
 void* pushZeros_stack(Stack* const stack) {
     #ifndef NDEBUG
-        if (!isValid_stack(stack))  return NULL;
+        if (!isValid_stack(stack)) return NULL;
     #endif
 
-    return push_stack(stack, NULL);
+    return pushTop_stack(stack, NULL);
 }
 
 void* pushZerosBottom_stack(Stack* const stack) {
     #ifndef NDEBUG
-        if (!isValid_stack(stack))  return NULL;
+        if (!isValid_stack(stack)) return NULL;
     #endif
 
     return pushBottom_stack(stack, NULL);
@@ -227,7 +224,7 @@ void* pushZerosBottom_stack(Stack* const stack) {
 
 void* pushZerosTop_stack(Stack* const stack) {
     #ifndef NDEBUG
-        if (!isValid_stack(stack))  return NULL;
+        if (!isValid_stack(stack)) return NULL;
     #endif
 
     return pushTop_stack(stack, NULL);
@@ -243,31 +240,25 @@ reallocIfNecessary_stack(Stack* const stack) {
         if (!isValid_stack(stack)) return 0;
     #endif
 
-    uint32_t new_cap = stack->cap;
-    while (new_cap <= stack->size) {
-        new_cap <<= 1;
-        #ifndef NDEBUG
-            if (new_cap <= stack->cap) REALLOC_ERROR
-        #endif
-    }
+    uint32_t const newCap = calculateNewCap_stack(stack);
+    if (newCap == UINT32_MAX) REALLOC_ERROR
 
-    if (new_cap == stack->cap)
-        #ifndef NDEBUG
-            return 1;
-        #else
-            return;
-        #endif
-
-    void* const new_array = realloc(
-        stack->array,
-        (size_t)(stack->cap = new_cap) * stack->element_size_in_bytes
-    );
     #ifndef NDEBUG
-        if (new_array == NULL) REALLOC_ERROR
+        if (newCap == stack->cap) return 1;
+    #else
+        if (newCap == stack->cap) return;
     #endif
 
-    stack->cap      = new_cap;
-    stack->array    = new_array;
+    void* const newArray = realloc(
+        stack->array,
+        (size_t)newCap * stack->element_size_in_bytes
+    );
+    #ifndef NDEBUG
+        if (newArray == NULL) REALLOC_ERROR
+    #endif
+
+    stack->cap      = newCap;
+    stack->array    = newArray;
 
     #ifndef NDEBUG
         return 1;
@@ -279,14 +270,19 @@ bool
 #else
 void
 #endif
-rotate_stack(Stack* const stack) {
+rotate_stack(Stack* const stack, uint32_t n) {
     #ifndef NDEBUG
-        if (!isValid_stack(stack))
-            return 0;
+        if (!isValid_stack(stack))  return 0;
+        if (stack->size == 0)       return 0;
+    #endif
 
-        return rotateDown_stack(stack);
+    n %= stack->size;
+    #ifndef NDEBUG
+        if (n == 0) return 1;
+        return rotateDown_stack(stack, n);
     #else
-        rotateDown_stack(stack);
+        if (n == 0) return;
+        rotateDown_stack(stack, n);
     #endif
 }
 
@@ -295,24 +291,35 @@ bool
 #else
 void
 #endif
-rotateDown_stack(Stack* const stack) {
+rotateDown_stack(Stack* const stack, uint32_t n) {
     #ifndef NDEBUG
         if (!isValid_stack(stack))  return 0;
         if (stack->size == 0)       return 0;
     #endif
 
-    char* const buffer = mem_alloc(stack->element_size_in_bytes);
-    memcpy(buffer, stack->array, stack->element_size_in_bytes);
-    memmove(
-        stack->array,
-        stack->array + stack->element_size_in_bytes,
-        (size_t)(stack->size - 1) * stack->element_size_in_bytes
-    );
-    memcpy(
-        stack->array + (size_t)(stack->size - 1) * stack->element_size_in_bytes,
-        buffer,
-        stack->element_size_in_bytes
-    );
+    n %= stack->size;
+    #ifndef NDEBUG
+        if (n == 0) return 1;
+    #else
+        if (n == 0) return;
+    #endif
+
+    /* Divide stack->size into sz[0] and sz[1]. */
+    uint64_t const sz[2] = {
+        (uint64_t)n * (uint64_t)stack->element_size_in_bytes,
+        (uint64_t)(stack->size - n) * (uint64_t)stack->element_size_in_bytes
+    };
+    #ifndef NDEBUG
+        if (sz[0] < (uint64_t)n)                            return 0;
+        if (sz[0] < (uint64_t)stack->element_size_in_bytes) return 0;
+        if (sz[1] < (uint64_t)(stack->size - n))            return 0;
+        if (sz[1] < (uint64_t)stack->element_size_in_bytes) return 0;
+    #endif
+
+    char* const buffer = mem_alloc((size_t)sz[0]);
+    memcpy(buffer, stack->array, (size_t)sz[0]);                /* Remember the sz[0] (bottom) part.*/
+    memmove(stack->array, stack->array + sz[0], (size_t)sz[1]); /* Shift down the sz[1] part.       */
+    memcpy(stack->array + sz[1], buffer, (size_t)sz[0]);        /* Put the sz[0] part at the top.   */
     free(buffer);
 
     #ifndef NDEBUG
@@ -325,24 +332,35 @@ bool
 #else
 void
 #endif
-rotateUp_stack(Stack* const stack) {
+rotateUp_stack(Stack* const stack, uint32_t n) {
     #ifndef NDEBUG
         if (!isValid_stack(stack))  return 0;
         if (stack->size == 0)       return 0;
     #endif
 
-    char* const buffer = mem_alloc(stack->element_size_in_bytes);
-    memcpy(
-        buffer,
-        stack->array + (size_t)(stack->size - 1) * stack->element_size_in_bytes,
-        stack->element_size_in_bytes
-    );
-    memmove(
-        stack->array + stack->element_size_in_bytes,
-        stack->array,
-        (size_t)(stack->size - 1) * stack->element_size_in_bytes
-    );
-    memcpy(stack->array, buffer, stack->element_size_in_bytes);
+    n %= stack->size;
+    #ifndef NDEBUG
+        if (n == 0) return 1;
+    #else
+        if (n == 0) return;
+    #endif
+
+    /* Divide stack->size into sz[0] and sz[1]. */
+    uint64_t const sz[2] = {
+        (uint64_t)n * (uint64_t)stack->element_size_in_bytes,
+        (uint64_t)(stack->size - n) * (uint64_t)stack->element_size_in_bytes
+    };
+    #ifndef NDEBUG
+        if (sz[0] < (uint64_t)n)                            return 0;
+        if (sz[0] < (uint64_t)stack->element_size_in_bytes) return 0;
+        if (sz[1] < (uint64_t)(stack->size - n))            return 0;
+        if (sz[1] < (uint64_t)stack->element_size_in_bytes) return 0;
+    #endif
+
+    char* const buffer = mem_alloc((size_t)sz[0]);
+    memcpy(buffer, stack->array + sz[1], (size_t)sz[0]);        /* Remember the sz[0] (top) part.   */
+    memmove(stack->array + sz[0], stack->array, (size_t)sz[1]); /* Shift up the sz[1] part.         */
+    memcpy(stack->array, buffer, (size_t)sz[0]);                /* Put the sz[0] part at the bottom.*/
     free(buffer);
 
     #ifndef NDEBUG
@@ -362,15 +380,22 @@ reverse_stack(Stack* const stack) {
     #endif
 
     char* const buffer  = mem_alloc(stack->element_size_in_bytes);
-    char* first         = stack->array;
-    char* second        = stack->array + (size_t)(stack->size - 1) * stack->element_size_in_bytes;
-    while (first < second) {
-        memcpy(buffer, first, stack->element_size_in_bytes);
-        memcpy(first, second, stack->element_size_in_bytes);
-        memcpy(second, buffer, stack->element_size_in_bytes);
+    char* bottom        = peekBottom_stack(stack);
+    char* top           = peekTop_stack(stack);
+    #ifndef NDEBUG
+        if (bottom == NULL)         return 0;
+        if (top == NULL)            return 0;
+    #endif
 
-        first += stack->element_size_in_bytes;
-        second -= stack->element_size_in_bytes;
+    /* (bottom < top) is NOT UB because
+     * both belong to stack->array. */
+    while (bottom < top) {
+        memcpy(buffer, bottom, stack->element_size_in_bytes);
+        memcpy(bottom, top, stack->element_size_in_bytes);
+        memcpy(top, buffer, stack->element_size_in_bytes);
+
+        bottom += stack->element_size_in_bytes;
+        top -= stack->element_size_in_bytes;
     }
     free(buffer);
 
@@ -384,24 +409,22 @@ bool
 #else
 void
 #endif
-set_stack(Stack* const stack, uint32_t const elementId, void const* const ptr) {
+set_stack(Stack* const stack, uint32_t const elementId, void const* const restrict ptr) {
     #ifndef NDEBUG
         if (!isValid_stack(stack))      return 0;
         if (elementId >= stack->size)   return 0;
-        if (ptr == NULL)                return 0;
-        if (stack->array <= (char const*)ptr && (char const*)ptr < stack->array + stack->size) {
-            size_t const offset = (size_t)((char const*)ptr - stack->array);
-
-            if (offset % stack->element_size_in_bytes != 0)                 return 0;
-            if (offset / stack->element_size_in_bytes == (size_t)elementId) return 0;
-        }
     #endif
 
-    memcpy(
-        stack->array + (size_t)elementId * stack->element_size_in_bytes,
-        ptr,
-        stack->element_size_in_bytes
-    );
+    void* const dest = get_stack(stack, elementId);
+    #ifndef NDEBUG
+        if (dest == NULL)               return 0;
+        if (dest == ptr)                return 0;
+    #endif
+
+    if (ptr == NULL)
+        memset(dest, 0, stack->element_size_in_bytes);
+    else
+        memcpy(dest, ptr, stack->element_size_in_bytes); /* UB if dest == ptr */
 
     #ifndef NDEBUG
         return 1;
@@ -413,16 +436,33 @@ bool
 #else
 void
 #endif
-swap_stacks(Stack* const stack_A, Stack* const stack_B) {
+setZeros_stack(Stack* const stack, uint32_t const elementId) {
+    #ifndef NDEBUG
+        if (!isValid_stack(stack))      return 0;
+        if (elementId >= stack->size)   return 0;
+
+        return set_stack(stack, elementId, NULL);
+    #else
+        set_stack(stack, elementId, NULL);
+    #endif
+}
+
+#ifndef NDEBUG
+bool
+#else
+void
+#endif
+swap_stacks(Stack* const restrict stack_A, Stack* const restrict stack_B) {
     #ifndef NDEBUG
         if (!isValid_stack(stack_A))    return 0;
         if (!isValid_stack(stack_B))    return 0;
+        if (stack_A == stack_B)         return 0;
     #endif
 
-    Stack tmp[1];
-    memcpy(tmp, stack_A, sizeof(Stack));
-    memcpy(stack_A, stack_B, sizeof(Stack));
-    memcpy(stack_B, tmp, sizeof(Stack));
+    Stack sbuffer[1];
+    memcpy(sbuffer, stack_A, sizeof(Stack));
+    memcpy(stack_A, stack_B, sizeof(Stack)); /* UB if stack_A == stack_B */
+    memcpy(stack_B, sbuffer, sizeof(Stack));
 
     #ifndef NDEBUG
         return 1;

@@ -76,10 +76,10 @@
      * previous string.
      *
      * @param chunk A pointer to the Chunk.
-     * @param str The string.
+     * @param str The string. (cannot be an element of the chunk)
      * @param n The number of characters to copy.
      */
-    uint32_t add_chunk(Chunk* const chunk, char const* const str, uint64_t const n);
+    uint32_t add_chunk(Chunk* const chunk, char const* const restrict str, uint64_t const n);
 
     /**
      * @brief Adds a string to a Chunk using the string's chunk index.
@@ -98,10 +98,10 @@
      * does NOT respect the '\0' separator.
      *
      * @param chunk A pointer to the Chunk.
-     * @param str The string.
+     * @param str The string. (cannot be an element of the chunk)
      * @param n The number of characters to copy.
      */
-    char const* append_chunk(Chunk* const chunk, char const* const str, uint64_t const n);
+    char const* append_chunk(Chunk* const chunk, char const* const restrict str, uint64_t const n);
 
     /**
      * @brief Appends a string to the final string of a Chunk using the string's chunk index.
@@ -125,15 +125,15 @@
 
     /**
      * @brief Adds all the strings from a Chunk to another Chunk.
-     * @param to The destination Chunk.
-     * @param from The source Chunk.
+     * @param to The destination Chunk. (cannot be the source Chunk)
+     * @param from The source Chunk. (cannot be the destination Chunk)
      */
     #ifndef NDEBUG
     bool
     #else
     void
     #endif
-    concat_chunk(Chunk* const to, Chunk const* const from);
+    concat_chunk(Chunk* const restrict to, Chunk const* const restrict from);
 
     /**
      * @brief Constructs an empty Chunk.
@@ -146,7 +146,7 @@
     #else
     void
     #endif
-    constructEmpty_chunk(Chunk* chunk, uint64_t const initial_cap, uint32_t const initial_stringsCap);
+    constructEmpty_chunk(Chunk* const chunk, uint64_t const initial_cap, uint32_t const initial_stringsCap);
 
     /**
      * @brief Deletes an element from a Chunk.

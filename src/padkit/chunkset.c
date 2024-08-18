@@ -63,9 +63,9 @@ adjust(ChunkSet* const set) {
     set->table      = mem_calloc((size_t)newNRows, sizeof(uint32_t*));
 
     for (uint32_t key_id = 0; key_id < chunk->nStrings; key_id++) {
-        char const* const key  = get_chunk(chunk, key_id);
-        uint64_t const key_len = strlen_chunk(chunk, key_id);
-        uint32_t const row_id  = hash_str(key, key_len) % newNRows;
+        char const* const key   = get_chunk(chunk, key_id);
+        uint64_t const key_len  = strlen_chunk(chunk, key_id);
+        uint32_t const row_id   = hash_str(key, key_len) % newNRows;
 
         /* Initialize the row if necessary. */
         if (set->rowSize[row_id] == 0) {
@@ -73,7 +73,7 @@ adjust(ChunkSet* const set) {
                 (size_t)CHUNK_SET_INITIAL_ROW_CAP * sizeof(uint32_t)
             );
             set->rowCap[row_id] = CHUNK_SET_INITIAL_ROW_CAP;
-            set->table[row_id] = row_ptr;
+            set->table[row_id]  = row_ptr;
         }
 
         /* Adjust Cap */
@@ -91,7 +91,7 @@ adjust(ChunkSet* const set) {
     #endif
 }
 
-uint32_t addKey_cset(ChunkSet* const set, char const* const key, uint64_t const n) {
+uint32_t addKey_cset(ChunkSet* const set, char const* const restrict key, uint64_t const n) {
     #ifndef NDEBUG
         if (!isValid_cset(set)) return UINT32_MAX;
         if (key == NULL)        return UINT32_MAX;
@@ -147,7 +147,7 @@ bool
 void
 #endif
 constructEmpty_cset(
-    ChunkSet* set, uint64_t const initial_cap,
+    ChunkSet* const set, uint64_t const initial_cap,
     uint32_t const initial_stringsCap, uint32_t const loadPercent
 ) {
     #ifndef NDEBUG

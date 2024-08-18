@@ -134,23 +134,23 @@
     /**
      * @brief Pushes the copy of an element to the top of a Stack.
      * @param stack A pointer to the Stack.
-     * @param ptr A pointer to the constant element.
+     * @param ptr A pointer to the constant element (cannot be an element of the Stack).
      */
-    void* push_stack(Stack* const stack, void const* const ptr);
+    void* push_stack(Stack* const stack, void const* const restrict ptr);
 
     /**
      * @brief Pushes the copy of an element to the bottom of a Stack.
      * @param stack A pointer to the Stack.
-     * @param ptr A pointer to the constant element.
+     * @param ptr A pointer to the constant element (cannot be an element of the Stack).
      */
-    void* pushBottom_stack(Stack* const stack, void const* const ptr);
+    void* pushBottom_stack(Stack* const stack, void const* const restrict ptr);
 
     /**
      * @brief Pushes the copy of an element to the top of a Stack.
      * @param stack A pointer to the Stack.
-     * @param ptr A pointer to the constant element.
+     * @param ptr A pointer to the constant element (cannot be an element of the Stack).
      */
-    void* pushTop_stack(Stack* const stack, void const* const ptr);
+    void* pushTop_stack(Stack* const stack, void const* const restrict ptr);
 
     /**
      * @brief Pushes one element of zeros to the top of a Stack.
@@ -182,37 +182,40 @@
     reallocIfNecessary_stack(Stack* const stack);
 
     /**
-     * @brief Rotates down a Stack.
+     * @brief Rotates down a Stack by n.
      * @param stack A pointer to the Stack.
+     * @param n The number of rotations.
      */
     #ifndef NDEBUG
     bool
     #else
     void
     #endif
-    rotate_stack(Stack* const stack);
+    rotate_stack(Stack* const stack, uint32_t n);
 
     /**
-     * @brief Rotates down a Stack.
+     * @brief Rotates down a Stack by n.
      * @param stack A pointer to the Stack.
+     * @param n The number of rotations.
      */
     #ifndef NDEBUG
     bool
     #else
     void
     #endif
-    rotateDown_stack(Stack* const stack);
+    rotateDown_stack(Stack* const stack, uint32_t n);
 
     /**
-     * @brief Rotates up a Stack.
+     * @brief Rotates up a Stack by n.
      * @param stack A pointer to the Stack.
+     * @param n The number of rotations.
      */
     #ifndef NDEBUG
     bool
     #else
     void
     #endif
-    rotateUp_stack(Stack* const stack);
+    rotateUp_stack(Stack* const stack, uint32_t n);
 
     /**
      * @brief Reverses the elements of a Stack.
@@ -229,24 +232,36 @@
      * @brief Sets one element of a Stack to a value.
      * @param stack A pointer to the Stack.
      * @param elementId The element index.
-     * @param ptr A pointer to the constant value.
+     * @param ptr A pointer to the constant value (cannot be an element of the Stack).
      */
     #ifndef NDEBUG
     bool
     #else
     void
     #endif
-    set_stack(Stack* const stack, uint32_t const elementId, void const* const ptr);
+    set_stack(Stack* const stack, uint32_t const elementId, void const* const restrict ptr);
+
+    /**
+     * @brief Sets one element of a Stack to zeros.
+     * @param stack A pointer to the Stack.
+     * @param elementId The element index.
+     */
+    #ifndef NDEBUG
+    bool
+    #else
+    void
+    #endif
+    setZeros_stack(Stack* const stack, uint32_t const elementId);
 
     /**
      * @brief Swaps two Stack objects.
-     * @param stack_A A pointer to the first Stack.
-     * @param stack_B A pointer to the second Stack.
+     * @param stack_A A pointer to the first Stack (cannot be equal to stack_B).
+     * @param stack_B A pointer to the second Stack (cannot be equal to stack_A).
      */
     #ifndef NDEBUG
     bool
     #else
     void
     #endif
-    swap_stacks(Stack* const stack_A, Stack* const stack_B);
+    swap_stacks(Stack* const restrict stack_A, Stack* const restrict stack_B);
 #endif

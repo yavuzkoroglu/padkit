@@ -28,10 +28,10 @@ connect_gmtx(GraphMatrix* const gmtx, uint32_t const source, uint32_t const sink
         resizeIfNecessary_gmtx(gmtx, new_height, new_width);
     #endif
 
-    long const edge_id = (long)new_width * (long)source + (long)sink;
-    ldiv_t const edge  = ldiv(edge_id, 64);
+    uint64_t const edge_id = (uint64_t)new_width * (uint64_t)source + (uint64_t)sink;
+    /*ldiv_t const edge  = ldiv(edge_id, 64);*/
 
-    gmtx->array[edge.quot] |= (B8(B_10000000,B_00000000,B_00000000,B_00000000,B_00000000,B_00000000,B_00000000,B_00000000) >> edge.rem);
+    gmtx->array[edge_id >> 6] |= (B8(B_10000000,B_00000000,B_00000000,B_00000000,B_00000000,B_00000000,B_00000000,B_00000000) >> (edge_id % B_01000000));
 
     #ifndef NDEBUG
         return 1;
@@ -129,7 +129,7 @@ bool
 #else
 void
 #endif
-construct_gmtx(GraphMatrix* gmtx, uint32_t const initial_height, uint32_t const initial_width) {
+construct_gmtx(GraphMatrix* const gmtx, uint32_t const initial_height, uint32_t const initial_width) {
     #ifndef NDEBUG
         if (gmtx == NULL)                   return 0;
         if (initial_height == 0)            return 0;
@@ -169,10 +169,10 @@ disconnect_gmtx(GraphMatrix* const gmtx, uint32_t const source, uint32_t const s
         resizeIfNecessary_gmtx(gmtx, new_height, new_width);
     #endif
 
-    long const edge_id = (long)new_width * (long)source + (long)sink;
-    ldiv_t const edge  = ldiv(edge_id, 64);
+    uint64_t const edge_id = (uint64_t)new_width * (uint64_t)source + (uint64_t)sink;
+    /* ldiv_t const edge  = ldiv(edge_id, 64); */
 
-    gmtx->array[edge.quot] &= ~(B8(B_10000000,B_00000000,B_00000000,B_00000000,B_00000000,B_00000000,B_00000000,B_00000000) >> edge.rem);
+    gmtx->array[edge_id >> 6] &= ~(B8(B_10000000,B_00000000,B_00000000,B_00000000,B_00000000,B_00000000,B_00000000,B_00000000) >> (edge_id % B_01000000));
 
     #ifndef NDEBUG
         return 1;
@@ -257,10 +257,10 @@ bool isConnected_gmtx(
     GraphMatrix const* const gmtx, uint32_t const source, uint32_t const sink
 ) {
     DEBUG_ASSERT(isValid_gmtx(gmtx))
-    long const edge_id = (long)gmtx->width * (long)source + (long)sink;
-    ldiv_t const edge = ldiv(edge_id, 64);
+    uint64_t const edge_id = (uint64_t)gmtx->width * (uint64_t)source + (uint64_t)sink;
+    /* ldiv_t const edge = ldiv(edge_id, 64); */
 
-    return (gmtx->array[edge.quot] & (B8(B_10000000,B_00000000,B_00000000,B_00000000,B_00000000,B_00000000,B_00000000,B_00000000) >> edge.rem));
+    return (gmtx->array[edge_id >> 6] & (B8(B_10000000,B_00000000,B_00000000,B_00000000,B_00000000,B_00000000,B_00000000,B_00000000) >> (edge_id % B_01000000)));
 }
 
 bool isValid_gmtx(GraphMatrix const* const gmtx) {

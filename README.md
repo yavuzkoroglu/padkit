@@ -29,7 +29,7 @@ The above steps should produce
 
 ### Changes v1.2beta -> v1.3beta
 
-* Deleted `include/padkit/circbuff.h`.
+* Replaced all macros in `include/padkit/circbuff.h` with struct and functions.
 * Replaced all macros in `include/padkit/stack.h` with struct and functions.
 * `REALLOC_IF_NECESSARY` ceased to take an `err` parameter.
 * `include/padkit/reallocate.h` does NOT include `include/padkit/debug.h`

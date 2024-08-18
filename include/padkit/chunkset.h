@@ -77,10 +77,10 @@
     /**
      * @brief Adds a key string to a ChunkSet.
      * @param set The ChunkSet.
-     * @param key The key string.
+     * @param key The key string. (cannot be an element of the ChunkSet)
      * @param n The number of characters to copy.
      */
-    uint32_t addKey_cset(ChunkSet* const set, char const* const key, uint64_t const n);
+    uint32_t addKey_cset(ChunkSet* const set, char const* const restrict key, uint64_t const n);
 
     /**
      * @brief Constructs an empty ChunkSet
@@ -95,7 +95,7 @@
     void
     #endif
     constructEmpty_cset(
-        ChunkSet* set, uint64_t const initial_cap,
+        ChunkSet* const set, uint64_t const initial_cap,
         uint32_t const initial_stringsCap, uint32_t const loadPercent
     );
 

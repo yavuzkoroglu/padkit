@@ -60,7 +60,7 @@ adjust(ChunkTable* const tbl, Chunk const* const chunk) {
 
     for (uint32_t row_id = 0; row_id < tbl->nRows; row_id++) {
         if (tbl->rows[row_id] == NULL) continue;
-        ChunkTableEntry const* entry = tbl->rows[row_id] + 1;
+        ChunkTableEntry const* const entry = tbl->rows[row_id] + 1;
         for (uint32_t n = tbl->rowSizes[row_id]; n > 0; n--) {
             #ifndef NDEBUG
                 switch (
@@ -101,7 +101,7 @@ bool
 #else
 void
 #endif
-constructEmpty_ctbl(ChunkTable* tbl, uint32_t const initial_cap, uint32_t const loadPercent) {
+constructEmpty_ctbl(ChunkTable* const tbl, uint32_t const initial_cap, uint32_t const loadPercent) {
     #ifndef NDEBUG
         if (tbl == NULL)                     return 0;
         if (initial_cap == 0)                return 0;

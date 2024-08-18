@@ -66,7 +66,7 @@
     #else
     void
     #endif
-    construct_gmtx(GraphMatrix* gmtx, uint32_t const initial_height, uint32_t const initial_width);
+    construct_gmtx(GraphMatrix* const gmtx, uint32_t const initial_height, uint32_t const initial_width);
 
     /**
      * @brief Disconnects source->sink in a GraphMatrix.

@@ -109,7 +109,7 @@
     #else
     void
     #endif
-    constructEmpty_ctbl(ChunkTable* tbl, uint32_t const initial_cap, uint32_t const loadPercent);
+    constructEmpty_ctbl(ChunkTable* const tbl, uint32_t const initial_cap, uint32_t const loadPercent);
 
     /**
      * @brief Flushes the contents of a ChunkTable.
