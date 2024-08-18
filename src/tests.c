@@ -527,7 +527,7 @@ END_TEST_CTBL:
     NDEBUG_EXECUTE(free_ctbl(scores))
 
     DEBUG_ABORT_IF(!free_chunk(people))
-    NDEBUG_EXECUTE(free_chunk(peole))
+    NDEBUG_EXECUTE(free_chunk(people))
 
     #undef EXAM_COUNT
     #undef PEOPLE_COUNT

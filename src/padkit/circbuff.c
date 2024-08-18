@@ -424,7 +424,7 @@ rotate_cbuff(CircularBuffer* const buffer, uint32_t n) {
         return rotateDown_cbuff(buffer, n);
     #else
         if (n == 0) return;
-        return rotateDown_cbuff(buffer, n);
+        rotateDown_cbuff(buffer, n);
     #endif
 }
 
@@ -452,9 +452,9 @@ rotateDown_cbuff(CircularBuffer* const buffer, uint32_t n) {
         memcpy(copy, element, buffer->element_size_in_bytes);
         #ifndef NDEBUG
             if (element == NULL)                        return 0;
-            if (pushTop_cbuff(buffer, copy) == NULL)    return 0;
+            if (pushTop_o_cbuff(buffer, copy) == NULL)    return 0;
         #else
-            pushTop_cbuff(buffer, copy);
+            pushTop_o_cbuff(buffer, copy);
         #endif
     }
     free(copy);
@@ -488,9 +488,9 @@ rotateUp_cbuff(CircularBuffer* const buffer, uint32_t n) {
         memcpy(copy, element, buffer->element_size_in_bytes);
         #ifndef NDEBUG
             if (element == NULL)                        return 0;
-            if (pushBottom_cbuff(buffer, copy) == NULL) return 0;
+            if (pushBottom_o_cbuff(buffer, copy) == NULL) return 0;
         #else
-            pushBottom_cbuff(buffer, copy);
+            pushBottom_o_cbuff(buffer, copy);
         #endif
     }
     free(copy);
