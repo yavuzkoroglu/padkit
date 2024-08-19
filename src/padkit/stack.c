@@ -195,7 +195,7 @@ void* pushTop_stack(Stack* const stack, void const* const restrict ptr) {
     #ifndef NDEBUG
         if (!isValid_stack(stack))              return NULL;
         if (overlaps_ptr(
-            stack->array, (size_t)(stack->cap - 1) * stack->element_size_in_bytes,
+            stack->array, (size_t)stack->cap * stack->element_size_in_bytes,
             ptr, stack->element_size_in_bytes
         )) return NULL;
         if (!reallocIfNecessary_stack(stack))   return NULL;
@@ -474,7 +474,7 @@ swap_stacks(Stack* const restrict stack_A, Stack* const restrict stack_B) {
 
     Stack sbuffer[1];
     memcpy(sbuffer, stack_A, sizeof(Stack));
-    memcpy(stack_A, stack_B, sizeof(Stack)); /* UB if stack_A overlaps with stack_B */
+    memcpy(stack_A, stack_B, sizeof(Stack)); /* UB if stack_A and stack_B overlaps. */
     memcpy(stack_B, sbuffer, sizeof(Stack));
 
     #ifndef NDEBUG

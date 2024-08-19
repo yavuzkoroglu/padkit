@@ -943,6 +943,9 @@ static void test_stack(void) {
     TEST_FAIL_IF(stack->size != 1)
     TEST_FAIL_IF(*(int*)(peek_stack(stack)) != a)
 
+    DEBUG_ERROR_IF(push_stack(stack, peek_stack(stack)) == NULL)
+    NDEBUG_EXECUTE(push_stack(stack, peek_stack(stack)))
+
     DEBUG_ERROR_IF(pushBottom_stack(stack, &b) == NULL)
     NDEBUG_EXECUTE(pushBottom_stack(stack, &b))
 
