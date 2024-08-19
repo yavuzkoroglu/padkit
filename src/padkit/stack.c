@@ -5,6 +5,9 @@
  */
 #include <string.h>
 #include "padkit/memalloc.h"
+#ifndef NDEBUG
+    #include "padkit/overlap.h"
+#endif
 #include "padkit/reallocate.h"
 #include "padkit/stack.h"
 
@@ -191,6 +194,10 @@ void* pushBottom_stack(Stack* const stack, void const* const restrict ptr) {
 void* pushTop_stack(Stack* const stack, void const* const restrict ptr) {
     #ifndef NDEBUG
         if (!isValid_stack(stack))              return NULL;
+        if (overlaps_ptr(
+            stack->array, (size_t)(stack->cap - 1) * stack->element_size_in_bytes,
+            ptr, stack->element_size_in_bytes
+        )) return NULL;
         if (!reallocIfNecessary_stack(stack))   return NULL;
     #else
         reallocIfNecessary_stack(stack);
@@ -417,10 +424,14 @@ set_stack(Stack* const stack, uint32_t const elementId, void const* const restri
 
     void* const dest = get_stack(stack, elementId);
     #ifndef NDEBUG
-        if (dest == NULL)               return 0;
-        if (dest == ptr)                return 1;
+        if (dest == NULL)   return 0;
+        if (dest == ptr)    return 1;
+        if (overlaps_ptr(
+            dest, stack->element_size_in_bytes,
+            ptr, stack->element_size_in_bytes
+        )) return 0;
     #else
-        if (dest == ptr)                return;
+        if (dest == ptr) return;
     #endif
 
     if (ptr == NULL)
@@ -456,14 +467,14 @@ void
 #endif
 swap_stacks(Stack* const restrict stack_A, Stack* const restrict stack_B) {
     #ifndef NDEBUG
-        if (!isValid_stack(stack_A))    return 0;
-        if (!isValid_stack(stack_B))    return 0;
-        if (stack_A == stack_B)         return 0;
+        if (!isValid_stack(stack_A))                                        return 0;
+        if (!isValid_stack(stack_B))                                        return 0;
+        if (overlaps_ptr(stack_A, sizeof(Stack), stack_B, sizeof(Stack))    return 0;
     #endif
 
     Stack sbuffer[1];
     memcpy(sbuffer, stack_A, sizeof(Stack));
-    memcpy(stack_A, stack_B, sizeof(Stack)); /* UB if stack_A == stack_B */
+    memcpy(stack_A, stack_B, sizeof(Stack)); /* UB if stack_A overlaps with stack_B */
     memcpy(stack_B, sbuffer, sizeof(Stack));
 
     #ifndef NDEBUG
