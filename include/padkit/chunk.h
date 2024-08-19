@@ -24,13 +24,13 @@
      * @def CHUNK_RECOMMENDED_INITIAL_CAP
      *   This initial capacity should work nicely in most situations.
      */
-    #define CHUNK_RECOMMENDED_INITIAL_CAP           BUFSIZ
+    #define CHUNK_RECOMMENDED_INITIAL_CAP           (BUFSIZ)
 
     /**
      * @def CHUNK_RECOMMENDED_INITIAL_STRINGS_CAP
      *   This initial capacity should work nicely in most situations.
      */
-    #define CHUNK_RECOMMENDED_INITIAL_STRINGS_CAP   BUFSIZ
+    #define CHUNK_RECOMMENDED_INITIAL_STRINGS_CAP   (BUFSIZ)
 
     /**
      * @def CHUNK_RECOMMENDED_PARAMETERS
