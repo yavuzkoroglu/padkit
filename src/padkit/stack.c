@@ -469,7 +469,7 @@ swap_stacks(Stack* const restrict stack_A, Stack* const restrict stack_B) {
     #ifndef NDEBUG
         if (!isValid_stack(stack_A))                                        return 0;
         if (!isValid_stack(stack_B))                                        return 0;
-        if (overlaps_ptr(stack_A, sizeof(Stack), stack_B, sizeof(Stack))    return 0;
+        if (overlaps_ptr(stack_A, sizeof(Stack), stack_B, sizeof(Stack)))   return 0;
     #endif
 
     Stack sbuffer[1];
