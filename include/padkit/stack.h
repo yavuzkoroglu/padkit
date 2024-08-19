@@ -14,14 +14,13 @@
      * @def NOT_A_STACK
      *   A special Stack denoting a NOT-Stack. It cannot pass the isValid_stack() test.
      */
-    #define NOT_A_STACK \
-        ((Stack){ 0, 0, 0, NULL })
+    #define NOT_A_STACK                     ((Stack){ 0, 0, 0, NULL })
 
     /**
      * @def STACK_RECOMMENDED_INITIAL_CAP
      *   This initial capacity should work nicely in most situations.
      */
-    #define STACK_RECOMMENDED_INITIAL_CAP   BUFSIZ
+    #define STACK_RECOMMENDED_INITIAL_CAP   (BUFSIZ)
 
     /**
      * @struct Stack

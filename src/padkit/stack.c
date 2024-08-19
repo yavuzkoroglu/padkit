@@ -193,6 +193,7 @@ void rotate_stack(Stack stack[static const 1], uint32_t n) {
 
     if (stack->size <= 1)           return;
     if ((n %= stack->size) == 0)    return;
+
     rotateDown_stack(stack, n);
 }
 
