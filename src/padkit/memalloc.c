@@ -4,13 +4,12 @@
  * @author Yavuz Koroglu
  */
 #include <stdint.h>
+#include "padkit/debug.h"
 #include "padkit/memalloc.h"
 
 void* mem_alloc(size_t const size) {
-    #ifndef NDEBUG
-        if (size == 0)          return NULL;
-        if (size == SIZE_MAX)   return NULL;
-    #endif
+    DEBUG_ERROR_IF(size == 0)
+    DEBUG_ERROR_IF(size == SIZE_MAX)
 
     void* const ptr = malloc(size);
     if (ptr == NULL) MALLOC_ERROR
@@ -19,12 +18,10 @@ void* mem_alloc(size_t const size) {
 }
 
 void* mem_calloc(size_t const nmemb, size_t const size) {
-    #ifndef NDEBUG
-        if (nmemb == 0)         return NULL;
-        if (nmemb == SIZE_MAX)  return NULL;
-        if (size == 0)          return NULL;
-        if (size == SIZE_MAX)   return NULL;
-    #endif
+    DEBUG_ERROR_IF(nmemb == 0)
+    DEBUG_ERROR_IF(nmemb == SIZE_MAX)
+    DEBUG_ERROR_IF(size == 0)
+    DEBUG_ERROR_IF(size == SIZE_MAX)
 
     void* const ptr = calloc(nmemb, size);
     if (ptr == NULL) CALLOC_ERROR

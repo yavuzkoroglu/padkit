@@ -5,6 +5,11 @@
  */
 #ifndef TIMESTAMP_H
     #define TIMESTAMP_H
+
+    #ifndef TS_FMT
+        #define TS_FMT "%F %T"
+    #endif
+
     /**
      * @brief Generates an ISO 8601 timestamp for verbose/log outputs.
      *

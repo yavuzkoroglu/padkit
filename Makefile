@@ -187,6 +187,7 @@ obj/padkit/streq.o: obj/padkit          \
     ; ${COMPILE} src/padkit/streq.c -c -o obj/padkit/streq.o
 
 obj/padkit/timestamp.o: obj/padkit      \
+    include/padkit/debug.h              \
     include/padkit/timestamp.h          \
     src/padkit/timestamp.c              \
     ; ${COMPILE} src/padkit/timestamp.c -c -o obj/padkit/timestamp.o

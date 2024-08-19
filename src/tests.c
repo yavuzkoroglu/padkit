@@ -933,42 +933,47 @@ static void test_stack(void) {
     int d = 4;
 
     Stack stack[1] = { NOT_A_STACK };
-    DEBUG_ASSERT_NDEBUG_EXECUTE(constructEmpty_stack(stack, sizeof(int), 1))
+    constructEmpty_stack(stack, sizeof(int), 1);
 
     TEST_FAIL_IF(stack->size != 0)
 
-    DEBUG_ERROR_IF(push_stack(stack, &a) == NULL)
-    NDEBUG_EXECUTE(push_stack(stack, &a))
+    push_stack(stack, &a);
 
     TEST_FAIL_IF(stack->size != 1)
     TEST_FAIL_IF(*(int*)(peek_stack(stack)) != a)
 
-    DEBUG_ERROR_IF(push_stack(stack, peek_stack(stack)) == NULL)
-    NDEBUG_EXECUTE(push_stack(stack, peek_stack(stack)))
-
-    DEBUG_ERROR_IF(pushBottom_stack(stack, &b) == NULL)
-    NDEBUG_EXECUTE(pushBottom_stack(stack, &b))
+    pushBottom_stack(stack, &b);
 
     TEST_FAIL_IF(stack->size != 2)
     TEST_FAIL_IF(*(int*)(peekTop_stack(stack)) != a)
     TEST_FAIL_IF(*(int*)(peekBottom_stack(stack)) != b)
 
-    DEBUG_ERROR_IF(pop_stack(stack) == NULL)
-    NDEBUG_EXECUTE(pop_stack(stack))
+    pop_stack(stack);
 
-    DEBUG_ERROR_IF(pushTop_stack(stack, &c) == NULL)
-    NDEBUG_EXECUTE(pushTop_stack(stack, &c))
+    TEST_FAIL_IF(stack->size != 1)
+    TEST_FAIL_IF(*(int*)(peekTop_stack(stack)) != b)
+    TEST_FAIL_IF(*(int*)(peekBottom_stack(stack)) != b)
 
-    DEBUG_ASSERT_NDEBUG_EXECUTE(reverse_stack(stack))
+    pushTop_stack(stack, &c);
+
+    TEST_FAIL_IF(stack->size != 2)
+    TEST_FAIL_IF(*(int*)(peekTop_stack(stack)) != c)
+    TEST_FAIL_IF(*(int*)(peekBottom_stack(stack)) != b)
+
+    reverse_stack(stack);
 
     TEST_FAIL_IF(stack->size != 2)
     TEST_FAIL_IF(*(int*)(peekTop_stack(stack)) != b)
     TEST_FAIL_IF(*(int*)(peekBottom_stack(stack)) != c)
 
-    DEBUG_ERROR_IF(pushTop_stack(stack, &d) == NULL)
-    NDEBUG_EXECUTE(pushTop_stack(stack, &d))
+    pushTop_stack(stack, &d);
 
-    DEBUG_ASSERT_NDEBUG_EXECUTE(rotate_stack(stack,2))
+    TEST_FAIL_IF(stack->size != 3)
+    TEST_FAIL_IF(*(int*)(get_stack(stack, 0)) != c)
+    TEST_FAIL_IF(*(int*)(get_stack(stack, 1)) != b)
+    TEST_FAIL_IF(*(int*)(get_stack(stack, 2)) != d)
+
+    rotate_stack(stack,2);
 
     TEST_FAIL_IF(stack->size != 3)
     TEST_FAIL_IF(*(int*)(get_stack(stack, 0)) != d)
@@ -977,8 +982,7 @@ static void test_stack(void) {
 
     TEST_PASS
 
-    DEBUG_ABORT_IF(!free_stack(stack))
-    NDEBUG_EXECUTE(free_stack(stack))
+    free_stack(stack);
 }
 
 static void test_streq_mem_eq_n(void) {

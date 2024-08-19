@@ -45,223 +45,221 @@
 
     /**
      * @brief Constructs an empty Stack.
-     * @param stack A pointer to the Stack.
-     * @param element_size_in_bytes Size of one element in bytes.
-     * @param initial_cap The initial capacity of the Stack.
+     *
+     * @param[in,out]                 stack A constant non-null pointer to at least one Stack.
+     * @param[in]      element_size_in_bytes A constant size.
+     * @param[in]                initial_cap A constant 32-bit unsigned integer.
      */
-    #ifndef NDEBUG
-    bool
-    #else
-    void
-    #endif
-    constructEmpty_stack(
-        Stack* const stack,
+    void constructEmpty_stack(
+        Stack stack[static const 1],
         size_t const element_size_in_bytes,
         uint32_t const initial_cap
     );
 
     /**
      * @brief Flushes the contents of a Stack.
-     * @param stack A pointer to the Stack.
+     *
+     * @param[in,out] stack A constant non-null pointer to at least one Stack.
      */
-    #ifndef NDEBUG
-    bool
-    #else
-    void
-    #endif
-    flush_stack(Stack* const stack);
+    void flush_stack(Stack stack[static const 1]);
 
     /**
      * @brief Frees the contents of a Stack.
-     * @param stack A pointer to the Stack.
+     *
+     * @param[in,out] stack A constant non-null pointer to at least one Stack.
      */
-    #ifndef NDEBUG
-    bool
-    #else
-    void
-    #endif
-    free_stack(Stack* const stack);
+    void free_stack(Stack stack[static const 1]);
 
     /**
      * @brief Gets one element from a Stack.
-     * @param stack A pointer to the constant Stack.
-     * @param elementId The element index.
+     *
+     * @param[in]     stack A constant non-null pointer to at least one constant Stack.
+     * @param[in] elementId A constant 32-bit unsigned integer.
+     *
+     * @return A pointer to an object.
      */
-    void* get_stack(Stack const* const stack, uint32_t const elementId);
+    void* get_stack(Stack const stack[static const 1], uint32_t const elementId);
 
     /**
      * @brief Checks if a Stack is valid.
-     * @param stack A pointer to the constant Stack.
+     *
+     * @param[in] stack A constant non-null pointer to at least one constant Stack.
+     *
+     * @return A Boolean value.
      */
-    bool isValid_stack(Stack const* const stack);
+    bool isValid_stack(Stack const stack[static const 1]);
 
     /**
      * @brief Peeks the top element in a Stack.
-     * @param stack A pointer to the constant Stack.
+     *
+     * @param[in] stack A constant non-null pointer to at least one constant Stack.
+     *
+     * @return A pointer to an object.
      */
-    void* peek_stack(Stack const* const stack);
+    void* peek_stack(Stack const stack[static const 1]);
 
     /**
      * @brief Peeks the bottom element in a Stack.
-     * @param stack A pointer to the constant Stack.
+     *
+     * @param[in] stack A constant non-null pointer to at least one constant Stack.
+     *
+     * @return A pointer to an object.
      */
-    void* peekBottom_stack(Stack const* const stack);
+    void* peekBottom_stack(Stack const stack[static const 1]);
 
     /**
      * @brief Peeks the top element in a Stack.
-     * @param stack A pointer to the constant Stack.
+     *
+     * @param[in] stack A constant non-null pointer to at least one constant Stack.
+     *
+     * @return A pointer to an object.
      */
     void* peekTop_stack(Stack const* const stack);
 
     /**
      * @brief Pops the top element in a Stack.
-     * @param stack A pointer to the Stack.
+     *
+     * @param[in,out] stack A constant non-null pointer to at least one Stack.
+     *
+     * @return A pointer to an object.
      */
-    void* pop_stack(Stack* const stack);
+    void* pop_stack(Stack stack[static const 1]);
 
     /**
      * @brief Pops the bottom element in a Stack.
-     * @param stack A pointer to the Stack.
+     *
+     * @param[in,out] stack A constant non-null pointer to at least one Stack.
+     *
+     * @return A pointer to an object.
      */
-    void* popBottom_stack(Stack* const stack);
+    void* popBottom_stack(Stack stack[static const 1]);
 
     /**
      * @brief Pops the top element in a Stack.
-     * @param stack A pointer to the Stack.
+     *
+     * @param[in,out] stack A constant non-null pointer to at least one Stack.
+     *
+     * @return A pointer to an object.
      */
-    void* popTop_stack(Stack* const stack);
+    void* popTop_stack(Stack stack[static const 1]);
 
     /**
      * @brief Pushes the copy of an element to the top of a Stack.
-     * @param stack A pointer to the Stack.
-     * @param ptr A pointer to the constant element (cannot be an element of the Stack).
+     *
+     * @param[in,out] stack A constant non-null pointer to at least one Stack.
+     * @param[in]        ptr A constant restricted pointer to a constant object.
+     *
+     * @return A pointer to an object.
      */
-    void* push_stack(Stack* const stack, void const* const restrict ptr);
+    void* push_stack(Stack stack[static const 1], void const* const restrict ptr);
 
     /**
      * @brief Pushes the copy of an element to the bottom of a Stack.
-     * @param stack A pointer to the Stack.
-     * @param ptr A pointer to the constant element (cannot be an element of the Stack).
+     *
+     * @param[in,out] stack A constant non-null pointer to at least one Stack.
+     * @param[in]        ptr A constant restricted pointer to a constant object.
+     *
+     * @return A pointer to an object.
      */
-    void* pushBottom_stack(Stack* const stack, void const* const restrict ptr);
+    void* pushBottom_stack(Stack stack[static const 1], void const* const restrict ptr);
 
     /**
      * @brief Pushes the copy of an element to the top of a Stack.
-     * @param stack A pointer to the Stack.
-     * @param ptr A pointer to the constant element (cannot be an element of the Stack).
+     *
+     * @param[in,out] stack A constant non-null pointer to at least one Stack.
+     * @param[in]        ptr A constant restricted pointer to a constant object.
+     *
+     * @return A pointer to an object.
      */
-    void* pushTop_stack(Stack* const stack, void const* const restrict ptr);
+    void* pushTop_stack(Stack stack[static const 1], void const* const restrict ptr);
 
     /**
      * @brief Pushes one element of zeros to the top of a Stack.
-     * @param stack A pointer to the Stack.
+     *
+     * @param[in,out] stack A constant non-null pointer to at least one Stack.
+     *
+     * @return A pointer to an object.
      */
-    void* pushZeros_stack(Stack* const stack);
+    void* pushZeros_stack(Stack stack[static const 1]);
 
     /**
      * @brief Pushes one element of zeros to the bottom of a Stack.
-     * @param stack A pointer to the Stack.
+     *
+     * @param[in,out] stack A constant non-null pointer to at least one Stack.
+     *
+     * @return A pointer to an object.
      */
-    void* pushZerosBottom_stack(Stack* const stack);
+    void* pushZerosBottom_stack(Stack stack[static const 1]);
 
     /**
      * @brief Pushes one element of zeros to the top of a Stack.
-     * @param stack A pointer to the Stack.
+     *
+     * @param[in,out] stack A constant non-null pointer to at least one Stack.
+     *
+     * @return A pointer to an object.
      */
-    void* pushZerosTop_stack(Stack* const stack);
+    void* pushZerosTop_stack(Stack stack[static const 1]);
 
     /**
      * @brief Reallocates a Stack if necessary.
-     * @param stack A pointer to the Stack.
+     *
+     * @param[in,out] stack A constant non-null pointer to at least one Stack.
      */
-    #ifndef NDEBUG
-    bool
-    #else
-    void
-    #endif
-    reallocIfNecessary_stack(Stack* const stack);
+    void reallocIfNecessary_stack(Stack stack[static const 1]);
 
     /**
      * @brief Rotates down a Stack by n.
-     * @param stack A pointer to the Stack.
-     * @param n The number of rotations.
+     *
+     * @param[in,out] stack A constant non-null pointer to at least one Stack.
+     * @param[in]          n A 32-bit unsigned integer.
      */
-    #ifndef NDEBUG
-    bool
-    #else
-    void
-    #endif
-    rotate_stack(Stack* const stack, uint32_t n);
+    void rotate_stack(Stack stack[static const 1], uint32_t n);
 
     /**
      * @brief Rotates down a Stack by n.
-     * @param stack A pointer to the Stack.
-     * @param n The number of rotations.
+     *
+     * @param[in,out] stack A constant non-null pointer to at least one Stack.
+     * @param[in]          n A 32-bit unsigned integer.
      */
-    #ifndef NDEBUG
-    bool
-    #else
-    void
-    #endif
-    rotateDown_stack(Stack* const stack, uint32_t n);
+    void rotateDown_stack(Stack stack[static const 1], uint32_t n);
 
     /**
      * @brief Rotates up a Stack by n.
-     * @param stack A pointer to the Stack.
-     * @param n The number of rotations.
+     *
+     * @param[in,out] stack A constant non-null pointer to at least one Stack.
+     * @param[in]          n A 32-bit unsigned integer.
      */
-    #ifndef NDEBUG
-    bool
-    #else
-    void
-    #endif
-    rotateUp_stack(Stack* const stack, uint32_t n);
+    void rotateUp_stack(Stack stack[static const 1], uint32_t n);
 
     /**
      * @brief Reverses the elements of a Stack.
-     * @param stack A pointer to the Stack.
+     *
+     * @param[in,out] stack A constant non-null pointer to at least one Stack.
      */
-    #ifndef NDEBUG
-    bool
-    #else
-    void
-    #endif
-    reverse_stack(Stack* const stack);
+    void reverse_stack(Stack stack[static const 1]);
 
     /**
      * @brief Sets one element of a Stack to a value.
-     * @param stack A pointer to the Stack.
-     * @param elementId The element index.
-     * @param ptr A pointer to the constant value (cannot be an element of the Stack).
+     *
+     * @param[in,out]      stack A constant non-null pointer to at least one Stack.
+     * @param[in]       elementId A constant 32-bit unsigned integer.
+     * @param[in]             ptr A constant restricted pointer to a constant object.
      */
-    #ifndef NDEBUG
-    bool
-    #else
-    void
-    #endif
-    set_stack(Stack* const stack, uint32_t const elementId, void const* const restrict ptr);
+    void set_stack(Stack stack[static const 1], uint32_t const elementId, void const* const restrict ptr);
 
     /**
      * @brief Sets one element of a Stack to zeros.
-     * @param stack A pointer to the Stack.
-     * @param elementId The element index.
+     *
+     * @param[in,out]      stack A constant non-null pointer to at least one Stack.
+     * @param[in]       elementId A constant 32-bit unsigned integer.
      */
-    #ifndef NDEBUG
-    bool
-    #else
-    void
-    #endif
-    setZeros_stack(Stack* const stack, uint32_t const elementId);
+    void setZeros_stack(Stack stack[static const 1], uint32_t const elementId);
 
     /**
      * @brief Swaps two Stack objects.
-     * @param stack_A A pointer to the first Stack (cannot be equal to stack_B).
-     * @param stack_B A pointer to the second Stack (cannot be equal to stack_A).
+     *
+     * @param[in,out] stack_A A constant restricted non-null pointer to at least one Stack.
+     * @param[in,out] stack_B A constant restricted non-null pointer to at least one Stack.
      */
-    #ifndef NDEBUG
-    bool
-    #else
-    void
-    #endif
-    swap_stacks(Stack* const restrict stack_A, Stack* const restrict stack_B);
+    void swap_stacks(Stack stack_A[static const restrict 1], Stack stack_B[static const restrict 1]);
 #endif
