@@ -134,15 +134,15 @@
 
     /**
      * @brief Adds all the strings from a source Chunk to a destination Chunk.
-     * @param   to A constant restricted non-null pointer to at least one Chunk.
-     * @param from A constant restricted non-null pointer to at least one Chunk.
+     * @param   to A constant non-null pointer to at least one Chunk.
+     * @param from A constant non-null pointer to at least one Chunk.
      */
     #ifndef NDEBUG
     bool
     #else
     void
     #endif
-    concat_chunk(Chunk to[static const restrict 1], Chunk const from[static const restrict 1]);
+    concat_chunk(Chunk to[static const 1], Chunk const from[static const 1]);
 
     /**
      * @brief Constructs an empty Chunk.

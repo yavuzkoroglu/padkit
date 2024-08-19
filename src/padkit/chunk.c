@@ -139,10 +139,10 @@ bool
 #else
 void
 #endif
-concat_chunk(Chunk to[static const restrict 1], Chunk const from[static const restrict 1]) {
+concat_chunk(Chunk to[static const 1], Chunk const from[static const 1]) {
     #ifndef NDEBUG
-        if (!isValid_chunk(to))   return 0;
-        if (!isValid_chunk(from)) return 0;
+        if (!isValid_chunk(to))     return 0;
+        if (!isValid_chunk(from))   return 0;
     #endif
 
     if (from->nStrings == 0)
@@ -155,7 +155,7 @@ concat_chunk(Chunk to[static const restrict 1], Chunk const from[static const re
     uint64_t const hasStrings = (to->nStrings > 0);
     char* const append_start = appendSpace_chunk(to, from->len + hasStrings) + hasStrings;
     #ifndef NDEBUG
-        if (append_start < to->start) return 0;
+        if (append_start == NULL) return 0;
     #endif
     memcpy(append_start, from->start, from->len + 1);
 
