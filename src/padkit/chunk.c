@@ -10,7 +10,13 @@
 #include "padkit/memalloc.h"
 #include "padkit/reallocate.h"
 
-uint32_t add_chunk(Chunk* const chunk, char const* const restrict str, uint64_t const n) {
+static char const defaultDelimeters[] = " \t\n\v\f\r";
+
+uint32_t add_chunk(
+    Chunk chunk[static const 1],
+    char const str[static const restrict 1],
+    uint64_t const n
+) {
     #ifndef NDEBUG
         if (!isValid_chunk(chunk)) return UINT32_MAX;
         if (str == NULL)           return UINT32_MAX;
@@ -29,7 +35,7 @@ uint32_t add_chunk(Chunk* const chunk, char const* const restrict str, uint64_t 
     return id;
 }
 
-uint32_t addIndex_chunk(Chunk* const chunk, uint32_t const str_id) {
+uint32_t addIndex_chunk(Chunk chunk[static const 1], uint32_t const str_id) {
     #ifndef NDEBUG
         if (!isValid_chunk(chunk)) return UINT32_MAX;
         if (str_id == UINT32_MAX)  return UINT32_MAX;
@@ -47,7 +53,11 @@ uint32_t addIndex_chunk(Chunk* const chunk, uint32_t const str_id) {
     return id;
 }
 
-char const* append_chunk(Chunk* const chunk, char const* const restrict str, uint64_t const n) {
+char const* append_chunk(
+    Chunk chunk[static const 1],
+    char const str[static const restrict 1],
+    uint64_t const n
+) {
     #ifndef NDEBUG
         if (!isValid_chunk(chunk)) return NULL;
         if (str == NULL)           return NULL;
@@ -78,7 +88,7 @@ char const* append_chunk(Chunk* const chunk, char const* const restrict str, uin
     return chunk->start + chunk->stringOffsets[chunk->nStrings - 1];
 }
 
-char const* appendIndex_chunk(Chunk* const chunk, uint32_t const str_id) {
+char const* appendIndex_chunk(Chunk chunk[static const 1], uint32_t const str_id) {
     #ifndef NDEBUG
         if (!isValid_chunk(chunk)) return NULL;
     #endif
@@ -104,7 +114,7 @@ char const* appendIndex_chunk(Chunk* const chunk, uint32_t const str_id) {
     return chunk->start + chunk->stringOffsets[chunk->nStrings - 1];
 }
 
-char* appendSpace_chunk(Chunk* const chunk, uint64_t const size) {
+char* appendSpace_chunk(Chunk chunk[static const 1], uint64_t const size) {
     #ifndef NDEBUG
         if (!isValid_chunk(chunk)) return NULL;
     #endif
@@ -129,7 +139,7 @@ bool
 #else
 void
 #endif
-concat_chunk(Chunk* const restrict to, Chunk const* const restrict from) {
+concat_chunk(Chunk to[static const restrict 1], Chunk const from[static const restrict 1]) {
     #ifndef NDEBUG
         if (!isValid_chunk(to))   return 0;
         if (!isValid_chunk(from)) return 0;
@@ -174,7 +184,11 @@ bool
 #else
 void
 #endif
-constructEmpty_chunk(Chunk* const chunk, uint64_t const initial_cap, uint32_t const initial_stringsCap) {
+constructEmpty_chunk(
+    Chunk chunk[static const 1],
+    uint64_t const initial_cap,
+    uint32_t const initial_stringsCap
+) {
     #ifndef NDEBUG
         if (chunk == NULL)                      return 0;
         if (initial_cap == 0)                   return 0;
@@ -201,7 +215,7 @@ bool
 #else
 void
 #endif
-delete_chunk(Chunk* const chunk, uint32_t const str_id) {
+delete_chunk(Chunk chunk[static const 1], uint32_t const str_id) {
     #ifndef NDEBUG
         if (!isValid_chunk(chunk)) return 0;
         if (str_id >= chunk->nStrings) return 0;
@@ -238,7 +252,7 @@ bool
 #else
 void
 #endif
-deleteLast_chunk(Chunk* const chunk) {
+deleteLast_chunk(Chunk chunk[static const 1]) {
     #ifndef NDEBUG
         if (!isValid_chunk(chunk)) return 0;
         if (chunk->nStrings == 0)  return 0;
@@ -273,7 +287,7 @@ bool
 #else
 void
 #endif
-flush_chunk(Chunk* const chunk) {
+flush_chunk(Chunk chunk[static const 1]) {
     #ifndef NDEBUG
         if (!isValid_chunk(chunk)) return 0;
     #endif
@@ -290,7 +304,7 @@ bool
 #else
 void
 #endif
-free_chunk(Chunk* const chunk) {
+free_chunk(Chunk chunk[static const 1]) {
     #ifndef NDEBUG
         if (!isValid_chunk(chunk)) return 0;
     #endif
@@ -303,10 +317,15 @@ free_chunk(Chunk* const chunk) {
 }
 
 uint32_t fromStream_chunk(
-    Chunk* const chunk, FILE* const stream, char const* delimeters
+    Chunk chunk[static const 1],
+    FILE stream[static const 1],
+    char const delimeters[]
 ) {
-    static char const defaultDelimeters[] = " \t\n\v\f\r";
-    if (delimeters == NULL) delimeters    = defaultDelimeters;
+    #ifndef NDEBUG
+        if (!isValid_chunk(chunk))  return UINT32_MAX;
+        if (stream == NULL)         return UINT32_MAX;
+    #endif
+    if (delimeters == NULL) delimeters = defaultDelimeters;
 
     uint32_t const str_id = fromStreamAsWhole_chunk(chunk, stream);
     #ifndef NDEBUG
@@ -319,7 +338,7 @@ uint32_t fromStream_chunk(
     return str_id;
 }
 
-uint32_t fromStreamAsWhole_chunk(Chunk* const chunk, FILE* const stream) {
+uint32_t fromStreamAsWhole_chunk(Chunk chunk[static const 1], FILE stream[static const 1]) {
     #ifndef NDEBUG
         if (stream == NULL) return UINT32_MAX;
     #endif
@@ -352,7 +371,7 @@ uint32_t fromStreamAsWhole_chunk(Chunk* const chunk, FILE* const stream) {
     return str_id;
 }
 
-char const* get_chunk(Chunk const* const chunk, uint32_t const str_id) {
+char const* get_chunk(Chunk const chunk[static const 1], uint32_t const str_id) {
     #ifndef NDEBUG
         if (!isValid_chunk(chunk))     return NULL;
         if (str_id >= chunk->nStrings) return NULL;
@@ -360,7 +379,7 @@ char const* get_chunk(Chunk const* const chunk, uint32_t const str_id) {
     return chunk->start + chunk->stringOffsets[str_id];
 }
 
-char const* getFirst_chunk(Chunk const* const chunk) {
+char const* getFirst_chunk(Chunk const chunk[static const 1]) {
     #ifndef NDEBUG
         if (!isValid_chunk(chunk)) return NULL;
         if (chunk->nStrings == 0)  return NULL;
@@ -368,7 +387,7 @@ char const* getFirst_chunk(Chunk const* const chunk) {
     return get_chunk(chunk, 0);
 }
 
-char const* getLast_chunk(Chunk const* const chunk) {
+char const* getLast_chunk(Chunk const chunk[static const 1]) {
     #ifndef NDEBUG
         if (!isValid_chunk(chunk)) return NULL;
         if (chunk->nStrings == 0)  return NULL;
@@ -376,7 +395,7 @@ char const* getLast_chunk(Chunk const* const chunk) {
     return get_chunk(chunk, chunk->nStrings - 1);
 }
 
-bool isValid_chunk(Chunk const* const chunk) {
+bool isValid_chunk(Chunk const chunk[static const 1]) {
     return chunk != NULL                            &&
            chunk->cap != 0                          &&
            chunk->cap != UINT64_MAX                 &&
@@ -388,13 +407,12 @@ bool isValid_chunk(Chunk const* const chunk) {
            chunk->nStrings <= chunk->stringsCap;
 }
 
-uint32_t splitLast_chunk(Chunk* const chunk, char const* delimeters) {
+uint32_t splitLast_chunk(Chunk chunk[static const 1], char const delimeters[]) {
     #ifndef NDEBUG
         if (!isValid_chunk(chunk))  return UINT32_MAX;
         if (chunk->nStrings == 0)   return 0;
     #endif
 
-    static char const defaultDelimeters[] = " \t\n\v\f\r";
     if (delimeters == NULL) delimeters = defaultDelimeters;
 
     uint32_t const str_id = chunk->nStrings - 1;
@@ -440,7 +458,7 @@ uint32_t splitLast_chunk(Chunk* const chunk, char const* delimeters) {
     return nSplitted;
 }
 
-uint64_t strlen_chunk(Chunk const* const chunk, uint32_t const str_id) {
+uint64_t strlen_chunk(Chunk const chunk[static const 1], uint32_t const str_id) {
     #ifndef NDEBUG
         if (!isValid_chunk(chunk))  return UINT64_MAX;
         if (chunk->nStrings == 0)   return UINT64_MAX;
@@ -458,7 +476,7 @@ uint64_t strlen_chunk(Chunk const* const chunk, uint32_t const str_id) {
     }
 }
 
-uint64_t strlenLast_chunk(Chunk const* const chunk) {
+uint64_t strlenLast_chunk(Chunk const chunk[static const 1]) {
     #ifndef NDEBUG
         if (!isValid_chunk(chunk))  return UINT64_MAX;
         if (chunk->nStrings == 0)   return UINT64_MAX;
