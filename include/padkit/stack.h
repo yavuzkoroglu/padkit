@@ -253,12 +253,4 @@
      * @param[in]       elementId A constant 32-bit unsigned integer.
      */
     void setZeros_stack(Stack stack[static const 1], uint32_t const elementId);
-
-    /**
-     * @brief Swaps two Stack objects.
-     *
-     * @param[in,out] stack_A A constant restricted non-null pointer to at least one Stack.
-     * @param[in,out] stack_B A constant restricted non-null pointer to at least one Stack.
-     */
-    void swap_stacks(Stack stack_A[static const restrict 1], Stack stack_B[static const restrict 1]);
 #endif

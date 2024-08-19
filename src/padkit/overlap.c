@@ -32,10 +32,7 @@
  *   (0x02 == 0x02) => TRUE, so return 1.
  *
  */
-bool overlaps_ptr(
-    void const* const p0, size_t const sz0,
-    void const* const p1, size_t const sz1
-) {
+bool overlaps_ptr(void const* const p0, void const* const p1, size_t const sz0, size_t const sz1) {
     char const* const p[2] = { p0, p1 };
 
     if (p[0] == NULL)   return (p[1] == NULL);
