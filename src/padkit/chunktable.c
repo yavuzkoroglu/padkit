@@ -33,7 +33,7 @@ bool
 #else
 void
 #endif
-adjust(ChunkTable* const tbl, Chunk const* const chunk) {
+adjust(ChunkTable tbl[static const 1], Chunk const chunk[static const 1]) {
     #ifndef NDEBUG
         if (!isValid_ctbl(tbl))    return 0;
         if (!isValid_chunk(chunk)) return 0;
@@ -92,7 +92,7 @@ adjust(ChunkTable* const tbl, Chunk const* const chunk) {
     #endif
 }
 
-bool isValid_cte(ChunkTableEntry const* const entry) {
+bool isValid_cte(ChunkTableEntry const entry[static const 1]) {
     return entry && entry->key_id != UINT32_MAX;
 }
 
@@ -101,7 +101,7 @@ bool
 #else
 void
 #endif
-constructEmpty_ctbl(ChunkTable* const tbl, uint32_t const initial_cap, uint32_t const loadPercent) {
+constructEmpty_ctbl(ChunkTable tbl[static const 1], uint32_t const initial_cap, uint32_t const loadPercent) {
     #ifndef NDEBUG
         if (tbl == NULL)                     return 0;
         if (initial_cap == 0)                return 0;
@@ -128,7 +128,7 @@ bool
 #else
 void
 #endif
-flush_ctbl(ChunkTable* const tbl) {
+flush_ctbl(ChunkTable tbl[static const 1]) {
     #ifndef NDEBUG
         if (!isValid_ctbl(tbl)) return 0;
     #endif
@@ -144,7 +144,7 @@ bool
 #else
 void
 #endif
-free_ctbl(ChunkTable* const tbl) {
+free_ctbl(ChunkTable tbl[static const 1]) {
     #ifndef NDEBUG
         if (!isValid_ctbl(tbl)) return 0;
     #endif
@@ -163,8 +163,8 @@ free_ctbl(ChunkTable* const tbl) {
 }
 
 ChunkTableEntry* get_ctbl(
-    ChunkTable const* const tbl, Chunk const* const chunk,
-    char const* const key, uint64_t const key_len
+    ChunkTable const tbl[static const 1], Chunk const chunk[static const 1],
+    char const key[static const 1], uint64_t const key_len
 ) {
     #ifndef NDEBUG
         if (!isValid_ctbl(tbl)) return 0;
@@ -189,7 +189,7 @@ ChunkTableEntry* get_ctbl(
     return NULL;
 }
 
-uint32_t getEntryCount_ctbl(ChunkTable const* const tbl) {
+uint32_t getEntryCount_ctbl(ChunkTable const tbl[static const 1]) {
     #ifndef NDEBUG
         if (!isValid_ctbl(tbl)) return UINT32_MAX;
     #endif
@@ -203,8 +203,8 @@ uint32_t getEntryCount_ctbl(ChunkTable const* const tbl) {
 }
 
 ChunkTableEntry* getExact_ctbl(
-    ChunkTable const* const tbl, Chunk const* const chunk,
-    char const* const key, uint64_t const key_len, uint32_t const value
+    ChunkTable const tbl[static const 1], Chunk const chunk[static const 1],
+    char const key[static const 1], uint64_t const key_len, uint32_t const value
 ) {
     #ifndef NDEBUG
         if (!isValid_ctbl(tbl)) return 0;
@@ -230,7 +230,7 @@ ChunkTableEntry* getExact_ctbl(
     return NULL;
 }
 
-uint32_t getKeyCount_ctbl(ChunkTable const* const tbl) {
+uint32_t getKeyCount_ctbl(ChunkTable const tbl[static const 1]) {
     #ifndef NDEBUG
         if (!isValid_ctbl(tbl)) return UINT32_MAX;
     #endif
@@ -238,7 +238,7 @@ uint32_t getKeyCount_ctbl(ChunkTable const* const tbl) {
 }
 
 int insert_ctbl(
-    ChunkTable* const tbl, Chunk const* const chunk,
+    ChunkTable tbl[static const 1], Chunk const chunk[static const 1],
     uint32_t const key_id, uint32_t const value,
     int const ctbl_insert_behavior
 ) {
@@ -316,7 +316,7 @@ int insert_ctbl(
     return CTBL_INSERT_OK;
 }
 
-bool isValid_ctbl(ChunkTable const* const tbl) {
+bool isValid_ctbl(ChunkTable const tbl[static const 1]) {
     return tbl != NULL                     &&
            tbl->capKeys > 0                &&
            tbl->capKeys < UINT32_MAX / 100 &&
@@ -335,9 +335,9 @@ bool
 void
 #endif
 construct_ctblitr(
-    CTblConstIterator* const itr,
-    ChunkTable const* const tbl, Chunk const* const chunk,
-    char const* const key, uint64_t const key_len
+    CTblConstIterator itr[static const 1],
+    ChunkTable const tbl[static const 1], Chunk const chunk[static const 1],
+    char const key[static const 1], uint64_t const key_len
 ) {
     #ifndef NDEBUG
         if (itr == NULL)            return 0;
@@ -358,7 +358,7 @@ construct_ctblitr(
     #endif
 }
 
-bool isValid_ctblitr(CTblConstIterator const* const itr) {
+bool isValid_ctblitr(CTblConstIterator const itr[static const 1]) {
     return  itr != NULL                 &&
             isValid_ctbl(itr->tbl)      &&
             isValid_chunk(itr->chunk)   &&
@@ -366,7 +366,7 @@ bool isValid_ctblitr(CTblConstIterator const* const itr) {
             itr->key_len != UINT64_MAX;
 }
 
-ChunkTableEntry const* next_ctblitr(CTblConstIterator* const itr) {
+ChunkTableEntry const* next_ctblitr(CTblConstIterator itr[static const 1]) {
     #ifndef NDEBUG
         if (!isValid_ctblitr(itr)) return NULL;
     #endif

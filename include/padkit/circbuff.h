@@ -21,7 +21,7 @@
      * @def CIRCBUFF_RECOMMENDED_INITIAL_CAP
      *   This initial capacity should work nicely in most situations.
      */
-    #define CIRCBUFF_RECOMMENDED_INITIAL_CAP    BUFSIZ
+    #define CIRCBUFF_RECOMMENDED_INITIAL_CAP    (BUFSIZ)
 
     /**
      * @struct CircularBuffer
@@ -41,21 +41,21 @@
      *   The top element index.
      */
     typedef struct CircularBufferBody {
-        /* Stack Members */
+        /* Stack Definitions */
         size_t      element_size_in_bytes;
         uint32_t    cap;
         uint32_t    size;
         char*       array;
-        /* CircularBuffer Members */
+        /* CircularBuffer Definitions */
         uint32_t    bottomElementId;
         uint32_t    topElementId;
     } CircularBuffer;
 
     /**
      * @brief Constructs an empty CircularBuffer.
-     * @param buffer A pointer to the CircularBuffer.
-     * @param element_size_in_bytes Size of one element in bytes.
-     * @param initial_cap The initial capacity of the CircularBuffer.
+     * @param                buffer A constant non-null pointer to at least one CircularBuffer.
+     * @param element_size_in_bytes A constant size.
+     * @param           initial_cap A constant 32-bit unsigned integer.
      */
     #ifndef NDEBUG
     bool
@@ -63,36 +63,36 @@
     void
     #endif
     constructEmpty_cbuff(
-        CircularBuffer* const buffer,
+        CircularBuffer buffer[static const 1],
         size_t const element_size_in_bytes,
         uint32_t const initial_cap
     );
 
     /**
      * @brief Pops one element from the bottom of a CircularBuffer.
-     * @param buffer A pointer to the CircularBuffer.
+     * @param buffer A constant non-null pointer to at least one CircularBuffer.
      */
-    void* dequeue_cbuff(CircularBuffer* const buffer);
+    void* dequeue_cbuff(CircularBuffer buffer[static const 1]);
 
     /**
      * @brief Pushes one element to the top of a CircularBuffer.
-     * @param buffer A pointer to the CircularBuffer.
-     * @param ptr A pointer to the constant element.
+     * @param buffer A constant non-null pointer to at least one CircularBuffer.
+     * @param    ptr A constant restricted pointer to a constant object.
      */
-    void* enqueue_cbuff(CircularBuffer* const buffer, void const* const restrict ptr);
+    void* enqueue_cbuff(CircularBuffer buffer[static const 1], void const* const restrict ptr);
 
     /**
      * @brief Pushes one element to the top of a CircularBuffer (overwrites, does NOT grow).
-     * @param buffer A pointer to the CircularBuffer.
-     * @param ptr A pointer to the constant element.
+     * @param buffer A constant non-null pointer to at least one CircularBuffer.
+     * @param    ptr A constant restricted pointer to a constant object.
      */
-    void* enqueue_o_cbuff(CircularBuffer* const buffer, void const* const restrict ptr);
+    void* enqueue_o_cbuff(CircularBuffer buffer[static const 1], void const* const restrict ptr);
 
     /**
      * @brief Pushes one element of zeros to the top of a CircularBuffer.
-     * @param buffer A pointer to the CircularBuffer.
+     * @param buffer A constant non-null pointer to at least one CircularBuffer.
      */
-    void* enqueueZeros_cbuff(CircularBuffer* const buffer);
+    void* enqueueZeros_cbuff(CircularBuffer buffer[static const 1]);
 
     /**
      * @brief Pushes one element of zeros to the top of a CircularBuffer (overwrites, does NOT grow).
@@ -298,16 +298,16 @@
 
     /**
      * @brief Sets one element of a CircularBuffer to a value.
-     * @param buffer A pointer to the CircularBuffer.
-     * @param elementId The element index.
-     * @param ptr A pointer to the constant value.
+     * @param    buffer A constant non-null pointer to at least one CircularBuffer.
+     * @param elementId A constant 32-bit unsigned integer.
+     * @param       ptr A constant restricted pointer to a constant object.
      */
     #ifndef NDEBUG
     bool
     #else
     void
     #endif
-    set_cbuff(CircularBuffer* const buffer, uint32_t const elementId, void const* const restrict ptr);
+    set_cbuff(CircularBuffer buffer[static const 1], uint32_t const elementId, void const* const restrict ptr);
 
     /**
      * @brief Sets one element of a CircularBuffer to zeros.

@@ -33,7 +33,7 @@ bool
 #else
 void
 #endif
-adjust(ChunkSet* const set) {
+adjust(ChunkSet set[static const 1]) {
     #ifndef NDEBUG
         if (!isValid_cset(set)) return 0;
     #endif
@@ -91,7 +91,7 @@ adjust(ChunkSet* const set) {
     #endif
 }
 
-uint32_t addKey_cset(ChunkSet* const set, char const* const restrict key, uint64_t const n) {
+uint32_t addKey_cset(ChunkSet set[static const 1], char const key[static const 1], uint64_t const n) {
     #ifndef NDEBUG
         if (!isValid_cset(set)) return UINT32_MAX;
         if (key == NULL)        return UINT32_MAX;
@@ -147,7 +147,7 @@ bool
 void
 #endif
 constructEmpty_cset(
-    ChunkSet* const set, uint64_t const initial_cap,
+    ChunkSet set[static const 1], uint64_t const initial_cap,
     uint32_t const initial_stringsCap, uint32_t const loadPercent
 ) {
     #ifndef NDEBUG
@@ -179,7 +179,7 @@ bool
 #else
 void
 #endif
-flush_cset(ChunkSet* const set) {
+flush_cset(ChunkSet set[static const 1]) {
     #ifndef NDEBUG
         if (!isValid_cset(set))        return 0;
         if (!flush_chunk((Chunk*)set)) return 0;
@@ -197,7 +197,7 @@ bool
 #else
 void
 #endif
-free_cset(ChunkSet* const set) {
+free_cset(ChunkSet set[static const 1]) {
     #ifndef NDEBUG
         if (!isValid_cset(set)) return 0;
         if (!free_chunk((Chunk*)set)) return 0;
@@ -214,21 +214,21 @@ free_cset(ChunkSet* const set) {
     #endif
 }
 
-char const* getKey_cset(ChunkSet const* const set, uint32_t const key_id) {
+char const* getKey_cset(ChunkSet const set[static const 1], uint32_t const key_id) {
     #ifndef NDEBUG
         if (!isValid_cset(set)) return NULL;
     #endif
     return get_chunk((Chunk const*)set, key_id);
 }
 
-uint32_t getKeyCount_cset(ChunkSet const* const set) {
+uint32_t getKeyCount_cset(ChunkSet const set[static const 1]) {
     #ifndef NDEBUG
         if (!isValid_cset(set)) return UINT32_MAX;
     #endif
     return set->nStrings;
 }
 
-uint32_t getKeyId_cset(ChunkSet const* const set, char const* const key, uint64_t const n) {
+uint32_t getKeyId_cset(ChunkSet const set[static const 1], char const key[static const 1], uint64_t const n) {
     #ifndef NDEBUG
         if (!isValid_cset(set)) return UINT32_MAX;
         if (key == NULL)        return UINT32_MAX;
@@ -252,7 +252,7 @@ uint32_t getKeyId_cset(ChunkSet const* const set, char const* const key, uint64_
     return UINT32_MAX;
 }
 
-bool isValid_cset(ChunkSet const* const set) {
+bool isValid_cset(ChunkSet const set[static const 1]) {
     return isValid_chunk((Chunk const*)set) &&
            set->loadPercent != 0            &&
            set->nRows != 0                  &&
@@ -261,7 +261,7 @@ bool isValid_cset(ChunkSet const* const set) {
            set->table != NULL;
 }
 
-uint64_t strlen_cset(ChunkSet const* const set, uint32_t const key_id) {
+uint64_t strlen_cset(ChunkSet const set[static const 1], uint32_t const key_id) {
     #ifndef NDEBUG
         if (!isValid_cset(set)) return UINT64_MAX;
     #endif

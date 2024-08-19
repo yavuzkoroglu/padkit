@@ -55,6 +55,7 @@ include/padkit.h: ;                                                         @\
     echo '    #include "padkit/map.h"'                  >> include/padkit.h; \
     echo '    #include "padkit/mapping.h"'              >> include/padkit.h; \
     echo '    #include "padkit/memalloc.h"'             >> include/padkit.h; \
+    echo '    #include "padkit/overlap.h"'              >> include/padkit.h; \
     echo '    #include "padkit/preprocessor.h"'         >> include/padkit.h; \
     echo '    #include "padkit/prime.h"'                >> include/padkit.h; \
     echo '    #include "padkit/reallocate.h"'           >> include/padkit.h; \
@@ -154,6 +155,10 @@ obj/padkit/memalloc.o: obj/padkit       \
     src/padkit/memalloc.c               \
     ; ${COMPILE} src/padkit/memalloc.c -c -o obj/padkit/memalloc.o
 
+obj/padkit/overlap.o: obj/padkit        \
+    src/padkit/overlap.c                \
+    ; ${COMPILE} src/padkit/overlap.c -c -o obj/padkit/overlap.o
+
 obj/padkit/prime.o: obj/padkit          \
     include/padkit/debug.h              \
     include/padkit/prime.h              \
@@ -200,6 +205,7 @@ objects:                        \
     obj/padkit/jsonparser.o     \
     obj/padkit/map.o            \
     obj/padkit/memalloc.o       \
+    obj/padkit/overlap.o        \
     obj/padkit/prime.o          \
     obj/padkit/reallocate.o     \
     obj/padkit/stack.o          \

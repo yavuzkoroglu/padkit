@@ -418,13 +418,15 @@ set_stack(Stack* const stack, uint32_t const elementId, void const* const restri
     void* const dest = get_stack(stack, elementId);
     #ifndef NDEBUG
         if (dest == NULL)               return 0;
-        if (dest == ptr)                return 0;
+        if (dest == ptr)                return 1;
+    #else
+        if (dest == ptr)                return;
     #endif
 
     if (ptr == NULL)
         memset(dest, 0, stack->element_size_in_bytes);
     else
-        memcpy(dest, ptr, stack->element_size_in_bytes); /* UB if dest == ptr */
+        memcpy(dest, ptr, stack->element_size_in_bytes); /* UB if dest and ptr overlaps. */
 
     #ifndef NDEBUG
         return 1;

@@ -25,13 +25,13 @@
      * @def CHUNK_TABLE_RECOMMENDED_INITIAL_CAP
      *   This initial capacity should work nicely in most situations.
      */
-    #define CHUNK_TABLE_RECOMMENDED_INITIAL_CAP BUFSIZ
+    #define CHUNK_TABLE_RECOMMENDED_INITIAL_CAP     (BUFSIZ)
 
     /**
      * @def CHUNK_TABLE_RECOMMENDED_LOAD_PERCENT
      *   This load percent should work nicely in most situations.
      */
-    #define CHUNK_TABLE_RECOMMENDED_LOAD_PERCENT 75
+    #define CHUNK_TABLE_RECOMMENDED_LOAD_PERCENT    (75)
 
     /**
      * @def CHUNK_TABLE_RECOMMENDED_PARAMETERS
@@ -44,7 +44,7 @@
      * @def CHUNK_TABLE_INITIAL_ROW_CAP
      *   This initial capacity should work nicely at all times, we should NOT expect too many collisions.
      */
-    #define CHUNK_TABLE_INITIAL_ROW_CAP 4
+    #define CHUNK_TABLE_INITIAL_ROW_CAP             (4)
 
     /**
      * @struct ChunkTableEntry
@@ -62,9 +62,9 @@
 
     /**
      * @brief Checks if a ChunkTableEntry is valid.
-     * @param entry The ChunkTableEntry.
+     * @param entry A constant non-null pointer to at least one constant ChunkTableEntry.
      */
-    bool isValid_cte(ChunkTableEntry const* const entry);
+    bool isValid_cte(ChunkTableEntry const entry[static const 1]);
 
     /**
      * @struct ChunkTable
@@ -100,82 +100,86 @@
 
     /**
      * @brief Constructs an empty ChunkTable.
-     * @param tbl A pointer to the ChunkTable.
-     * @param initial_cap The initial capacity.
-     * @param loadPercent Load percent.
+     *
+     * loadPercent <= 100
+     *
+     * @param         tbl A constant non-null pointer to at least one ChunkTable.
+     * @param initial_cap A constant 32-bit unsigned integer.
+     * @param loadPercent A constant 32-bit unsigned integer.
      */
     #ifndef NDEBUG
     bool
     #else
     void
     #endif
-    constructEmpty_ctbl(ChunkTable* const tbl, uint32_t const initial_cap, uint32_t const loadPercent);
+    constructEmpty_ctbl(ChunkTable tbl[static const 1], uint32_t const initial_cap, uint32_t const loadPercent);
 
     /**
      * @brief Flushes the contents of a ChunkTable.
-     * @param tbl A pointer to the ChunkTable.
+     * @param tbl A constant non-null pointer to at least one constant ChunkTable.
      */
     #ifndef NDEBUG
     bool
     #else
     void
     #endif
-    flush_ctbl(ChunkTable* const tbl);
+    flush_ctbl(ChunkTable tbl[static const 1]);
 
     /**
      * @brief Frees a ChunkTable.
-     * @param tbl A pointer to the ChunkTable.
+     * @param tbl A constant non-null pointer to at least one constant ChunkTable.
      */
     #ifndef NDEBUG
     bool
     #else
     void
     #endif
-    free_ctbl(ChunkTable* const tbl);
+    free_ctbl(ChunkTable tbl[static const 1]);
 
     /**
      * @brief Gets the ChunkTableEntry of a given key.
-     * @param tbl A pointer to the ChunkTable.
-     * @param chunk A pointer to the chunk where the key resides.
-     * @param key The key string.
-     * @param key_len The key length.
+     * @param     tbl A constant non-null pointer to at least one constant ChunkTable.
+     * @param   chunk A constant non-null pointer to at least one constant Chunk.
+     * @param     key A constant non-null pointer to at least one constant character.
+     * @param key_len A constant 64-bit unsigned integer.
      */
     ChunkTableEntry* get_ctbl(
-        ChunkTable const* const tbl, Chunk const* const chunk,
-        char const* key, uint64_t const key_len
+        ChunkTable const tbl[static const 1], Chunk const chunk[static const 1],
+        char const key[static const 1], uint64_t const key_len
     );
 
     /**
      * @brief Gets the entry count of a ChunkTable.
-     * @param tbl A pointer to the ChunkTable.
+     * @param tbl A constant non-null pointer to at least one constant ChunkTable.
      */
-    uint32_t getEntryCount_ctbl(ChunkTable const* const tbl);
+    uint32_t getEntryCount_ctbl(ChunkTable const tbl[static const 1]);
 
     /**
      * @brief Gets the ChunkTableEntry of a given key and value.
-     * @param tbl A pointer to the ChunkTable.
-     * @param chunk A pointer to the chunk where the key resides.
-     * @param key The key string.
-     * @param key_len The key length.
-     * @param value The value.
+     * @param     tbl A constant non-null pointer to at least one constant ChunkTable.
+     * @param   chunk A constant non-null pointer to at least one constant Chunk.
+     * @param     key A constant non-null pointer to at least one constant character.
+     * @param key_len A constant 64-bit unsigned integer.
+     * @param   value A constant 32-bit unsigned integer.
      */
     ChunkTableEntry* getExact_ctbl(
-        ChunkTable const* const tbl, Chunk const* const chunk,
-        char const* key, uint64_t const key_len, uint32_t const value
+        ChunkTable const tbl[static const 1], Chunk const chunk[static const 1],
+        char const key[static const 1], uint64_t const key_len, uint32_t const value
     );
 
     /**
      * @brief Gets the key count of a ChunkTable.
-     * @param tbl A pointer to the ChunkTable.
+     * @param tbl A constant non-null pointer to at least one constant ChunkTable.
      */
-    uint32_t getKeyCount_ctbl(ChunkTable const* const tbl);
+    uint32_t getKeyCount_ctbl(ChunkTable const tbl[static const 1]);
 
     /**
      * @brief Inserts (replaces if exists) a ChunkTableEntry.
-     * @param tbl A pointer to the ChunkTable.
-     * @param chunk The chunk where the keys reside.
-     * @param key_id The key index.
-     * @param value The value.
+     * @param                  tbl A constant non-null pointer to at least one ChunkTable.
+     * @param                chunk A constant non-null pointer to at least one constant Chunk.
+     * @param               key_id A constant 32-bit unsigned integer.
+     * @param                value A constant 32-bit unsigned integer.
+     * @param ctbl_insert_behavior A constant signed integer.
      */
     #ifndef NDEBUG
         #define CTBL_INSERT_ERROR        0
@@ -187,16 +191,16 @@
     #define CTBL_BEHAVIOR_REPLACE        1
     #define CTBL_BEHAVIOR_UNIQUE         2
     int insert_ctbl(
-        ChunkTable* const tbl, Chunk const* const chunk,
+        ChunkTable tbl[static const 1], Chunk const chunk[static const 1],
         uint32_t const key_id, uint32_t const value,
         int const ctbl_insert_behavior
     );
 
     /**
      * @brief Checks a table if it is valid.
-     * @param tbl A pointer to the ChunkTable.
+     * @param tbl A constant non-null pointer to at least one ChunkTable.
      */
-    bool isValid_ctbl(ChunkTable const* const tbl);
+    bool isValid_ctbl(ChunkTable const tbl[static const 1]);
 
     /**
      * @struct CTblConstIterator
@@ -214,20 +218,20 @@
      *   The current iterated ChunkTableEntry.
      */
     typedef struct CTblConstIteratorBody {
-        ChunkTable const* tbl;
-        Chunk const* chunk;
-        char const* key;
-        uint64_t key_len;
-        ChunkTableEntry const* entry;
+        ChunkTable const*       tbl;
+        Chunk const*            chunk;
+        char const*             key;
+        uint64_t                key_len;
+        ChunkTableEntry const*  entry;
     } CTblConstIterator;
 
     /**
      * @brief Constructs a CTblConstIterator.
-     * @param itr A pointer to the CTblConstIterator.
-     * @param tbl A pointer to the constant ChunkTable.
-     * @param chunk A pointer to the constant Chunk.
-     * @param key A pointer to the constant key.
-     * @param key_len A pointer to the key length.
+     * @param     itr A constant non-null pointer to at least one CTblConstIterator.
+     * @param     tbl A constant non-null pointer to at least one constant ChunkTable.
+     * @param   chunk A constant non-null pointer to at least one constant Chunk.
+     * @param     key A constant non-null pointer to at least one constant character.
+     * @param key_len A constant 64-bit unsigned integer.
      */
     #ifndef NDEBUG
     bool
@@ -235,21 +239,21 @@
     void
     #endif
     construct_ctblitr(
-        CTblConstIterator* const itr,
-        ChunkTable const* const tbl, Chunk const* const chunk,
-        char const* const key, uint64_t const key_len
+        CTblConstIterator itr[static const 1],
+        ChunkTable const tbl[static const 1], Chunk const chunk[static const 1],
+        char const key[static const 1], uint64_t const key_len
     );
 
     /**
      * @brief Checks if a CTblConstIterator is valid.
-     * @param itr A pointer to the CTblConstIterator.
+     * @param itr A constant non-null pointer to at least one constant CTblConstIterator.
      */
-    bool isValid_ctblitr(CTblConstIterator const* const itr);
+    bool isValid_ctblitr(CTblConstIterator const itr[static const 1]);
 
     /**
      * @brief Iterates to the next ChunkTableEntry.
-     * @param itr A pointer to the CTblConstIterator.
+     * @param itr A constant non-null pointer to at least one CTblConstIterator.
      */
-    ChunkTableEntry const* next_ctblitr(CTblConstIterator* const itr);
+    ChunkTableEntry const* next_ctblitr(CTblConstIterator itr[static const 1]);
 #endif
 

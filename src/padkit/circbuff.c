@@ -452,7 +452,7 @@ rotateDown_cbuff(CircularBuffer* const buffer, uint32_t n) {
         memcpy(copy, element, buffer->element_size_in_bytes);
         #ifndef NDEBUG
             if (element == NULL)                        return 0;
-            if (pushTop_o_cbuff(buffer, copy) == NULL)    return 0;
+            if (pushTop_o_cbuff(buffer, copy) == NULL)  return 0;
         #else
             pushTop_o_cbuff(buffer, copy);
         #endif
@@ -487,8 +487,8 @@ rotateUp_cbuff(CircularBuffer* const buffer, uint32_t n) {
         void* const element = popTop_cbuff(buffer);
         memcpy(copy, element, buffer->element_size_in_bytes);
         #ifndef NDEBUG
-            if (element == NULL)                        return 0;
-            if (pushBottom_o_cbuff(buffer, copy) == NULL) return 0;
+            if (element == NULL)                            return 0;
+            if (pushBottom_o_cbuff(buffer, copy) == NULL)   return 0;
         #else
             pushBottom_o_cbuff(buffer, copy);
         #endif
@@ -514,13 +514,15 @@ set_cbuff(CircularBuffer* const buffer, uint32_t const elementId, void const* co
     void* const dest = get_cbuff(buffer, elementId);
     #ifndef NDEBUG
         if (dest == NULL)           return 0;
-        if (dest == ptr)            return 0;
+        if (dest == ptr)            return 1;
+    #else
+        if (dest == ptr)            return;
     #endif
 
     if (ptr == NULL)
         memset(dest, 0, buffer->element_size_in_bytes);
     else
-        memcpy(dest, ptr, buffer->element_size_in_bytes); /* UB if dest == ptr */
+        memcpy(dest, ptr, buffer->element_size_in_bytes); /* UB if dest and ptr overlaps. */
 
     #ifndef NDEBUG
         return 1;

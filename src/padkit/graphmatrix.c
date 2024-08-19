@@ -29,9 +29,11 @@ connect_gmtx(GraphMatrix* const gmtx, uint32_t const source, uint32_t const sink
     #endif
 
     uint64_t const edge_id = (uint64_t)new_width * (uint64_t)source + (uint64_t)sink;
-    /*ldiv_t const edge  = ldiv(edge_id, 64);*/
-
-    gmtx->array[edge_id >> 6] |= (B8(B_10000000,B_00000000,B_00000000,B_00000000,B_00000000,B_00000000,B_00000000,B_00000000) >> (edge_id % B_01000000));
+    gmtx->array[edge_id >> 6] |=
+        (
+            B8(B_10000000,B_00000000,B_00000000,B_00000000,B_00000000,B_00000000,B_00000000,B_00000000) >>
+            (edge_id % B_01000000)
+        );
 
     #ifndef NDEBUG
         return 1;
@@ -170,9 +172,11 @@ disconnect_gmtx(GraphMatrix* const gmtx, uint32_t const source, uint32_t const s
     #endif
 
     uint64_t const edge_id = (uint64_t)new_width * (uint64_t)source + (uint64_t)sink;
-    /* ldiv_t const edge  = ldiv(edge_id, 64); */
-
-    gmtx->array[edge_id >> 6] &= ~(B8(B_10000000,B_00000000,B_00000000,B_00000000,B_00000000,B_00000000,B_00000000,B_00000000) >> (edge_id % B_01000000));
+    gmtx->array[edge_id >> 6] &=
+        ~(
+            B8(B_10000000,B_00000000,B_00000000,B_00000000,B_00000000,B_00000000,B_00000000,B_00000000) >>
+            (edge_id % B_01000000)
+        );
 
     #ifndef NDEBUG
         return 1;
@@ -258,9 +262,11 @@ bool isConnected_gmtx(
 ) {
     DEBUG_ASSERT(isValid_gmtx(gmtx))
     uint64_t const edge_id = (uint64_t)gmtx->width * (uint64_t)source + (uint64_t)sink;
-    /* ldiv_t const edge = ldiv(edge_id, 64); */
 
-    return (gmtx->array[edge_id >> 6] & (B8(B_10000000,B_00000000,B_00000000,B_00000000,B_00000000,B_00000000,B_00000000,B_00000000) >> (edge_id % B_01000000)));
+    return (gmtx->array[edge_id >> 6] & (
+        B8(B_10000000,B_00000000,B_00000000,B_00000000,B_00000000,B_00000000,B_00000000,B_00000000) >>
+        (edge_id % B_01000000))
+    );
 }
 
 bool isValid_gmtx(GraphMatrix const* const gmtx) {
