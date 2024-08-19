@@ -15,8 +15,8 @@
      * @param  p1 A constant pointer to a constant object.
      * @param sz1 A constant size.
      */
-    bool overlaps_ptrs(
-        void const* const p0, size_t const sz0,
-        void const* const p1, size_t const sz1
+    bool overlaps_ptr(
+        void const* const p0, size_t sz0,
+        void const* const p1, size_t sz1
     );
 #endif

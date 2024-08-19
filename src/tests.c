@@ -715,6 +715,151 @@ static void test_map(void) {
     #undef PEOPLE_COUNT
 }
 
+static void test_overlap(void) {
+    static char const a1[]      = "abcde";
+    static char const a2[]      = "fghi";
+    static char const* const a3 = a1 + 1;
+    char const b1[]             = "jklmn";
+    char const b2[]             = "opqr";
+    char const* const b3        = b1 + 1;
+    char* const c1              = mem_calloc(6, 1);
+    char* const c2              = mem_calloc(4, 1);
+    char const* const c3        = c1 + 1;
+    memcpy(c1, "stuvw", 6);
+    memcpy(c2, "xyz", 4);
+
+    TEST_FAIL_IF(!overlaps_ptr(NULL, 0, NULL, 0))
+
+    TEST_FAIL_IF(overlaps_ptr(NULL, 0, a1, 6))
+    TEST_FAIL_IF(overlaps_ptr(NULL, 0, a2, 5))
+    TEST_FAIL_IF(overlaps_ptr(NULL, 0, a3, 2))
+    TEST_FAIL_IF(overlaps_ptr(NULL, 0, b1, 6))
+    TEST_FAIL_IF(overlaps_ptr(NULL, 0, b2, 5))
+    TEST_FAIL_IF(overlaps_ptr(NULL, 0, b3, 2))
+    TEST_FAIL_IF(overlaps_ptr(NULL, 0, c1, 6))
+    TEST_FAIL_IF(overlaps_ptr(NULL, 0, c2, 5))
+    TEST_FAIL_IF(overlaps_ptr(NULL, 0, c3, 2))
+
+    TEST_FAIL_IF(overlaps_ptr(a1, 6, NULL, 0))
+    TEST_FAIL_IF(overlaps_ptr(a2, 5, NULL, 0))
+    TEST_FAIL_IF(overlaps_ptr(a3, 2, NULL, 0))
+    TEST_FAIL_IF(overlaps_ptr(b1, 6, NULL, 0))
+    TEST_FAIL_IF(overlaps_ptr(b2, 5, NULL, 0))
+    TEST_FAIL_IF(overlaps_ptr(b3, 2, NULL, 0))
+    TEST_FAIL_IF(overlaps_ptr(c1, 6, NULL, 0))
+    TEST_FAIL_IF(overlaps_ptr(c2, 5, NULL, 0))
+    TEST_FAIL_IF(overlaps_ptr(c3, 2, NULL, 0))
+
+    TEST_FAIL_IF(!overlaps_ptr(a1, 6, a1, 6))
+    TEST_FAIL_IF(!overlaps_ptr(a2, 5, a2, 5))
+    TEST_FAIL_IF(!overlaps_ptr(a3, 2, a3, 2))
+    TEST_FAIL_IF(!overlaps_ptr(b1, 6, b1, 6))
+    TEST_FAIL_IF(!overlaps_ptr(b2, 5, b2, 5))
+    TEST_FAIL_IF(!overlaps_ptr(b3, 2, b3, 2))
+    TEST_FAIL_IF(!overlaps_ptr(c1, 6, c1, 6))
+    TEST_FAIL_IF(!overlaps_ptr(c2, 5, c2, 5))
+    TEST_FAIL_IF(!overlaps_ptr(c3, 2, c3, 2))
+
+    TEST_FAIL_IF(!overlaps_ptr(a1, 6, a1 + 1, 5))
+    TEST_FAIL_IF(!overlaps_ptr(a2, 5, a2 + 1, 4))
+    TEST_FAIL_IF(!overlaps_ptr(a3, 2, a3 + 1, 1))
+    TEST_FAIL_IF(!overlaps_ptr(b1, 6, b1 + 1, 5))
+    TEST_FAIL_IF(!overlaps_ptr(b2, 5, b2 + 1, 4))
+    TEST_FAIL_IF(!overlaps_ptr(b3, 2, b3 + 1, 1))
+    TEST_FAIL_IF(!overlaps_ptr(c1, 6, c1 + 1, 5))
+    TEST_FAIL_IF(!overlaps_ptr(c2, 5, c2 + 1, 4))
+    TEST_FAIL_IF(!overlaps_ptr(c3, 2, c3 + 1, 1))
+
+    TEST_FAIL_IF(overlaps_ptr(a1, 6, a2, 5))
+    TEST_FAIL_IF(!overlaps_ptr(a1, 6, a3, 2))
+    TEST_FAIL_IF(overlaps_ptr(a1, 6, b1, 6))
+    TEST_FAIL_IF(overlaps_ptr(a1, 6, b2, 5))
+    TEST_FAIL_IF(overlaps_ptr(a1, 6, b3, 2))
+    TEST_FAIL_IF(overlaps_ptr(a1, 6, c1, 6))
+    TEST_FAIL_IF(overlaps_ptr(a1, 6, c2, 5))
+    TEST_FAIL_IF(overlaps_ptr(a1, 6, c3, 2))
+
+    TEST_FAIL_IF(overlaps_ptr(a2, 5, a1, 6))
+    TEST_FAIL_IF(overlaps_ptr(a2, 5, a3, 2))
+    TEST_FAIL_IF(overlaps_ptr(a2, 5, b1, 6))
+    TEST_FAIL_IF(overlaps_ptr(a2, 5, b2, 5))
+    TEST_FAIL_IF(overlaps_ptr(a2, 5, b3, 2))
+    TEST_FAIL_IF(overlaps_ptr(a2, 5, c1, 6))
+    TEST_FAIL_IF(overlaps_ptr(a2, 5, c2, 5))
+    TEST_FAIL_IF(overlaps_ptr(a2, 5, c3, 2))
+
+    TEST_FAIL_IF(!overlaps_ptr(a3, 2, a1, 6))
+    TEST_FAIL_IF(overlaps_ptr(a3, 2, a2, 5))
+    TEST_FAIL_IF(overlaps_ptr(a3, 2, b1, 6))
+    TEST_FAIL_IF(overlaps_ptr(a3, 2, b2, 5))
+    TEST_FAIL_IF(overlaps_ptr(a3, 2, b3, 2))
+    TEST_FAIL_IF(overlaps_ptr(a3, 2, c1, 6))
+    TEST_FAIL_IF(overlaps_ptr(a3, 2, c2, 5))
+    TEST_FAIL_IF(overlaps_ptr(a3, 2, c3, 2))
+
+    TEST_FAIL_IF(overlaps_ptr(b1, 6, a1, 6))
+    TEST_FAIL_IF(overlaps_ptr(b1, 6, a2, 5))
+    TEST_FAIL_IF(overlaps_ptr(b1, 6, a3, 2))
+    TEST_FAIL_IF(overlaps_ptr(b1, 6, b2, 5))
+    TEST_FAIL_IF(!overlaps_ptr(b1, 6, b3, 2))
+    TEST_FAIL_IF(overlaps_ptr(b1, 6, c1, 6))
+    TEST_FAIL_IF(overlaps_ptr(b1, 6, c2, 5))
+    TEST_FAIL_IF(overlaps_ptr(b1, 6, c3, 2))
+
+    TEST_FAIL_IF(overlaps_ptr(b2, 5, a1, 6))
+    TEST_FAIL_IF(overlaps_ptr(b2, 5, a2, 5))
+    TEST_FAIL_IF(overlaps_ptr(b2, 5, a3, 2))
+    TEST_FAIL_IF(overlaps_ptr(b2, 5, b1, 6))
+    TEST_FAIL_IF(overlaps_ptr(b2, 5, b3, 2))
+    TEST_FAIL_IF(overlaps_ptr(b2, 5, c1, 6))
+    TEST_FAIL_IF(overlaps_ptr(b2, 5, c2, 5))
+    TEST_FAIL_IF(overlaps_ptr(b2, 5, c3, 2))
+
+    TEST_FAIL_IF(overlaps_ptr(b3, 2, a1, 6))
+    TEST_FAIL_IF(overlaps_ptr(b3, 2, a2, 5))
+    TEST_FAIL_IF(overlaps_ptr(b3, 2, a3, 2))
+    TEST_FAIL_IF(!overlaps_ptr(b3, 2, b1, 6))
+    TEST_FAIL_IF(overlaps_ptr(b3, 2, b2, 5))
+    TEST_FAIL_IF(overlaps_ptr(b3, 2, c1, 6))
+    TEST_FAIL_IF(overlaps_ptr(b3, 2, c2, 5))
+    TEST_FAIL_IF(overlaps_ptr(b3, 2, c3, 2))
+
+    TEST_FAIL_IF(overlaps_ptr(c1, 6, a1, 6))
+    TEST_FAIL_IF(overlaps_ptr(c1, 6, a2, 5))
+    TEST_FAIL_IF(overlaps_ptr(c1, 6, a3, 2))
+    TEST_FAIL_IF(overlaps_ptr(c1, 6, b1, 6))
+    TEST_FAIL_IF(overlaps_ptr(c1, 6, b2, 5))
+    TEST_FAIL_IF(overlaps_ptr(c1, 6, b3, 2))
+    TEST_FAIL_IF(overlaps_ptr(c1, 6, c2, 5))
+    TEST_FAIL_IF(!overlaps_ptr(c1, 6, c3, 2))
+
+    TEST_FAIL_IF(overlaps_ptr(c2, 5, a1, 6))
+    TEST_FAIL_IF(overlaps_ptr(c2, 5, a2, 5))
+    TEST_FAIL_IF(overlaps_ptr(c2, 5, a3, 2))
+    TEST_FAIL_IF(overlaps_ptr(c2, 5, b1, 6))
+    TEST_FAIL_IF(overlaps_ptr(c2, 5, b2, 5))
+    TEST_FAIL_IF(overlaps_ptr(c2, 5, b3, 2))
+    TEST_FAIL_IF(overlaps_ptr(c2, 5, c1, 6))
+    TEST_FAIL_IF(overlaps_ptr(c2, 5, c3, 2))
+
+    TEST_FAIL_IF(overlaps_ptr(c3, 2, a1, 6))
+    TEST_FAIL_IF(overlaps_ptr(c3, 2, a2, 5))
+    TEST_FAIL_IF(overlaps_ptr(c3, 2, a3, 2))
+    TEST_FAIL_IF(overlaps_ptr(c3, 2, b1, 6))
+    TEST_FAIL_IF(overlaps_ptr(c3, 2, b2, 5))
+    TEST_FAIL_IF(overlaps_ptr(c3, 2, b3, 2))
+    TEST_FAIL_IF(!overlaps_ptr(c3, 2, c1, 6))
+    TEST_FAIL_IF(overlaps_ptr(c3, 2, c2, 5))
+
+    TEST_FAIL_IF(overlaps_ptr(c1, 1, c3, 2))
+    TEST_FAIL_IF(!overlaps_ptr(c1, 5, c3, 1))
+
+    TEST_PASS
+
+    free(c1);
+    free(c2);
+}
+
 static void test_reallocate(void) {
     #define OLD_SIZE 1024
     #define NEW_SIZE 131072
@@ -970,6 +1115,7 @@ int main(void) {
     test_gmtx();
     test_jsonp();
     test_map();
+    test_overlap();
     test_reallocate();
     test_reallocate_recalloc();
     test_stack();
