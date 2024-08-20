@@ -80,6 +80,7 @@ obj/padkit/chunk.o: obj/padkit          \
     include/padkit/chunk.h              \
     include/padkit/debug.h              \
     include/padkit/memalloc.h           \
+    include/padkit/overlap.h            \
     include/padkit/reallocate.h         \
     src/padkit/chunk.c                  \
     ; ${COMPILE} src/padkit/chunk.c -c -o obj/padkit/chunk.o

@@ -10,6 +10,10 @@
 #include "padkit/memalloc.h"
 #include "padkit/reallocate.h"
 
+#ifndef NDEBUG
+    #include "padkit/overlap.h"
+#endif
+
 static char const defaultDelimeters[] = " \t\n\v\f\r";
 
 uint32_t add_chunk(
