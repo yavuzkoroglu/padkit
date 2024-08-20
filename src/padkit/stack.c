@@ -141,13 +141,11 @@ void* pushBottom_stack(Stack stack[static const 1], void const* const restrict p
 void* pushTop_stack(Stack stack[static const 1], void const* const restrict ptr) {
     DEBUG_ASSERT(isValid_stack(stack))
 
-    #ifndef NDEBUG
-        size_t const sz_stack   = (size_t)stack->cap * stack->element_size_in_bytes;
-        size_t const sz_element = stack->element_size_in_bytes;
-        DEBUG_ERROR_IF(overlaps_ptr(stack->array, ptr, sz_stack, sz_element))
-    #endif
+    DEBUG_EXECUTE(size_t const sz_stack   = (size_t)stack->cap * stack->element_size_in_bytes)
+    DEBUG_EXECUTE(size_t const sz_element = stack->element_size_in_bytes)
+    DEBUG_ERROR_IF(overlaps_ptr(stack->array, ptr, sz_stack, sz_element))
 
-    reallocIfNecessary_stack(stack);
+    reallocIfNecessary_stack(stack); /* May invalidate ptr if stack->array and ptr overlap. */
 
     set_stack(stack, ++stack->size - 1, ptr);
 
@@ -274,15 +272,13 @@ void set_stack(Stack stack[static const 1], uint32_t const elementId, void const
     void* const dest = get_stack(stack, elementId);
     if (dest == ptr) return;
 
-    #ifndef NDEBUG
-        size_t const sz_element = stack->element_size_in_bytes;
-        DEBUG_ERROR_IF(overlaps_ptr(dest, ptr, sz_element, sz_element))
-    #endif
+    DEBUG_EXECUTE(size_t const sz_element = stack->element_size_in_bytes)
+    DEBUG_ERROR_IF(overlaps_ptr(dest, ptr, sz_element, sz_element))
 
     if (ptr == NULL)
         memset(dest, 0, stack->element_size_in_bytes);
     else
-        memcpy(dest, ptr, stack->element_size_in_bytes); /* UB if dest and ptr overlaps. */
+        memcpy(dest, ptr, stack->element_size_in_bytes); /* UB if dest and ptr overlap. */
 }
 
 void setZeros_stack(Stack stack[static const 1], uint32_t const elementId) {

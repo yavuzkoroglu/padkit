@@ -14,8 +14,7 @@
      * @def NOT_A_CIRCBUFF
      *   A special CircularBuffer that cannot pass the isValid_cbuff() test.
      */
-    #define NOT_A_CIRCBUFF \
-        ((CircularBuffer){ 0, 0, 0, NULL, 0, 0 })
+    #define NOT_A_CIRCBUFF                      ((CircularBuffer){ 0, 0, 0, NULL, 0, 0 })
 
     /**
      * @def CIRCBUFF_RECOMMENDED_INITIAL_CAP
@@ -53,16 +52,12 @@
 
     /**
      * @brief Constructs an empty CircularBuffer.
-     * @param                buffer A constant non-null pointer to at least one CircularBuffer.
-     * @param element_size_in_bytes A constant size.
-     * @param           initial_cap A constant 32-bit unsigned integer.
+     *
+     * @param[in,out]                buffer A constant non-null pointer to at least one CircularBuffer.
+     * @param[in]     element_size_in_bytes A constant size.
+     * @param[in]               initial_cap A constant 32-bit unsigned integer.
      */
-    #ifndef NDEBUG
-    bool
-    #else
-    void
-    #endif
-    constructEmpty_cbuff(
+    void constructEmpty_cbuff(
         CircularBuffer buffer[static const 1],
         size_t const element_size_in_bytes,
         uint32_t const initial_cap
@@ -70,254 +65,296 @@
 
     /**
      * @brief Pops one element from the bottom of a CircularBuffer.
-     * @param buffer A constant non-null pointer to at least one CircularBuffer.
+     *
+     * @param[in,out] buffer A constant non-null pointer to at least one CircularBuffer.
+     *
+     * @return A pointer to an object.
      */
     void* dequeue_cbuff(CircularBuffer buffer[static const 1]);
 
     /**
      * @brief Pushes one element to the top of a CircularBuffer.
-     * @param buffer A constant non-null pointer to at least one CircularBuffer.
-     * @param    ptr A constant restricted pointer to a constant object.
+     *
+     * @param[in,out] buffer A constant non-null pointer to at least one CircularBuffer.
+     * @param[in]        ptr A constant restricted pointer to a constant object.
+     *
+     * @return A pointer to an object.
      */
     void* enqueue_cbuff(CircularBuffer buffer[static const 1], void const* const restrict ptr);
 
     /**
      * @brief Pushes one element to the top of a CircularBuffer (overwrites, does NOT grow).
-     * @param buffer A constant non-null pointer to at least one CircularBuffer.
-     * @param    ptr A constant restricted pointer to a constant object.
+     *
+     * @param[in,out] buffer A constant non-null pointer to at least one CircularBuffer.
+     * @param[in]        ptr A constant restricted pointer to a constant object.
+     *
+     * @return A pointer to an object.
      */
     void* enqueue_o_cbuff(CircularBuffer buffer[static const 1], void const* const restrict ptr);
 
     /**
      * @brief Pushes one element of zeros to the top of a CircularBuffer.
-     * @param buffer A constant non-null pointer to at least one CircularBuffer.
+     *
+     * @param[in,out] buffer A constant non-null pointer to at least one CircularBuffer.
+     *
+     * @return A pointer to an object.
      */
     void* enqueueZeros_cbuff(CircularBuffer buffer[static const 1]);
 
     /**
      * @brief Pushes one element of zeros to the top of a CircularBuffer (overwrites, does NOT grow).
-     * @param buffer A pointer to the CircularBuffer.
+     *
+     * @param[in,out] buffer A constant non-null pointer to at least one CircularBuffer.
+     *
+     * @return A pointer to an object.
      */
-    void* enqueueZeros_o_cbuff(CircularBuffer* const buffer);
+    void* enqueueZeros_o_cbuff(CircularBuffer buffer[static const 1]);
 
     /**
      * @brief Flushes the contents of a CircularBuffer.
-     * @param buffer A pointer to the CircularBuffer.
+     *
+     * @param[in,out] buffer A constant non-null pointer to at least one CircularBuffer.
      */
-    #ifndef NDEBUG
-    bool
-    #else
-    void
-    #endif
-    flush_cbuff(CircularBuffer* const buffer);
+    void flush_cbuff(CircularBuffer buffer[static const 1]);
 
     /**
      * @brief Frees the contents of a CircularBuffer.
-     * @param buffer A pointer to the CircularBuffer.
+     *
+     * @param[in,out] buffer A constant non-null pointer to at least one CircularBuffer.
      */
-    #ifndef NDEBUG
-    bool
-    #else
-    void
-    #endif
-    free_cbuff(CircularBuffer* const buffer);
+    void free_cbuff(CircularBuffer buffer[static const 1]);
 
     /**
      * @brief Gets an element from a CircularBuffer.
-     * @param buffer A pointer to the constant CircularBuffer.
-     * @param elementId The element index.
+     *
+     * @param[in] buffer A constant non-null pointer to at least one constant CircularBuffer.
+     *
+     * @return A pointer to an object.
      */
-    void* get_cbuff(CircularBuffer const* const buffer, uint32_t const elementId);
+    void* get_cbuff(CircularBuffer const buffer[static const 1], uint32_t const elementId);
 
     /**
      * @brief Checks if a CircularBuffer is valid.
-     * @param buffer A pointer to the constant CircularBuffer.
+     *
+     * @param[in] buffer A constant non-null pointer to at least one constant CircularBuffer.
+     *
+     * @return A Boolean value.
      */
-    bool isValid_cbuff(CircularBuffer const* const buffer);
+    bool isValid_cbuff(CircularBuffer const buffer[static const 1]);
 
     /**
      * @brief Peeks one element from the top of a CircularBuffer.
-     * @param buffer A pointer to the const CircularBuffer.
+     *
+     * @param[in] buffer A constant non-null pointer to at least one constant CircularBuffer.
+     *
+     * @return A pointer to an object.
      */
-    void* peek_cbuff(CircularBuffer const* const buffer);
+    void* peek_cbuff(CircularBuffer const buffer[static const 1]);
 
     /**
      * @brief Peeks one element from the bottom of a CircularBuffer.
-     * @param buffer A pointer to the constant CircularBuffer.
+     *
+     * @param[in] buffer A constant non-null pointer to at least one constant CircularBuffer.
+     *
+     * @return A pointer to an object.
      */
-    void* peekBottom_cbuff(CircularBuffer const* const buffer);
+    void* peekBottom_cbuff(CircularBuffer const buffer[static const 1]);
 
     /**
      * @brief Peeks one element from the top of a CircularBuffer.
-     * @param buffer A pointer to the constant CircularBuffer.
+     *
+     * @param[in] buffer A constant non-null pointer to at least one constant CircularBuffer.
+     *
+     * @return A pointer to an object.
      */
-    void* peekTop_cbuff(CircularBuffer const* const buffer);
+    void* peekTop_cbuff(CircularBuffer const buffer[static const 1]);
 
     /**
      * @brief Pops one element from the top of a CircularBuffer.
-     * @param buffer A pointer to the CircularBuffer.
+     *
+     * @param[in,out] buffer A constant non-null pointer to at least one CircularBuffer.
+     *
+     * @return A pointer to an object.
      */
-    void* pop_cbuff(CircularBuffer* const buffer);
+    void* pop_cbuff(CircularBuffer buffer[static const 1]);
 
     /**
      * @brief Pops one element from the bottom of a CircularBuffer.
-     * @param buffer A pointer to the CircularBuffer.
+     *
+     * @param[in,out] buffer A constant non-null pointer to at least one CircularBuffer.
+     *
+     * @return A pointer to an object.
      */
-    void* popBottom_cbuff(CircularBuffer* const buffer);
+    void* popBottom_cbuff(CircularBuffer buffer[static const 1]);
 
     /**
      * @brief Pops one element from the top of a CircularBuffer.
-     * @param buffer A pointer to the CircularBuffer.
+     *
+     * @param[in,out] buffer A constant non-null pointer to at least one CircularBuffer.
+     *
+     * @return A pointer to an object.
      */
-    void* popTop_cbuff(CircularBuffer* const buffer);
+    void* popTop_cbuff(CircularBuffer buffer[static const 1]);
 
     /**
      * @brief Pushes one element to the top of a CircularBuffer.
-     * @param buffer A pointer to the CircularBuffer.
-     * @param ptr A pointer to the constant element.
+     *
+     * @param[in,out] buffer A constant non-null pointer to at least one CircularBuffer.
+     * @param[in]        ptr A constant restricted pointer to a constant object.
+     *
+     * @return A pointer to an object.
      */
-    void* push_cbuff(CircularBuffer* const buffer, void const* const restrict ptr);
+    void* push_cbuff(CircularBuffer buffer[static const 1], void const* const restrict ptr);
 
     /**
      * @brief Pushes one element to the top of a CircularBuffer (overwrites, does NOT grow).
-     * @param buffer A pointer to the CircularBuffer.
-     * @param ptr A pointer to the constant element.
+     *
+     * @param[in,out] buffer A constant non-null pointer to at least one CircularBuffer.
+     * @param[in]        ptr A constant restricted pointer to a constant object.
+     *
+     * @return A pointer to an object.
      */
-    void* push_o_cbuff(CircularBuffer* const buffer, void const* const restrict ptr);
+    void* push_o_cbuff(CircularBuffer buffer[static const 1], void const* const restrict ptr);
 
     /**
      * @brief Pushes one element to the top of a CircularBuffer.
-     * @param buffer A pointer to the CircularBuffer.
-     * @param ptr A pointer to the constant element.
+     *
+     * @param[in,out] buffer A constant non-null pointer to at least one CircularBuffer.
+     * @param[in]        ptr A constant restricted pointer to a constant object.
+     *
+     * @return A pointer to an object.
      */
-    void* pushBottom_cbuff(CircularBuffer* const buffer, void const* const restrict ptr);
+    void* pushBottom_cbuff(CircularBuffer buffer[static const 1], void const* const restrict ptr);
 
     /**
      * @brief Pushes one element to the top of a CircularBuffer (overwrites, does NOT grow).
-     * @param buffer A pointer to the CircularBuffer.
-     * @param ptr A pointer to the constant element.
+     *
+     * @param[in,out] buffer A constant non-null pointer to at least one CircularBuffer.
+     * @param[in]        ptr A constant restricted pointer to a constant object.
+     *
+     * @return A pointer to an object.
      */
-    void* pushBottom_o_cbuff(CircularBuffer* const buffer, void const* const restrict ptr);
+    void* pushBottom_o_cbuff(CircularBuffer buffer[static const 1], void const* const restrict ptr);
 
     /**
      * @brief Pushes one element to the top of a CircularBuffer.
-     * @param buffer A pointer to the CircularBuffer.
-     * @param ptr A pointer to the constant element.
+     *
+     * @param[in,out] buffer A constant non-null pointer to at least one CircularBuffer.
+     * @param[in]        ptr A constant restricted pointer to a constant object.
+     *
+     * @return A pointer to an object.
      */
-    void* pushTop_cbuff(CircularBuffer* const buffer, void const* const restrict ptr);
+    void* pushTop_cbuff(CircularBuffer buffer[static const 1], void const* const restrict ptr);
 
     /**
      * @brief Pushes one element to the top of a CircularBuffer (overwrites, does NOT grow).
-     * @param buffer A pointer to the CircularBuffer.
-     * @param ptr A pointer to the constant element.
+     *
+     * @param[in,out] buffer A constant non-null pointer to at least one CircularBuffer.
+     * @param[in]        ptr A constant restricted pointer to a constant object.
+     *
+     * @return A pointer to an object.
      */
-    void* pushTop_o_cbuff(CircularBuffer* const buffer, void const* const restrict ptr);
+    void* pushTop_o_cbuff(CircularBuffer buffer[static const 1], void const* const restrict ptr);
 
     /**
      * @brief Pushes one element of zeros to the top of a CircularBuffer.
-     * @param buffer A pointer to the CircularBuffer.
+     *
+     * @param[in,out] buffer A constant non-null pointer to at least one CircularBuffer.
+     *
+     * @return A pointer to an object.
      */
-    void* pushZeros_cbuff(CircularBuffer* const buffer);
+    void* pushZeros_cbuff(CircularBuffer buffer[static const 1]);
 
     /**
      * @brief Pushes one element of zeros to the top of a CircularBuffer (overwrites, does NOT grow).
-     * @param buffer A pointer to the CircularBuffer.
+     *
+     * @param[in,out] buffer A constant non-null pointer to at least one CircularBuffer.
+     *
+     * @return A pointer to an object.
      */
-    void* pushZeros_o_cbuff(CircularBuffer* const buffer);
+    void* pushZeros_o_cbuff(CircularBuffer buffer[static const 1]);
 
     /**
      * @brief Pushes one element of zeros to the bottom of a CircularBuffer.
-     * @param buffer A pointer to the CircularBuffer.
+     *
+     * @param[in,out] buffer A constant non-null pointer to at least one CircularBuffer.
+     *
+     * @return A pointer to an object.
      */
-    void* pushZerosBottom_cbuff(CircularBuffer* const buffer);
+    void* pushZerosBottom_cbuff(CircularBuffer buffer[static const 1]);
 
     /**
      * @brief Pushes one element of zeros to the bottom of a CircularBuffer (overwrites, does NOT grow).
-     * @param buffer A pointer to the CircularBuffer.
+     *
+     * @param[in,out] buffer A constant non-null pointer to at least one CircularBuffer.
+     *
+     * @return A pointer to an object.
      */
-    void* pushZerosBottom_o_cbuff(CircularBuffer* const buffer);
+    void* pushZerosBottom_o_cbuff(CircularBuffer buffer[static const 1]);
 
     /**
      * @brief Pushes one element of zeros to the top of a CircularBuffer.
-     * @param buffer A pointer to the CircularBuffer.
+     *
+     * @param[in,out] buffer A constant non-null pointer to at least one CircularBuffer.
+     *
+     * @return A pointer to an object.
      */
-    void* pushZerosTop_cbuff(CircularBuffer* const buffer);
+    void* pushZerosTop_cbuff(CircularBuffer buffer[static const 1]);
 
     /**
      * @brief Pushes one element of zeros to the top of a CircularBuffer (overwrites, does NOT grow).
-     * @param buffer A pointer to the CircularBuffer.
+     *
+     * @param[in,out] buffer A constant non-null pointer to at least one CircularBuffer.
+     *
+     * @return A pointer to an object.
      */
-    void* pushZerosTop_o_cbuff(CircularBuffer* const buffer);
+    void* pushZerosTop_o_cbuff(CircularBuffer buffer[static const 1]);
 
     /**
      * @brief Reallocates a CircularBuffer if necessary.
-     * @param buffer A pointer to the CircularBuffer.
+     *
+     * @param[in,out] buffer A constant non-null pointer to at least one CircularBuffer.
      */
-    #ifndef NDEBUG
-    bool
-    #else
-    void
-    #endif
-    reallocIfNecessary_cbuff(CircularBuffer* const buffer);
+    void reallocIfNecessary_cbuff(CircularBuffer buffer[static const 1]);
 
     /**
      * @brief Rotates down a CircularBuffer by n.
-     * @param buffer A pointer to the CircularBuffer.
-     * @param n The number of rotations.
+     *
+     * @param[in,out] buffer A constant non-null pointer to at least one CircularBuffer.
+     * @param[in]          n A 32-bit unsigned integer.
      */
-    #ifndef NDEBUG
-    bool
-    #else
-    void
-    #endif
-    rotate_cbuff(CircularBuffer* const buffer, uint32_t n);
+    void rotate_cbuff(CircularBuffer buffer[static const 1], uint32_t n);
 
     /**
      * @brief Rotates down a CircularBuffer by n.
-     * @param buffer A pointer to the CircularBuffer.
-     * @param n The number of rotations.
+     *
+     * @param[in,out] buffer A constant non-null pointer to at least one CircularBuffer.
+     * @param[in]          n A 32-bit unsigned integer.
      */
-    #ifndef NDEBUG
-    bool
-    #else
-    void
-    #endif
-    rotateDown_cbuff(CircularBuffer* const buffer, uint32_t n);
+    void rotateDown_cbuff(CircularBuffer buffer[static const 1], uint32_t n);
 
     /**
      * @brief Rotates up a CircularBuffer by n.
-     * @param buffer A pointer to the CircularBuffer.
-     * @param n The number of rotations.
+     *
+     * @param[in,out] buffer A constant non-null pointer to at least one CircularBuffer.
+     * @param[in]          n A 32-bit unsigned integer.
      */
-    #ifndef NDEBUG
-    bool
-    #else
-    void
-    #endif
-    rotateUp_cbuff(CircularBuffer* const buffer, uint32_t n);
+    void rotateUp_cbuff(CircularBuffer buffer[static const 1], uint32_t n);
 
     /**
      * @brief Sets one element of a CircularBuffer to a value.
-     * @param    buffer A constant non-null pointer to at least one CircularBuffer.
-     * @param elementId A constant 32-bit unsigned integer.
-     * @param       ptr A constant restricted pointer to a constant object.
+     *
+     * @param[in,out]    buffer A constant non-null pointer to at least one CircularBuffer.
+     * @param[in]     elementId A constant 32-bit unsigned integer.
+     * @param[in]           ptr A constant restricted pointer to a constant object.
      */
-    #ifndef NDEBUG
-    bool
-    #else
-    void
-    #endif
-    set_cbuff(CircularBuffer buffer[static const 1], uint32_t const elementId, void const* const restrict ptr);
+    void set_cbuff(CircularBuffer buffer[static const 1], uint32_t const elementId, void const* const restrict ptr);
 
     /**
      * @brief Sets one element of a CircularBuffer to zeros.
-     * @param buffer A pointer to the CircularBuffer.
-     * @param elementId The element index.
+     *
+     * @param[in,out]    buffer A constant non-null pointer to at least one CircularBuffer.
+     * @param[in]     elementId A constant 32-bit unsigned integer.
      */
-    #ifndef NDEBUG
-    bool
-    #else
-    void
-    #endif
-    setZeros_cbuff(CircularBuffer* const buffer, uint32_t const elementId);
+    void setZeros_cbuff(CircularBuffer buffer[static const 1], uint32_t const elementId);
 #endif

@@ -5,16 +5,19 @@
  */
 #include <string.h>
 #include "padkit/circbuff.h"
+#include "padkit/debug.h"
 #include "padkit/memalloc.h"
 #include "padkit/reallocate.h"
 #include "padkit/repeat.h"
 
-static uint32_t calculateNewCap_cbuff(CircularBuffer const* const buffer);
+#ifndef NDEBUG
+    #include "padkit/overlap.h"
+#endif
 
-static uint32_t calculateNewCap_cbuff(CircularBuffer const* const buffer) {
-    #ifndef NDEBUG
-        if (!isValid_cbuff(buffer)) return UINT32_MAX;
-    #endif
+static uint32_t calculateNewCap_cbuff(CircularBuffer const buffer[static const 1]);
+
+static uint32_t calculateNewCap_cbuff(CircularBuffer const buffer[static const 1]) {
+    DEBUG_ASSERT(isValid_cbuff(buffer))
 
     uint32_t newCap = buffer->cap;
     while (newCap <= buffer->size) {
@@ -25,23 +28,16 @@ static uint32_t calculateNewCap_cbuff(CircularBuffer const* const buffer) {
     return newCap;
 }
 
-#ifndef NDEBUG
-bool
-#else
-void
-#endif
-constructEmpty_cbuff(
-    CircularBuffer* const buffer,
+void constructEmpty_cbuff(
+    CircularBuffer buffer[static const 1],
     size_t const element_size_in_bytes,
     uint32_t const initial_cap
 ) {
-    #ifndef NDEBUG
-        if (buffer == NULL)                     return 0;
-        if (element_size_in_bytes == 0)         return 0;
-        if (element_size_in_bytes == SIZE_MAX)  return 0;
-        if (initial_cap == 0)                   return 0;
-        if (initial_cap == UINT32_MAX)          return 0;
-    #endif
+    DEBUG_ERROR_IF(buffer == NULL)
+    DEBUG_ERROR_IF(element_size_in_bytes == 0)
+    DEBUG_ERROR_IF(element_size_in_bytes == SIZE_MAX)
+    DEBUG_ERROR_IF(initial_cap == 0)
+    DEBUG_ERROR_IF(initial_cap == UINT32_MAX)
 
     buffer->element_size_in_bytes   = element_size_in_bytes;
     buffer->cap                     = initial_cap;
@@ -49,95 +45,53 @@ constructEmpty_cbuff(
     buffer->array                   = mem_alloc((size_t)initial_cap * element_size_in_bytes);
     buffer->bottomElementId         = UINT32_MAX;
     buffer->topElementId            = UINT32_MAX;
-
-    #ifndef NDEBUG
-        return 1;
-    #endif
 }
 
-void* dequeue_cbuff(CircularBuffer* const buffer) {
-    #ifndef NDEBUG
-        if (!isValid_cbuff(buffer)) return NULL;
-        if (buffer->size == 0)      return NULL;
-    #endif
+void* dequeue_cbuff(CircularBuffer buffer[static const 1]) {
+    DEBUG_ASSERT(isValid_cbuff(buffer))
+    DEBUG_ERROR_IF(buffer->size == 0)
 
     return popBottom_cbuff(buffer);
 }
 
-void* enqueue_cbuff(CircularBuffer* const buffer, void const* const restrict ptr) {
-    #ifndef NDEBUG
-        if (!isValid_cbuff(buffer)) return NULL;
-    #endif
-
+void* enqueue_cbuff(CircularBuffer buffer[static const 1], void const* const restrict ptr) {
+    DEBUG_ASSERT(isValid_cbuff(buffer))
     return pushTop_cbuff(buffer, ptr);
 }
 
-void* enqueue_o_cbuff(CircularBuffer* const buffer, void const* const restrict ptr) {
-    #ifndef NDEBUG
-        if (!isValid_cbuff(buffer)) return NULL;
-    #endif
-
+void* enqueue_o_cbuff(CircularBuffer buffer[static const 1], void const* const restrict ptr) {
+    DEBUG_ASSERT(isValid_cbuff(buffer))
     return pushTop_o_cbuff(buffer, ptr);
 }
 
-void* enqueueZeros_cbuff(CircularBuffer* const buffer) {
-    #ifndef NDEBUG
-        if (!isValid_cbuff(buffer)) return NULL;
-    #endif
-
+void* enqueueZeros_cbuff(CircularBuffer buffer[static const 1]) {
+    DEBUG_ASSERT(isValid_cbuff(buffer))
     return enqueue_cbuff(buffer, NULL);
 }
 
-void* enqueueZeros_o_cbuff(CircularBuffer* const buffer) {
-    #ifndef NDEBUG
-        if (!isValid_cbuff(buffer)) return NULL;
-    #endif
-
+void* enqueueZeros_o_cbuff(CircularBuffer buffer[static const 1]) {
+    DEBUG_ASSERT(isValid_cbuff(buffer))
     return enqueue_o_cbuff(buffer, NULL);
 }
 
-#ifndef NDEBUG
-bool
-#else
-void
-#endif
-flush_cbuff(CircularBuffer* const buffer) {
-    #ifndef NDEBUG
-        if (!isValid_cbuff(buffer)) return 0;
-    #endif
+void flush_cbuff(CircularBuffer buffer[static const 1]) {
+    DEBUG_ASSERT(isValid_cbuff(buffer))
 
     buffer->size            = 0;
     buffer->bottomElementId = UINT32_MAX;
     buffer->topElementId    = UINT32_MAX;
-
-    #ifndef NDEBUG
-        return 1;
-    #endif
 }
 
-#ifndef NDEBUG
-bool
-#else
-void
-#endif
-free_cbuff(CircularBuffer* const buffer) {
-    #ifndef NDEBUG
-        if (!isValid_cbuff(buffer)) return 0;
-    #endif
+void free_cbuff(CircularBuffer buffer[static const 1]) {
+    DEBUG_ASSERT(isValid_cbuff(buffer))
 
     free(buffer->array);
-    *buffer = NOT_A_CIRCBUFF;
-
-    #ifndef NDEBUG
-        return 1;
-    #endif
+    buffer[0] = NOT_A_CIRCBUFF;
 }
 
-void* get_cbuff(CircularBuffer const* const buffer, uint32_t const elementId) {
-    #ifndef NDEBUG
-        if (!isValid_cbuff(buffer)) return NULL;
-        if (buffer->size == 0)      return NULL;
-    #endif
+void* get_cbuff(CircularBuffer const buffer[static const 1], uint32_t const elementId) {
+    DEBUG_ASSERT(isValid_cbuff(buffer))
+    DEBUG_ERROR_IF(buffer->size == 0)
 
     return
         buffer->array +
@@ -145,7 +99,7 @@ void* get_cbuff(CircularBuffer const* const buffer, uint32_t const elementId) {
             (uint64_t)buffer->element_size_in_bytes;
 }
 
-bool isValid_cbuff(CircularBuffer const* const buffer) {
+bool isValid_cbuff(CircularBuffer const buffer[static const 1]) {
     if (buffer == NULL)                                 return 0;
     if (buffer->element_size_in_bytes == 0)             return 0;
     if (buffer->element_size_in_bytes == UINT64_MAX)    return 0;
@@ -178,52 +132,39 @@ bool isValid_cbuff(CircularBuffer const* const buffer) {
     return 1;
 }
 
-void* peek_cbuff(CircularBuffer const* const buffer) {
-    #ifndef NDEBUG
-        if (!isValid_cbuff(buffer)) return NULL;
-        if (buffer->size == 0)      return NULL;
-    #endif
+void* peek_cbuff(CircularBuffer const buffer[static const 1]) {
+    DEBUG_ASSERT(isValid_cbuff(buffer))
+    DEBUG_ERROR_IF(buffer->size == 0)
 
     return peekTop_cbuff(buffer);
 }
 
-void* peekBottom_cbuff(CircularBuffer const* const buffer) {
-    #ifndef NDEBUG
-        if (!isValid_cbuff(buffer)) return NULL;
-        if (buffer->size == 0)      return NULL;
-    #endif
+void* peekBottom_cbuff(CircularBuffer const buffer[static const 1]) {
+    DEBUG_ASSERT(isValid_cbuff(buffer))
+    DEBUG_ERROR_IF(buffer->size == 0)
 
     return get_cbuff(buffer, 0);
 }
 
-void* peekTop_cbuff(CircularBuffer const* const buffer) {
-    #ifndef NDEBUG
-        if (!isValid_cbuff(buffer)) return NULL;
-        if (buffer->size == 0)      return NULL;
-    #endif
+void* peekTop_cbuff(CircularBuffer const buffer[static const 1]) {
+    DEBUG_ASSERT(isValid_cbuff(buffer))
+    DEBUG_ERROR_IF(buffer->size == 0)
 
     return get_cbuff(buffer, buffer->size - 1);
 }
 
-void* pop_cbuff(CircularBuffer* const buffer) {
-    #ifndef NDEBUG
-        if (!isValid_cbuff(buffer)) return NULL;
-        if (buffer->size == 0)      return NULL;
-    #endif
+void* pop_cbuff(CircularBuffer buffer[static const 1]) {
+    DEBUG_ASSERT(isValid_cbuff(buffer))
+    DEBUG_ERROR_IF(buffer->size == 0)
 
     return popTop_cbuff(buffer);
 }
 
-void* popBottom_cbuff(CircularBuffer* const buffer) {
-    #ifndef NDEBUG
-        if (!isValid_cbuff(buffer)) return NULL;
-        if (buffer->size == 0)      return NULL;
-    #endif
+void* popBottom_cbuff(CircularBuffer buffer[static const 1]) {
+    DEBUG_ASSERT(isValid_cbuff(buffer))
+    DEBUG_ERROR_IF(buffer->size == 0)
 
     void* const ptr = get_cbuff(buffer, 0);
-    #ifndef NDEBUG
-        if (ptr == NULL)            return NULL;
-    #endif
 
     buffer->bottomElementId++;
     buffer->bottomElementId %= buffer->cap;
@@ -237,16 +178,11 @@ void* popBottom_cbuff(CircularBuffer* const buffer) {
     return ptr;
 }
 
-void* popTop_cbuff(CircularBuffer* const buffer) {
-    #ifndef NDEBUG
-        if (!isValid_cbuff(buffer)) return NULL;
-        if (buffer->size == 0)      return NULL;
-    #endif
+void* popTop_cbuff(CircularBuffer buffer[static const 1]) {
+    DEBUG_ASSERT(isValid_cbuff(buffer))
+    DEBUG_ERROR_IF(buffer->size == 0)
 
     void* const ptr = get_cbuff(buffer, buffer->size - 1);
-    #ifndef NDEBUG
-        if (ptr == NULL)            return NULL;
-    #endif
 
     buffer->topElementId--;
     if (buffer->topElementId == UINT32_MAX)
@@ -260,37 +196,30 @@ void* popTop_cbuff(CircularBuffer* const buffer) {
     return ptr;
 }
 
-void* push_cbuff(CircularBuffer* const buffer, void const* const restrict ptr) {
-    #ifndef NDEBUG
-        if (!isValid_cbuff(buffer)) return NULL;
-    #endif
-
+void* push_cbuff(CircularBuffer buffer[static const 1], void const* const restrict ptr) {
+    DEBUG_ASSERT(isValid_cbuff(buffer))
     return pushTop_cbuff(buffer, ptr);
 }
 
-void* push_o_cbuff(CircularBuffer* const buffer, void const* const restrict ptr) {
-    #ifndef NDEBUG
-        if (!isValid_cbuff(buffer)) return NULL;
-    #endif
-
+void* push_o_cbuff(CircularBuffer buffer[static const 1], void const* const restrict ptr) {
+    DEBUG_ASSERT(isValid_cbuff(buffer))
     return pushTop_o_cbuff(buffer, ptr);
 }
 
-void* pushBottom_cbuff(CircularBuffer* const buffer, void const* const restrict ptr) {
-    #ifndef NDEBUG
-        if (!isValid_cbuff(buffer))             return NULL;
-        if (!reallocIfNecessary_cbuff(buffer))  return NULL;
-    #else
-        reallocIfNecessary_cbuff(buffer);
-    #endif
+void* pushBottom_cbuff(CircularBuffer buffer[static const 1], void const* const restrict ptr) {
+    DEBUG_ASSERT(isValid_cbuff(buffer))
+
+    DEBUG_EXECUTE(size_t const sz_buff    = (size_t)buffer->cap * buffer->element_size_in_bytes)
+    DEBUG_EXECUTE(size_t const sz_element = buffer->element_size_in_bytes)
+    DEBUG_ERROR_IF(overlaps_ptr(buffer->array, ptr, sz_buff, sz_element))
+
+    reallocIfNecessary_cbuff(buffer); /* May invalidate ptr if buffer->array and ptr overlap. */
 
     return pushBottom_o_cbuff(buffer, ptr);
 }
 
-void* pushBottom_o_cbuff(CircularBuffer* const buffer, void const* const restrict ptr) {
-    #ifndef NDEBUG
-        if (!isValid_cbuff(buffer)) return NULL;
-    #endif
+void* pushBottom_o_cbuff(CircularBuffer buffer[static const 1], void const* const restrict ptr) {
+    DEBUG_ASSERT(isValid_cbuff(buffer))
 
     if (buffer->size == 0) {
         buffer->bottomElementId = 0;
@@ -310,30 +239,24 @@ void* pushBottom_o_cbuff(CircularBuffer* const buffer, void const* const restric
         }
     }
 
-    #ifndef NDEBUG
-        if (!set_cbuff(buffer, 0, ptr)) return NULL;
-    #else
-        set_cbuff(buffer, 0, ptr);
-    #endif
-
+    set_cbuff(buffer, 0, ptr);
     return peekBottom_cbuff(buffer);
 }
 
-void* pushTop_cbuff(CircularBuffer* const buffer, void const* const restrict ptr) {
-    #ifndef NDEBUG
-        if (!isValid_cbuff(buffer))             return NULL;
-        if (!reallocIfNecessary_cbuff(buffer))  return NULL;
-    #else
-        reallocIfNecessary_cbuff(buffer);
-    #endif
+void* pushTop_cbuff(CircularBuffer buffer[static const 1], void const* const restrict ptr) {
+    DEBUG_ASSERT(isValid_cbuff(buffer))
+
+    DEBUG_EXECUTE(size_t const sz_buff    = (size_t)buffer->cap * buffer->element_size_in_bytes)
+    DEBUG_EXECUTE(size_t const sz_element = buffer->element_size_in_bytes)
+    DEBUG_ERROR_IF(overlaps_ptr(buffer->array, ptr, sz_buff, sz_element))
+
+    reallocIfNecessary_cbuff(buffer); /* May invalidate ptr if buffer->array and ptr overlap. */
 
     return pushTop_o_cbuff(buffer, ptr);
 }
 
-void* pushTop_o_cbuff(CircularBuffer* const buffer, void const* const restrict ptr) {
-    #ifndef NDEBUG
-        if (!isValid_cbuff(buffer)) return NULL;
-    #endif
+void* pushTop_o_cbuff(CircularBuffer buffer[static const 1], void const* const restrict ptr) {
+    DEBUG_ASSERT(isValid_cbuff(buffer))
 
     if (buffer->size == 0) {
         buffer->topElementId    = 0;
@@ -351,41 +274,23 @@ void* pushTop_o_cbuff(CircularBuffer* const buffer, void const* const restrict p
         }
     }
 
-    #ifndef NDEBUG
-        if (!set_cbuff(buffer, buffer->size - 1, ptr)) return NULL;
-    #else
-        set_cbuff(buffer, buffer->size - 1, ptr);
-    #endif
-
-    return peekTop_cbuff(buffer);
+    set_cbuff(buffer, buffer->size - 1, ptr);
+    return peekBottom_cbuff(buffer);
 }
 
-#ifndef NDEBUG
-bool
-#else
-void
-#endif
-reallocIfNecessary_cbuff(CircularBuffer* const buffer) {
-    #ifndef NDEBUG
-        if (!isValid_cbuff(buffer)) return 0;
-    #endif
+void reallocIfNecessary_cbuff(CircularBuffer buffer[static const 1]) {
+    DEBUG_ASSERT(isValid_cbuff(buffer))
 
     uint32_t const newCap = calculateNewCap_cbuff(buffer);
     if (newCap == UINT32_MAX) REALLOC_ERROR
 
-    #ifndef NDEBUG
-        if (newCap == buffer->cap) return 1;
-    #else
-        if (newCap == buffer->cap) return;
-    #endif
+    if (newCap == buffer->cap) return;
 
     char* const newArray = realloc(
         buffer->array,
         (size_t)newCap * buffer->element_size_in_bytes
     );
-    #ifndef NDEBUG
-        if (newArray == NULL) REALLOC_ERROR
-    #endif
+    if (newArray == NULL) REALLOC_ERROR
 
     if (buffer->bottomElementId > buffer->topElementId) {
         uint32_t const nShift = buffer->cap - buffer->bottomElementId;
@@ -401,146 +306,72 @@ reallocIfNecessary_cbuff(CircularBuffer* const buffer) {
 
     buffer->cap     = newCap;
     buffer->array   = newArray;
-
-    #ifndef NDEBUG
-        return 1;
-    #endif
 }
 
-#ifndef NDEBUG
-bool
-#else
-void
-#endif
-rotate_cbuff(CircularBuffer* const buffer, uint32_t n) {
-    #ifndef NDEBUG
-        if (!isValid_cbuff(buffer)) return 0;
-        if (buffer->size == 0)      return 0;
-    #endif
+void rotate_cbuff(CircularBuffer buffer[static const 1], uint32_t n) {
+    DEBUG_ASSERT(isValid_cbuff(buffer))
 
-    n %= buffer->size;
-    #ifndef NDEBUG
-        if (n == 0) return 1;
-        return rotateDown_cbuff(buffer, n);
-    #else
-        if (n == 0) return;
-        rotateDown_cbuff(buffer, n);
-    #endif
+    if (buffer->size <= 1) return;
+
+    if ((n %= buffer->size) == 0) return;
+    rotateDown_cbuff(buffer, n);
 }
 
-#ifndef NDEBUG
-bool
-#else
-void
-#endif
-rotateDown_cbuff(CircularBuffer* const buffer, uint32_t n) {
-    #ifndef NDEBUG
-        if (!isValid_cbuff(buffer)) return 0;
-        if (buffer->size == 0)      return 0;
-    #endif
+void rotateDown_cbuff(CircularBuffer buffer[static const 1], uint32_t n) {
+    DEBUG_ASSERT(isValid_cbuff(buffer))
 
-    n %= buffer->size;
-    #ifndef NDEBUG
-        if (n == 0) return 1;
-    #else
-        if (n == 0) return;
-    #endif
+    if (buffer->size <= 1) return;
+
+    if ((n %= buffer->size) == 0) return;
 
     void* const copy = mem_alloc(buffer->element_size_in_bytes);
     REPEAT(n) {
         void* const element = popBottom_cbuff(buffer);
         memcpy(copy, element, buffer->element_size_in_bytes);
-        #ifndef NDEBUG
-            if (element == NULL)                        return 0;
-            if (pushTop_o_cbuff(buffer, copy) == NULL)  return 0;
-        #else
-            pushTop_o_cbuff(buffer, copy);
-        #endif
+        pushTop_o_cbuff(buffer, copy);
     }
     free(copy);
-
-    #ifndef NDEBUG
-        return 1;
-    #endif
 }
 
-#ifndef NDEBUG
-bool
-#else
-void
-#endif
-rotateUp_cbuff(CircularBuffer* const buffer, uint32_t n) {
-    #ifndef NDEBUG
-        if (!isValid_cbuff(buffer)) return 0;
-        if (buffer->size == 0)      return 0;
-    #endif
+void rotateUp_cbuff(CircularBuffer buffer[static const 1], uint32_t n) {
+    DEBUG_ASSERT(isValid_cbuff(buffer))
 
-    n %= buffer->size;
-    #ifndef NDEBUG
-        if (n == 0) return 1;
-    #else
-        if (n == 0) return;
-    #endif
+    if (buffer->size <= 1) return;
+
+    if ((n %= buffer->size) == 0) return;
 
     void* const copy = mem_alloc(buffer->element_size_in_bytes);
     REPEAT(n) {
         void* const element = popTop_cbuff(buffer);
         memcpy(copy, element, buffer->element_size_in_bytes);
-        #ifndef NDEBUG
-            if (element == NULL)                            return 0;
-            if (pushBottom_o_cbuff(buffer, copy) == NULL)   return 0;
-        #else
-            pushBottom_o_cbuff(buffer, copy);
-        #endif
+        pushBottom_o_cbuff(buffer, copy);
     }
     free(copy);
-
-    #ifndef NDEBUG
-        return 1;
-    #endif
 }
 
-#ifndef NDEBUG
-bool
-#else
-void
-#endif
-set_cbuff(CircularBuffer* const buffer, uint32_t const elementId, void const* const restrict ptr) {
-    #ifndef NDEBUG
-        if (!isValid_cbuff(buffer)) return 0;
-        if (buffer->size == 0)      return 0;
-    #endif
+void set_cbuff(
+    CircularBuffer buffer[static const 1],
+    uint32_t const elementId,
+    void const* const restrict ptr
+) {
+    DEBUG_ASSERT(isValid_cbuff(buffer))
+    DEBUG_ERROR_IF(buffer->size == 0)
 
     void* const dest = get_cbuff(buffer, elementId);
-    #ifndef NDEBUG
-        if (dest == NULL)           return 0;
-        if (dest == ptr)            return 1;
-    #else
-        if (dest == ptr)            return;
-    #endif
+    if (dest == ptr) return;
+
+    DEBUG_EXECUTE(size_t const sz_element = buffer->element_size_in_bytes)
+    DEBUG_ERROR_IF(overlaps_ptr(dest, ptr, sz_element, sz_element))
 
     if (ptr == NULL)
         memset(dest, 0, buffer->element_size_in_bytes);
     else
-        memcpy(dest, ptr, buffer->element_size_in_bytes); /* UB if dest and ptr overlaps. */
-
-    #ifndef NDEBUG
-        return 1;
-    #endif
+        memcpy(dest, ptr, buffer->element_size_in_bytes); /* UB if dest and ptr overlap. */
 }
 
-#ifndef NDEBUG
-bool
-#else
-void
-#endif
-setZeros_cbuff(CircularBuffer* const buffer, uint32_t const elementId) {
-    #ifndef NDEBUG
-        if (!isValid_cbuff(buffer)) return 0;
-        if (buffer->size == 0)      return 0;
+void setZeros_cbuff(CircularBuffer buffer[static const 1], uint32_t const elementId) {
+    DEBUG_ASSERT(isValid_cbuff(buffer))
+    DEBUG_ERROR_IF(buffer->size == 0)
 
-        return set_cbuff(buffer, elementId, NULL);
-    #else
-        set_cbuff(buffer, elementId, NULL);
-    #endif
+    set_cbuff(buffer, elementId, NULL);
 }

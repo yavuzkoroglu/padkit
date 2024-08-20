@@ -284,62 +284,48 @@ static void test_circbuff(void) {
     int z = 0;
 
     CircularBuffer buffer[1] = { NOT_A_CIRCBUFF };
-    DEBUG_ASSERT_NDEBUG_EXECUTE(
-        constructEmpty_cbuff(buffer, sizeof(int), 1)
-    )
+    constructEmpty_cbuff(buffer, sizeof(int), 1);
 
-    DEBUG_ERROR_IF(enqueue_cbuff(buffer, &a) == NULL)
-    NDEBUG_EXECUTE(enqueue_cbuff(buffer, &a))
+    enqueue_cbuff(buffer, &a);
 
     TEST_FAIL_IF(buffer->size != 1)
 
-    DEBUG_ERROR_IF(enqueue_cbuff(buffer, &b) == NULL)
-    NDEBUG_EXECUTE(enqueue_cbuff(buffer, &b))
+    enqueue_cbuff(buffer, &b);
 
     TEST_FAIL_IF(buffer->size != 2)
 
-    DEBUG_ERROR_IF(enqueue_cbuff(buffer, &c) == NULL)
-    NDEBUG_EXECUTE(enqueue_cbuff(buffer, &c))
+    enqueue_cbuff(buffer, &c);
 
     TEST_FAIL_IF(buffer->size != 3)
 
-    DEBUG_ERROR_IF(enqueue_cbuff(buffer, &d) == NULL)
-    NDEBUG_EXECUTE(enqueue_cbuff(buffer, &d))
+    enqueue_cbuff(buffer, &d);
 
     TEST_FAIL_IF(buffer->size != 4)
 
     element = dequeue_cbuff(buffer);
     TEST_FAIL_IF(*element != a)
 
-    DEBUG_ASSERT_NDEBUG_EXECUTE(rotate_cbuff(buffer, 2))
+    rotate_cbuff(buffer, 2);
 
     element = peekBottom_cbuff(buffer);
-    DEBUG_ERROR_IF(element == NULL)
     TEST_FAIL_IF(*element != d)
 
     element = get_cbuff(buffer, 1);
-    DEBUG_ERROR_IF(element == NULL)
     TEST_FAIL_IF(*element != b)
 
     element = peekTop_cbuff(buffer);
-    DEBUG_ERROR_IF(element == NULL)
     TEST_FAIL_IF(*element != c)
 
-    REPEAT(buffer->cap) {
-        DEBUG_ERROR_IF(enqueue_o_cbuff(buffer, &z) == NULL)
-        NDEBUG_EXECUTE(enqueue_o_cbuff(buffer, &z))
-    }
+    REPEAT(buffer->cap) enqueue_o_cbuff(buffer, &z);
 
     for (uint32_t i = 0; i < buffer->size; i++) {
         element = get_cbuff(buffer, i);
-        DEBUG_ERROR_IF(element == NULL)
         TEST_FAIL_IF(*element != z)
     }
 
     TEST_PASS
 
-    DEBUG_ABORT_IF(!free_cbuff(buffer))
-    NDEBUG_EXECUTE(free_cbuff(buffer))
+    free_cbuff(buffer);
 }
 
 static void test_cset(void) {

@@ -112,6 +112,7 @@ obj/padkit/circbuff.o: obj/padkit       \
     include/padkit/circbuff.h           \
     include/padkit/debug.h              \
     include/padkit/memalloc.h           \
+    include/padkit/overlap.h            \
     include/padkit/reallocate.h         \
     include/padkit/repeat.h             \
     include/padkit/stack.h              \
@@ -176,6 +177,7 @@ obj/padkit/reallocate.o: obj/padkit     \
 obj/padkit/stack.o: obj/padkit          \
     include/padkit/debug.h              \
     include/padkit/memalloc.h           \
+    include/padkit/overlap.h            \
     include/padkit/reallocate.h         \
     include/padkit/stack.h              \
     src/padkit/stack.c                  \
