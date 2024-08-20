@@ -12,31 +12,31 @@
      * @def JSON_PARSER_INITIAL_STACK_CAP
      *   This initial capacity should usually work nicely.
      */
-    #define JSON_PARSER_INITIAL_STACK_CAP   131072
+    #define JSON_PARSER_INITIAL_STACK_CAP   (131072)
 
     /**
      * @def JSON_PARSER_INITIAL_STR_CAP
      *   This initial capacity should usually work nicely.
      */
-    #define JSON_PARSER_INITIAL_STR_CAP     131072
+    #define JSON_PARSER_INITIAL_STR_CAP     (131072)
 
     /**
      * @def JSON_STACK_ARRAY
      *   The constant value representing a JSON array in a JSON stack.
      */
-    #define JSON_STACK_ARRAY                0
+    #define JSON_STACK_ARRAY                (0)
 
     /**
      * @def JSON_STACK_END
      *   The constant value representing the end of a JSON root in a JSON stack.
      */
-    #define JSON_STACK_END                  1
+    #define JSON_STACK_END                  (1)
 
     /**
      * @def JSON_STACK_OBJECT
      *   The constant value representing a JSON object in a JSON stack.
      */
-    #define JSON_STACK_OBJECT               2
+    #define JSON_STACK_OBJECT               (2)
 
     /**
      * @def JSON_STACK_LAST
@@ -48,43 +48,43 @@
      * @def JSON_PARSER_INVALID
      *   An errorcode representing errors due to an invalid JSONParser.
      */
-    #define JSON_PARSER_INVALID             -1
+    #define JSON_PARSER_INVALID             (-1)
 
     /**
      * @def JSON_PARSER_OK
      *   An errorcode representing no errors (everything is OK).
      */
-    #define JSON_PARSER_OK                  0
+    #define JSON_PARSER_OK                  (0)
 
     /**
      * @def JSON_PARSER_MEMORY_ERROR
      *   An errorcode representing errors due to memory I/O.
      */
-    #define JSON_PARSER_MEMORY_ERROR        1
+    #define JSON_PARSER_MEMORY_ERROR        (1)
 
     /**
      * @def JSON_PARSER_STACK_ERROR
      *   An errorcode representing errors due to corrupted JSON stack.
      */
-    #define JSON_PARSER_STACK_ERROR         2
+    #define JSON_PARSER_STACK_ERROR         (2)
 
     /**
      * @def JSON_PARSER_STREAM_ERROR
      *   An errorcode representing errors due to file I/O.
      */
-    #define JSON_PARSER_STREAM_ERROR        3
+    #define JSON_PARSER_STREAM_ERROR        (3)
 
     /**
      * @def JSON_PARSER_STRING_ERROR
      *   An errorcode representing errors due to invalid strings.
      */
-    #define JSON_PARSER_STRING_ERROR        4
+    #define JSON_PARSER_STRING_ERROR        (4)
 
     /**
      * @def JSON_PARSER_SYNTAX_ERROR
      *   An errorcode representing a syntax error in the input JSON.
      */
-    #define JSON_PARSER_SYNTAX_ERROR        5
+    #define JSON_PARSER_SYNTAX_ERROR        (5)
 
     /**
      * @def NOT_A_JSON_PARSER
@@ -166,7 +166,7 @@
         void            (*atObjectStart)(struct JSONParserBody* const);
         void            (*atRootEnd)    (struct JSONParserBody* const);
         void            (*atRootStart)  (struct JSONParserBody* const);
-        void            (*atString)     (struct JSONParserBody* const, char const* const, size_t const);
+        void            (*atString)     (struct JSONParserBody* const, char const[static const 1], size_t const);
         void            (*atTrue)       (struct JSONParserBody* const);
         void            (*atValueEnd)   (struct JSONParserBody* const);
         void            (*atValueStart) (struct JSONParserBody* const);
@@ -174,28 +174,39 @@
 
     /**
      * @brief An empty function that does nothing whenever a JSONParser raises a corresponding event.
-     * @param jsonParser A pointer to the JSONParser.
-     * @param number The number related to the JSON event.
+     *
+     * @param[in,out] jsonParser A constant non-null pointer to at least one JSONParser.
+     * @param[in]         number A constant double-precision floating-point number.
      */
-    void emptyNumberEvent_jsonp(JSONParser* const jsonParser, double const number);
+    void emptyNumberEvent_jsonp(JSONParser jsonParser[static const 1], double const number);
 
     /**
      * @brief An empty function that does nothing whenever a JSONParser raises a corresponding event.
-     * @param jsonParser A pointer to the JSONParser.
-     * @param string The string related to the JSON event.
-     * @param len The length of the string related to the JSON event.
+     *
+     * @param[in,out] jsonParser A constant non-null pointer to at least one JSONParser.
+     * @param[in]         string A constant non-null pointer to at least one constant character.
+     * @param[in]            len A constant size.
      */
-    void emptyStringEvent_jsonp(JSONParser* const jsonParser, char const* const string, size_t const len);
+    void emptyStringEvent_jsonp(
+        JSONParser jsonParser[static const 1],
+        char const string[static const 1],
+        size_t const len
+    );
 
     /**
      * @brief An empty function that does nothing whenever a JSONParser raises a corresponding event.
-     * @param jsonParser A pointer to the JSONParser.
+     *
+     * @param[in,out] jsonParser A constant non-null pointer to at least one JSONParser.
      */
-    void emptyVoidEvent_jsonp(JSONParser* const jsonParser);
+    void emptyVoidEvent_jsonp(JSONParser jsonParser[static const 1]);
 
-    typedef void(*JSONParserNumberEvent)(JSONParser* const jsonParser, double const number);
-    typedef void(*JSONParserStringEvent)(JSONParser* const jsonParser, char const* const string, size_t const len);
-    typedef void(*JSONParserVoidEvent)(JSONParser* const jsonParser);
+    typedef void(*JSONParserNumberEvent)(JSONParser jsonParser[static const 1], double const number);
+    typedef void(*JSONParserStringEvent)(
+        JSONParser jsonParser[static const 1],
+        char const string[static const 1],
+        size_t const len
+    );
+    typedef void(*JSONParserVoidEvent)(JSONParser jsonParser[static const 1]);
 
     /**
      * @def JSON_PARSER_DEFAULT_EVENTS
@@ -220,32 +231,28 @@
 
     /**
      * @brief Constructs a JSONParser.
-     * @param jsonParser A pointer to the JSONParser.
-     * @param inputStream A pointer to the input JSON file.
-     * @param atArrayEnd A pointer to the function called whenever a JSON array ends.
-     * @param atArrayStart A pointer to the function called whenever a JSON array starts.
-     * @param atFalse A pointer to the function called whenever a JSON value is a Boolean FALSE.
-     * @param atNameEnd A pointer to the function called whenever a JSON name ends.
-     * @param atNameStart A pointer to the function called whenever a JSON name starts.
-     * @param atNull A pointer to the function called whenever a JSON value is a NULL.
-     * @param atNumber A pointer to the function called whenever a JSON value is a number.
-     * @param atObjectEnd A pointer to the function called whenever a JSON object ends.
-     * @param atObjectStart A pointer to the function called whenever a JSON object starts.
-     * @param atRootEnd A pointer to the function called whenever a JSON root ends.
-     * @param atRootStart A pointer to the function called whenever a JSON root starts.
-     * @param atString A pointer to the function called whenever a JSON value is a string.
-     * @param atTrue A pointer to the function called whenever a JSON value is a Boolean TRUE.
-     * @param atValueEnd A pointer to the function called whenever a JSON value ends.
-     * @param atValueStart A pointer to the function called whenever a JSON value starts.
+     *
+     * @param[in,out]    jsonParser A constant non-null pointer to at least one JSONParser.
+     * @param[in,out]   inputStream A constant non-null pointer to at least one FILE.
+     * @param[in]        atArrayEnd A JSONParserVoidEvent.
+     * @param[in]      atArrayStart A JSONParserVoidEvent.
+     * @param[in]           atFalse A JSONParserVoidEvent.
+     * @param[in]         atNameEnd A JSONParserVoidEvent.
+     * @param[in]       atNameStart A JSONParserVoidEvent.
+     * @param[in]            atNull A JSONParserVoidEvent.
+     * @param[in]          atNumber A JSONParserNumberEvent.
+     * @param[in]       atObjectEnd A JSONParserVoidEvent.
+     * @param[in]     atObjectStart A JSONParserVoidEvent.
+     * @param[in]         atRootEnd A JSONParserVoidEvent.
+     * @param[in]       atRootStart A JSONParserVoidEvent.
+     * @param[in]          atString A JSONParserStringEvent.
+     * @param[in]            atTrue A JSONParserVoidEvent.
+     * @param[in]        atValueEnd A JSONParserVoidEvent.
+     * @param[in]      atValueStart A JSONParserVoidEvent.
      */
-    #ifndef NDEBUG
-    bool
-    #else
-    void
-    #endif
-    construct_jsonp(
-        JSONParser* const       jsonParser,
-        FILE* const             inputStream,
+    void construct_jsonp(
+        JSONParser              jsonParser[static const 1],
+        FILE                    inputStream[static const 1],
         JSONParserVoidEvent     atArrayEnd,
         JSONParserVoidEvent     atArrayStart,
         JSONParserVoidEvent     atFalse,
@@ -265,24 +272,26 @@
 
     /**
      * @brief Frees a JSONParser.
-     * @param jsonParser A pointer to the JSONParser.
+     *
+     * @param[in,out] jsonParser A constant non-null pointer to at least one JSONParser.
      */
-    #ifndef NDEBUG
-    bool
-    #else
-    void
-    #endif
-    free_jsonp(JSONParser* const jsonParser);
+    void free_jsonp(JSONParser jsonParser[static const 1]);
 
     /**
      * @brief Checks if a JSONParser is valid.
-     * @param jsonParser A pointer to the JSONParser.
+     *
+     * @param[in] jsonParser A constant non-null pointer to at least one constant JSONParser.
+     *
+     * @return A Boolean value.
      */
-    bool isValid_jsonp(JSONParser const* const jsonParser);
+    bool isValid_jsonp(JSONParser const jsonParser[static const 1]);
 
     /**
      * @brief Parses a JSON file and returns errorcode.
-     * @param jsonParser A pointer to the JSONParser.
+     *
+     * @param[in,out] jsonParser A constant non-null pointer to at least one JSONParser.
+     *
+     * @return A long integer.
      */
-    long parseStream_jsonp(JSONParser* const jsonParser);
+    long parseStream_jsonp(JSONParser jsonParser[static const 1]);
 #endif

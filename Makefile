@@ -133,6 +133,7 @@ obj/padkit/hash.o: obj/padkit           \
     ; ${COMPILE} src/padkit/hash.c -c -o obj/padkit/hash.o
 
 obj/padkit/jsonparser.o: obj/padkit     \
+    include/padkit/debug.h              \
     include/padkit/jsonparser.h         \
     include/padkit/memalloc.h           \
     include/padkit/reallocate.h         \

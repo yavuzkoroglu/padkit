@@ -576,7 +576,7 @@ static void test_jsonp(void) {
     FILE* const fp = fopen(filename, "r");
     TEST_FAIL_IF(fp == NULL)
 
-    DEBUG_ASSERT_NDEBUG_EXECUTE(construct_jsonp(jp, fp, JSON_PARSER_DEFAULT_EVENTS))
+    construct_jsonp(jp, fp, JSON_PARSER_DEFAULT_EVENTS);
     jp->atObjectStart = test_jsonp_countObjects;
 
     TEST_FAIL_IF(parseStream_jsonp(jp) != JSON_PARSER_OK)
@@ -587,8 +587,7 @@ static void test_jsonp(void) {
     DEBUG_ASSERT(fclose(fp) == 0)
     NDEBUG_EXECUTE(fclose(fp))
 
-    DEBUG_ABORT_IF(!free_jsonp(jp))
-    NDEBUG_EXECUTE(free_jsonp(jp))
+    free_jsonp(jp);
 }
 
 #define ALISON 0
