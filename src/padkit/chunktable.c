@@ -6,6 +6,7 @@
  */
 #include <string.h>
 #include "padkit/chunktable.h"
+#include "padkit/debug.h"
 #include "padkit/hash.h"
 #include "padkit/memalloc.h"
 #include "padkit/prime.h"
@@ -13,10 +14,9 @@
 #include "padkit/streq.h"
 
 static uint32_t determineNRows(uint32_t const key_count, uint32_t const loadPercent) {
-    #ifndef NDEBUG
-        if (key_count >= UINT32_MAX / 100) return UINT32_MAX;
-        if (loadPercent == 0)              return UINT32_MAX;
-    #endif
+    DEBUG_ASSERT(key_count < UINT32_MAX / 100)
+    DEBUG_ERROR_IF(loadPercent == 0)
+
     uint32_t nRows = (key_count > loadPercent)
         ? (key_count / loadPercent) * 100
         : (key_count * 100) / loadPercent;
@@ -27,87 +27,48 @@ static uint32_t determineNRows(uint32_t const key_count, uint32_t const loadPerc
     return nextPrime(nRows);
 }
 
-static
-#ifndef NDEBUG
-bool
-#else
-void
-#endif
-adjust(ChunkTable tbl[static const 1], Chunk const chunk[static const 1]) {
-    #ifndef NDEBUG
-        if (!isValid_ctbl(tbl))    return 0;
-        if (!isValid_chunk(chunk)) return 0;
-    #endif
+static void adjust(ChunkTable tbl[static const 1], Chunk const chunk[static const 1]) {
+    DEBUG_ASSERT(isValid_ctbl(tbl))
+    DEBUG_ASSERT(isValid_chunk(chunk))
 
     uint32_t const newNRows = determineNRows(tbl->nKeys, tbl->loadPercent);
-    #ifndef NDEBUG
-        if (newNRows == UINT32_MAX) return 0;
-    #endif
 
     if (newNRows <= tbl->nRows)
-    #ifndef NDEBUG
-        return 1;
-    #else
         return;
-    #endif
 
-    ChunkTable newTbl;
-    #ifndef NDEBUG
-        if (!constructEmpty_ctbl(&newTbl, tbl->capKeys, tbl->loadPercent)) return 0;
-    #else
-        constructEmpty_ctbl(&newTbl, tbl->capKeys, tbl->loadPercent);
-    #endif
+    ChunkTable newTbl[1] = { NOT_A_CHUNK_TABLE };
+    constructEmpty_ctbl(newTbl, tbl->capKeys, tbl->loadPercent);
 
     for (uint32_t row_id = 0; row_id < tbl->nRows; row_id++) {
         if (tbl->rows[row_id] == NULL) continue;
         ChunkTableEntry const* const entry = tbl->rows[row_id] + 1;
         for (uint32_t n = tbl->rowSizes[row_id]; n > 0; n--) {
             #ifndef NDEBUG
-                switch (
-                    insert_ctbl(
-                        &newTbl, chunk, entry->key_id, entry->value, CTBL_BEHAVIOR_MULTIPLE
-                    )
-                ) {
+                switch (insert_ctbl(newTbl, chunk, entry->key_id, entry->value, CTBL_BEHAVIOR_MULTIPLE)) {
                     case CTBL_INSERT_ERROR:
+                        TERMINATE_ERROR_MSG("CTBL_INSERT_ERROR")
                     case CTBL_INSERT_DUPLICATE_ENTRY:
-                        return 0;
+                        TERMINATE_ERROR_MSG("CTBL_INSERT_DUPLICATE_ENTRY")
                 }
             #else
-                insert_ctbl(
-                    &newTbl, chunk, entry->key_id, entry->value, CTBL_BEHAVIOR_MULTIPLE
-                );
+                insert_ctbl(newTbl, chunk, entry->key_id, entry->value, CTBL_BEHAVIOR_MULTIPLE);
             #endif
         }
     }
 
-    #ifndef NDEBUG
-        if (!free_ctbl(tbl)) return 0;
-    #else
-        free_ctbl(tbl);
-    #endif
-    *tbl = newTbl;
-
-    #ifndef NDEBUG
-        return 1;
-    #endif
+    free_ctbl(tbl);
+    tbl[0] = newTbl[0];
 }
 
 bool isValid_cte(ChunkTableEntry const entry[static const 1]) {
     return entry && entry->key_id != UINT32_MAX;
 }
 
-#ifndef NDEBUG
-bool
-#else
-void
-#endif
-constructEmpty_ctbl(ChunkTable tbl[static const 1], uint32_t const initial_cap, uint32_t const loadPercent) {
-    #ifndef NDEBUG
-        if (tbl == NULL)                     return 0;
-        if (initial_cap == 0)                return 0;
-        if (initial_cap >= UINT32_MAX / 100) return 0;
-        if (loadPercent == 0)                return 0;
-    #endif
+void constructEmpty_ctbl(ChunkTable tbl[static const 1], uint32_t const initial_cap, uint32_t const loadPercent) {
+    DEBUG_ERROR_IF(tbl == NULL)
+    DEBUG_ERROR_IF(initial_cap == 0)
+    DEBUG_ASSERT(initial_cap < UINT32_MAX / 100)
+    DEBUG_ERROR_IF(loadPercent == 0)
 
     tbl->nKeys          = 0;
     tbl->capKeys        = initial_cap;
@@ -117,37 +78,18 @@ constructEmpty_ctbl(ChunkTable tbl[static const 1], uint32_t const initial_cap, 
     tbl->rowSizes       = mem_calloc((size_t)tbl->nRows, sizeof(uint32_t));
     tbl->rowCaps        = mem_calloc((size_t)tbl->nRows, sizeof(uint32_t));
     tbl->rows           = mem_calloc((size_t)tbl->nRows, sizeof(uint32_t*));
-
-    #ifndef NDEBUG
-        return 1;
-    #endif
 }
 
-#ifndef NDEBUG
-bool
-#else
-void
-#endif
-flush_ctbl(ChunkTable tbl[static const 1]) {
-    #ifndef NDEBUG
-        if (!isValid_ctbl(tbl)) return 0;
-    #endif
+void flush_ctbl(ChunkTable tbl[static const 1]) {
+    DEBUG_ASSERT(isValid_ctbl(tbl))
+
     tbl->nKeys = 0;
     memset(tbl->rowSizes, 0, tbl->nRows * sizeof(uint32_t));
-    #ifndef NDEBUG
-        return 1;
-    #endif
 }
 
-#ifndef NDEBUG
-bool
-#else
-void
-#endif
-free_ctbl(ChunkTable tbl[static const 1]) {
-    #ifndef NDEBUG
-        if (!isValid_ctbl(tbl)) return 0;
-    #endif
+void free_ctbl(ChunkTable tbl[static const 1]) {
+    DEBUG_ASSERT(isValid_ctbl(tbl))
+
     free(tbl->keys);
     free(tbl->rowSizes);
     free(tbl->rowCaps);
@@ -156,21 +98,16 @@ free_ctbl(ChunkTable tbl[static const 1]) {
         free(tbl->rows[row_id]);
 
     free(tbl->rows);
-    *tbl = NOT_A_CHUNK_TABLE;
-    #ifndef NDEBUG
-        return 1;
-    #endif
+    tbl[0] = NOT_A_CHUNK_TABLE;
 }
 
 ChunkTableEntry* get_ctbl(
     ChunkTable const tbl[static const 1], Chunk const chunk[static const 1],
     char const key[static const 1], uint64_t const key_len
 ) {
-    #ifndef NDEBUG
-        if (!isValid_ctbl(tbl)) return 0;
-        if (!isValid_chunk(chunk)) return 0;
-        if (key == NULL) return NULL;
-    #endif
+    DEBUG_ASSERT(isValid_ctbl(tbl))
+    DEBUG_ASSERT(isValid_chunk(chunk))
+    DEBUG_ERROR_IF(key == NULL)
 
     uint32_t const row_id = hash_str(key, key_len) % tbl->nRows;
     if (tbl->rows[row_id] == NULL) return NULL;
@@ -190,9 +127,8 @@ ChunkTableEntry* get_ctbl(
 }
 
 uint32_t getEntryCount_ctbl(ChunkTable const tbl[static const 1]) {
-    #ifndef NDEBUG
-        if (!isValid_ctbl(tbl)) return UINT32_MAX;
-    #endif
+    DEBUG_ASSERT(isValid_ctbl(tbl))
+
     uint32_t count = 0;
     for (
         uint32_t row_id = 0;
@@ -206,11 +142,10 @@ ChunkTableEntry* getExact_ctbl(
     ChunkTable const tbl[static const 1], Chunk const chunk[static const 1],
     char const key[static const 1], uint64_t const key_len, uint32_t const value
 ) {
-    #ifndef NDEBUG
-        if (!isValid_ctbl(tbl)) return 0;
-        if (!isValid_chunk(chunk)) return 0;
-        if (key == NULL) return NULL;
-    #endif
+    DEBUG_ASSERT(isValid_ctbl(tbl))
+    DEBUG_ASSERT(isValid_chunk(chunk))
+    DEBUG_ERROR_IF(key == NULL)
+    DEBUG_ASSERT(strlen(key) >= key_len)
 
     uint32_t const row_id = hash_str(key, key_len) % tbl->nRows;
     if (tbl->rows[row_id] == NULL) return NULL;
@@ -231,9 +166,7 @@ ChunkTableEntry* getExact_ctbl(
 }
 
 uint32_t getKeyCount_ctbl(ChunkTable const tbl[static const 1]) {
-    #ifndef NDEBUG
-        if (!isValid_ctbl(tbl)) return UINT32_MAX;
-    #endif
+    DEBUG_ASSERT(isValid_ctbl(tbl))
     return tbl->nKeys;
 }
 
@@ -242,15 +175,11 @@ int insert_ctbl(
     uint32_t const key_id, uint32_t const value,
     int const ctbl_insert_behavior
 ) {
-    #ifndef NDEBUG
-        if (!isValid_ctbl(tbl))    return CTBL_INSERT_ERROR;
-        if (!isValid_chunk(chunk)) return CTBL_INSERT_ERROR;
-    #endif
+    DEBUG_ASSERT(isValid_ctbl(tbl))
+    DEBUG_ASSERT(isValid_chunk(chunk))
 
     char const* const key = get_chunk(chunk, key_id);
-    #ifndef NDEBUG
-        if (key == NULL) return CTBL_INSERT_ERROR;
-    #endif
+    if (key == NULL) return CTBL_INSERT_ERROR;
 
     uint64_t const key_len = strlen_chunk(chunk, key_id);
     uint32_t const row_id  = hash_str(key, key_len) % tbl->nRows;
@@ -308,11 +237,8 @@ int insert_ctbl(
     tbl->rows[row_id][tbl->rowSizes[row_id]] = (ChunkTableEntry){ key_id, value };
 
     /* Adjust the # of rows. */
-    #ifndef NDEBUG
-        if (!adjust(tbl, chunk)) return CTBL_INSERT_ERROR;
-    #else
-        adjust(tbl, chunk);
-    #endif
+    adjust(tbl, chunk);
+
     return CTBL_INSERT_OK;
 }
 
@@ -329,33 +255,22 @@ bool isValid_ctbl(ChunkTable const tbl[static const 1]) {
            tbl->rows != NULL;
 }
 
-#ifndef NDEBUG
-bool
-#else
-void
-#endif
-construct_ctblitr(
+void construct_ctblitr(
     CTblConstIterator itr[static const 1],
     ChunkTable const tbl[static const 1], Chunk const chunk[static const 1],
     char const key[static const 1], uint64_t const key_len
 ) {
-    #ifndef NDEBUG
-        if (itr == NULL)            return 0;
-        if (!isValid_ctbl(tbl))     return 0;
-        if (!isValid_chunk(chunk))  return 0;
-        if (key == NULL)            return 0;
-        if (key_len == UINT64_MAX)  return 0;
-    #endif
+    DEBUG_ERROR_IF(itr == NULL)
+    DEBUG_ASSERT(isValid_ctbl(tbl))
+    DEBUG_ASSERT(isValid_chunk(chunk))
+    DEBUG_ERROR_IF(key == NULL)
+    DEBUG_ASSERT(strlen(key) >= key_len)
 
     itr->tbl        = tbl;
     itr->chunk      = chunk;
     itr->key        = key;
     itr->key_len    = key_len;
     itr->entry      = get_ctbl(tbl, chunk, key, key_len);
-
-    #ifndef NDEBUG
-        return 1;
-    #endif
 }
 
 bool isValid_ctblitr(CTblConstIterator const itr[static const 1]) {
@@ -367,9 +282,7 @@ bool isValid_ctblitr(CTblConstIterator const itr[static const 1]) {
 }
 
 ChunkTableEntry const* next_ctblitr(CTblConstIterator itr[static const 1]) {
-    #ifndef NDEBUG
-        if (!isValid_ctblitr(itr)) return NULL;
-    #endif
+    DEBUG_ASSERT(isValid_ctblitr(itr))
 
     if (!isValid_cte(itr->entry)) return NULL;
 

@@ -6,6 +6,7 @@
  */
 #include <string.h>
 #include "padkit/chunkset.h"
+#include "padkit/debug.h"
 #include "padkit/hash.h"
 #include "padkit/memalloc.h"
 #include "padkit/prime.h"
@@ -13,10 +14,9 @@
 #include "padkit/streq.h"
 
 static uint32_t determineNRows(uint32_t const str_count, uint32_t const loadPercent) {
-    #ifndef NDEBUG
-        if (str_count >= UINT32_MAX / 100) return UINT32_MAX;
-        if (loadPercent == 0)              return UINT32_MAX;
-    #endif
+    DEBUG_ASSERT(str_count < UINT32_MAX / 100)
+    DEBUG_ERROR_IF(loadPercent == 0)
+
     uint32_t nRows = (str_count > loadPercent)
         ? (str_count / loadPercent) * 100
         : (str_count * 100) / loadPercent;
@@ -27,30 +27,13 @@ static uint32_t determineNRows(uint32_t const str_count, uint32_t const loadPerc
     return nextPrime(nRows);
 }
 
-static
-#ifndef NDEBUG
-bool
-#else
-void
-#endif
-adjust(ChunkSet set[static const 1]) {
-    #ifndef NDEBUG
-        if (!isValid_cset(set)) return 0;
-    #endif
+static void adjust(ChunkSet set[static const 1]) {
+    DEBUG_ASSERT(isValid_cset(set))
 
     Chunk* const chunk = (Chunk*)set;
 
     uint32_t const newNRows = determineNRows(chunk->nStrings, set->loadPercent);
-    #ifndef NDEBUG
-        if (newNRows == UINT32_MAX) return 0;
-    #endif
-
-    if (newNRows <= set->nRows)
-        #ifndef NDEBUG
-            return 1;
-        #else
-            return;
-        #endif
+    if (newNRows <= set->nRows) return;
 
     free(set->rowSize);
     free(set->rowCap);
@@ -85,17 +68,12 @@ adjust(ChunkSet set[static const 1]) {
         /* Adjust Size and Insert Index to Table */
         set->table[row_id][set->rowSize[row_id]++] = key_id;
     }
-
-    #ifndef NDEBUG
-        return 1;
-    #endif
 }
 
 uint32_t addKey_cset(ChunkSet set[static const 1], char const key[static const 1], uint64_t const n) {
-    #ifndef NDEBUG
-        if (!isValid_cset(set)) return UINT32_MAX;
-        if (key == NULL)        return UINT32_MAX;
-    #endif
+    DEBUG_ASSERT(isValid_cset(set))
+    DEBUG_ERROR_IF(key == NULL)
+    DEBUG_ASSERT((size_t)n <= strlen(key))
 
     Chunk* const chunk = (Chunk*)set;
     uint32_t const row_id = hash_str(key, n) % set->nRows;
@@ -126,112 +104,63 @@ uint32_t addKey_cset(ChunkSet set[static const 1], char const key[static const 1
     )
 
     uint32_t const key_id = add_chunk(chunk, key, n);
-    #ifndef NDEBUG
-        if (key_id == UINT32_MAX) return UINT32_MAX;
-    #endif
     set->table[row_id][set->rowSize[row_id]++] = key_id;
 
-    #ifndef NDEBUG
-        if (!adjust(set)) return UINT32_MAX;
-        if (set->start[0] == '\0') return UINT32_MAX;
-    #else
-        adjust(set);
-    #endif
+    adjust(set);
 
     return key_id;
 }
 
-#ifndef NDEBUG
-bool
-#else
-void
-#endif
-constructEmpty_cset(
+void constructEmpty_cset(
     ChunkSet set[static const 1], uint64_t const initial_cap,
     uint32_t const initial_stringsCap, uint32_t const loadPercent
 ) {
-    #ifndef NDEBUG
-        if (set == NULL)                                                         return 0;
-        if (loadPercent == 0)                                                    return 0;
-    #endif
+    DEBUG_ERROR_IF(set == NULL)
+    DEBUG_ERROR_IF(loadPercent == 0)
 
     constructEmpty_chunk((Chunk*)set, initial_cap, initial_stringsCap);
 
-    set->loadPercent = loadPercent;
-
-    set->nRows = determineNRows(initial_stringsCap, loadPercent);
-    #ifndef NDEBUG
-        if (set->nRows == UINT32_MAX) return 0;
-    #endif
-
-    set->rowSize    = mem_calloc((size_t)set->nRows, sizeof(uint32_t));
-    set->rowCap     = mem_calloc((size_t)set->nRows, sizeof(uint32_t));
-    set->table      = mem_calloc((size_t)set->nRows, sizeof(uint32_t*));
-
-    #ifndef NDEBUG
-        return 1;
-    #endif
+    set->loadPercent    = loadPercent;
+    set->nRows          = determineNRows(initial_stringsCap, loadPercent);
+    set->rowSize        = mem_calloc((size_t)set->nRows, sizeof(uint32_t));
+    set->rowCap         = mem_calloc((size_t)set->nRows, sizeof(uint32_t));
+    set->table          = mem_calloc((size_t)set->nRows, sizeof(uint32_t*));
 }
 
-#ifndef NDEBUG
-bool
-#else
-void
-#endif
-flush_cset(ChunkSet set[static const 1]) {
-    #ifndef NDEBUG
-        if (!isValid_cset(set))        return 0;
-    #endif
+void flush_cset(ChunkSet set[static const 1]) {
+    DEBUG_ASSERT(isValid_cset(set))
 
     flush_chunk((Chunk*)set);
-
     memset(set->rowSize, 0, set->nRows * sizeof(uint32_t));
-    #ifndef NDEBUG
-        return 1;
-    #endif
 }
 
-#ifndef NDEBUG
-bool
-#else
-void
-#endif
-free_cset(ChunkSet set[static const 1]) {
-    #ifndef NDEBUG
-        if (!isValid_cset(set)) return 0;
-    #endif
-
+void free_cset(ChunkSet set[static const 1]) {
+    DEBUG_ASSERT(isValid_cset(set))
 
     free(set->rowSize);
     free(set->rowCap);
-    for (uint32_t** row = set->table + set->nRows; --row >= set->table; free(*row));
+    for (uint32_t** row = set->table + set->nRows; --row >= set->table; free(*row)) {}
     free(set->table);
     free_chunk((Chunk*)set);
     set[0] = NOT_A_CHUNK_SET;
-    #ifndef NDEBUG
-        return 1;
-    #endif
 }
 
 char const* getKey_cset(ChunkSet const set[static const 1], uint32_t const key_id) {
-    #ifndef NDEBUG
-        if (!isValid_cset(set)) return NULL;
-    #endif
+    DEBUG_ASSERT(isValid_cset(set))
+    DEBUG_ERROR_IF(set->nStrings == 0)
     return get_chunk((Chunk const*)set, key_id);
 }
 
 uint32_t getKeyCount_cset(ChunkSet const set[static const 1]) {
-    #ifndef NDEBUG
-        if (!isValid_cset(set)) return UINT32_MAX;
-    #endif
+    DEBUG_ASSERT(isValid_cset(set))
     return set->nStrings;
 }
 
 uint32_t getKeyId_cset(ChunkSet const set[static const 1], char const key[static const 1], uint64_t const n) {
-    #ifndef NDEBUG
-        if (!isValid_cset(set)) return UINT32_MAX;
-        if (key == NULL)        return UINT32_MAX;
-    #endif
+    DEBUG_ASSERT(isValid_cset(set))
+    DEBUG_ERROR_IF(key == NULL)
+    DEBUG_ASSERT((size_t)n <= strlen(key))
+
     Chunk const* const chunk = (Chunk const*)set;
     uint32_t const row_id    = hash_str(key, n) % set->nRows;
 
@@ -261,8 +190,6 @@ bool isValid_cset(ChunkSet const set[static const 1]) {
 }
 
 uint64_t strlen_cset(ChunkSet const set[static const 1], uint32_t const key_id) {
-    #ifndef NDEBUG
-        if (!isValid_cset(set)) return UINT64_MAX;
-    #endif
+    DEBUG_ASSERT(isValid_cset(set))
     return strlen_chunk((Chunk const*)set, key_id);
 }

@@ -256,18 +256,11 @@ static void test_circbuff(void) {
 static void test_cset(void) {
     ChunkSet set[1] = { NOT_A_CHUNK_SET };
 
-    DEBUG_ASSERT_NDEBUG_EXECUTE(
-        constructEmpty_cset(set, CHUNK_SET_RECOMMENDED_PARAMETERS)
-    )
+    constructEmpty_cset(set, CHUNK_SET_RECOMMENDED_PARAMETERS);
 
-    DEBUG_ERROR_IF(addKey_cset(set, "Apples", 6) == 0xFFFFFFFF)
-    NDEBUG_EXECUTE(addKey_cset(set, "Apples", 6))
-
-    DEBUG_ERROR_IF(addKey_cset(set, "Apples", 6) == 0xFFFFFFFF)
-    NDEBUG_EXECUTE(addKey_cset(set, "Apples", 6))
-
-    DEBUG_ERROR_IF(addKey_cset(set, "Oranges", 7) == 0xFFFFFFFF)
-    NDEBUG_EXECUTE(addKey_cset(set, "Oranges", 7))
+    addKey_cset(set, "Apples", 6);
+    addKey_cset(set, "Apples", 6);
+    addKey_cset(set, "Oranges", 7);
 
     TEST_FAIL_IF(getKeyCount_cset(set) != 2)
     TEST_FAIL_IF(!STR_EQ_CONST(getKey_cset(set, 1), "Oranges"))
@@ -276,9 +269,8 @@ static void test_cset(void) {
     TEST_FAIL_IF(strlen_cset(set, 1) != 7)
     TEST_PASS
 
-    DEBUG_ASSERT_NDEBUG_EXECUTE(flush_cset(set))
-    DEBUG_ABORT_IF(!free_cset(set))
-    NDEBUG_EXECUTE(free_cset(set))
+    flush_cset(set);
+    free_cset(set);
 }
 
 #define ALICE 0
@@ -305,14 +297,10 @@ static void test_ctbl(void) {
     constructEmpty_chunk(people, CHUNK_RECOMMENDED_PARAMETERS);
 
     ChunkTable ages[1] = { NOT_A_CHUNK_TABLE };
-    DEBUG_ASSERT_NDEBUG_EXECUTE(
-        constructEmpty_ctbl(ages, CHUNK_TABLE_RECOMMENDED_PARAMETERS)
-    )
+    constructEmpty_ctbl(ages, CHUNK_TABLE_RECOMMENDED_PARAMETERS);
 
     ChunkTable scores[1] = { NOT_A_CHUNK_TABLE };
-    DEBUG_ASSERT_NDEBUG_EXECUTE(
-        constructEmpty_ctbl(scores, CHUNK_TABLE_RECOMMENDED_PARAMETERS)
-    )
+    constructEmpty_ctbl(scores, CHUNK_TABLE_RECOMMENDED_PARAMETERS);
 
     for (unsigned person = ALICE; person < PEOPLE_COUNT; person++) {
         person_id[person] = add_chunk(people, name[person], 5);
@@ -328,11 +316,7 @@ static void test_ctbl(void) {
     ) {
         case CTBL_INSERT_OK:
             break;
-        #ifndef NDEBUG
         case CTBL_INSERT_ERROR:
-            TEST_FAIL_MESSAGE(insert_ctbl);
-            goto END_TEST_CTBL;
-        #endif
         case CTBL_INSERT_DUPLICATE_KEY:
         default:
             TEST_FAIL_MESSAGE(insert_ctbl);
@@ -349,9 +333,7 @@ static void test_ctbl(void) {
         case CTBL_INSERT_DUPLICATE_KEY:
         case CTBL_INSERT_OK:
             break;
-        #ifndef NDEBUG
         case CTBL_INSERT_ERROR:
-        #endif
         default:
             TEST_FAIL_MESSAGE(insert_ctbl);
             goto END_TEST_CTBL;
@@ -367,9 +349,7 @@ static void test_ctbl(void) {
         ) {
             case CTBL_INSERT_OK:
                 break;
-            #ifndef NDEBUG
             case CTBL_INSERT_ERROR:
-            #endif
             case CTBL_INSERT_DUPLICATE_KEY:
             default:
                 TEST_FAIL_MESSAGE(insert_ctbl);
@@ -379,33 +359,25 @@ static void test_ctbl(void) {
 
     for (unsigned exam = 0; exam < EXAM_COUNT; exam++) {
         for (unsigned person = ALICE; person < PEOPLE_COUNT; person++) {
-            #ifndef NDEBUG
-                switch (
-                    insert_ctbl(
-                        scores, people, person,
-                        score[exam][person],
-                        CTBL_BEHAVIOR_MULTIPLE
-                    )
-                ) {
-                    case CTBL_INSERT_DUPLICATE_ENTRY:
-                    case CTBL_INSERT_OK:
-                        break;
-                    case CTBL_INSERT_ERROR:
-                    default:
-                        TEST_FAIL_MESSAGE(insert_ctbl);
-                }
-            #else
+            switch (
                 insert_ctbl(
-                    scores, people,
-                    person, score[exam][person],
+                    scores, people, person,
+                    score[exam][person],
                     CTBL_BEHAVIOR_MULTIPLE
-                );
-            #endif
+                )
+            ) {
+                case CTBL_INSERT_DUPLICATE_ENTRY:
+                case CTBL_INSERT_OK:
+                    break;
+                case CTBL_INSERT_ERROR:
+                default:
+                    TEST_FAIL_MESSAGE(insert_ctbl);
+            }
         }
     }
 
     CTblConstIterator itr[1];
-    DEBUG_ASSERT_NDEBUG_EXECUTE(construct_ctblitr(itr, scores, people, name[ALICE], 5))
+    construct_ctblitr(itr, scores, people, name[ALICE], 5);
 
     unsigned count_scores = 0;
     while (next_ctblitr(itr) != NULL) count_scores++;
@@ -426,15 +398,11 @@ static void test_ctbl(void) {
     TEST_PASS
 
 END_TEST_CTBL:
-    DEBUG_ASSERT_NDEBUG_EXECUTE(flush_ctbl(ages))
-    DEBUG_ASSERT_NDEBUG_EXECUTE(flush_ctbl(scores))
+    flush_ctbl(ages);
+    flush_ctbl(scores);
 
-    DEBUG_ABORT_IF(!free_ctbl(ages))
-    NDEBUG_EXECUTE(free_ctbl(ages))
-
-    DEBUG_ABORT_IF(!free_ctbl(scores))
-    NDEBUG_EXECUTE(free_ctbl(scores))
-
+    free_ctbl(ages);
+    free_ctbl(scores);
     free_chunk(people);
 
     #undef EXAM_COUNT
