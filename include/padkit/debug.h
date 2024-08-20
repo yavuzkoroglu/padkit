@@ -10,14 +10,14 @@
 
     /**
      * @def DEBUG_ASSERT_NDEBUG_EXECUTE
-     *   In debug mode, it executes bool_stmt and asserts that the result is nonzero. In ndebug mode, it just executes the bool_stmt, discarding the result.
+     *   In debug mode, asserts the result of bool_stmt. Otherwise, executes bool_stmt and discards the result.
      */
     #define DEBUG_ASSERT_NDEBUG_EXECUTE(bool_stmt) \
         DEBUG_ASSERT(bool_stmt) NDEBUG_EXECUTE(bool_stmt)
 
     /**
      * @def DEBUG_ABORT_UNLESS_NDEBUG_EXECUTE
-     *   In debug mode, it executes bool_stmt and aborts if the result is zero. In ndebug mode, it just executes the bool_stmt, discarding the result.
+     *   In debug mode, aborts unless bool_stmt. Otherwise, executes bool_stmt and discards the result.
      */
     #define DEBUG_ABORT_UNLESS_NDEBUG_EXECUTE(bool_stmt) \
         DEBUG_ABORT_UNLESS(bool_stmt) NDEBUG_EXECUTE(bool_stmt)
