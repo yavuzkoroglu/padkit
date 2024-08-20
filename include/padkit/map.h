@@ -33,146 +33,152 @@
 
     /**
      * @brief Performs a binary search among the mappings to find a key index.
-     * @param map The Map.
-     * @param key_id The key index.
+     *
+     * @param[in]    map A constant non-null pointer to at least one constant Map.
+     * @param[in] key_id A constant 32-bit unsigned integer.
+     *
+     * @return A 32-bit unsigned integer.
      */
-    uint32_t binarySearchLeftmostKey_map(Map const* const map, uint32_t const key_id);
+    uint32_t binarySearchLeftmostKey_map(Map const map[static const 1], uint32_t const key_id);
 
     /**
      * @brief Performs a binary search among the mappings to find a key index.
-     * @param map The Map.
-     * @param key_id The key index.
+     *
+     * @param[in]    map A constant non-null pointer to at least one constant Map.
+     * @param[in] key_id A constant 32-bit unsigned integer.
+     *
+     * @return A 32-bit unsigned integer.
      */
-    uint32_t binarySearchRightmostKey_map(Map const* const map, uint32_t const key_id);
+    uint32_t binarySearchRightmostKey_map(Map const map[static const 1], uint32_t const key_id);
 
     /**
      * @brief Constructs an empty Map.
-     * @param map A pointer to the Map.
-     * @param initial_cap The initial capacity of the Map.
+     *
+     * @param[in,out]         map A constant non-null pointer to at least one Map.
+     * @param[in]     initial_cap A constant 32-bit unsigned integer.
      */
-    #ifndef NDEBUG
-    bool
-    #else
-    void
-    #endif
-    constructEmpty_map(Map* map, uint32_t const initial_cap);
+    void constructEmpty_map(Map map[static const 1], uint32_t const initial_cap);
 
     /**
      * @brief Deletes the last map entry.
-     * @param map The Map.
+     *
+     * @param[in,out] map A constant non-null pointer to at least one Map.
      */
-    #ifndef NDEBUG
-    bool
-    #else
-    void
-    #endif
-    deleteLast_map(Map* const map);
+    void deleteLast_map(Map map[static const 1]);
 
     /**
      * @brief Empties an Map without freeing.
-     * @param map The Map.
+     *
+     * @param[in,out] map A constant non-null pointer to at least one Map.
      */
-    #ifndef NDEBUG
-    bool
-    #else
-    void
-    #endif
-    flush_map(Map* const map);
+    void flush_map(Map map[static const 1]);
 
     /**
      * @brief Frees a Map.
-     * @param map The Map.
+     *
+     * @param[in,out] map A constant non-null pointer to at least one Map.
      */
-    #ifndef NDEBUG
-    bool
-    #else
-    void
-    #endif
-    free_map(Map* const map);
+    void free_map(Map map[static const 1]);
 
     /**
      * @brief Inserts a Mapping to a Map.
      *
      * The same key_id may have multiple mappings.
      *
-     * @param map The Map.
-     * @param key_id The index of the key.
-     * @param value The value.
+     * @param[in,out]    map A constant non-null pointer to at least one Map.
+     * @param[in]     key_id A constant 32-bit unsigned integer.
+     * @param[in]      value A constant Value.
      */
-    #ifndef NDEBUG
-    bool
-    #else
-    void
-    #endif
-    insert_map(Map* const map, uint32_t const key_id, Value const value);
+    void insert_map(Map map[static const 1], uint32_t const key_id, Value const value);
 
     /**
      * @brief Checks if a Map is valid.
-     * @param map The Map.
+     *
+     * @param[in] map A constant non-null pointer to at least one constant Map.
+     *
+     * @return A Boolean value.
      */
-    bool isValid_map(Map const* const map);
+    bool isValid_map(Map const map[static const 1]);
 
     /**
      * @brief Performs a backward linear search among the mappings to find a (key_id, Value) mapping.
-     * @param map The Map.
-     * @param search_start_id The index from which the search starts.
-     * @param key_id The key index.
-     * @param value The Value.
+     *
+     * @param[in]             map A constant non-null pointer to at least one constant Map.
+     * @param[in] search_start_id A constant 32-bit unsigned integer.
+     * @param[in]          key_id A constant 32-bit unsigned integer.
+     * @param[in]           value A constant Value.
+     *
+     * @return A 32-bit unsigned integer.
      */
     uint32_t linearSearchBackward_map(
-        Map const* const map, uint32_t const search_start_id,
+        Map const map[static const 1], uint32_t const search_start_id,
         uint32_t const key_id, Value const value
     );
 
     /**
      * @brief Performs a backward linear search among the mappings to find a key index.
-     * @param map The Map.
-     * @param search_start_id The index from which the search starts.
-     * @param key_id The key index.
+     *
+     * @param[in]             map A constant non-null pointer to at least one constant Map.
+     * @param[in] search_start_id A constant 32-bit unsigned integer.
+     * @param[in]          key_id A constant 32-bit unsigned integer.
+     *
+     * @return A 32-bit unsigned integer.
      */
     uint32_t linearSearchBackwardKey_map(
-        Map const* const map, uint32_t const search_start_id, uint32_t const key_id
+        Map const map[static const 1], uint32_t const search_start_id, uint32_t const key_id
     );
 
     /**
      * @brief Performs a backward linear search among the mappings to find a value.
-     * @param map The Map.
-     * @param search_start_id The index from which the search starts.
-     * @param value The value.
+     *
+     * @param[in]             map A constant non-null pointer to at least one constant Map.
+     * @param[in] search_start_id A constant 32-bit unsigned integer.
+     * @param[in]           value A constant Value.
+     *
+     * @return A 32-bit unsigned integer.
      */
     uint32_t linearSearchBackwardValue_map(
-        Map const* const map, uint32_t const search_start_id, Value const value
+        Map const map[static const 1], uint32_t const search_start_id, Value const value
     );
 
     /**
      * @brief Performs a forward linear search among the mappings to find a (key_id, Value) mapping.
-     * @param map The Map.
-     * @param search_start_id The index from which the search starts.
-     * @param key_id The key index.
-     * @param value The Value.
+     *
+     * @param[in]             map A constant non-null pointer to at least one constant Map.
+     * @param[in] search_start_id A constant 32-bit unsigned integer.
+     * @param[in]          key_id A constant 32-bit unsigned integer.
+     * @param[in]           value A constant Value.
+     *
+     * @return A 32-bit unsigned integer.
      */
     uint32_t linearSearchForward_map(
-        Map const* const map, uint32_t const search_start_id,
+        Map const map[static const 1], uint32_t const search_start_id,
         uint32_t const key_id, Value const value
     );
 
     /**
      * @brief Performs a forward linear search among the mappings to find a key index.
-     * @param map The Map.
-     * @param search_start_id The index from which the search starts.
-     * @param key_id The key index.
+     *
+     * @param[in]             map A constant non-null pointer to at least one constant Map.
+     * @param[in] search_start_id A constant 32-bit unsigned integer.
+     * @param[in]          key_id A constant 32-bit unsigned integer.
+     *
+     * @return A 32-bit unsigned integer.
      */
     uint32_t linearSearchForwardKey_map(
-        Map const* const map, uint32_t const search_start_id, uint32_t const key_id
+        Map const map[static const 1], uint32_t const search_start_id, uint32_t const key_id
     );
 
     /**
      * @brief Performs a forward linear search among the mappings to find a value.
-     * @param map The Map.
-     * @param search_start_id The index from which the search starts.
-     * @param value The value.
+     *
+     * @param[in]             map A constant non-null pointer to at least one constant Map.
+     * @param[in] search_start_id A constant 32-bit unsigned integer.
+     * @param[in]           value A constant Value.
+     *
+     * @return A 32-bit unsigned integer.
      */
     uint32_t linearSearchForwardValue_map(
-        Map const* const map, uint32_t const search_start_id, Value const value
+        Map const map[static const 1], uint32_t const search_start_id, Value const value
     );
 #endif

@@ -50,10 +50,10 @@ void flush_stack(Stack stack[static const 1]) {
 }
 
 void free_stack(Stack stack[static const 1]) {
-    DEBUG_ASSERT(isValid_stack(stack))
+    DEBUG_ABORT_UNLESS(isValid_stack(stack))
 
     free(stack->array);
-    *stack = NOT_A_STACK;
+    stack[0] = NOT_A_STACK;
 }
 
 void* get_stack(Stack const stack[static const 1], uint32_t const elementId) {

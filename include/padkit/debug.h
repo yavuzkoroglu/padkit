@@ -132,6 +132,7 @@
         }
     #else
         #define DEBUG_ABORT_IF(condition)
+        #define DEBUG_ABORT_UNLESS(condition)
         #define DEBUG_ASSERT(condition)
         #define DEBUG_ERROR_IF(condition)
         #define DEBUG_EXECUTE(statement)

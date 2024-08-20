@@ -19,32 +19,32 @@
      * @def VAL_DEFAULT_EPSILON
      *   The minimum value difference that is non-negligible in computation.
      */
-    #define VAL_DEFAULT_EPSILON 0.0001220703125
+    #define VAL_DEFAULT_EPSILON (0.0001220703125)
     extern double val_epsilon;
 
     /**
      * @def VAL_TC_FLOAT
      *   The typecode for float.
      */
-    #define VAL_TC_FLOAT        0U
+    #define VAL_TC_FLOAT        (0U)
 
     /**
      * @def VAL_TC_INT
      *   The typecode for int.
      */
-    #define VAL_TC_INT          1U
+    #define VAL_TC_INT          (1U)
 
     /**
      * @def VAL_TC_UNSIGNED
      *   The typecode for unsigned.
      */
-    #define VAL_TC_UNSIGNED     2U
+    #define VAL_TC_UNSIGNED     (2U)
 
     /**
      * @def VAL_TC_NOT_A_VALUE
      *   The typecode for invalid values.
      */
-    #define VAL_TC_NOT_A_VALUE  3U
+    #define VAL_TC_NOT_A_VALUE  (3U)
 
     /**
      * @def VAL_F_FLOAT
@@ -104,14 +104,20 @@
 
     /**
      * @brief Checks if two Values are equal.
-     * @param a The first Value.
-     * @param b The second Value.
+     *
+     * @param[in] a A constant Value.
+     * @param[in] b A constant Value.
+     *
+     * @return A Boolean value.
      */
     bool areEqual_val(Value const a, Value const b);
 
     /**
      * @brief Checks if a Value is valid.
-     * @param value The Value.
+     *
+     * @param value A constant Value.
+     *
+     * @return A Boolean value.
      */
     bool isValid_val(Value const value);
 #endif

@@ -602,21 +602,15 @@ static void test_map(void) {
     #define RELATIONS_COUNT (sizeof(relations) / sizeof(relations[0]))
 
     Map colleagues[1] = { NOT_A_MAP };
-    DEBUG_ASSERT_NDEBUG_EXECUTE(constructEmpty_map(colleagues, BUFSIZ))
+    constructEmpty_map(colleagues, BUFSIZ);
 
     for (unsigned i = 0; i < RELATIONS_COUNT; i++) {
-        DEBUG_ASSERT_NDEBUG_EXECUTE(
-            insert_map(colleagues, relations[i][0], VAL_UNSIGNED(relations[i][1]))
-        )
-        DEBUG_ASSERT_NDEBUG_EXECUTE(
-            insert_map(colleagues, relations[i][1], VAL_UNSIGNED(relations[i][0]))
-        )
+        insert_map(colleagues, relations[i][0], VAL_UNSIGNED(relations[i][1]));
+        insert_map(colleagues, relations[i][1], VAL_UNSIGNED(relations[i][0]));
     }
 
-    DEBUG_ASSERT_NDEBUG_EXECUTE(
-        insert_map(colleagues, JANE, VAL_UNSIGNED(JANE))
-    )
-    DEBUG_ASSERT_NDEBUG_EXECUTE(deleteLast_map(colleagues))
+    insert_map(colleagues, JANE, VAL_UNSIGNED(JANE));
+    deleteLast_map(colleagues);
 
     TEST_FAIL_IF(colleagues->size != 4)
     TEST_FAIL_IF(
@@ -706,10 +700,8 @@ static void test_map(void) {
 
     TEST_PASS
 
-    DEBUG_ASSERT_NDEBUG_EXECUTE(flush_map(colleagues))
-
-    DEBUG_ABORT_IF(!free_map(colleagues))
-    NDEBUG_EXECUTE(free_map(colleagues))
+    flush_map(colleagues);
+    free_map(colleagues);
 
     #undef RELATIONS_COUNT
     #undef PEOPLE_COUNT
@@ -865,9 +857,7 @@ static void test_reallocate(void) {
     #define NEW_SIZE 131072
 
     char* buffer            = mem_alloc(OLD_SIZE);
-    char* const new_buffer  = reallocate((void**)(&buffer), OLD_SIZE, NEW_SIZE, 1);
-
-    DEBUG_ERROR_IF(new_buffer == NULL)
+    char* const new_buffer  = REALLOCATE(buffer, OLD_SIZE, NEW_SIZE, 1);
 
     TEST_FAIL_IF(new_buffer != buffer)
 
@@ -894,9 +884,7 @@ static void test_reallocate_recalloc(void) {
     #define NEW_SIZE 131072
 
     char* buffer            = mem_calloc(OLD_SIZE, 1);
-    char* const new_buffer  = recalloc((void**)(&buffer), OLD_SIZE, NEW_SIZE, 1);
-
-    DEBUG_ERROR_IF(new_buffer == NULL)
+    char* const new_buffer  = RECALLOC(buffer, OLD_SIZE, NEW_SIZE, 1);
 
     TEST_FAIL_IF(new_buffer != buffer)
     for (unsigned i = 0; i < NEW_SIZE; i++)
@@ -1076,7 +1064,7 @@ static void test_streq_strcmp_as_comparator(void) {
 static void test_timestamp_get(void) {
     char const* timestamp = get_timestamp();
 
-    TEST_FAIL_IF(strlen(timestamp) != 19)
+    TEST_FAIL_IF(strlen(timestamp) != TS_LEN)
     TEST_PASS
 }
 

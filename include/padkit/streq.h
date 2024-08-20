@@ -23,32 +23,44 @@
 
     /**
      * @brief Compares two memory blocks of n bytes.
-     * @param a First memory block.
-     * @param b Second memory block.
-     * @param n The number of bytes.
+     *
+     * @param[in] a A non-null pointer to at least one constant character.
+     * @param[in] b A non-null pointer to at least one constant character.
+     * @param[in] n A size.
+     *
+     * @return A Boolean value.
      */
-    bool mem_eq_n(char const* a, char const* b, size_t n);
+    bool mem_eq_n(char const a[static 1], char const b[static 1], size_t n);
 
     /**
      * @brief Compares two strings.
-     * @param a The first string.
-     * @param b The second string.
+     *
+     * @param[in] a A non-null pointer to at least one constant character.
+     * @param[in] b A non-null pointer to at least one constant character.
+     *
+     * @return A Boolean value.
      */
-    bool str_eq(char const* a, char const* b);
+    bool str_eq(char const a[static 1], char const b[static 1]);
 
     /**
      * @brief Compares two strings up to n + 1 characters.
-     * @param a The first string.
-     * @param b The second string.
-     * @param n The maximum number of characters to compare.
+     *
+     * @param[in] a A non-null pointer to at least one constant character.
+     * @param[in] b A non-null pointer to at least one constant character.
+     * @param[in] n A size.
+     *
+     * @return A Boolean value.
      */
-    bool str_eq_n(char const* a, char const* b, size_t n);
+    bool str_eq_n(char const a[static 1], char const b[static 1], size_t n);
 
     /**
      * @brief Wrapper for the strcmp() function to be used by bsearch().
-     * @param s1 The first string.
-     * @param s2 The second string.
+     *
+     * @param[in]   needle A pointer to a constant object.
+     * @param[in] haystack A pointer to a constant object.
+     *
+     * @return An integer.
      */
-    int strcmp_as_comparator(void const* s1, void const* s2);
+    int strcmp_as_comparator(void const* needle, void const* haystack);
 #endif
 

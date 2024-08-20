@@ -9,7 +9,7 @@
 #include "padkit/timestamp.h"
 
 char const* get_timestamp(void) {
-    static char ts[20];
+    static char ts[TS_LEN + 1];
     time_t const curtime = time(NULL);
     struct tm* const ltm = localtime(&curtime);
 

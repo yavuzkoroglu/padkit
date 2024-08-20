@@ -59,7 +59,7 @@
             if (_new_cap <= obj_cap) REALLOC_ERROR                                      \
         }                                                                               \
         if (_new_cap > obj_cap) {                                                       \
-            if (REALLOCATE(obj, obj_cap, _new_cap, obj_t) == NULL) REALLOC_ERROR        \
+            REALLOCATE(obj, obj_cap, _new_cap, obj_t);                                  \
             obj_cap = _new_cap;                                                         \
         }                                                                               \
     }
@@ -75,32 +75,38 @@
             if (_new_cap <= obj_cap) RECALLOC_ERROR                                     \
         }                                                                               \
         if (_new_cap > obj_cap) {                                                       \
-            if (RECALLOC(obj, obj_cap, _new_cap, obj_t) == NULL) RECALLOC_ERROR         \
+            RECALLOC(obj, obj_cap, _new_cap, obj_t);                                    \
             obj_cap = _new_cap;                                                         \
         }                                                                               \
     }
 
     /**
      * @brief A reallocator that uses realloc().
-     * @param ptrptr A pointer to the pointer to be reallocated.
-     * @param old_element_count The old element count.
-     * @param new_element_count The new element count.
-     * @param element_size Size of one element in bytes.
+     *
+     * @param[in,out]            ptrptr A non-null constant pointer to at least one object pointer.
+     * @param[in]     old_element_count A constant size.
+     * @param[in]     new_element_count A constant size.
+     * @param[in]          element_size A constant size.
+     *
+     * @return A pointer to an object.
      */
     void* reallocate(
-        void** ptrptr, size_t const old_element_count,
+        void* ptrptr[static const 1], size_t const old_element_count,
         size_t const new_element_count, size_t const element_size
     );
 
     /**
      * @brief A reallocator that uses calloc() & memcpy() instead of realloc().
-     * @param ptrptr A pointer to the pointer to be reallocated.
-     * @param old_element_count The old element count.
-     * @param new_element_count The new element count.
-     * @param element_size Size of one element in bytes.
+     *
+     * @param[in,out]            ptrptr A non-null constant pointer to at least one object pointer.
+     * @param[in]     old_element_count A constant size.
+     * @param[in]     new_element_count A constant size.
+     * @param[in]          element_size A constant size.
+     *
+     * @return A pointer to an object.
      */
     void* recalloc(
-        void** ptrptr, size_t const old_element_count,
+        void* ptrptr[static const 1], size_t const old_element_count,
         size_t const new_element_count, size_t const element_size
     );
 #endif
