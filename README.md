@@ -29,6 +29,7 @@ The above steps should produce
 
 ### Changes v1.2beta -> v1.3beta
 
+* Major overhaul. Replaced `#ifndef NDEBUG` clauses with `include/padkit/debug.h` routines.
 * Replaced all macros in `include/padkit/circbuff.h` with struct and functions.
 * Replaced all macros in `include/padkit/stack.h` with struct and functions.
 * `REALLOC_IF_NECESSARY` ceased to take an `err` parameter.
