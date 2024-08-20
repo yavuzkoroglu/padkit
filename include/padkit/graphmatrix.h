@@ -33,122 +33,112 @@
 
     /**
      * @brief Connects a source to a sink in a GraphMatrix.
-     * @param gmtx The GraphMatrix.
-     * @param source The source.
-     * @param sink The sink.
+     *
+     * @param[in,out]   gmtx A constant non-null pointer to at least one GraphMatrix.
+     * @param[in]     source A constant 32-bit unsigned integer.
+     * @param[in]       sink A constant 32-bit unsigned integer.
      */
-    #ifndef NDEBUG
-    bool
-    #else
-    void
-    #endif
-    connect_gmtx(GraphMatrix* const gmtx, uint32_t const source, uint32_t const sink);
+    void connect_gmtx(GraphMatrix gmtx[static const 1], uint32_t const source, uint32_t const sink);
 
     /**
      * @brief Make every possible connection in a GraphMatrix.
-     * @param gmtx The GraphMatrix.
+     *
+     * @param[in,out]   gmtx A constant non-null pointer to at least one GraphMatrix.
      */
-    #ifndef NDEBUG
-    bool
-    #else
-    void
-    #endif
-    connectAll_gmtx(GraphMatrix* const gmtx);
+    void connectAll_gmtx(GraphMatrix gmtx[static const 1]);
 
     /**
      * @brief Constructs a fully disconnected GraphMatrix.
-     * @param gmtx A pointer to the GraphMatrix.
-     * @param initial_height The initial height of the GraphMatrix.
-     * @param initial_width The initial width of the GraphMatrix.
+     *
+     * @param[in,out]           gmtx A constant non-null pointer to at least one GraphMatrix.
+     * @param[in]     initial_height A constant 32-bit unsigned integer.
+     * @param[in]      initial_width A constant 32-bit unsigned integer.
      */
-    #ifndef NDEBUG
-    bool
-    #else
-    void
-    #endif
-    construct_gmtx(GraphMatrix* const gmtx, uint32_t const initial_height, uint32_t const initial_width);
+    void construct_gmtx(
+        GraphMatrix gmtx[static const 1],
+        uint32_t const initial_height, uint32_t const initial_width
+    );
 
     /**
      * @brief Disconnects source->sink in a GraphMatrix.
-     * @param gmtx The GraphMatrix.
-     * @param source The source.
-     * @param sink The sink.
+     *
+     * @param[in,out]   gmtx A constant non-null pointer to at least one GraphMatrix.
+     * @param[in]     source A constant 32-bit unsigned integer.
+     * @param[in]       sink A constant 32-bit unsigned integer.
      */
-    #ifndef NDEBUG
-    bool
-    #else
-    void
-    #endif
-    disconnect_gmtx(GraphMatrix* const gmtx, uint32_t const source, uint32_t const sink);
+    void disconnect_gmtx(GraphMatrix gmtx[static const 1], uint32_t const source, uint32_t const sink);
 
     /**
      * @brief Disconnects everything in a GraphMatrix.
-     * @param gmtx The GraphMatrix.
+     *
+     * @param[in,out] gmtx A constant non-null pointer to at least one GraphMatrix.
      */
-    #ifndef NDEBUG
-    bool
-    #else
-    void
-    #endif
-    disconnectAll_gmtx(GraphMatrix* const gmtx);
+    void disconnectAll_gmtx(GraphMatrix gmtx[static const 1]);
 
     /**
      * @brief Finds an outgoing edge.
-     * @param gmtx The GraphMatrix.
-     * @param source The source.
-     * @param highest_possible_sink Sinks higher than this do NOT count.
+     *
+     * @param[in,out]                  gmtx A constant non-null pointer to at least one GraphMatrix.
+     * @param[in]                    source A constant 32-bit unsigned integer.
+     * @param[in]     highest_possible_sink A constant 32-bit unsigned integer.
+     *
+     * @return A 32-bit unsigned integer.
      */
     uint32_t findSink_gmtx(
-        GraphMatrix const* const gmtx, uint32_t const source,
+        GraphMatrix const gmtx[static const 1], uint32_t const source,
         uint32_t const highest_possible_sink
     );
 
     /**
      * @brief Finds an incoming edge.
-     * @param gmtx The GraphMatrix.
-     * @param sink The sink.
-     * @param highest_possible_source Sources higher than this do NOT count.
+     *
+     * @param[in,out]                    gmtx A constant non-null pointer to at least one GraphMatrix.
+     * @param[in]                        sink A constant 32-bit unsigned integer.
+     * @param[in]     highest_possible_source A constant 32-bit unsigned integer.
+     *
+     * @return A 32-bit unsigned integer.
      */
     uint32_t findSource_gmtx(
-        GraphMatrix const* const gmtx, uint32_t const sink,
+        GraphMatrix const gmtx[static const 1], uint32_t const sink,
         uint32_t const highest_possible_source
     );
 
     /**
      * @brief Frees the GraphMatrix.
-     * @param gmtx The GraphMatrix.
+     *
+     * @param[in,out] gmtx A constant non-null pointer to at least one GraphMatrix.
      */
-    #ifndef NDEBUG
-    bool
-    #else
-    void
-    #endif
-    free_gmtx(GraphMatrix* const gmtx);
+    void free_gmtx(GraphMatrix gmtx[static const 1]);
 
     /**
      * @brief Checks if a source is connected to a sink in a GraphMatrix.
-     * @param gmtx The GraphMatrix.
-     * @param source The source.
-     * @param sink The sink.
+     *
+     * @param[in,out]   gmtx A constant non-null pointer to at least one constant GraphMatrix.
+     * @param[in]     source A constant 32-bit unsigned integer.
+     * @param[in]       sink A constant 32-bit unsigned integer.
+     *
+     * @return A Boolean value.
      */
-    bool isConnected_gmtx(GraphMatrix const* const gmtx, uint32_t const source, uint32_t const sink);
+    bool isConnected_gmtx(GraphMatrix const gmtx[static const 1], uint32_t const source, uint32_t const sink);
 
     /**
      * @brief Checks if a GraphMatrix is valid.
-     * @param gmtx The GraphMatrix.
+     *
+     * @param[in,out] gmtx A constant non-null pointer to at least one constant GraphMatrix.
+     *
+     * @return A Boolean value.
      */
-    bool isValid_gmtx(GraphMatrix const* const gmtx);
+    bool isValid_gmtx(GraphMatrix const gmtx[static const 1]);
 
     /**
      * @brief Resizes a GraphMatrix if necessary.
-     * @param gmtx The GraphMatrix.
-     * @param new_height The new height of the GraphMatrix.
-     * @param new_width The new width of the GraphMatrix.
+     *
+     * @param[in,out]       gmtx A constant non-null pointer to at least one GraphMatrix.
+     * @param[in]     new_height A constant 32-bit unsigned integer.
+     * @param[in]      new_width A constant 32-bit unsigned integer.
      */
-    #ifndef NDEBUG
-    bool
-    #else
-    void
-    #endif
-    resizeIfNecessary_gmtx(GraphMatrix* const gmtx, uint32_t const new_height, uint32_t const new_width);
+    void resizeIfNecessary_gmtx(
+        GraphMatrix gmtx[static const 1],
+        uint32_t const new_height, uint32_t const new_width
+    );
 #endif

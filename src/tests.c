@@ -539,17 +539,15 @@ END_TEST_CTBL:
 
 static void test_gmtx(void) {
     GraphMatrix gmtx[1] = { NOT_A_GRAPH_MATRIX };
-    DEBUG_ASSERT_NDEBUG_EXECUTE(construct_gmtx(gmtx, 3, 3))
-
-    DEBUG_ASSERT_NDEBUG_EXECUTE(connectAll_gmtx(gmtx))
-
-    DEBUG_ASSERT_NDEBUG_EXECUTE(resizeIfNecessary_gmtx(gmtx, 4, 4))
+    construct_gmtx(gmtx, 3, 3);
+    connectAll_gmtx(gmtx);
+    resizeIfNecessary_gmtx(gmtx, 4, 4);
 
     for (unsigned i = 0; i < 4; i++) {
         if (isConnected_gmtx(gmtx, i, i)) {
-            DEBUG_ASSERT_NDEBUG_EXECUTE(disconnect_gmtx(gmtx, i, i))
+            disconnect_gmtx(gmtx, i, i);
         } else {
-            DEBUG_ASSERT_NDEBUG_EXECUTE(connect_gmtx(gmtx, i, i))
+            connect_gmtx(gmtx, i, i);
         }
     }
 
@@ -560,10 +558,9 @@ static void test_gmtx(void) {
 
     TEST_PASS
 
-    DEBUG_ASSERT_NDEBUG_EXECUTE(disconnectAll_gmtx(gmtx))
+    disconnectAll_gmtx(gmtx);
 
-    DEBUG_ABORT_IF(!free_gmtx(gmtx))
-    NDEBUG_EXECUTE(free_gmtx(gmtx))
+    free_gmtx(gmtx);
 }
 
 static unsigned test_jsonp_objCount = 0;

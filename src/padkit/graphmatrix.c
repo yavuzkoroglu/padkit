@@ -9,24 +9,13 @@
 #include "padkit/graphmatrix.h"
 #include "padkit/memalloc.h"
 
-#ifndef NDEBUG
-bool
-#else
-void
-#endif
-connect_gmtx(GraphMatrix* const gmtx, uint32_t const source, uint32_t const sink) {
-    #ifndef NDEBUG
-        if (!isValid_gmtx(gmtx)) return 0;
-    #endif
+void connect_gmtx(GraphMatrix gmtx[static const 1], uint32_t const source, uint32_t const sink) {
+    DEBUG_ASSERT(isValid_gmtx(gmtx))
 
     uint32_t const new_height = (gmtx->height > source) ? gmtx->height : source;
     uint32_t const new_width  = (gmtx->width > sink) ? gmtx->width : sink;
 
-    #ifndef NDEBUG
-        if (!resizeIfNecessary_gmtx(gmtx, new_height, new_width)) return 0;
-    #else
-        resizeIfNecessary_gmtx(gmtx, new_height, new_width);
-    #endif
+    resizeIfNecessary_gmtx(gmtx, new_height, new_width);
 
     uint64_t const edge_id = (uint64_t)new_width * (uint64_t)source + (uint64_t)sink;
     gmtx->array[edge_id >> 6] |=
@@ -34,18 +23,9 @@ connect_gmtx(GraphMatrix* const gmtx, uint32_t const source, uint32_t const sink
             B8(B_10000000,B_00000000,B_00000000,B_00000000,B_00000000,B_00000000,B_00000000,B_00000000) >>
             (edge_id % B_01000000)
         );
-
-    #ifndef NDEBUG
-        return 1;
-    #endif
 }
 
-#ifndef NDEBUG
-bool
-#else
-void
-#endif
-connectAll_gmtx(GraphMatrix* const gmtx) {
+void connectAll_gmtx(GraphMatrix gmtx[static const 1]) {
     static uint64_t const remainders[64] = {
         B8(B_00000000,B_00000000,B_00000000,B_00000000,B_00000000,B_00000000,B_00000000,B_00000000),    /* 00 */
         B8(B_10000000,B_00000000,B_00000000,B_00000000,B_00000000,B_00000000,B_00000000,B_00000000),    /* 01 */
@@ -112,64 +92,37 @@ connectAll_gmtx(GraphMatrix* const gmtx) {
         B8(B_11111111,B_11111111,B_11111111,B_11111111,B_11111111,B_11111111,B_11111111,B_11111110)     /* 63 */
     };
 
-    #ifndef NDEBUG
-        if (!isValid_gmtx(gmtx)) return 0;
-    #endif
+    DEBUG_ASSERT(isValid_gmtx(gmtx))
 
     uint64_t const size = (uint64_t)gmtx->height * (uint64_t)gmtx->width;
     uint64_t const nFullBlocks = size >> 6;
     memset(gmtx->array, B_11111111, nFullBlocks << 3);
     gmtx->array[nFullBlocks] = remainders[size & B_111111];
-
-    #ifndef NDEBUG
-        return 1;
-    #endif
 }
 
-#ifndef NDEBUG
-bool
-#else
-void
-#endif
-construct_gmtx(GraphMatrix* const gmtx, uint32_t const initial_height, uint32_t const initial_width) {
-    #ifndef NDEBUG
-        if (gmtx == NULL)                   return 0;
-        if (initial_height == 0)            return 0;
-        if (initial_height == UINT32_MAX)   return 0;
-        if (initial_width == 0)             return 0;
-        if (initial_width == UINT32_MAX)    return 0;
-    #endif
+void construct_gmtx(
+    GraphMatrix gmtx[static const 1],
+    uint32_t const initial_height, uint32_t const initial_width
+) {
+    DEBUG_ERROR_IF(gmtx == NULL)
+    DEBUG_ERROR_IF(initial_height == 0)
+    DEBUG_ERROR_IF(initial_height == UINT32_MAX)
+    DEBUG_ERROR_IF(initial_width == 0)
+    DEBUG_ERROR_IF(initial_width == UINT32_MAX)
 
     uint64_t const size = (((uint64_t)initial_height * (uint64_t)initial_width) >> 6) + 1;
-    #ifndef NDEBUG
-        if (size == 0) return 0;
-    #endif
+    DEBUG_ERROR_IF(size == 0)
 
     *gmtx = (GraphMatrix){ initial_height, initial_width, mem_calloc((size_t)size, sizeof(uint64_t)) };
-
-    #ifndef NDEBUG
-        return 1;
-    #endif
 }
 
-#ifndef NDEBUG
-bool
-#else
-void
-#endif
-disconnect_gmtx(GraphMatrix* const gmtx, uint32_t const source, uint32_t const sink) {
-    #ifndef NDEBUG
-        if (!isValid_gmtx(gmtx)) return 0;
-    #endif
+void disconnect_gmtx(GraphMatrix gmtx[static const 1], uint32_t const source, uint32_t const sink) {
+    DEBUG_ASSERT(isValid_gmtx(gmtx))
 
     uint32_t const new_height = (gmtx->height > source) ? gmtx->height : source;
     uint32_t const new_width  = (gmtx->width > sink) ? gmtx->width : sink;
 
-    #ifndef NDEBUG
-        if (!resizeIfNecessary_gmtx(gmtx, new_height, new_width)) return 0;
-    #else
-        resizeIfNecessary_gmtx(gmtx, new_height, new_width);
-    #endif
+    resizeIfNecessary_gmtx(gmtx, new_height, new_width);
 
     uint64_t const edge_id = (uint64_t)new_width * (uint64_t)source + (uint64_t)sink;
     gmtx->array[edge_id >> 6] &=
@@ -177,45 +130,26 @@ disconnect_gmtx(GraphMatrix* const gmtx, uint32_t const source, uint32_t const s
             B8(B_10000000,B_00000000,B_00000000,B_00000000,B_00000000,B_00000000,B_00000000,B_00000000) >>
             (edge_id % B_01000000)
         );
-
-    #ifndef NDEBUG
-        return 1;
-    #endif
 }
 
-#ifndef NDEBUG
-bool
-#else
-void
-#endif
-disconnectAll_gmtx(GraphMatrix* const gmtx) {
-    #ifndef NDEBUG
-        if (!isValid_gmtx(gmtx)) return 0;
-    #endif
+void disconnectAll_gmtx(GraphMatrix gmtx[static const 1]) {
+    DEBUG_ASSERT(isValid_gmtx(gmtx))
 
     uint64_t const size = (uint64_t)gmtx->height * (uint64_t)gmtx->width;
     uint64_t const nFullBlocks = size >> 6;
     memset(gmtx->array, B_00000000, (nFullBlocks + !!(size & B_111111)) << 3);
-
-    #ifndef NDEBUG
-        return 1;
-    #endif
 }
 
 uint32_t findSink_gmtx(
-    GraphMatrix const* const gmtx, uint32_t const source,
+    GraphMatrix const gmtx[static const 1], uint32_t const source,
     uint32_t const highest_possible_sink
 ) {
-    #ifndef NDEBUG
-        if (!isValid_gmtx(gmtx)) return UINT32_MAX;
-    #endif
+    DEBUG_ASSERT(isValid_gmtx(gmtx))
 
     uint32_t sink = highest_possible_sink;
 
-    #ifndef NDEBUG
-        if (source >= gmtx->height) return UINT32_MAX;
-        if (sink >= gmtx->width)    return UINT32_MAX;
-    #endif
+    DEBUG_ASSERT(source < gmtx->height)
+    DEBUG_ASSERT(sink < gmtx->width)
 
     while (sink != UINT32_MAX && !isConnected_gmtx(gmtx, source, sink))
         sink--;
@@ -224,19 +158,15 @@ uint32_t findSink_gmtx(
 }
 
 uint32_t findSource_gmtx(
-    GraphMatrix const* const gmtx, uint32_t const sink,
+    GraphMatrix const gmtx[static const 1], uint32_t const sink,
     uint32_t const highest_possible_source
 ) {
-    #ifndef NDEBUG
-        if (!isValid_gmtx(gmtx)) return UINT32_MAX;
-    #endif
+    DEBUG_ASSERT(isValid_gmtx(gmtx))
 
     uint32_t source = highest_possible_source;
 
-    #ifndef NDEBUG
-        if (source >= gmtx->height) return UINT32_MAX;
-        if (sink >= gmtx->width)    return UINT32_MAX;
-    #endif
+    DEBUG_ASSERT(source < gmtx->height)
+    DEBUG_ASSERT(sink < gmtx->width)
 
     while (source != UINT32_MAX && !isConnected_gmtx(gmtx, source, sink))
         source--;
@@ -244,21 +174,15 @@ uint32_t findSource_gmtx(
     return source;
 }
 
-#ifndef NDEBUG
-bool
-#else
-void
-#endif
-free_gmtx(GraphMatrix* const gmtx) {
+void free_gmtx(GraphMatrix gmtx[static const 1]) {
+    DEBUG_ABORT_UNLESS(isValid_gmtx(gmtx))
+
     free(gmtx->array);
-    *gmtx = NOT_A_GRAPH_MATRIX;
-    #ifndef NDEBUG
-        return 1;
-    #endif
+    gmtx[0] = NOT_A_GRAPH_MATRIX;
 }
 
 bool isConnected_gmtx(
-    GraphMatrix const* const gmtx, uint32_t const source, uint32_t const sink
+    GraphMatrix const gmtx[static const 1], uint32_t const source, uint32_t const sink
 ) {
     DEBUG_ASSERT(isValid_gmtx(gmtx))
     uint64_t const edge_id = (uint64_t)gmtx->width * (uint64_t)source + (uint64_t)sink;
@@ -269,63 +193,34 @@ bool isConnected_gmtx(
     );
 }
 
-bool isValid_gmtx(GraphMatrix const* const gmtx) {
+bool isValid_gmtx(GraphMatrix const gmtx[static const 1]) {
     return gmtx != NULL         &&
            gmtx->height != 0    &&
            gmtx->width != 0     &&
            gmtx->array != NULL;
 }
 
-#ifndef NDEBUG
-bool
-#else
-void
-#endif
-resizeIfNecessary_gmtx(
-    GraphMatrix* const gmtx, uint32_t const new_height, uint32_t const new_width
+void resizeIfNecessary_gmtx(
+    GraphMatrix gmtx[static const 1],
+    uint32_t const new_height, uint32_t const new_width
 ) {
-    #ifndef NDEBUG
-        if (!isValid_gmtx(gmtx))       return 0;
-        if (new_height < gmtx->height) return 0;
-        if (new_width < gmtx->width)   return 0;
-    #endif
+    DEBUG_ASSERT(isValid_gmtx(gmtx))
+    DEBUG_ERROR_IF(new_height < gmtx->height)
+    DEBUG_ERROR_IF(new_width < gmtx->width)
 
     if (new_height == gmtx->height && new_width == gmtx->width)
-        #ifndef NDEBUG
-            return 1;
-        #else
-            return;
-        #endif
+        return;
 
     GraphMatrix new_gmtx[1];
-    #ifndef NDEBUG
-        if (!construct_gmtx(new_gmtx, new_height, new_width)) return 0;
-    #else
-        construct_gmtx(new_gmtx, new_height, new_width);
-    #endif
+    construct_gmtx(new_gmtx, new_height, new_width);
 
     /* Remake all the previous connections. */
-    for (uint32_t source = 0; source < gmtx->height; source++) {
-        for (uint32_t sink = 0; sink < gmtx->width; sink++) {
-            if (isConnected_gmtx(gmtx, source, sink)) {
-                #ifndef NDEBUG
-                    if (!connect_gmtx(new_gmtx, source, sink)) return 0;
-                #else
-                    connect_gmtx(new_gmtx, source, sink);
-                #endif
-            }
-        }
-    }
+    for (uint32_t source = 0; source < gmtx->height; source++)
+        for (uint32_t sink = 0; sink < gmtx->width; sink++)
+            if (isConnected_gmtx(gmtx, source, sink))
+                connect_gmtx(new_gmtx, source, sink);
 
     /* Replace the old GraphMatrix. */
-    #ifndef NDEBUG
-        if (!free_gmtx(gmtx)) return 0;
-    #else
-        free_gmtx(gmtx);
-    #endif
-    *gmtx = *new_gmtx;
-
-    #ifndef NDEBUG
-        return 1;
-    #endif
+    free_gmtx(gmtx);
+    gmtx[0] = new_gmtx[0];
 }
