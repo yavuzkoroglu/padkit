@@ -153,10 +153,9 @@ constructEmpty_cset(
     #ifndef NDEBUG
         if (set == NULL)                                                         return 0;
         if (loadPercent == 0)                                                    return 0;
-        if (!constructEmpty_chunk((Chunk*)set, initial_cap, initial_stringsCap)) return 0;
-    #else
-        constructEmpty_chunk((Chunk*)set, initial_cap, initial_stringsCap);
     #endif
+
+    constructEmpty_chunk((Chunk*)set, initial_cap, initial_stringsCap);
 
     set->loadPercent = loadPercent;
 
@@ -182,10 +181,10 @@ void
 flush_cset(ChunkSet set[static const 1]) {
     #ifndef NDEBUG
         if (!isValid_cset(set))        return 0;
-        if (!flush_chunk((Chunk*)set)) return 0;
-    #else
-        flush_chunk((Chunk*)set);
     #endif
+
+    flush_chunk((Chunk*)set);
+
     memset(set->rowSize, 0, set->nRows * sizeof(uint32_t));
     #ifndef NDEBUG
         return 1;
@@ -200,15 +199,15 @@ void
 free_cset(ChunkSet set[static const 1]) {
     #ifndef NDEBUG
         if (!isValid_cset(set)) return 0;
-        if (!free_chunk((Chunk*)set)) return 0;
-    #else
-        free_chunk((Chunk*)set);
     #endif
+
+
     free(set->rowSize);
     free(set->rowCap);
     for (uint32_t** row = set->table + set->nRows; --row >= set->table; free(*row));
     free(set->table);
-    *set = NOT_A_CHUNK_SET;
+    free_chunk((Chunk*)set);
+    set[0] = NOT_A_CHUNK_SET;
     #ifndef NDEBUG
         return 1;
     #endif

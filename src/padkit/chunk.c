@@ -7,6 +7,7 @@
 #include <ctype.h>
 #include <string.h>
 #include "padkit/chunk.h"
+#include "padkit/debug.h"
 #include "padkit/memalloc.h"
 #include "padkit/reallocate.h"
 
@@ -21,38 +22,25 @@ uint32_t add_chunk(
     char const str[static const restrict 1],
     uint64_t const n
 ) {
-    #ifndef NDEBUG
-        if (!isValid_chunk(chunk)) return UINT32_MAX;
-        if (str == NULL)           return UINT32_MAX;
-    #endif
+    DEBUG_ASSERT(isValid_chunk(chunk))
+    DEBUG_ERROR_IF(str == NULL)
+    DEBUG_ASSERT(strlen(str) >= (size_t)n)
 
     uint32_t const id     = chunk->nStrings++;
     uint64_t const offset = (chunk->len += !!(chunk->len));
 
-    #ifndef NDEBUG
-        if (append_chunk(chunk, str, n) == NULL) return UINT32_MAX;
-    #else
-        append_chunk(chunk, str, n);
-    #endif
+    append_chunk(chunk, str, n);
 
     chunk->stringOffsets[id] = offset;
     return id;
 }
 
 uint32_t addIndex_chunk(Chunk chunk[static const 1], uint32_t const str_id) {
-    #ifndef NDEBUG
-        if (!isValid_chunk(chunk)) return UINT32_MAX;
-        if (str_id == UINT32_MAX)  return UINT32_MAX;
-    #endif
+    DEBUG_ASSERT(isValid_chunk(chunk))
+    DEBUG_ASSERT(str_id < chunk->nStrings)
 
     uint32_t const id = add_chunk(chunk, "", 0);
-
-    #ifndef NDEBUG
-        if (id == UINT32_MAX)                         return UINT32_MAX;
-        if (appendIndex_chunk(chunk, str_id) == NULL) return UINT32_MAX;
-    #else
-        appendIndex_chunk(chunk, str_id);
-    #endif
+    appendIndex_chunk(chunk, str_id);
 
     return id;
 }
@@ -62,15 +50,16 @@ char const* append_chunk(
     char const str[static const restrict 1],
     uint64_t const n
 ) {
-    #ifndef NDEBUG
-        if (!isValid_chunk(chunk)) return NULL;
-        if (str == NULL)           return NULL;
-    #endif
+    DEBUG_ASSERT(isValid_chunk(chunk))
+    DEBUG_ERROR_IF(str == NULL)
+    DEBUG_ASSERT(strlen(str) >= (size_t)n)
+
+    DEBUG_EXECUTE(size_t const sz_chunk = (size_t)chunk->len)
+    DEBUG_EXECUTE(size_t const sz_str   = (size_t)n)
+    DEBUG_ERROR_IF(overlaps_ptr(chunk->start, str, sz_chunk, sz_str))
 
     char* const append_start = appendSpace_chunk(chunk, n);
-    #ifndef NDEBUG
-        if (append_start < chunk->start) return NULL;
-    #endif
+    DEBUG_ERROR_IF(append_start < chunk->start)
 
     memcpy(append_start, str, n);
     chunk->start[(chunk->len += n)] = '\0';
@@ -82,9 +71,7 @@ char const* append_chunk(
 
     /* May try to append when there are no strings. Then, just add a new string. */
     if (chunk->nStrings == 0) {
-        #ifndef NDEBUG
-            if (append_start != chunk->start) return NULL;
-        #endif
+        DEBUG_ASSERT(append_start == chunk->start)
         chunk->stringOffsets[chunk->nStrings++] = 0;
         return chunk->start;
     }
@@ -93,9 +80,7 @@ char const* append_chunk(
 }
 
 char const* appendIndex_chunk(Chunk chunk[static const 1], uint32_t const str_id) {
-    #ifndef NDEBUG
-        if (!isValid_chunk(chunk)) return NULL;
-    #endif
+    DEBUG_ASSERT(isValid_chunk(chunk))
 
     uint64_t const start_offset = chunk->stringOffsets[str_id];
     uint64_t const end_offset   = str_id == chunk->nStrings - 1
@@ -103,9 +88,7 @@ char const* appendIndex_chunk(Chunk chunk[static const 1], uint32_t const str_id
         : chunk->stringOffsets[str_id + 1] - 1;
     uint64_t const n            = (uint64_t)(end_offset - start_offset);
     char* const append_start    = appendSpace_chunk(chunk, n);
-    #ifndef NDEBUG
-        if (append_start == NULL) return NULL;
-    #endif
+    DEBUG_ERROR_IF(append_start < chunk->start + start_offset + n)
 
     memcpy(append_start, chunk->start + start_offset, n);
     chunk->start[(chunk->len += n)] = '\0';
@@ -119,16 +102,12 @@ char const* appendIndex_chunk(Chunk chunk[static const 1], uint32_t const str_id
 }
 
 char* appendSpace_chunk(Chunk chunk[static const 1], uint64_t const size) {
-    #ifndef NDEBUG
-        if (!isValid_chunk(chunk)) return NULL;
-    #endif
+    DEBUG_ASSERT(isValid_chunk(chunk))
 
     if (size == 0) return chunk->start + chunk->len;
 
     uint64_t const pseudo_len = chunk->len + size;
-    #ifndef NDEBUG
-        if (pseudo_len < chunk->len) return NULL;
-    #endif
+    DEBUG_ERROR_IF(pseudo_len < chunk->len)
 
     REALLOC_IF_NECESSARY(
         char, chunk->start,
@@ -138,29 +117,15 @@ char* appendSpace_chunk(Chunk chunk[static const 1], uint64_t const size) {
     return chunk->start + chunk->len;
 }
 
-#ifndef NDEBUG
-bool
-#else
-void
-#endif
-concat_chunk(Chunk to[static const 1], Chunk const from[static const 1]) {
-    #ifndef NDEBUG
-        if (!isValid_chunk(to))     return 0;
-        if (!isValid_chunk(from))   return 0;
-    #endif
+void concat_chunk(Chunk to[static const 1], Chunk const from[static const 1]) {
+    DEBUG_ASSERT(isValid_chunk(to))
+    DEBUG_ASSERT(isValid_chunk(from))
 
     if (from->nStrings == 0)
-        #ifndef NDEBUG
-            return 1;
-        #else
-            return;
-        #endif
+        return;
 
     uint64_t const hasStrings = (to->nStrings > 0);
     char* const append_start = appendSpace_chunk(to, from->len + hasStrings) + hasStrings;
-    #ifndef NDEBUG
-        if (append_start == NULL) return 0;
-    #endif
     memcpy(append_start, from->start, from->len + 1);
 
     uint32_t const old_str_count = to->nStrings;
@@ -177,29 +142,18 @@ concat_chunk(Chunk to[static const 1], Chunk const from[static const 1]) {
     }
 
     to->len += from->len + hasStrings;
-
-    #ifndef NDEBUG
-        return 1;
-    #endif
 }
 
-#ifndef NDEBUG
-bool
-#else
-void
-#endif
-constructEmpty_chunk(
+void constructEmpty_chunk(
     Chunk chunk[static const 1],
     uint64_t const initial_cap,
     uint32_t const initial_stringsCap
 ) {
-    #ifndef NDEBUG
-        if (chunk == NULL)                      return 0;
-        if (initial_cap == 0)                   return 0;
-        if (initial_cap == UINT64_MAX)          return 0;
-        if (initial_stringsCap == 0)            return 0;
-        if (initial_stringsCap == UINT32_MAX)   return 0;
-    #endif
+    DEBUG_ERROR_IF(chunk == NULL)
+    DEBUG_ERROR_IF(initial_cap == 0)
+    DEBUG_ERROR_IF(initial_cap == UINT64_MAX)
+    DEBUG_ERROR_IF(initial_stringsCap == 0)
+    DEBUG_ERROR_IF(initial_stringsCap == UINT32_MAX)
 
     chunk->cap              = initial_cap;
     chunk->stringsCap       = initial_stringsCap;
@@ -208,30 +162,15 @@ constructEmpty_chunk(
     chunk->stringOffsets    = mem_alloc((size_t)initial_stringsCap * sizeof(uint64_t));
     chunk->start            = mem_alloc((size_t)initial_cap);
     chunk->start[0]         = '\0';
-
-    #ifndef NDEBUG
-        return 1;
-    #endif
 }
 
-#ifndef NDEBUG
-bool
-#else
-void
-#endif
-delete_chunk(Chunk chunk[static const 1], uint32_t const str_id) {
-    #ifndef NDEBUG
-        if (!isValid_chunk(chunk)) return 0;
-        if (str_id >= chunk->nStrings) return 0;
-    #endif
+void delete_chunk(Chunk chunk[static const 1], uint32_t const str_id) {
+    DEBUG_ASSERT(isValid_chunk(chunk))
+    DEBUG_ASSERT(str_id < chunk->nStrings)
 
     if (str_id == chunk->nStrings - 1) {
-        #ifndef NDEBUG
-            return deleteLast_chunk(chunk);
-        #else
-            deleteLast_chunk(chunk);
-            return;
-        #endif
+        deleteLast_chunk(chunk);
+        return;
     }
 
     char* const str  = chunk->start + chunk->stringOffsets[str_id];
@@ -245,31 +184,16 @@ delete_chunk(Chunk chunk[static const 1], uint32_t const str_id) {
         chunk->stringOffsets[i] = chunk->stringOffsets[i + 1] - diff;
 
     chunk->len -= diff;
-
-    #ifndef NDEBUG
-        return 1;
-    #endif
 }
 
-#ifndef NDEBUG
-bool
-#else
-void
-#endif
-deleteLast_chunk(Chunk chunk[static const 1]) {
-    #ifndef NDEBUG
-        if (!isValid_chunk(chunk)) return 0;
-        if (chunk->nStrings == 0)  return 0;
-    #endif
+void deleteLast_chunk(Chunk chunk[static const 1]) {
+    DEBUG_ASSERT(isValid_chunk(chunk))
+    DEBUG_ERROR_IF(chunk->nStrings == 0)
 
     uint32_t const lastStr_id = --chunk->nStrings;
     if (lastStr_id == 0) {
-        #ifndef NDEBUG
-            return flush_chunk(chunk);
-        #else
-            flush_chunk(chunk);
-            return;
-        #endif
+        flush_chunk(chunk);
+        return;
     }
 
     uint64_t const max_len = chunk->stringOffsets[lastStr_id] - 1;
@@ -280,44 +204,22 @@ deleteLast_chunk(Chunk chunk[static const 1]) {
         chunk->len > min_len && chunk->start[chunk->len - 1] == '\0';
         chunk->len--
     ) {}
-
-    #ifndef NDEBUG
-        return 1;
-    #endif
 }
 
-#ifndef NDEBUG
-bool
-#else
-void
-#endif
-flush_chunk(Chunk chunk[static const 1]) {
-    #ifndef NDEBUG
-        if (!isValid_chunk(chunk)) return 0;
-    #endif
+void flush_chunk(Chunk chunk[static const 1]) {
+    DEBUG_ASSERT(isValid_chunk(chunk))
+
     chunk->nStrings = 0;
     chunk->len      = 0;
     chunk->start[0] = '\0';
-    #ifndef NDEBUG
-        return 1;
-    #endif
 }
 
-#ifndef NDEBUG
-bool
-#else
-void
-#endif
-free_chunk(Chunk chunk[static const 1]) {
-    #ifndef NDEBUG
-        if (!isValid_chunk(chunk)) return 0;
-    #endif
+void free_chunk(Chunk chunk[static const 1]) {
+    DEBUG_ABORT_UNLESS(isValid_chunk(chunk))
+
     free(chunk->start);
     free(chunk->stringOffsets);
-    *chunk = NOT_A_CHUNK;
-    #ifndef NDEBUG
-        return 1;
-    #endif
+    chunk[0] = NOT_A_CHUNK;
 }
 
 uint32_t fromStream_chunk(
@@ -325,77 +227,61 @@ uint32_t fromStream_chunk(
     FILE stream[static const 1],
     char const delimeters[]
 ) {
-    #ifndef NDEBUG
-        if (!isValid_chunk(chunk))  return UINT32_MAX;
-        if (stream == NULL)         return UINT32_MAX;
-    #endif
+    DEBUG_ASSERT(isValid_chunk(chunk))
+    DEBUG_ERROR_IF(stream == NULL)
+
     if (delimeters == NULL) delimeters = defaultDelimeters;
 
     uint32_t const str_id = fromStreamAsWhole_chunk(chunk, stream);
-    #ifndef NDEBUG
-        if (str_id == UINT32_MAX) return UINT32_MAX;
-        if (splitLast_chunk(chunk, delimeters) == 0) return UINT32_MAX;
-    #else
-        splitLast_chunk(chunk, delimeters);
-    #endif
+    if (str_id == UINT32_MAX)
+        return UINT32_MAX;
+
+    splitLast_chunk(chunk, delimeters);
 
     return str_id;
 }
 
 uint32_t fromStreamAsWhole_chunk(Chunk chunk[static const 1], FILE stream[static const 1]) {
-    #ifndef NDEBUG
-        if (stream == NULL) return UINT32_MAX;
-    #endif
+    DEBUG_ASSERT(isValid_chunk(chunk))
+    DEBUG_ERROR_IF(stream == NULL)
 
     uint32_t const str_id = add_chunk(chunk, "", 0);
-    #ifndef NDEBUG
-        if (str_id == UINT32_MAX)             return UINT32_MAX;
-        if (fseek(stream, 0L, SEEK_END) != 0) return UINT32_MAX;
-    #else
-        fseek(stream, 0L, SEEK_END);
-    #endif
+    if (fseek(stream, 0L, SEEK_END) != 0)
+        return UINT32_MAX;
 
     long const size = ftell(stream);
-    #ifndef NDEBUG
-        if (size < 0L)                        return UINT32_MAX;
-        if (fseek(stream, 0L, SEEK_SET) != 0) return UINT32_MAX;
-    #else
-        fseek(stream, 0L, SEEK_SET);
-    #endif
+    if (size < 0L)
+        return UINT32_MAX;
+
+    if (fseek(stream, 0L, SEEK_SET) != 0)
+        return UINT32_MAX;
 
     char* const append_start = appendSpace_chunk(chunk, (uint64_t)size);
-    #ifndef NDEBUG
-        if (append_start == NULL)                              return UINT32_MAX;
-        if (fread(append_start, (size_t)size, 1, stream) != 1) return UINT32_MAX;
-    #else
-        fread(append_start, (size_t)size, 1, stream);
-    #endif
+    if (fread(append_start, (size_t)size, 1, stream) != 1)
+        return UINT32_MAX;
 
     chunk->len += (uint64_t)size;
     return str_id;
 }
 
 char const* get_chunk(Chunk const chunk[static const 1], uint32_t const str_id) {
-    #ifndef NDEBUG
-        if (!isValid_chunk(chunk))     return NULL;
-        if (str_id >= chunk->nStrings) return NULL;
-    #endif
+    DEBUG_ASSERT(isValid_chunk(chunk))
+    DEBUG_ASSERT(str_id < chunk->nStrings)
+
     return chunk->start + chunk->stringOffsets[str_id];
 }
 
 char const* getFirst_chunk(Chunk const chunk[static const 1]) {
-    #ifndef NDEBUG
-        if (!isValid_chunk(chunk)) return NULL;
-        if (chunk->nStrings == 0)  return NULL;
-    #endif
+    DEBUG_ASSERT(isValid_chunk(chunk))
+    DEBUG_ERROR_IF(chunk->nStrings == 0)
+
     return get_chunk(chunk, 0);
 }
 
 char const* getLast_chunk(Chunk const chunk[static const 1]) {
-    #ifndef NDEBUG
-        if (!isValid_chunk(chunk)) return NULL;
-        if (chunk->nStrings == 0)  return NULL;
-    #endif
+    DEBUG_ASSERT(isValid_chunk(chunk))
+    DEBUG_ERROR_IF(chunk->nStrings == 0)
+
     return get_chunk(chunk, chunk->nStrings - 1);
 }
 
@@ -412,10 +298,8 @@ bool isValid_chunk(Chunk const chunk[static const 1]) {
 }
 
 uint32_t splitLast_chunk(Chunk chunk[static const 1], char const delimeters[]) {
-    #ifndef NDEBUG
-        if (!isValid_chunk(chunk))  return UINT32_MAX;
-        if (chunk->nStrings == 0)   return 0;
-    #endif
+    DEBUG_ASSERT(isValid_chunk(chunk))
+    DEBUG_ERROR_IF(chunk->nStrings == 0)
 
     if (delimeters == NULL) delimeters = defaultDelimeters;
 
@@ -463,15 +347,11 @@ uint32_t splitLast_chunk(Chunk chunk[static const 1], char const delimeters[]) {
 }
 
 uint64_t strlen_chunk(Chunk const chunk[static const 1], uint32_t const str_id) {
-    #ifndef NDEBUG
-        if (!isValid_chunk(chunk))  return UINT64_MAX;
-        if (chunk->nStrings == 0)   return UINT64_MAX;
-    #endif
+    DEBUG_ASSERT(isValid_chunk(chunk))
+    DEBUG_ERROR_IF(chunk->nStrings == 0)
 
     uint32_t const last_str_id = chunk->nStrings - 1;
-    #ifndef NDEBUG
-        if (str_id > last_str_id)   return UINT64_MAX;
-    #endif
+    DEBUG_ERROR_IF(str_id > last_str_id)
 
     if (str_id == last_str_id) {
         return chunk->len - chunk->stringOffsets[last_str_id];
@@ -481,9 +361,8 @@ uint64_t strlen_chunk(Chunk const chunk[static const 1], uint32_t const str_id) 
 }
 
 uint64_t strlenLast_chunk(Chunk const chunk[static const 1]) {
-    #ifndef NDEBUG
-        if (!isValid_chunk(chunk))  return UINT64_MAX;
-        if (chunk->nStrings == 0)   return UINT64_MAX;
-    #endif
+    DEBUG_ASSERT(isValid_chunk(chunk))
+    DEBUG_ERROR_IF(chunk->nStrings == 0)
+
     return chunk->len - chunk->stringOffsets[chunk->nStrings - 1];
 }

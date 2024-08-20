@@ -20,200 +20,142 @@ static Chunk strings[1];
 #define TEST_PASS TEST_PASS_MESSAGE;
 
 static void test_chunk_add(void) {
-    DEBUG_ASSERT_NDEBUG_EXECUTE(
-        constructEmpty_chunk(strings, CHUNK_RECOMMENDED_PARAMETERS)
-    )
+    constructEmpty_chunk(strings, CHUNK_RECOMMENDED_PARAMETERS);
 
-    DEBUG_ERROR_IF(add_chunk(strings, "abc", 3) == 0xFFFFFFFF)
-    NDEBUG_EXECUTE(add_chunk(strings, "abc", 3))
-
-    DEBUG_ERROR_IF(add_chunk(strings, "", 0) == 0xFFFFFFFF)
-    NDEBUG_EXECUTE(add_chunk(strings, "", 0))
-
-    DEBUG_ERROR_IF(add_chunk(strings, "defg", 3) == 0xFFFFFFFF)
-    NDEBUG_EXECUTE(add_chunk(strings, "defg", 3))
+    add_chunk(strings, "abc", 3);
+    add_chunk(strings, "", 0);
+    add_chunk(strings, "defg", 3);
 
     TEST_FAIL_IF(strings->len != 8)
     TEST_FAIL_IF(strings->nStrings != 3)
     TEST_PASS
 
-    DEBUG_ABORT_IF(!free_chunk(strings))
-    NDEBUG_EXECUTE(free_chunk(strings))
+    free_chunk(strings);
 }
 
 static void test_chunk_addIndex(void) {
-    DEBUG_ASSERT_NDEBUG_EXECUTE(
-        constructEmpty_chunk(strings, CHUNK_RECOMMENDED_PARAMETERS)
-    )
+    constructEmpty_chunk(strings, CHUNK_RECOMMENDED_PARAMETERS);
 
-    DEBUG_ERROR_IF(add_chunk(strings, "abc", 3) == 0xFFFFFFFF)
-    NDEBUG_EXECUTE(add_chunk(strings, "abc", 3))
-
-    DEBUG_ERROR_IF(addIndex_chunk(strings, 0) == 0xFFFFFFFF)
-    NDEBUG_EXECUTE(addIndex_chunk(strings, 0))
+    add_chunk(strings, "abc", 3);
+    addIndex_chunk(strings, 0);
 
     TEST_FAIL_IF(strings->len != 7)
     TEST_FAIL_IF(strings->nStrings != 2)
     TEST_FAIL_IF(!str_eq(getFirst_chunk(strings), getLast_chunk(strings)))
     TEST_PASS
 
-    DEBUG_ABORT_IF(!free_chunk(strings))
-    NDEBUG_EXECUTE(free_chunk(strings))
+    free_chunk(strings);
 }
 
 static void test_chunk_append(void) {
-    DEBUG_ASSERT_NDEBUG_EXECUTE(
-        constructEmpty_chunk(strings, CHUNK_RECOMMENDED_PARAMETERS)
-    )
+    constructEmpty_chunk(strings, CHUNK_RECOMMENDED_PARAMETERS);
 
-    DEBUG_ERROR_IF(append_chunk(strings, "abc", 3) == NULL)
-    NDEBUG_EXECUTE(append_chunk(strings, "abc", 3))
-
-    DEBUG_ERROR_IF(append_chunk(strings, "", 0) == NULL)
-    NDEBUG_EXECUTE(append_chunk(strings, "", 0))
-
-    DEBUG_ERROR_IF(append_chunk(strings, "defg", 3) == NULL)
-    NDEBUG_EXECUTE(append_chunk(strings, "defg", 3))
+    append_chunk(strings, "abc", 3);
+    append_chunk(strings, "", 0);
+    append_chunk(strings, "defg", 3);
 
     TEST_FAIL_IF(strings->len != 6)
     TEST_FAIL_IF(strings->nStrings != 1)
     TEST_FAIL_IF(!STR_EQ_CONST(strings->start, "abcdef"))
     TEST_PASS
 
-    DEBUG_ABORT_IF(!free_chunk(strings))
-    NDEBUG_EXECUTE(free_chunk(strings))
+    free_chunk(strings);
 }
 
 static void test_chunk_appendIndex(void) {
-    DEBUG_ASSERT_NDEBUG_EXECUTE(
-        constructEmpty_chunk(strings, CHUNK_RECOMMENDED_PARAMETERS)
-    )
+    constructEmpty_chunk(strings, CHUNK_RECOMMENDED_PARAMETERS);
 
-    DEBUG_ERROR_IF(append_chunk(strings, "abc", 3) == NULL)
-    NDEBUG_EXECUTE(append_chunk(strings, "abc", 3))
-
-    DEBUG_ERROR_IF(appendIndex_chunk(strings, 0) == NULL)
-    NDEBUG_EXECUTE(appendIndex_chunk(strings, 0))
+    append_chunk(strings, "abc", 3);
+    appendIndex_chunk(strings, 0);
 
     TEST_FAIL_IF(strings->len != 6)
     TEST_FAIL_IF(strings->nStrings != 1)
     TEST_FAIL_IF(!STR_EQ_CONST(strings->start, "abcabc"))
     TEST_PASS
 
-    DEBUG_ABORT_IF(!free_chunk(strings))
-    NDEBUG_EXECUTE(free_chunk(strings))
+    free_chunk(strings);
 }
 
 static void test_chunk_appendSpace(void) {
-    DEBUG_ASSERT_NDEBUG_EXECUTE(
-        constructEmpty_chunk(strings, CHUNK_RECOMMENDED_PARAMETERS)
-    )
+    constructEmpty_chunk(strings, CHUNK_RECOMMENDED_PARAMETERS);
 
-    DEBUG_ERROR_IF(appendSpace_chunk(strings, 131072) == NULL)
-    NDEBUG_EXECUTE(appendSpace_chunk(strings, 131072))
+    appendSpace_chunk(strings, 131072);
 
     TEST_FAIL_IF(strings->len != 0)
     TEST_FAIL_IF(strings->nStrings != 0)
     TEST_PASS
 
-    DEBUG_ABORT_IF(!free_chunk(strings))
-    NDEBUG_EXECUTE(free_chunk(strings))
+    free_chunk(strings);
 }
 
 static void test_chunk_concat(void) {
-    DEBUG_ASSERT_NDEBUG_EXECUTE(
-        constructEmpty_chunk(strings, CHUNK_RECOMMENDED_PARAMETERS)
-    )
+    constructEmpty_chunk(strings, CHUNK_RECOMMENDED_PARAMETERS);
 
     Chunk chunk[2][1] = { { NOT_A_CHUNK }, { NOT_A_CHUNK } };
 
     for (int i = 0; i < 2; i++) {
-        DEBUG_ASSERT_NDEBUG_EXECUTE(
-            constructEmpty_chunk(chunk[i], CHUNK_RECOMMENDED_PARAMETERS)
-        )
-        DEBUG_ASSERT_NDEBUG_EXECUTE(concat_chunk(strings, chunk[i]))
+        constructEmpty_chunk(chunk[i], CHUNK_RECOMMENDED_PARAMETERS);
+        concat_chunk(strings, chunk[i]);
     }
 
-    DEBUG_ERROR_IF(add_chunk(chunk[0], "abc", 3) == 0xFFFFFFFF)
-    NDEBUG_EXECUTE(add_chunk(chunk[0], "abc", 3))
-
-    DEBUG_ERROR_IF(add_chunk(chunk[1], "def", 3) == 0xFFFFFFFF)
-    NDEBUG_EXECUTE(add_chunk(chunk[1], "def", 3))
+    add_chunk(chunk[0], "abc", 3);
+    add_chunk(chunk[1], "def", 3);
 
     for (int i = 0; i < 2; i++)
-        DEBUG_ASSERT_NDEBUG_EXECUTE(concat_chunk(strings, chunk[i]))
+        concat_chunk(strings, chunk[i]);
 
     TEST_FAIL_IF(strings->len != 7)
     TEST_FAIL_IF(strings->nStrings != 2)
     TEST_PASS
 
     for (int i = 0; i < 2; i++)
-        DEBUG_ASSERT_NDEBUG_EXECUTE(free_chunk(chunk[i]))
+        free_chunk(chunk[i]);
 
-    DEBUG_ABORT_IF(!free_chunk(strings))
-    NDEBUG_EXECUTE(free_chunk(strings))
+    free_chunk(strings);
 }
 
 static void test_chunk_delete(void) {
-    DEBUG_ASSERT_NDEBUG_EXECUTE(
-        constructEmpty_chunk(strings, CHUNK_RECOMMENDED_PARAMETERS)
-    )
+    constructEmpty_chunk(strings, CHUNK_RECOMMENDED_PARAMETERS);
 
-    DEBUG_ERROR_IF(add_chunk(strings, "abc", 3) == 0xFFFFFFFF)
-    NDEBUG_EXECUTE(add_chunk(strings, "abc", 3))
+    add_chunk(strings, "abc", 3);
+    add_chunk(strings, "", 0);
+    add_chunk(strings, "def", 3);
 
-    DEBUG_ERROR_IF(add_chunk(strings, "", 0) == 0xFFFFFFFF)
-    NDEBUG_EXECUTE(add_chunk(strings, "", 0))
-
-    DEBUG_ERROR_IF(add_chunk(strings, "def", 3) == 0xFFFFFFFF)
-    NDEBUG_EXECUTE(add_chunk(strings, "def", 3))
-
-    DEBUG_ASSERT_NDEBUG_EXECUTE(delete_chunk(strings, 1))
-    DEBUG_ASSERT_NDEBUG_EXECUTE(delete_chunk(strings, 1))
+    delete_chunk(strings, 1);
+    delete_chunk(strings, 1);
 
     TEST_FAIL_IF(strings->len != 3)
     TEST_FAIL_IF(strings->nStrings != 1)
     TEST_PASS
 
-    DEBUG_ABORT_IF(!free_chunk(strings))
-    NDEBUG_EXECUTE(free_chunk(strings))
+    free_chunk(strings);
 }
 
 static void test_chunk_deleteLast(void) {
-    DEBUG_ASSERT_NDEBUG_EXECUTE(
-        constructEmpty_chunk(strings, CHUNK_RECOMMENDED_PARAMETERS)
-    )
+    constructEmpty_chunk(strings, CHUNK_RECOMMENDED_PARAMETERS);
 
-    DEBUG_ERROR_IF(add_chunk(strings, "abc", 3) == 0xFFFFFFFF)
-    NDEBUG_EXECUTE(add_chunk(strings, "abc", 3))
+    add_chunk(strings, "abc", 3);
+    add_chunk(strings, "def", 3);
+    add_chunk(strings, "", 0);
 
-    DEBUG_ERROR_IF(add_chunk(strings, "def", 3) == 0xFFFFFFFF)
-    NDEBUG_EXECUTE(add_chunk(strings, "def", 3))
-
-    DEBUG_ERROR_IF(add_chunk(strings, "", 0) == 0xFFFFFFFF)
-    NDEBUG_EXECUTE(add_chunk(strings, "", 0))
-
-    DEBUG_ASSERT_NDEBUG_EXECUTE(deleteLast_chunk(strings))
+    deleteLast_chunk(strings);
 
     TEST_FAIL_IF(strings->len != 7)
     TEST_FAIL_IF(strings->nStrings != 2)
 
-    DEBUG_ASSERT_NDEBUG_EXECUTE(deleteLast_chunk(strings))
-    DEBUG_ASSERT_NDEBUG_EXECUTE(deleteLast_chunk(strings))
+    deleteLast_chunk(strings);
+    deleteLast_chunk(strings);
 
     TEST_FAIL_IF(strings->len != 0)
     TEST_FAIL_IF(strings->start[0] != '\0')
 
     TEST_PASS
 
-    DEBUG_ABORT_IF(!free_chunk(strings))
-    NDEBUG_EXECUTE(free_chunk(strings))
+    free_chunk(strings);
 }
 
 static void test_chunk_fromStream(void) {
-    DEBUG_ASSERT_NDEBUG_EXECUTE(
-        constructEmpty_chunk(strings, CHUNK_RECOMMENDED_PARAMETERS)
-    )
+    constructEmpty_chunk(strings, CHUNK_RECOMMENDED_PARAMETERS);
 
     FILE* const stream = fopen("src/tests.c", "r");
     DEBUG_ERROR_IF(stream == NULL)
@@ -228,51 +170,34 @@ static void test_chunk_fromStream(void) {
     DEBUG_ERROR_IF(fclose(stream) == EOF)
     NDEBUG_EXECUTE(fclose(stream))
 
-    DEBUG_ABORT_IF(!free_chunk(strings))
-    NDEBUG_EXECUTE(free_chunk(strings))
+    free_chunk(strings);
 }
 
 static void test_chunk_strlen(void) {
-    DEBUG_ASSERT_NDEBUG_EXECUTE(
-        constructEmpty_chunk(strings, CHUNK_RECOMMENDED_PARAMETERS)
-    )
+    constructEmpty_chunk(strings, CHUNK_RECOMMENDED_PARAMETERS);
 
-    DEBUG_ERROR_IF(add_chunk(strings, "abc", 3) == 0xFFFFFFFF)
-    NDEBUG_EXECUTE(add_chunk(strings, "abc", 3))
-
-    DEBUG_ERROR_IF(add_chunk(strings, "", 0) == 0xFFFFFFFF)
-    NDEBUG_EXECUTE(add_chunk(strings, "", 0))
-
-    DEBUG_ERROR_IF(add_chunk(strings, "def", 3) == 0xFFFFFFFF)
-    NDEBUG_EXECUTE(add_chunk(strings, "def", 3))
+    add_chunk(strings, "abc", 3);
+    add_chunk(strings, "", 0);
+    add_chunk(strings, "def", 3);
 
     TEST_FAIL_IF(strlen_chunk(strings, 1) != 0)
     TEST_FAIL_IF(strlen_chunk(strings, 2) != 3)
     TEST_PASS
 
-    DEBUG_ABORT_IF(!free_chunk(strings))
-    NDEBUG_EXECUTE(free_chunk(strings))
+    free_chunk(strings);
 }
 
 static void test_chunk_strlenLast(void) {
-    DEBUG_ASSERT_NDEBUG_EXECUTE(
-        constructEmpty_chunk(strings, CHUNK_RECOMMENDED_PARAMETERS)
-    )
+    constructEmpty_chunk(strings, CHUNK_RECOMMENDED_PARAMETERS);
 
-    DEBUG_ERROR_IF(add_chunk(strings, "abc", 3) == 0xFFFFFFFF)
-    NDEBUG_EXECUTE(add_chunk(strings, "abc", 3))
-
-    DEBUG_ERROR_IF(add_chunk(strings, "def", 3) == 0xFFFFFFFF)
-    NDEBUG_EXECUTE(add_chunk(strings, "def", 3))
-
-    DEBUG_ERROR_IF(add_chunk(strings, "", 0) == 0xFFFFFFFF)
-    NDEBUG_EXECUTE(add_chunk(strings, "", 0))
+    add_chunk(strings, "abc", 3);
+    add_chunk(strings, "def", 3);
+    add_chunk(strings, "", 0);
 
     TEST_FAIL_IF(strlenLast_chunk(strings) != 0)
     TEST_PASS
 
-    DEBUG_ABORT_IF(!free_chunk(strings))
-    NDEBUG_EXECUTE(free_chunk(strings))
+    free_chunk(strings);
 }
 
 static void test_circbuff(void) {
@@ -377,9 +302,7 @@ static void test_ctbl(void) {
     uint32_t person_id[PEOPLE_COUNT];
 
     Chunk people[1] = { NOT_A_CHUNK };
-    DEBUG_ASSERT_NDEBUG_EXECUTE(
-        constructEmpty_chunk(people, CHUNK_RECOMMENDED_PARAMETERS)
-    )
+    constructEmpty_chunk(people, CHUNK_RECOMMENDED_PARAMETERS);
 
     ChunkTable ages[1] = { NOT_A_CHUNK_TABLE };
     DEBUG_ASSERT_NDEBUG_EXECUTE(
@@ -512,8 +435,7 @@ END_TEST_CTBL:
     DEBUG_ABORT_IF(!free_ctbl(scores))
     NDEBUG_EXECUTE(free_ctbl(scores))
 
-    DEBUG_ABORT_IF(!free_chunk(people))
-    NDEBUG_EXECUTE(free_chunk(people))
+    free_chunk(people);
 
     #undef EXAM_COUNT
     #undef PEOPLE_COUNT
