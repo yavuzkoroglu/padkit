@@ -26,35 +26,49 @@
      * @def TERMINATE_ABORT
      *   Terminates program execution via abort().
      */
-    #define TERMINATE_ABORT {                   \
-        fprintf(                                \
-            stderr, "Abort in %s::%s():%d\n",   \
-            __FILE__, __func__, __LINE__        \
-        );                                      \
-        abort();                                \
-    }
+    #ifndef NDEBUG
+        #define TERMINATE_ABORT {                   \
+            fprintf(                                \
+                stderr, "Abort in %s::%s():%d\n",   \
+                __FILE__, __func__, __LINE__        \
+            );                                      \
+            abort();                                \
+        }
+    #else
+        #define TERMINATE_ABORT {                   \
+            fprintf(stderr, "Abort\n");             \
+            abort();                                \
+        }
+    #endif
 
     /**
      * @def TERMINATE_ABORT_MSG
      *   Prints an abort message and then terminates program execution via abort().
      */
-    #define TERMINATE_ABORT_MSG(...) {          \
-        fprintf(stderr, __VA_ARGS__);           \
-        fputs("\n", stderr);                    \
-        TERMINATE_ABORT                         \
+    #define TERMINATE_ABORT_MSG(...) {              \
+        fprintf(stderr, __VA_ARGS__);               \
+        fputs("\n", stderr);                        \
+        TERMINATE_ABORT                             \
     }
 
     /**
      * @def TERMINATE_ERROR
      *   Terminates program execution via exit(EXIT_FAILURE).
      */
-    #define TERMINATE_ERROR {                   \
-        fprintf(                                \
-            stderr, "Error in %s::%s():%d\n",   \
-            __FILE__, __func__, __LINE__        \
-        );                                      \
-        exit(EXIT_FAILURE);                     \
-    }
+    #ifndef NDEBUG
+        #define TERMINATE_ERROR {                   \
+            fprintf(                                \
+                stderr, "Error in %s::%s():%d\n",   \
+                __FILE__, __func__, __LINE__        \
+            );                                      \
+            exit(EXIT_FAILURE);                     \
+        }
+    #else
+        #define TERMINATE_ERROR {                   \
+            fprintf(stderr, "Error\n");             \
+            exit(EXIT_FAILURE);                     \
+        }
+    #endif
 
     /**
      * @def TERMINATE_ERROR_MSG
