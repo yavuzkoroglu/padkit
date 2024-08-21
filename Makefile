@@ -43,7 +43,6 @@ include/padkit.h: ;                                                         @\
     echo ' */'                                          >> include/padkit.h; \
     echo '#ifndef PADKIT_H'                             >> include/padkit.h; \
     echo '    #define PADKIT_H'                         >> include/padkit.h; \
-    echo '    #include "padkit/bliterals.h"'            >> include/padkit.h; \
     echo '    #include "padkit/chunkset.h"'             >> include/padkit.h; \
     echo '    #include "padkit/chunktable.h"'           >> include/padkit.h; \
     echo '    #include "padkit/circbuff.h"'             >> include/padkit.h; \
@@ -121,7 +120,6 @@ obj/padkit/circbuff.o: obj/padkit       \
     ; ${COMPILE} src/padkit/circbuff.c -c -o obj/padkit/circbuff.o
 
 obj/padkit/graphmatrix.o: obj/padkit    \
-    include/padkit/bliterals.h          \
     include/padkit/debug.h              \
     include/padkit/graphmatrix.h        \
     include/padkit/memalloc.h           \

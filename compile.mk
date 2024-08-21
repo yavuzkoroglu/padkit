@@ -10,8 +10,6 @@ MODE=debug
 
 PADKIT_VERSION=1.1beta
 
-STD=c99
-
 ifeq (${OS},Darwin)
 DYNAMIC_LIB_FLAGS=-dynamiclib -fvisibility="default"
 ARCH=$(shell uname -m)
@@ -25,6 +23,12 @@ DYNAMIC_LIB_FLAGS=-shared -fPIC
 else
 DYNAMIC_LIB_FLAGS=-shared
 endif
+endif
+
+ifeq (${CC},clang)
+STD=c23
+else
+STD=c2x
 endif
 
 ifeq (${MODE},debug)
@@ -43,6 +47,8 @@ SILENCED=                               \
     -Wno-implicit-fallthrough           \
     -Wno-unsafe-buffer-usage            \
     -Wno-disabled-macro-expansion       \
+    -Wno-pre-c23-compat                 \
+    -Wno-gnu-binary-literal             \
     -Wno-switch-default
 ARGS=${ARCH_ARGS} ${FLAGS} -Weverything ${SILENCED} -Iinclude ${STDLIBS}
 else
