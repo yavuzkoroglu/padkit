@@ -5,7 +5,6 @@
  */
 #ifndef STACK_H
     #define STACK_H
-    #include <stdbool.h>
     #include <stddef.h>
     #include <stdint.h>
     #include <stdio.h>
@@ -113,7 +112,7 @@
      *
      * @return A pointer to an object.
      */
-    void* peekTop_stack(Stack const* const stack);
+    void* peekTop_stack(Stack const stack[static const 1]);
 
     /**
      * @brief Pops the top element in a Stack.

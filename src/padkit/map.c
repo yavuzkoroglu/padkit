@@ -42,7 +42,6 @@ uint32_t binarySearchRightmostKey_map(Map const map[static const 1], uint32_t co
 }
 
 void constructEmpty_map(Map map[static const 1], uint32_t const initial_cap) {
-    DEBUG_ERROR_IF(map == NULL)
     DEBUG_ERROR_IF(initial_cap == 0)
     DEBUG_ERROR_IF(initial_cap == UINT32_MAX)
 
@@ -87,8 +86,7 @@ void insert_map(Map map[static const 1], uint32_t const key_id, Value const valu
 }
 
 bool isValid_map(Map const map[static const 1]) {
-    return map != NULL            &&
-           map->cap != 0          &&
+    return map->cap != 0          &&
            map->cap != UINT32_MAX &&
            map->size <= map->cap  &&
            map->mappings != NULL;

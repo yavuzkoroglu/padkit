@@ -23,7 +23,6 @@ uint32_t add_chunk(
     uint64_t const n
 ) {
     DEBUG_ASSERT(isValid_chunk(chunk))
-    DEBUG_ERROR_IF(str == NULL)
     DEBUG_ASSERT(strlen(str) >= (size_t)n)
 
     uint32_t const id     = chunk->nStrings++;
@@ -51,7 +50,6 @@ char const* append_chunk(
     uint64_t const n
 ) {
     DEBUG_ASSERT(isValid_chunk(chunk))
-    DEBUG_ERROR_IF(str == NULL)
     DEBUG_ASSERT(strlen(str) >= (size_t)n)
 
     DEBUG_EXECUTE(size_t const sz_chunk = (size_t)chunk->len)
@@ -149,7 +147,6 @@ void constructEmpty_chunk(
     uint64_t const initial_cap,
     uint32_t const initial_stringsCap
 ) {
-    DEBUG_ERROR_IF(chunk == NULL)
     DEBUG_ERROR_IF(initial_cap == 0)
     DEBUG_ERROR_IF(initial_cap == UINT64_MAX)
     DEBUG_ERROR_IF(initial_stringsCap == 0)
@@ -228,7 +225,6 @@ uint32_t fromStream_chunk(
     char const delimeters[]
 ) {
     DEBUG_ASSERT(isValid_chunk(chunk))
-    DEBUG_ERROR_IF(stream == NULL)
 
     if (delimeters == NULL) delimeters = defaultDelimeters;
 
@@ -243,7 +239,6 @@ uint32_t fromStream_chunk(
 
 uint32_t fromStreamAsWhole_chunk(Chunk chunk[static const 1], FILE stream[static const 1]) {
     DEBUG_ASSERT(isValid_chunk(chunk))
-    DEBUG_ERROR_IF(stream == NULL)
 
     uint32_t const str_id = add_chunk(chunk, "", 0);
     if (fseek(stream, 0L, SEEK_END) != 0)
@@ -286,8 +281,7 @@ char const* getLast_chunk(Chunk const chunk[static const 1]) {
 }
 
 bool isValid_chunk(Chunk const chunk[static const 1]) {
-    return chunk != NULL                            &&
-           chunk->cap != 0                          &&
+    return chunk->cap != 0                          &&
            chunk->cap != UINT64_MAX                 &&
            chunk->stringsCap != 0                   &&
            chunk->stringsCap != UINT32_MAX          &&

@@ -37,9 +37,18 @@
 
 typedef void(*ParseFunction)(JSONParser[static const 1]);
 
-void emptyNumberEvent_jsonp(JSONParser jp[static const 1], double const number) {}
-void emptyStringEvent_jsonp(JSONParser jp[static const 1], char const string[static const 1], size_t const len) {}
-void emptyVoidEvent_jsonp(JSONParser jp[static const 1]) {}
+void emptyNumberEvent_jsonp(
+    [[maybe_unused]] JSONParser jp[static const 1],
+    [[maybe_unused]] double const number
+) {}
+void emptyStringEvent_jsonp(
+    [[maybe_unused]] JSONParser jp[static const 1],
+    [[maybe_unused]] char const string[static const 1],
+    [[maybe_unused]] size_t const len
+) {}
+void emptyVoidEvent_jsonp(
+    [[maybe_unused]] JSONParser jp[static const 1]
+) {}
 
 static void err_jp(JSONParser jp[static const 1]);
 static void s00_jp(JSONParser jp[static const 1]);
@@ -859,9 +868,6 @@ void construct_jsonp(
     JSONParserVoidEvent     eventAtValueEnd,
     JSONParserVoidEvent     eventAtValueStart
 ) {
-    DEBUG_ERROR_IF(jsonParser == NULL)
-    DEBUG_ERROR_IF(inputStream == NULL)
-
     jsonParser->inputStream   = inputStream;
     jsonParser->stack_cap     = JSON_PARSER_INITIAL_STACK_CAP;
     jsonParser->stack_size    = 0;
@@ -895,7 +901,6 @@ void free_jsonp(JSONParser jsonParser[static const 1]) {
 }
 
 bool isValid_jsonp(JSONParser const jsonParser[static const 1]) {
-    if (jsonParser == NULL)                             return 0;
     if (jsonParser->inputStream == NULL)                return 0;
     if (jsonParser->stack == NULL)                      return 0;
     if (jsonParser->stack_cap == 0)                     return 0;

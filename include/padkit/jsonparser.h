@@ -5,7 +5,6 @@
  */
 #ifndef JSONPARSER_H
     #define JSONPARSER_H
-    #include <stdbool.h>
     #include <stdio.h>
 
     /**
@@ -178,7 +177,10 @@
      * @param[in,out] jsonParser A constant non-null pointer to at least one JSONParser.
      * @param[in]         number A constant double-precision floating-point number.
      */
-    void emptyNumberEvent_jsonp(JSONParser jsonParser[static const 1], double const number);
+    void emptyNumberEvent_jsonp(
+        [[maybe_unused]] JSONParser jsonParser[static const 1],
+        [[maybe_unused]] double const number
+    );
 
     /**
      * @brief An empty function that does nothing whenever a JSONParser raises a corresponding event.
@@ -188,9 +190,9 @@
      * @param[in]            len A constant size.
      */
     void emptyStringEvent_jsonp(
-        JSONParser jsonParser[static const 1],
-        char const string[static const 1],
-        size_t const len
+        [[maybe_unused]] JSONParser jsonParser[static const 1],
+        [[maybe_unused]] char const string[static const 1],
+        [[maybe_unused]] size_t const len
     );
 
     /**
@@ -198,7 +200,9 @@
      *
      * @param[in,out] jsonParser A constant non-null pointer to at least one JSONParser.
      */
-    void emptyVoidEvent_jsonp(JSONParser jsonParser[static const 1]);
+    void emptyVoidEvent_jsonp(
+        [[maybe_unused]] JSONParser jsonParser[static const 1]
+    );
 
     typedef void(*JSONParserNumberEvent)(JSONParser jsonParser[static const 1], double const number);
     typedef void(*JSONParserStringEvent)(

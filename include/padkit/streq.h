@@ -5,7 +5,6 @@
  */
 #ifndef STREQ_H
     #define STREQ_H
-    #include <stdbool.h>
     #include <stddef.h>
 
     /**

@@ -33,7 +33,6 @@ void constructEmpty_cbuff(
     size_t const element_size_in_bytes,
     uint32_t const initial_cap
 ) {
-    DEBUG_ERROR_IF(buffer == NULL)
     DEBUG_ERROR_IF(element_size_in_bytes == 0)
     DEBUG_ERROR_IF(element_size_in_bytes == SIZE_MAX)
     DEBUG_ERROR_IF(initial_cap == 0)
@@ -100,7 +99,6 @@ void* get_cbuff(CircularBuffer const buffer[static const 1], uint32_t const elem
 }
 
 bool isValid_cbuff(CircularBuffer const buffer[static const 1]) {
-    if (buffer == NULL)                                 return 0;
     if (buffer->element_size_in_bytes == 0)             return 0;
     if (buffer->element_size_in_bytes == UINT64_MAX)    return 0;
     if (buffer->cap == 0)                               return 0;

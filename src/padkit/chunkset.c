@@ -72,7 +72,6 @@ static void adjust(ChunkSet set[static const 1]) {
 
 uint32_t addKey_cset(ChunkSet set[static const 1], char const key[static const 1], uint64_t const n) {
     DEBUG_ASSERT(isValid_cset(set))
-    DEBUG_ERROR_IF(key == NULL)
     DEBUG_ASSERT((size_t)n <= strlen(key))
 
     Chunk* const chunk = (Chunk*)set;
@@ -115,7 +114,6 @@ void constructEmpty_cset(
     ChunkSet set[static const 1], uint64_t const initial_cap,
     uint32_t const initial_stringsCap, uint32_t const loadPercent
 ) {
-    DEBUG_ERROR_IF(set == NULL)
     DEBUG_ERROR_IF(loadPercent == 0)
 
     constructEmpty_chunk((Chunk*)set, initial_cap, initial_stringsCap);
@@ -158,7 +156,6 @@ uint32_t getKeyCount_cset(ChunkSet const set[static const 1]) {
 
 uint32_t getKeyId_cset(ChunkSet const set[static const 1], char const key[static const 1], uint64_t const n) {
     DEBUG_ASSERT(isValid_cset(set))
-    DEBUG_ERROR_IF(key == NULL)
     DEBUG_ASSERT((size_t)n <= strlen(key))
 
     Chunk const* const chunk = (Chunk const*)set;

@@ -5,7 +5,6 @@
  */
 #ifndef CIRCBUFF_H
     #define CIRCBUFF_H
-    #include <stdbool.h>
     #include <stddef.h>
     #include <stdint.h>
     #include <stdio.h>

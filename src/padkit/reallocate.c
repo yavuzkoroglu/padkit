@@ -13,10 +13,9 @@
 #include "padkit/reallocate.h"
 
 void* reallocate(
-    void* ptrptr[static const 1], size_t const old_element_count,
+    void* ptrptr[static const 1], [[maybe_unused]] size_t const old_element_count,
     size_t const new_element_count, size_t const element_size
 ) {
-    DEBUG_ERROR_IF(ptrptr == NULL)
     DEBUG_ERROR_IF(*ptrptr == NULL)
     DEBUG_ERROR_IF(old_element_count == 0)
     DEBUG_ERROR_IF(element_size == 0)
@@ -37,7 +36,6 @@ void* recalloc(
     void* ptrptr[static const 1], size_t const old_element_count,
     size_t const new_element_count, size_t const element_size
 ) {
-    DEBUG_ERROR_IF(ptrptr == NULL)
     DEBUG_ERROR_IF(*ptrptr == NULL)
     DEBUG_ERROR_IF(old_element_count == 0)
     DEBUG_ERROR_IF(element_size == 0)

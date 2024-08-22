@@ -6,7 +6,6 @@
  */
 #ifndef VALUE_H
     #define VALUE_H
-    #include <stdbool.h>
     #include <stdint.h>
 
     typedef union value_t_body {

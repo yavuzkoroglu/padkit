@@ -5,7 +5,6 @@
  */
 #ifndef OVERLAP_H
     #define OVERLAP_H
-    #include <stdbool.h>
     #include <stddef.h>
 
     /**
@@ -16,7 +15,7 @@
      *
      * @param[in]  p0 A constant pointer to a constant object.
      * @param[in] sz0 A constant size.
-     * @param[in] p1 A constant pointer to a constant object.
+     * @param[in]  p1 A constant pointer to a constant object.
      * @param[in] sz1 A constant size.
      *
      * @return A Boolean value.

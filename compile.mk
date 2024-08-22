@@ -28,7 +28,7 @@ endif
 ifeq (${CC},clang)
 STD=c23
 else
-STD=c2x
+STD=gnu23
 endif
 
 ifeq (${MODE},debug)
@@ -41,12 +41,9 @@ ifeq (${CC},clang)
 SILENCED=                               \
     -Wno-poison-system-directories      \
     -Wno-declaration-after-statement    \
-    -Wno-padded -Wno-unused-parameter   \
+    -Wno-padded                         \
     -Wno-unknown-warning-option         \
-    -Wno-missing-noreturn               \
-    -Wno-implicit-fallthrough           \
     -Wno-unsafe-buffer-usage            \
-    -Wno-disabled-macro-expansion       \
     -Wno-pre-c23-compat                 \
     -Wno-gnu-binary-literal             \
     -Wno-switch-default
@@ -55,11 +52,6 @@ else
 SILENCED=                               \
     -Wno-unused-parameter               \
     -Wno-old-style-declaration          \
-    -Wno-unknown-warning-option         \
-    -Wno-missing-noreturn               \
-    -Wno-implicit-fallthrough           \
-    -Wno-nullability-completeness       \
-    -Wno-disabled-macro-expansion       \
     -Wno-switch-default
 ARGS=${ARCH_ARGS} ${FLAGS} -Wall -Wextra ${SILENCED} -Iinclude ${STDLIBS}
 endif

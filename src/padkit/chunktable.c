@@ -61,11 +61,10 @@ static void adjust(ChunkTable tbl[static const 1], Chunk const chunk[static cons
 }
 
 bool isValid_cte(ChunkTableEntry const entry[static const 1]) {
-    return entry && entry->key_id != UINT32_MAX;
+    return entry->key_id != UINT32_MAX;
 }
 
 void constructEmpty_ctbl(ChunkTable tbl[static const 1], uint32_t const initial_cap, uint32_t const loadPercent) {
-    DEBUG_ERROR_IF(tbl == NULL)
     DEBUG_ERROR_IF(initial_cap == 0)
     DEBUG_ASSERT(initial_cap < UINT32_MAX / 100)
     DEBUG_ERROR_IF(loadPercent == 0)
@@ -107,7 +106,6 @@ ChunkTableEntry* get_ctbl(
 ) {
     DEBUG_ASSERT(isValid_ctbl(tbl))
     DEBUG_ASSERT(isValid_chunk(chunk))
-    DEBUG_ERROR_IF(key == NULL)
 
     uint32_t const row_id = hash_str(key, key_len) % tbl->nRows;
     if (tbl->rows[row_id] == NULL) return NULL;
@@ -144,7 +142,6 @@ ChunkTableEntry* getExact_ctbl(
 ) {
     DEBUG_ASSERT(isValid_ctbl(tbl))
     DEBUG_ASSERT(isValid_chunk(chunk))
-    DEBUG_ERROR_IF(key == NULL)
     DEBUG_ASSERT(strlen(key) >= key_len)
 
     uint32_t const row_id = hash_str(key, key_len) % tbl->nRows;
@@ -243,8 +240,7 @@ int insert_ctbl(
 }
 
 bool isValid_ctbl(ChunkTable const tbl[static const 1]) {
-    return tbl != NULL                     &&
-           tbl->capKeys > 0                &&
+    return tbl->capKeys > 0                &&
            tbl->capKeys < UINT32_MAX / 100 &&
            tbl->nKeys <= tbl->capKeys      &&
            tbl->keys != NULL               &&
@@ -260,10 +256,8 @@ void construct_ctblitr(
     ChunkTable const tbl[static const 1], Chunk const chunk[static const 1],
     char const key[static const 1], uint64_t const key_len
 ) {
-    DEBUG_ERROR_IF(itr == NULL)
     DEBUG_ASSERT(isValid_ctbl(tbl))
     DEBUG_ASSERT(isValid_chunk(chunk))
-    DEBUG_ERROR_IF(key == NULL)
     DEBUG_ASSERT(strlen(key) >= key_len)
 
     itr->tbl        = tbl;
@@ -274,8 +268,7 @@ void construct_ctblitr(
 }
 
 bool isValid_ctblitr(CTblConstIterator const itr[static const 1]) {
-    return  itr != NULL                 &&
-            isValid_ctbl(itr->tbl)      &&
+    return  isValid_ctbl(itr->tbl)      &&
             isValid_chunk(itr->chunk)   &&
             itr->key != NULL            &&
             itr->key_len != UINT64_MAX;

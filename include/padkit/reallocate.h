@@ -5,7 +5,6 @@
  */
 #ifndef REALLOCATE_H
     #define REALLOCATE_H
-    #include <stdbool.h>
 
     /**
      * @def REALLOC_ERROR

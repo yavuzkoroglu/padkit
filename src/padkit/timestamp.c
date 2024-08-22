@@ -10,7 +10,7 @@
 
 char const* get_timestamp(void) {
     static char ts[TS_LEN + 1];
-    time_t const curtime = time(NULL);
+    time_t const curtime = time(nullptr);
     struct tm* const ltm = localtime(&curtime);
 
     DEBUG_ASSERT(strftime(ts, sizeof(ts), TS_FMT, ltm) == sizeof(ts) - 1)

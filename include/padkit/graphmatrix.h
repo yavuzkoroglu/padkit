@@ -5,7 +5,6 @@
  */
 #ifndef GRAPHMATRIX_H
     #define GRAPHMATRIX_H
-    #include <stdbool.h>
     #include <stdint.h>
 
     /**
