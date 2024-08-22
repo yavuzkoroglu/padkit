@@ -18,7 +18,7 @@ Portable Application (App.) Development (Dev.) KIT (PADKIT) is a library of C ma
 
 ##
 
-# A. Straight to Business
+# A. Straight to Business<a id='A'></a>
 
 This chapter comprises three sections. First, the prerequisites necessary to build and use PADKIT. Then, the steps to build the PADKIT C99 and C23 branches in MacOS, Linux, and Windows platforms. Finally, some examples to demonstrate how to practically use PADKIT.
 
@@ -27,7 +27,7 @@ This chapter comprises three sections. First, the prerequisites necessary to bui
 To use PADKIT, you only need three things:
 
 1. A Terminal-Supporting Platform (MacOS, Linux, or Windows)
-2. A Text Editor (nano, or [Notepad++][1])
+2. A Text Editor (e.g. nano, or [Notepad++][1] [^1] )
 
 ```
 git clone -b C23 https://github.com/yavuzkoroglu/padkit.git 
@@ -37,6 +37,5 @@ make
 
 # References
 
-\[1\]: D. Ho, "Nodepad++", https://notepad-plus-plus.org/downloads/ (last accessed -- `[2024-08-23 01:17:09]`)
-
+[^1]: D. Ho, "Nodepad++", https://notepad-plus-plus.org/downloads/ (last accessed -- `[2024-08-23 01:17:09]`)
 [1]: https://notepad-plus-plus.org/downloads/
