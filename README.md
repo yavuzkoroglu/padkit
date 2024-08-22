@@ -27,7 +27,7 @@ This chapter comprises three sections. First, the prerequisites necessary to bui
 To use PADKIT, you only need three things:
 
 1. A Terminal-Supporting Platform (MacOS, Linux, or Windows)
-2. A Text Editor (e.g. nano, or [Notepad++][1] [^1] )
+2. A Text Editor (e.g. nano, or Notepad++[^1] )
 
 ```
 git clone -b C23 https://github.com/yavuzkoroglu/padkit.git 
