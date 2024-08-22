@@ -1,4 +1,4 @@
-# PADKIT: Portable App. Dev. KIT for C 
+# PADKIT: Portable App. Dev. KIT for C99
 
 ## How to Build
 
