@@ -8,41 +8,53 @@
     #include "padkit/chunk.h"
 
     /**
+     * @def NOT_A_CHUNK_TABLE
+     *   A special ChunkTable that  cannot pass the isValid_ctbl() test.
+     */
+    #define NOT_A_CHUNK_TABLE                           ((ChunkTable){ 0, 0, NULL, 0, 0, NULL, NULL, NULL })
+
+    /**
      * @def NOT_A_CHUNK_TABLE_ENTRY
      *   A special ChunkTableEntry denoting a NOT-ChunkTableEntry.
      */
-    #define NOT_A_CHUNK_TABLE_ENTRY                 ((ChunkTableEntry){ UINT32_MAX, UINT32_MAX })
+    #define NOT_A_CHUNK_TABLE_ENTRY                     ((ChunkTableEntry){ UINT32_MAX, UINT32_MAX })
 
     /**
-     * @def NOT_A_CHUNK_TABLE
-     *   A special ChunkTable denoting a NOT-ChunkTable. This ChunkTable cannot pass the isValid_ctbl() test.
+     * @def NOT_A_CHUNK_TABLE_ITR
+     *   A special CTblConstIterator denoting a NOT-CTblConstIterator.
      */
-    #define NOT_A_CHUNK_TABLE                       ((ChunkTable){ 0, 0, NULL, 0, 0, NULL, NULL, NULL })
+    #define NOT_A_CHUNK_TABLE_ITR                       ((CTblConstIterator){ NULL, NULL, NULL, 0, NULL })
 
     /**
      * @def CHUNK_TABLE_RECOMMENDED_INITIAL_CAP
      *   This initial capacity should work nicely in most situations.
      */
-    #define CHUNK_TABLE_RECOMMENDED_INITIAL_CAP     (BUFSIZ)
+    #ifndef CHUNK_TABLE_RECOMMENDED_INITIAL_CAP
+        #define CHUNK_TABLE_RECOMMENDED_INITIAL_CAP     (BUFSIZ)
+    #endif
 
     /**
      * @def CHUNK_TABLE_RECOMMENDED_LOAD_PERCENT
      *   This load percent should work nicely in most situations.
      */
-    #define CHUNK_TABLE_RECOMMENDED_LOAD_PERCENT    (75)
+    #ifndef CHUNK_TABLE_RECOMMENDED_LOAD_PERCENT
+        #define CHUNK_TABLE_RECOMMENDED_LOAD_PERCENT    (75)
+    #endif
 
     /**
      * @def CHUNK_TABLE_RECOMMENDED_PARAMETERS
      *   Recommended parameters for a typical ChunkTable
      */
-    #define CHUNK_TABLE_RECOMMENDED_PARAMETERS      \
+    #define CHUNK_TABLE_RECOMMENDED_PARAMETERS          \
         CHUNK_TABLE_RECOMMENDED_INITIAL_CAP, CHUNK_TABLE_RECOMMENDED_LOAD_PERCENT
 
     /**
      * @def CHUNK_TABLE_INITIAL_ROW_CAP
      *   This initial capacity should work nicely at all times, we should NOT expect too many collisions.
      */
-    #define CHUNK_TABLE_INITIAL_ROW_CAP             (4)
+    #ifndef CHUNK_TABLE_INITIAL_ROW_CAP
+        #define CHUNK_TABLE_INITIAL_ROW_CAP             (4)
+    #endif
 
     /**
      * @struct ChunkTableEntry
@@ -177,10 +189,9 @@
     uint32_t getKeyCount_ctbl(ChunkTable const tbl[static const 1]);
 
     /* Return values for insert_ctbl */
-    #define CTBL_INSERT_ERROR               (0)
-    #define CTBL_INSERT_OK                  (1)
-    #define CTBL_INSERT_DUPLICATE_ENTRY     (-1)
-    #define CTBL_INSERT_DUPLICATE_KEY       (-2)
+    #define CTBL_INSERT_OK                  (0)
+    #define CTBL_INSERT_DUPLICATE_ENTRY     (1)
+    #define CTBL_INSERT_DUPLICATE_KEY       (2)
 
     /* Values for ctbl_insert_behavior */
     #define CTBL_BEHAVIOR_MULTIPLE          (0)

@@ -16,51 +16,52 @@
 static uint32_t determineNRows(uint32_t const key_count, uint32_t const loadPercent) {
     DEBUG_ASSERT(key_count < UINT32_MAX / 100)
     DEBUG_ERROR_IF(loadPercent == 0)
+    {
+        uint32_t nRows = (key_count > loadPercent)
+            ? (key_count / loadPercent) * 100
+            : (key_count * 100) / loadPercent;
 
-    uint32_t nRows = (key_count > loadPercent)
-        ? (key_count / loadPercent) * 100
-        : (key_count * 100) / loadPercent;
+        if (nRows < key_count) nRows = key_count;
+        if (nRows < 11)        nRows = 11;
 
-    if (nRows < key_count) nRows = key_count;
-    if (nRows < 11)        nRows = 11;
-
-    return nextPrime(nRows);
+        return nextPrime(nRows);
+    }
 }
 
 static void adjust(ChunkTable tbl[static const 1], Chunk const chunk[static const 1]) {
     DEBUG_ASSERT(isValid_ctbl(tbl))
     DEBUG_ASSERT(isValid_chunk(chunk))
-
-    uint32_t const newNRows = determineNRows(tbl->nKeys, tbl->loadPercent);
-
-    if (newNRows <= tbl->nRows)
-        return;
-
-    ChunkTable newTbl[1] = { NOT_A_CHUNK_TABLE };
-    constructEmpty_ctbl(newTbl, tbl->capKeys, tbl->loadPercent);
-
-    for (uint32_t row_id = 0; row_id < tbl->nRows; row_id++) {
-        if (tbl->rows[row_id] == NULL) continue;
-        ChunkTableEntry const* const entry = tbl->rows[row_id] + 1;
-        for (uint32_t n = tbl->rowSizes[row_id]; n > 0; n--) {
-            #ifndef NDEBUG
-                switch (insert_ctbl(newTbl, chunk, entry->key_id, entry->value, CTBL_BEHAVIOR_MULTIPLE)) {
-                    case CTBL_INSERT_ERROR:
-                        TERMINATE_ERROR_MSG("CTBL_INSERT_ERROR")
-                    case CTBL_INSERT_DUPLICATE_ENTRY:
-                        TERMINATE_ERROR_MSG("CTBL_INSERT_DUPLICATE_ENTRY")
-                    case CTBL_INSERT_OK:
-                    default:
-                        break;
-                }
-            #else
-                insert_ctbl(newTbl, chunk, entry->key_id, entry->value, CTBL_BEHAVIOR_MULTIPLE);
-            #endif
-        }
+    {
+        uint32_t const newNRows = determineNRows(tbl->nKeys, tbl->loadPercent);
+        if (newNRows <= tbl->nRows) return;
     }
 
-    free_ctbl(tbl);
-    tbl[0] = newTbl[0];
+    {
+        ChunkTable newTbl[1] = { NOT_A_CHUNK_TABLE };
+        constructEmpty_ctbl(newTbl, tbl->capKeys, tbl->loadPercent);
+
+        for (uint32_t row_id = 0; row_id < tbl->nRows; row_id++) {
+            if (tbl->rows[row_id] != NULL) {
+                ChunkTableEntry const* const entry = tbl->rows[row_id] + 1;
+                for (uint32_t n = tbl->rowSizes[row_id]; n > 0; n--) {
+                    #ifndef NDEBUG
+                        switch (insert_ctbl(newTbl, chunk, entry->key_id, entry->value, CTBL_BEHAVIOR_MULTIPLE)) {
+                            case CTBL_INSERT_DUPLICATE_ENTRY:
+                                TERMINATE_ERROR_MSG("CTBL_INSERT_DUPLICATE_ENTRY")
+                            case CTBL_INSERT_OK:
+                            default:
+                                break;
+                        }
+                    #else
+                        insert_ctbl(newTbl, chunk, entry->key_id, entry->value, CTBL_BEHAVIOR_MULTIPLE);
+                    #endif
+                }
+            }
+        }
+
+        free_ctbl(tbl);
+        tbl[0] = newTbl[0];
+    }
 }
 
 bool isValid_cte(ChunkTableEntry const entry[static const 1]) {
@@ -109,19 +110,20 @@ ChunkTableEntry* get_ctbl(
 ) {
     DEBUG_ASSERT(isValid_ctbl(tbl))
     DEBUG_ASSERT(isValid_chunk(chunk))
+    {
+        uint32_t const row_id = hash_str(key, key_len) % tbl->nRows;
+        if (tbl->rows[row_id] == NULL) return NULL;
 
-    uint32_t const row_id = hash_str(key, key_len) % tbl->nRows;
-    if (tbl->rows[row_id] == NULL) return NULL;
+        for (
+            ChunkTableEntry* candidate = tbl->rows[row_id] + tbl->rowSizes[row_id];
+            isValid_cte(candidate);
+            candidate--
+        ) {
+            char const* const candidate_key = get_chunk(chunk, candidate->key_id);
+            if (candidate_key == NULL) continue;
 
-    for (
-        ChunkTableEntry* candidate = tbl->rows[row_id] + tbl->rowSizes[row_id];
-        isValid_cte(candidate);
-        candidate--
-    ) {
-        char const* const candidate_key = get_chunk(chunk, candidate->key_id);
-        if (candidate_key == NULL) continue;
-
-        if (str_eq_n(key, candidate_key, key_len)) return candidate;
+            if (str_eq_n(key, candidate_key, key_len)) return candidate;
+        }
     }
 
     return NULL;
@@ -129,14 +131,12 @@ ChunkTableEntry* get_ctbl(
 
 uint32_t getEntryCount_ctbl(ChunkTable const tbl[static const 1]) {
     DEBUG_ASSERT(isValid_ctbl(tbl))
-
-    uint32_t count = 0;
-    for (
-        uint32_t row_id = 0;
-        row_id < tbl->nRows;
-        row_id++
-    ) count += tbl->rowSizes[row_id];
-    return count;
+    {
+        uint32_t count = 0;
+        for (uint32_t row_id = 0; row_id < tbl->nRows; row_id++)
+            count += tbl->rowSizes[row_id];
+        return count;
+    }
 }
 
 ChunkTableEntry* getExact_ctbl(
@@ -146,20 +146,21 @@ ChunkTableEntry* getExact_ctbl(
     DEBUG_ASSERT(isValid_ctbl(tbl))
     DEBUG_ASSERT(isValid_chunk(chunk))
     DEBUG_ASSERT(strlen(key) >= key_len)
+    {
+        uint32_t const row_id = hash_str(key, key_len) % tbl->nRows;
+        if (tbl->rows[row_id] == NULL) return NULL;
 
-    uint32_t const row_id = hash_str(key, key_len) % tbl->nRows;
-    if (tbl->rows[row_id] == NULL) return NULL;
+        for (
+            ChunkTableEntry* candidate = tbl->rows[row_id] + tbl->rowSizes[row_id];
+            isValid_cte(candidate);
+            candidate--
+        ) {
+            char const* const candidate_key = get_chunk(chunk, candidate->key_id);
+            if (candidate_key == NULL) continue;
 
-    for (
-        ChunkTableEntry* candidate = tbl->rows[row_id] + tbl->rowSizes[row_id];
-        isValid_cte(candidate);
-        candidate--
-    ) {
-        char const* const candidate_key = get_chunk(chunk, candidate->key_id);
-        if (candidate_key == NULL) continue;
-
-        if (str_eq_n(key, candidate_key, key_len) && value == candidate->value)
-            return candidate;
+            if (str_eq_n(key, candidate_key, key_len) && value == candidate->value)
+                return candidate;
+        }
     }
 
     return NULL;
@@ -177,64 +178,66 @@ int insert_ctbl(
 ) {
     DEBUG_ASSERT(isValid_ctbl(tbl))
     DEBUG_ASSERT(isValid_chunk(chunk))
+    DEBUG_ASSERT(key_id < chunk->nStrings)
+    {
+        char const* const key = get_chunk(chunk, key_id);
+        uint64_t const key_len = strlen_chunk(chunk, key_id);
+        uint32_t const row_id  = hash_str(key, key_len) % tbl->nRows;
 
-    char const* const key = get_chunk(chunk, key_id);
-    if (key == NULL) return CTBL_INSERT_ERROR;
+        /* Initialize a new row if necessary. */
+        if (tbl->rows[row_id] == NULL) {
+            tbl->rowCaps[row_id] = CHUNK_TABLE_INITIAL_ROW_CAP;
+            tbl->rows[row_id] = mem_alloc(
+                (size_t)tbl->rowCaps[row_id] * sizeof(ChunkTableEntry)
+            );
+            tbl->rows[row_id][0] = NOT_A_CHUNK_TABLE_ENTRY;
+        }
 
-    uint64_t const key_len = strlen_chunk(chunk, key_id);
-    uint32_t const row_id  = hash_str(key, key_len) % tbl->nRows;
+        {
+            bool keyExists = 0;
+            for (
+                ChunkTableEntry* entry = tbl->rows[row_id] + tbl->rowSizes[row_id];
+                isValid_cte(entry);
+                entry--
+            ) {
+                char const* entry_key = get_chunk(chunk, entry->key_id);
+                if (str_eq_n(key, entry_key, key_len)) {
+                    keyExists = 1;
+                    switch (ctbl_insert_behavior) {
+                        case CTBL_BEHAVIOR_MULTIPLE:
+                            if (value == entry->value) return CTBL_INSERT_DUPLICATE_ENTRY;
+                            break;
+                        case CTBL_BEHAVIOR_REPLACE:
+                            entry->value = value;
+                            return CTBL_INSERT_DUPLICATE_KEY;
+                        default:
+                            return CTBL_INSERT_DUPLICATE_KEY;
+                    }
+                }
+            }
 
-    /* Initialize a new row if necessary. */
-    if (tbl->rows[row_id] == NULL) {
-        tbl->rowCaps[row_id] = CHUNK_TABLE_INITIAL_ROW_CAP;
-        tbl->rows[row_id] = mem_alloc(
-            (size_t)tbl->rowCaps[row_id] * sizeof(ChunkTableEntry)
-        );
-        tbl->rows[row_id][0] = NOT_A_CHUNK_TABLE_ENTRY;
-    }
+            if (!keyExists) {
+                /* Adjust the key cap if necessary. */
+                REALLOC_IF_NECESSARY(
+                    uint32_t, tbl->keys,
+                    uint32_t, tbl->capKeys, tbl->nKeys
+                )
 
-    bool keyExists = 0;
-    for (
-        ChunkTableEntry* entry = tbl->rows[row_id] + tbl->rowSizes[row_id];
-        isValid_cte(entry);
-        entry--
-    ) {
-        char const* entry_key = get_chunk(chunk, entry->key_id);
-        if (str_eq_n(key, entry_key, key_len)) {
-            keyExists = 1;
-            switch (ctbl_insert_behavior) {
-                case CTBL_BEHAVIOR_MULTIPLE:
-                    if (value == entry->value) return CTBL_INSERT_DUPLICATE_ENTRY;
-                    break;
-                case CTBL_BEHAVIOR_REPLACE:
-                    entry->value = value;
-                    return CTBL_INSERT_DUPLICATE_KEY;
-                default:
-                    return CTBL_INSERT_DUPLICATE_KEY;
+                /* Insert the key index. */
+                tbl->keys[tbl->nKeys++] = key_id;
             }
         }
-    }
 
-    if (!keyExists) {
-        /* Adjust the key cap if necessary. */
+        /* Adjust the cap if necessary. */
+        tbl->rowSizes[row_id]++;
         REALLOC_IF_NECESSARY(
-            uint32_t, tbl->keys,
-            uint32_t, tbl->capKeys, tbl->nKeys
+            ChunkTableEntry, tbl->rows[row_id],
+            uint32_t, tbl->rowCaps[row_id], tbl->rowSizes[row_id]
         )
 
-        /* Insert the key index. */
-        tbl->keys[tbl->nKeys++] = key_id;
+        /* Insert to the chunktable. */
+        tbl->rows[row_id][tbl->rowSizes[row_id]] = (ChunkTableEntry){ key_id, value };
     }
-
-    /* Adjust the cap if necessary. */
-    tbl->rowSizes[row_id]++;
-    REALLOC_IF_NECESSARY(
-        ChunkTableEntry, tbl->rows[row_id],
-        uint32_t, tbl->rowCaps[row_id], tbl->rowSizes[row_id]
-    )
-
-    /* Insert to the chunktable. */
-    tbl->rows[row_id][tbl->rowSizes[row_id]] = (ChunkTableEntry){ key_id, value };
 
     /* Adjust the # of rows. */
     adjust(tbl, chunk);
@@ -282,12 +285,14 @@ ChunkTableEntry const* next_ctblitr(CTblConstIterator itr[static const 1]) {
 
     if (!isValid_cte(itr->entry)) return NULL;
 
-    ChunkTableEntry const* const entry_to_be_returned = itr->entry;
-    while (isValid_cte(--itr->entry)) {
-        char const* const candidate_key = get_chunk(itr->chunk, itr->entry->key_id);
-        if (candidate_key != NULL && str_eq_n(itr->key, candidate_key, itr->key_len))
-            break;
-    }
+    {
+        ChunkTableEntry const* const entry_to_be_returned = itr->entry;
+        while (isValid_cte(--itr->entry)) {
+            char const* const candidate_key = get_chunk(itr->chunk, itr->entry->key_id);
+            if (candidate_key != NULL && str_eq_n(itr->key, candidate_key, itr->key_len))
+                break;
+        }
 
-    return entry_to_be_returned;
+        return entry_to_be_returned;
+    }
 }

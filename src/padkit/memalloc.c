@@ -10,11 +10,12 @@
 void* mem_alloc(size_t const size) {
     DEBUG_ERROR_IF(size == 0)
     DEBUG_ERROR_IF(size == SIZE_MAX)
+    {
+        void* const ptr = malloc(size);
+        if (ptr == NULL) MALLOC_ERROR
 
-    void* const ptr = malloc(size);
-    if (ptr == NULL) MALLOC_ERROR
-
-    return ptr;
+        return ptr;
+    }
 }
 
 void* mem_calloc(size_t const nmemb, size_t const size) {
@@ -22,9 +23,10 @@ void* mem_calloc(size_t const nmemb, size_t const size) {
     DEBUG_ERROR_IF(nmemb == SIZE_MAX)
     DEBUG_ERROR_IF(size == 0)
     DEBUG_ERROR_IF(size == SIZE_MAX)
+    {
+        void* const ptr = calloc(nmemb, size);
+        if (ptr == NULL) CALLOC_ERROR
 
-    void* const ptr = calloc(nmemb, size);
-    if (ptr == NULL) CALLOC_ERROR
-
-    return ptr;
+        return ptr;
+    }
 }

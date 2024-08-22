@@ -18,13 +18,14 @@ static uint32_t calculateNewCap_stack(Stack const stack[static const 1]);
 static uint32_t calculateNewCap_stack(Stack const stack[static const 1]) {
     DEBUG_ASSERT(isValid_stack(stack))
 
-    uint32_t newCap = stack->cap;
-    while (newCap <= stack->size) {
-        newCap <<= 1;
-        if (newCap <= stack->cap) return UINT32_MAX;
+    {
+        uint32_t newCap = stack->cap;
+        while (newCap <= stack->size) {
+            newCap <<= 1;
+            if (newCap <= stack->cap) return UINT32_MAX;
+        }
+        return newCap;
     }
-
-    return newCap;
 }
 
 void constructEmpty_stack(
@@ -114,9 +115,11 @@ void* popTop_stack(Stack stack[static const 1]) {
     DEBUG_ASSERT(isValid_stack(stack))
     DEBUG_ERROR_IF(stack->size == 0)
 
-    void* const ptr = get_stack(stack, stack->size - 1);
-    stack->size--;
-    return ptr;
+    {
+        void* const ptr = get_stack(stack, stack->size - 1);
+        stack->size--;
+        return ptr;
+    }
 }
 
 void* push_stack(Stack stack[static const 1], void const* const restrict ptr) {
@@ -139,9 +142,11 @@ void* pushBottom_stack(Stack stack[static const 1], void const* const restrict p
 void* pushTop_stack(Stack stack[static const 1], void const* const restrict ptr) {
     DEBUG_ASSERT(isValid_stack(stack))
 
-    DEBUG_EXECUTE(size_t const sz_stack   = (size_t)stack->cap * stack->element_size_in_bytes)
-    DEBUG_EXECUTE(size_t const sz_element = stack->element_size_in_bytes)
-    DEBUG_ERROR_IF(overlaps_ptr(stack->array, ptr, sz_stack, sz_element))
+    {
+        DEBUG_EXECUTE(size_t const sz_stack   = (size_t)stack->cap * stack->element_size_in_bytes)
+        DEBUG_EXECUTE(size_t const sz_element = stack->element_size_in_bytes)
+        DEBUG_ERROR_IF(overlaps_ptr(stack->array, ptr, sz_stack, sz_element))
+    }
 
     reallocIfNecessary_stack(stack); /* May invalidate ptr if stack->array and ptr overlap. */
 
@@ -171,19 +176,23 @@ void* pushZerosTop_stack(Stack stack[static const 1]) {
 void reallocIfNecessary_stack(Stack stack[static const 1]) {
     DEBUG_ASSERT(isValid_stack(stack))
 
-    uint32_t const newCap = calculateNewCap_stack(stack);
-    if (newCap == UINT32_MAX) REALLOC_ERROR
+    {
+        uint32_t const newCap = calculateNewCap_stack(stack);
+        if (newCap == UINT32_MAX) REALLOC_ERROR
 
-    if (newCap == stack->cap) return;
+        if (newCap == stack->cap) return;
 
-    void* const newArray = realloc(
-        stack->array,
-        (size_t)newCap * stack->element_size_in_bytes
-    );
-    if (newArray == NULL) REALLOC_ERROR
+        {
+            void* const newArray = realloc(
+                stack->array,
+                (size_t)newCap * stack->element_size_in_bytes
+            );
+            if (newArray == NULL) REALLOC_ERROR
 
-    stack->cap      = newCap;
-    stack->array    = newArray;
+            stack->cap      = newCap;
+            stack->array    = newArray;
+        }
+    }
 }
 
 void rotate_stack(Stack stack[static const 1], uint32_t n) {
@@ -202,20 +211,24 @@ void rotateDown_stack(Stack stack[static const 1], uint32_t n) {
     if ((n %= stack->size) == 0)    return;
 
     /* Divide stack->size into sz[0] and sz[1]. */
-    uint64_t const sz[2] = {
-        (uint64_t)n * (uint64_t)stack->element_size_in_bytes,
-        (uint64_t)(stack->size - n) * (uint64_t)stack->element_size_in_bytes
-    };
-    DEBUG_ERROR_IF(sz[0] < (uint64_t)n)
-    DEBUG_ERROR_IF(sz[0] < (uint64_t)stack->element_size_in_bytes)
-    DEBUG_ERROR_IF(sz[1] < (uint64_t)(stack->size - n))
-    DEBUG_ERROR_IF(sz[1] < (uint64_t)stack->element_size_in_bytes)
+    {
+        uint64_t const sz[2] = {
+            (uint64_t)n * (uint64_t)stack->element_size_in_bytes,
+            (uint64_t)(stack->size - n) * (uint64_t)stack->element_size_in_bytes
+        };
+        DEBUG_ERROR_IF(sz[0] < (uint64_t)n)
+        DEBUG_ERROR_IF(sz[0] < (uint64_t)stack->element_size_in_bytes)
+        DEBUG_ERROR_IF(sz[1] < (uint64_t)(stack->size - n))
+        DEBUG_ERROR_IF(sz[1] < (uint64_t)stack->element_size_in_bytes)
 
-    char* const buffer = mem_alloc((size_t)sz[0]);
-    memcpy(buffer, stack->array, (size_t)sz[0]);                /* Remember the sz[0] (bottom) part.*/
-    memmove(stack->array, stack->array + sz[0], (size_t)sz[1]); /* Shift down the sz[1] part.       */
-    memcpy(stack->array + sz[1], buffer, (size_t)sz[0]);        /* Put the sz[0] part at the top.   */
-    free(buffer);
+        {
+            char* const buffer = mem_alloc((size_t)sz[0]);
+            memcpy(buffer, stack->array, (size_t)sz[0]);                /* Remember the sz[0] (bottom) part.*/
+            memmove(stack->array, stack->array + sz[0], (size_t)sz[1]); /* Shift down the sz[1] part.       */
+            memcpy(stack->array + sz[1], buffer, (size_t)sz[0]);        /* Put the sz[0] part at the top.   */
+            free(buffer);
+        }
+    }
 }
 
 void rotateUp_stack(Stack stack[static const 1], uint32_t n) {
@@ -225,20 +238,24 @@ void rotateUp_stack(Stack stack[static const 1], uint32_t n) {
     if ((n %= stack->size) == 0)    return;
 
     /* Divide stack->size into sz[0] and sz[1]. */
-    uint64_t const sz[2] = {
-        (uint64_t)n * (uint64_t)stack->element_size_in_bytes,
-        (uint64_t)(stack->size - n) * (uint64_t)stack->element_size_in_bytes
-    };
-    DEBUG_ERROR_IF(sz[0] < (uint64_t)n)
-    DEBUG_ERROR_IF(sz[0] < (uint64_t)stack->element_size_in_bytes)
-    DEBUG_ERROR_IF(sz[1] < (uint64_t)(stack->size - n))
-    DEBUG_ERROR_IF(sz[1] < (uint64_t)stack->element_size_in_bytes)
+    {
+        uint64_t const sz[2] = {
+            (uint64_t)n * (uint64_t)stack->element_size_in_bytes,
+            (uint64_t)(stack->size - n) * (uint64_t)stack->element_size_in_bytes
+        };
+        DEBUG_ERROR_IF(sz[0] < (uint64_t)n)
+        DEBUG_ERROR_IF(sz[0] < (uint64_t)stack->element_size_in_bytes)
+        DEBUG_ERROR_IF(sz[1] < (uint64_t)(stack->size - n))
+        DEBUG_ERROR_IF(sz[1] < (uint64_t)stack->element_size_in_bytes)
 
-    char* const buffer = mem_alloc((size_t)sz[0]);
-    memcpy(buffer, stack->array + sz[1], (size_t)sz[0]);        /* Remember the sz[0] (top) part.   */
-    memmove(stack->array + sz[0], stack->array, (size_t)sz[1]); /* Shift up the sz[1] part.         */
-    memcpy(stack->array, buffer, (size_t)sz[0]);                /* Put the sz[0] part at the bottom.*/
-    free(buffer);
+        {
+            char* const buffer = mem_alloc((size_t)sz[0]);
+            memcpy(buffer, stack->array + sz[1], (size_t)sz[0]);        /* Remember the sz[0] (top) part.   */
+            memmove(stack->array + sz[0], stack->array, (size_t)sz[1]); /* Shift up the sz[1] part.         */
+            memcpy(stack->array, buffer, (size_t)sz[0]);                /* Put the sz[0] part at the bottom.*/
+            free(buffer);
+        }
+    }
 }
 
 void reverse_stack(Stack stack[static const 1]) {
@@ -246,37 +263,43 @@ void reverse_stack(Stack stack[static const 1]) {
 
     if (stack->size <= 1) return;
 
-    char* const buffer  = mem_alloc(stack->element_size_in_bytes);
-    char* bottom        = peekBottom_stack(stack);
-    char* top           = peekTop_stack(stack);
+    {
+        char* const buffer  = mem_alloc(stack->element_size_in_bytes);
+        char* bottom        = peekBottom_stack(stack);
+        char* top           = peekTop_stack(stack);
 
-    /* (bottom < top) is NOT UB because
-     * both belong to stack->array. */
-    while (bottom < top) {
-        memcpy(buffer, bottom, stack->element_size_in_bytes);
-        memcpy(bottom, top, stack->element_size_in_bytes);
-        memcpy(top, buffer, stack->element_size_in_bytes);
+        /* (bottom < top) is NOT UB because
+         * both belong to stack->array. */
+        while (bottom < top) {
+            memcpy(buffer, bottom, stack->element_size_in_bytes);
+            memcpy(bottom, top, stack->element_size_in_bytes);
+            memcpy(top, buffer, stack->element_size_in_bytes);
 
-        bottom += stack->element_size_in_bytes;
-        top -= stack->element_size_in_bytes;
+            bottom += stack->element_size_in_bytes;
+            top -= stack->element_size_in_bytes;
+        }
+        free(buffer);
     }
-    free(buffer);
 }
 
 void set_stack(Stack stack[static const 1], uint32_t const elementId, void const* const restrict ptr) {
     DEBUG_ASSERT(isValid_stack(stack))
     DEBUG_ASSERT(elementId < stack->size)
 
-    void* const dest = get_stack(stack, elementId);
-    if (dest == ptr) return;
+    {
+        void* const dest = get_stack(stack, elementId);
+        if (dest == ptr) return;
 
-    DEBUG_EXECUTE(size_t const sz_element = stack->element_size_in_bytes)
-    DEBUG_ERROR_IF(overlaps_ptr(dest, ptr, sz_element, sz_element))
+        {
+            DEBUG_EXECUTE(size_t const sz_element = stack->element_size_in_bytes)
+            DEBUG_ERROR_IF(overlaps_ptr(dest, ptr, sz_element, sz_element))
+        }
 
-    if (ptr == NULL)
-        memset(dest, 0, stack->element_size_in_bytes);
-    else
-        memcpy(dest, ptr, stack->element_size_in_bytes); /* UB if dest and ptr overlap. */
+        if (ptr == NULL)
+            memset(dest, 0, stack->element_size_in_bytes);
+        else
+            memcpy(dest, ptr, stack->element_size_in_bytes); /* UB if dest and ptr overlap. */
+    }
 }
 
 void setZeros_stack(Stack stack[static const 1], uint32_t const elementId) {

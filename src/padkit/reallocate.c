@@ -22,14 +22,18 @@ void* reallocate(
     DEBUG_ERROR_IF(new_element_count == 0)
     DEBUG_ERROR_IF(new_element_count <= old_element_count)
 
-    size_t const size = new_element_count * element_size;
-    DEBUG_ERROR_IF(size < new_element_count)
-    DEBUG_ERROR_IF(size < element_size)
+    {
+        size_t const size = new_element_count * element_size;
+        DEBUG_ERROR_IF(size < new_element_count)
+        DEBUG_ERROR_IF(size < element_size)
 
-    void* const ptr = realloc(*ptrptr, size);
-    if (ptr == NULL) REALLOC_ERROR
+        {
+            void* const ptr = realloc(*ptrptr, size);
+            if (ptr == NULL) REALLOC_ERROR
 
-    return (*ptrptr = ptr);
+            return (*ptrptr = ptr);
+        }
+    }
 }
 
 void* recalloc(
@@ -42,12 +46,16 @@ void* recalloc(
     DEBUG_ERROR_IF(new_element_count == 0)
     DEBUG_ERROR_IF(new_element_count <= old_element_count)
 
-    size_t const memcpy_size = old_element_count * element_size;
-    DEBUG_ERROR_IF(memcpy_size < old_element_count)
-    DEBUG_ERROR_IF(memcpy_size < element_size)
+    {
+        size_t const memcpy_size = old_element_count * element_size;
+        DEBUG_ERROR_IF(memcpy_size < old_element_count)
+        DEBUG_ERROR_IF(memcpy_size < element_size)
 
-    void* const ptr = mem_calloc(new_element_count, element_size);
-    memcpy(ptr, *ptrptr, memcpy_size);
-    free(*ptrptr);
-    return (*ptrptr = ptr);
+        {
+            void* const ptr = mem_calloc(new_element_count, element_size);
+            memcpy(ptr, *ptrptr, memcpy_size);
+            free(*ptrptr);
+            return (*ptrptr = ptr);
+        }
+    }
 }

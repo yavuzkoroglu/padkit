@@ -90,26 +90,27 @@ static void test_chunk_appendSpace(void) {
 
 static void test_chunk_concat(void) {
     constructEmpty_chunk(strings, CHUNK_RECOMMENDED_PARAMETERS);
+    {
+        Chunk chunk[2][1] = { { NOT_A_CHUNK }, { NOT_A_CHUNK } };
 
-    Chunk chunk[2][1] = { { NOT_A_CHUNK }, { NOT_A_CHUNK } };
+        for (int i = 0; i < 2; i++) {
+            constructEmpty_chunk(chunk[i], CHUNK_RECOMMENDED_PARAMETERS);
+            concat_chunk(strings, chunk[i]);
+        }
 
-    for (int i = 0; i < 2; i++) {
-        constructEmpty_chunk(chunk[i], CHUNK_RECOMMENDED_PARAMETERS);
-        concat_chunk(strings, chunk[i]);
+        add_chunk(chunk[0], "abc", 3);
+        add_chunk(chunk[1], "def", 3);
+
+        for (int i = 0; i < 2; i++)
+            concat_chunk(strings, chunk[i]);
+
+        TEST_FAIL_IF(strings->len != 7)
+        TEST_FAIL_IF(strings->nStrings != 2)
+        TEST_PASS
+
+        for (int i = 0; i < 2; i++)
+            free_chunk(chunk[i]);
     }
-
-    add_chunk(chunk[0], "abc", 3);
-    add_chunk(chunk[1], "def", 3);
-
-    for (int i = 0; i < 2; i++)
-        concat_chunk(strings, chunk[i]);
-
-    TEST_FAIL_IF(strings->len != 7)
-    TEST_FAIL_IF(strings->nStrings != 2)
-    TEST_PASS
-
-    for (int i = 0; i < 2; i++)
-        free_chunk(chunk[i]);
 
     free_chunk(strings);
 }
@@ -156,19 +157,20 @@ static void test_chunk_deleteLast(void) {
 
 static void test_chunk_fromStream(void) {
     constructEmpty_chunk(strings, CHUNK_RECOMMENDED_PARAMETERS);
+    {
+        FILE* const stream = fopen("src/tests.c", "r");
+        DEBUG_ERROR_IF(stream == NULL)
 
-    FILE* const stream = fopen("src/tests.c", "r");
-    DEBUG_ERROR_IF(stream == NULL)
+        DEBUG_ERROR_IF(fromStream_chunk(strings, stream, NULL) == 0xFFFFFFFF)
+        NDEBUG_EXECUTE(fromStream_chunk(strings, stream, NULL))
 
-    DEBUG_ERROR_IF(fromStream_chunk(strings, stream, NULL) == 0xFFFFFFFF)
-    NDEBUG_EXECUTE(fromStream_chunk(strings, stream, NULL))
+        TEST_FAIL_IF(!STR_CONTAINS_CONST(getFirst_chunk(strings), "/""**"))
+        TEST_FAIL_IF(!STR_EQ_CONST(getFirst_chunk(strings), "/""**"))
+        TEST_PASS
 
-    TEST_FAIL_IF(!STR_CONTAINS_CONST(getFirst_chunk(strings), "/""**"))
-    TEST_FAIL_IF(!STR_EQ_CONST(getFirst_chunk(strings), "/""**"))
-    TEST_PASS
-
-    DEBUG_ERROR_IF(fclose(stream) == EOF)
-    NDEBUG_EXECUTE(fclose(stream))
+        DEBUG_ERROR_IF(fclose(stream) == EOF)
+        NDEBUG_EXECUTE(fclose(stream))
+    }
 
     free_chunk(strings);
 }
@@ -292,14 +294,14 @@ static void test_ctbl(void) {
         { [ALICE]="Alice", [HARRY]="Harry", [LENNY]="Lenny", [WENDY]="Wendy" };
 
     DEBUG_EXECUTE(uint32_t person_id[PEOPLE_COUNT])
+    Chunk people[1]             = { NOT_A_CHUNK };
+    ChunkTable ages[1]          = { NOT_A_CHUNK_TABLE };
+    ChunkTable scores[1]        = { NOT_A_CHUNK_TABLE };
+    CTblConstIterator itr[1]    = { NOT_A_CHUNK_TABLE_ITR };
+    unsigned count_scores       = 0;
 
-    Chunk people[1] = { NOT_A_CHUNK };
     constructEmpty_chunk(people, CHUNK_RECOMMENDED_PARAMETERS);
-
-    ChunkTable ages[1] = { NOT_A_CHUNK_TABLE };
     constructEmpty_ctbl(ages, CHUNK_TABLE_RECOMMENDED_PARAMETERS);
-
-    ChunkTable scores[1] = { NOT_A_CHUNK_TABLE };
     constructEmpty_ctbl(scores, CHUNK_TABLE_RECOMMENDED_PARAMETERS);
 
     for (unsigned person = ALICE; person < PEOPLE_COUNT; person++) {
@@ -318,7 +320,6 @@ static void test_ctbl(void) {
     ) {
         case CTBL_INSERT_OK:
             break;
-        case CTBL_INSERT_ERROR:
         case CTBL_INSERT_DUPLICATE_KEY:
         default:
             TEST_FAIL_MESSAGE(insert_ctbl);
@@ -335,7 +336,6 @@ static void test_ctbl(void) {
         case CTBL_INSERT_DUPLICATE_KEY:
         case CTBL_INSERT_OK:
             break;
-        case CTBL_INSERT_ERROR:
         default:
             TEST_FAIL_MESSAGE(insert_ctbl);
             goto END_TEST_CTBL;
@@ -351,7 +351,6 @@ static void test_ctbl(void) {
         ) {
             case CTBL_INSERT_OK:
                 break;
-            case CTBL_INSERT_ERROR:
             case CTBL_INSERT_DUPLICATE_KEY:
             default:
                 TEST_FAIL_MESSAGE(insert_ctbl);
@@ -371,17 +370,14 @@ static void test_ctbl(void) {
                 case CTBL_INSERT_DUPLICATE_ENTRY:
                 case CTBL_INSERT_OK:
                     break;
-                case CTBL_INSERT_ERROR:
                 default:
                     TEST_FAIL_MESSAGE(insert_ctbl);
             }
         }
     }
 
-    CTblConstIterator itr[1];
     construct_ctblitr(itr, scores, people, name[ALICE], 5);
 
-    unsigned count_scores = 0;
     while (next_ctblitr(itr) != NULL) count_scores++;
 
     TEST_FAIL_IF(count_scores != 2)
@@ -759,12 +755,12 @@ static void test_reallocate_recalloc(void) {
 
     char* buffer            = mem_calloc(OLD_SIZE, 1);
     char* const new_buffer  = RECALLOC(buffer, OLD_SIZE, NEW_SIZE, 1);
+    List list[1]            = { (List){ 0, 0, NULL } };
 
     TEST_FAIL_IF(new_buffer != buffer)
     for (unsigned i = 0; i < NEW_SIZE; i++)
         TEST_FAIL_IF(new_buffer[i] != '\0')
 
-    List list[1];
     list->cap   = OLD_SIZE;
     list->size  = 0;
     list->array = calloc((size_t)list->cap, sizeof(Obj));

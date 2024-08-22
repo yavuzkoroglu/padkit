@@ -33,7 +33,6 @@ endif
 
 ifeq (${CC},clang)
 SILENCED=                               \
-    -Wno-declaration-after-statement    \
     -Wno-unsafe-buffer-usage            \
     -Wno-pre-c23-compat                 \
     -Wno-gnu-binary-literal
