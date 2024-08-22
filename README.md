@@ -17,6 +17,8 @@ The above steps should produce
 |----------------:|--------------------:|------------------------------:|-------------:|
 |      2024-08-22 | macOS Sonoma 14.6.1 |                  Darwin arm64 | clang 18.1.8 |
 |      2024-08-22 | macOS Sonoma 14.6.1 |                  Darwin arm64 |   gcc 14.2.0 |
+|      2024-08-22 |  Ubuntu 22.04.4 LTS |                 Linux aarch64 | clang 18.1.8 |
+|      2024-08-22 |  Ubuntu 22.04.4 LTS |                 Linux aarch64 |   gcc 14.2.0 |
 
 ## Changes 
 

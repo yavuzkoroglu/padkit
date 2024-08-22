@@ -754,7 +754,7 @@ static void test_reallocate_recalloc(void) {
     #define NEW_SIZE 131072
 
     char* buffer            = mem_calloc(OLD_SIZE, 1);
-    char* const new_buffer  = RECALLOC(buffer, OLD_SIZE, NEW_SIZE, 1);
+    char* const new_buffer  = RECALLOC(buffer, OLD_SIZE, NEW_SIZE, char);
     List list[1]            = { (List){ 0, 0, NULL } };
 
     TEST_FAIL_IF(new_buffer != buffer)
