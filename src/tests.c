@@ -291,7 +291,7 @@ static void test_ctbl(void) {
     char const* const name[PEOPLE_COUNT] =
         { [ALICE]="Alice", [HARRY]="Harry", [LENNY]="Lenny", [WENDY]="Wendy" };
 
-    uint32_t person_id[PEOPLE_COUNT];
+    DEBUG_EXECUTE(uint32_t person_id[PEOPLE_COUNT])
 
     Chunk people[1] = { NOT_A_CHUNK };
     constructEmpty_chunk(people, CHUNK_RECOMMENDED_PARAMETERS);
@@ -303,8 +303,10 @@ static void test_ctbl(void) {
     constructEmpty_ctbl(scores, CHUNK_TABLE_RECOMMENDED_PARAMETERS);
 
     for (unsigned person = ALICE; person < PEOPLE_COUNT; person++) {
-        person_id[person] = add_chunk(people, name[person], 5);
+        DEBUG_EXECUTE(person_id[person] = add_chunk(people, name[person], 5))
         DEBUG_ERROR_IF(person_id[person] != person)
+
+        NDEBUG_EXECUTE(add_chunk(people, name[person], 5))
     }
 
     switch (
@@ -922,6 +924,9 @@ static void test_streq_strcmp_as_comparator(void) {
                 break;
             case SPINACH:
                 TEST_FAIL_IF(match != NULL)
+                [[fallthrough]];
+            default:
+                break;
         }
     }
 

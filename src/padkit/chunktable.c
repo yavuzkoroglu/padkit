@@ -49,6 +49,9 @@ static void adjust(ChunkTable tbl[static const 1], Chunk const chunk[static cons
                         TERMINATE_ERROR_MSG("CTBL_INSERT_ERROR")
                     case CTBL_INSERT_DUPLICATE_ENTRY:
                         TERMINATE_ERROR_MSG("CTBL_INSERT_DUPLICATE_ENTRY")
+                    case CTBL_INSERT_OK:
+                    default:
+                        break;
                 }
             #else
                 insert_ctbl(newTbl, chunk, entry->key_id, entry->value, CTBL_BEHAVIOR_MULTIPLE);
