@@ -32,10 +32,7 @@ FLAGS=-std=${STD} -Ofast -DNDEBUG
 endif
 
 ifeq (${CC},clang)
-SILENCED=                               \
-    -Wno-unsafe-buffer-usage            \
-    -Wno-pre-c23-compat                 \
-    -Wno-gnu-binary-literal
+SILENCED=-Wno-unsafe-buffer-usage -Wno-pre-c23-compat -Wno-gnu-binary-literal
 ARGS=${ARCH_ARGS} ${FLAGS} -Iinclude -Weverything ${SILENCED}
 else
 SILENCED=
