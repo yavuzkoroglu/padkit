@@ -2,13 +2,41 @@
 
 # Abstract
 
-Portable Application (App.) Development (Dev.) KIT (PADKIT) is a library of C macros, structs, and functions designed to support the average command-line program developer. C is a popular language among embedded, automotive, and operating system (OS) software developers. For this reason, C has a lot of features accomodating the low-level needs of these developers. However, for the same reason, C has a lot of confusing features for an average command-line programmer. After forcing myself to use only C to program the tools proposed in my most ambitious academic papers, I packaged into PADKIT; a set of common macros, structs, and functions that could be reused in a diverse set of situations. 
+Portable Application (App.) Development (Dev.) KIT (PADKIT) is a library of C macros, structs, and functions designed to support the average command-line program developer. C is a popular language among embedded, automotive, and operating system (OS) software developers. For this reason, C has many features that accommodate the low-level needs of these developers. However, for the same reason, C has many confusing features for an average command-line programmer. An excess abundance of C standards, conventions, and principles designed for domain-specific use cases makes it almost impossible to decide on a consistent way of implementing an average command-line program. After forcing myself to implement many ambitious projects solely in C, I have developed a set of best practices, conventions, and principles to write a modern command-line program. I implemented PADKIT using these guidelines. In this documentation, I provide examples to demonstrate the usefulness of PADKIT. I also provide all the design details of PADKIT and the rationale behind them. My main aim is not to promote C as the single most dominant programming language but to propose a novel set of ideas that could change how to approach coding. I believe that if C remains widespread as it is, PADKIT will one day become an essential swiss-knife for the average coder. 
 
-## How to Build
+# Table of Contents
+
+- A. Straight to Business
+	- A1. Prerequisites
+		- A1a. A Terminal-Supporting Platform
+		- A1b. A Text Editor
+		- A1c. A Standard-Conforming C Compilation Environment
+	- A2. How to Build
+	- A3. Examples
+- B. Introduction
+- C. 
+
+##
+
+# A. Straight to Business
+
+This chapter comprises three sections. First, the prerequisites necessary to build and use PADKIT. Then, the steps to build the PADKIT C99 and C23 branches in MacOS, Linux, and Windows platforms. Finally, some examples to demonstrate how to practically use PADKIT.
+
+## A1. Prerequisites
+
+To use PADKIT, you only need three things:
+
+1. A Terminal-Supporting Platform (MacOS, Linux, or Windows)
+2. A Text Editor (nano, or [Notepad++][1])
 
 ```
-git clone -b (C99|C23) https://github.com/yavuzkoroglu/padkit.git 
+git clone -b C23 https://github.com/yavuzkoroglu/padkit.git 
 cd padkit
 make
 ```
 
+# References
+
+\[1\]: D. Ho, "Nodepad++", https://notepad-plus-plus.org/downloads/ (last accessed -- `[2024-08-23 01:17:09]`)
+
+[1]: https://notepad-plus-plus.org/downloads/
