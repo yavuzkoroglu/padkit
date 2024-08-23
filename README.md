@@ -41,7 +41,7 @@ A terminal environment is a command-line interface (CLI) with which a user inter
 > [!TIP]
 > The best shell is the most universal shell.
 
-The reasoning behind the above tip is simple. An average coder is neither interested in small differences between different shell implementations (e.g. between `bash`[^4] and `zsh`[^5]) nor bound to shell features that target a specific OS (e.g. `powershell`[^6]). The average coder's shell should be as much cross-platform as possible. Ideally, the shell should be available in MacOS, Linux, and Windows. Therefore, I deduce that the average coder should prefer `bash`[^4], especially the most commonly available versions of it. Now, I will describe how to use `bash`[^4] in MacOS, Linux, and Windows.
+The reasoning behind the above tip is simple. An average coder is neither interested in small differences between different shell implementations (e.g. between `bash`[^4] and `zsh`[^5]) nor bound to shell features that target a specific OS (e.g. `powershell`[^6]). The average coder's shell should be as much cross-platform as possible. Ideally, the shell should be available in MacOS, Linux, and Windows. Therefore, I deduce that the average coder should prefer `bash`[^4], especially the most commonly available versions of it. Now, I will describe how to use `bash`[^4] in MacOS, Linux, and Windows. I use Ubuntu 22.04.4 LTS for Linux examples but feel free to adapt the examples to your preferred Linux distribution.
 
 > [!NOTE]
 > If you have `bash`, and familiar with it, you may skip to Section **[A1ii. A Text Editor](#a1ii-a-text-editor)**.
@@ -61,6 +61,14 @@ The reasoning behind the above tip is simple. An average coder is neither intere
 ![figures/sections/a1i/macos/bash.png](figures/sections/a1i/macos/bash.png)
 
 #### Linux
+
+1. Open the `Terminal`. On Ubuntu 22.04.4 LTS, it is possible to locate it using the `Show Applications` menu.
+
+![figures/sections/a1i/macos/showapps.png](figures/sections/a1i/linux/showapps.png)
+
+2. The default shell in Linux is `bash`[^4]. You can check the bash version by typing `bash --version` and pressing Enter.
+
+![figures/sections/a1i/macos/showapps.png](figures/sections/a1i/linux/bash.png)
 
 #### Windows
 
