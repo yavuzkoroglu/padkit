@@ -3,12 +3,10 @@
  * @brief Implements the famous HASH33/djb2 algorithm.
  * @author Yavuz Koroglu
  */
-#include "padkit/debug.h"
 #include "padkit/hash.h"
 
-uint_fast64_t hash_str(char const* str, uint64_t n) {
-    DEBUG_ERROR_IF(str == NULL)
-    uint_fast64_t register hash = 5381;
+uint_fast64_t hash_str(char const str[static 1], uint64_t n) {
+    register uint_fast64_t hash = UINT64_C(5381);
     while (n-- && *str) hash += (hash << 5) + (uint_fast64_t)(*(str++));
     return hash;
 }

@@ -34,14 +34,20 @@
 
     /**
      * @brief Wraps malloc().
-     * @param size The number of bytes to be allocated.
+     *
+     * @param[in] size A constant size (must be > 0 && < sqrt(SIZE_MAX + 1)).
+     *
+     * @return A pointer to an object.
      */
     void* mem_alloc(size_t const size);
 
     /**
      * @brief Wraps calloc().
-     * @param nmemb The number of members to be allocated.
-     * @param size The number of bytes to be allocated per member.
+     *
+     * @param[in] nmemb A constant size (must be > 0 && < sqrt(SIZE_MAX + 1)).
+     * @param[in] size A constant size (must be > 0 && < sqrt(SIZE_MAX + 1)).
+     *
+     * @return A pointer to an object.
      */
     void* mem_calloc(size_t const nmemb, size_t const size);
 #endif

@@ -10,8 +10,10 @@
 
     /**
      * @brief Computes the hash value of a string.
-     * @param str The string.
-     * @param n The string length.
+     * @param[in] str A non-null pointer to at least one constant character.
+     * @param[in]   n A 64-bit unsigned integer.
+     *
+     * @return An unsigned integer capable of holding 64-bit values.
      */
-    uint_fast64_t hash_str(char const* str, uint64_t n);
+    uint_fast64_t hash_str(char const str[static 1], uint64_t n);
 #endif

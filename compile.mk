@@ -8,7 +8,7 @@ OS=$(shell uname)
 #MODE=release
 MODE=debug
 
-PADKIT_VERSION=1.1beta
+PADKIT_VERSION=1.3beta
 
 STD=c99
 
@@ -34,27 +34,10 @@ FLAGS=-std=${STD} -Ofast -DNDEBUG
 endif
 
 ifeq (${CC},clang)
-SILENCED=                               \
-    -Wno-poison-system-directories      \
-    -Wno-declaration-after-statement    \
-    -Wno-padded -Wno-unused-parameter   \
-    -Wno-unknown-warning-option         \
-    -Wno-missing-noreturn               \
-    -Wno-implicit-fallthrough           \
-    -Wno-unsafe-buffer-usage            \
-    -Wno-disabled-macro-expansion       \
-    -Wno-switch-default
+SILENCED=-Wno-unsafe-buffer-usage
 ARGS=${ARCH_ARGS} ${FLAGS} -Weverything ${SILENCED} -Iinclude ${STDLIBS}
 else
-SILENCED=                               \
-    -Wno-unused-parameter               \
-    -Wno-old-style-declaration          \
-    -Wno-unknown-warning-option         \
-    -Wno-missing-noreturn               \
-    -Wno-implicit-fallthrough           \
-    -Wno-nullability-completeness       \
-    -Wno-disabled-macro-expansion       \
-    -Wno-switch-default
+SILENCED=
 ARGS=${ARCH_ARGS} ${FLAGS} -Wall -Wextra ${SILENCED} -Iinclude ${STDLIBS}
 endif
 

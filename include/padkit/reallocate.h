@@ -38,14 +38,14 @@
      * @def REALLOCATE
      *   A wrapper macro for a standard reallocate() call.
      */
-    #define REALLOCATE(ptr, old_n, new_n, type) \
-        reallocate((void**)&(ptr), (size_t)(old_n), (size_t)(new_n), sizeof(type))
+    #define REALLOCATE(ptr, old_n, new_n, type)                                         \
+        reallocate((void**)&(ptr), (size_t)(new_n), sizeof(type))
 
     /**
      * @def RECALLOC
      *   A wrapper macro for a standard recalloc() call.
      */
-    #define RECALLOC(ptr, old_n, new_n, type) \
+    #define RECALLOC(ptr, old_n, new_n, type)                                           \
         recalloc((void**)&(ptr), (size_t)(old_n), (size_t)(new_n), sizeof(type))
 
     /**
@@ -84,16 +84,12 @@
      * @brief A reallocator that uses realloc().
      *
      * @param[in,out]            ptrptr A non-null constant pointer to at least one object pointer.
-     * @param[in]     old_element_count A constant size.
      * @param[in]     new_element_count A constant size.
      * @param[in]          element_size A constant size.
      *
      * @return A pointer to an object.
      */
-    void* reallocate(
-        void* ptrptr[static const 1], size_t const old_element_count,
-        size_t const new_element_count, size_t const element_size
-    );
+    void* reallocate(void* ptrptr[static const 1], size_t const new_element_count, size_t const element_size);
 
     /**
      * @brief A reallocator that uses calloc() & memcpy() instead of realloc().

@@ -14,8 +14,6 @@
 #endif
 
 bool mem_eq_n(char const a[static 1], char const b[static 1], size_t n) {
-    DEBUG_ERROR_IF(a == NULL)
-    DEBUG_ERROR_IF(b == NULL)
     size_t const remainder    = n & (sizeof(block_t) - 1);
     size_t const lshift_count = (sizeof(block_t) - remainder) << 3;
     block_t const* a_block    = (block_t const*)a;
@@ -25,15 +23,11 @@ bool mem_eq_n(char const a[static 1], char const b[static 1], size_t n) {
 }
 
 bool str_eq(char const a[static 1], char const b[static 1]) {
-    DEBUG_ERROR_IF(a == NULL)
-    DEBUG_ERROR_IF(b == NULL)
     for (; *a == *b; a++, b++) if (*a == '\0') return 1;
     return 0;
 }
 
 bool str_eq_n(char const a[static 1], char const b[static 1], size_t n) {
-    DEBUG_ERROR_IF(a == NULL)
-    DEBUG_ERROR_IF(b == NULL)
     for (n--; *a == *b; a++, b++, n--) if (n == 0 || *a == '\0') return 1;
     return 0;
 }
@@ -41,7 +35,9 @@ bool str_eq_n(char const a[static 1], char const b[static 1], size_t n) {
 int strcmp_as_comparator(void const* needle, void const* haystack) {
     DEBUG_ERROR_IF(needle == NULL)
     DEBUG_ERROR_IF(haystack == NULL)
-    char const* const key = needle;
-    char const* const candidate = ((char const* const* const)haystack)[0];
-    return strcmp(key, candidate);
+    {
+        char const* const key = needle;
+        char const* const candidate = ((char const* const* const)haystack)[0];
+        return strcmp(key, candidate);
+    }
 }

@@ -10,13 +10,19 @@
 
     /**
      * @brief Checks if a given odd number is prime.
-     * @param odd_x An odd number greater than 1.
+     *
+     * @param[in] odd_x A constant 32-bit unsigned integer (must be odd and > 1).
+     *
+     * @return A Boolean value.
      */
     bool isPrime(uint32_t const odd_x);
 
     /**
      * @brief Finds the smallest prime number greater than or equal to x.
-     * @param x A non-negative number.
+     *
+     * @param[in] x A non-negative number.
+     *
+     * @return A 32-bit unsigned integer.
      */
     uint32_t nextPrime(uint32_t const x);
 #endif

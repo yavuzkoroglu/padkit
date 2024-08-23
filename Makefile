@@ -129,7 +129,6 @@ obj/padkit/graphmatrix.o: obj/padkit    \
     ; ${COMPILE} src/padkit/graphmatrix.c -c -o obj/padkit/graphmatrix.o
 
 obj/padkit/hash.o: obj/padkit           \
-    include/padkit/debug.h              \
     include/padkit/hash.h               \
     src/padkit/hash.c                   \
     ; ${COMPILE} src/padkit/hash.c -c -o obj/padkit/hash.o
