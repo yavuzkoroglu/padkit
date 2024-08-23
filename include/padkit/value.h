@@ -115,7 +115,7 @@
     /**
      * @brief Checks if a Value is valid.
      *
-     * @param value A constant Value.
+     * @param[in] value A constant Value.
      *
      * @return A Boolean value.
      */

@@ -11,18 +11,20 @@
 
 void connect_gmtx(GraphMatrix gmtx[static const 1], uint32_t const source, uint32_t const sink) {
     DEBUG_ASSERT(isValid_gmtx(gmtx))
+    {
+        uint32_t const new_height = (gmtx->height > source) ? gmtx->height : source;
+        uint32_t const new_width  = (gmtx->width > sink) ? gmtx->width : sink;
 
-    uint32_t const new_height = (gmtx->height > source) ? gmtx->height : source;
-    uint32_t const new_width  = (gmtx->width > sink) ? gmtx->width : sink;
+        resizeIfNecessary_gmtx(gmtx, new_height, new_width);
 
-    resizeIfNecessary_gmtx(gmtx, new_height, new_width);
-
-    uint64_t const edge_id = (uint64_t)new_width * (uint64_t)source + (uint64_t)sink;
-    gmtx->array[edge_id >> 6] |=
-        (
-            B8(B_10000000,B_00000000,B_00000000,B_00000000,B_00000000,B_00000000,B_00000000,B_00000000) >>
-            (edge_id % B_01000000)
-        );
+        {
+            uint64_t const edge_id = (uint64_t)new_width * (uint64_t)source + (uint64_t)sink;
+            gmtx->array[edge_id >> 6] |= (
+                B8(B_10000000,B_00000000,B_00000000,B_00000000,B_00000000,B_00000000,B_00000000,B_00000000) >>
+                (edge_id % B_01000000)
+            );
+        }
+    }
 }
 
 void connectAll_gmtx(GraphMatrix gmtx[static const 1]) {
@@ -94,50 +96,55 @@ void connectAll_gmtx(GraphMatrix gmtx[static const 1]) {
 
     DEBUG_ASSERT(isValid_gmtx(gmtx))
 
-    uint64_t const size = (uint64_t)gmtx->height * (uint64_t)gmtx->width;
-    uint64_t const nFullBlocks = size >> 6;
-    memset(gmtx->array, B_11111111, nFullBlocks << 3);
-    gmtx->array[nFullBlocks] = remainders[size & B_111111];
+    {
+        uint64_t const size = (uint64_t)gmtx->height * (uint64_t)gmtx->width;
+        uint64_t const nFullBlocks = size >> 6;
+        memset(gmtx->array, B_11111111, nFullBlocks << 3);
+        gmtx->array[nFullBlocks] = remainders[size & B_111111];
+    }
 }
 
 void construct_gmtx(
     GraphMatrix gmtx[static const 1],
     uint32_t const initial_height, uint32_t const initial_width
 ) {
-    DEBUG_ERROR_IF(gmtx == NULL)
     DEBUG_ERROR_IF(initial_height == 0)
     DEBUG_ERROR_IF(initial_height == UINT32_MAX)
     DEBUG_ERROR_IF(initial_width == 0)
     DEBUG_ERROR_IF(initial_width == UINT32_MAX)
+    {
+        uint64_t const size = (((uint64_t)initial_height * (uint64_t)initial_width) >> 6) + 1;
+        DEBUG_ERROR_IF(size == 0)
 
-    uint64_t const size = (((uint64_t)initial_height * (uint64_t)initial_width) >> 6) + 1;
-    DEBUG_ERROR_IF(size == 0)
-
-    *gmtx = (GraphMatrix){ initial_height, initial_width, mem_calloc((size_t)size, sizeof(uint64_t)) };
+        *gmtx = (GraphMatrix){ initial_height, initial_width, mem_calloc((size_t)size, sizeof(uint64_t)) };
+    }
 }
 
 void disconnect_gmtx(GraphMatrix gmtx[static const 1], uint32_t const source, uint32_t const sink) {
     DEBUG_ASSERT(isValid_gmtx(gmtx))
+    {
+        uint32_t const new_height = (gmtx->height > source) ? gmtx->height : source;
+        uint32_t const new_width  = (gmtx->width > sink) ? gmtx->width : sink;
 
-    uint32_t const new_height = (gmtx->height > source) ? gmtx->height : source;
-    uint32_t const new_width  = (gmtx->width > sink) ? gmtx->width : sink;
+        resizeIfNecessary_gmtx(gmtx, new_height, new_width);
 
-    resizeIfNecessary_gmtx(gmtx, new_height, new_width);
-
-    uint64_t const edge_id = (uint64_t)new_width * (uint64_t)source + (uint64_t)sink;
-    gmtx->array[edge_id >> 6] &=
-        ~(
-            B8(B_10000000,B_00000000,B_00000000,B_00000000,B_00000000,B_00000000,B_00000000,B_00000000) >>
-            (edge_id % B_01000000)
-        );
+        {
+            uint64_t const edge_id = (uint64_t)new_width * (uint64_t)source + (uint64_t)sink;
+            gmtx->array[edge_id >> 6] &= ~(
+                B8(B_10000000,B_00000000,B_00000000,B_00000000,B_00000000,B_00000000,B_00000000,B_00000000) >>
+                (edge_id % B_01000000)
+            );
+        }
+    }
 }
 
 void disconnectAll_gmtx(GraphMatrix gmtx[static const 1]) {
     DEBUG_ASSERT(isValid_gmtx(gmtx))
-
-    uint64_t const size = (uint64_t)gmtx->height * (uint64_t)gmtx->width;
-    uint64_t const nFullBlocks = size >> 6;
-    memset(gmtx->array, B_00000000, (nFullBlocks + !!(size & B_111111)) << 3);
+    {
+        uint64_t const size = (uint64_t)gmtx->height * (uint64_t)gmtx->width;
+        uint64_t const nFullBlocks = size >> 6;
+        memset(gmtx->array, B_00000000, (nFullBlocks + !!(size & B_111111)) << 3);
+    }
 }
 
 uint32_t findSink_gmtx(
@@ -145,16 +152,17 @@ uint32_t findSink_gmtx(
     uint32_t const highest_possible_sink
 ) {
     DEBUG_ASSERT(isValid_gmtx(gmtx))
+    {
+        uint32_t sink = highest_possible_sink;
 
-    uint32_t sink = highest_possible_sink;
+        DEBUG_ASSERT(source < gmtx->height)
+        DEBUG_ASSERT(sink < gmtx->width)
 
-    DEBUG_ASSERT(source < gmtx->height)
-    DEBUG_ASSERT(sink < gmtx->width)
+        while (sink != UINT32_MAX && !isConnected_gmtx(gmtx, source, sink))
+            sink--;
 
-    while (sink != UINT32_MAX && !isConnected_gmtx(gmtx, source, sink))
-        sink--;
-
-    return sink;
+        return sink;
+    }
 }
 
 uint32_t findSource_gmtx(
@@ -162,16 +170,17 @@ uint32_t findSource_gmtx(
     uint32_t const highest_possible_source
 ) {
     DEBUG_ASSERT(isValid_gmtx(gmtx))
+    {
+        uint32_t source = highest_possible_source;
 
-    uint32_t source = highest_possible_source;
+        DEBUG_ASSERT(source < gmtx->height)
+        DEBUG_ASSERT(sink < gmtx->width)
 
-    DEBUG_ASSERT(source < gmtx->height)
-    DEBUG_ASSERT(sink < gmtx->width)
+        while (source != UINT32_MAX && !isConnected_gmtx(gmtx, source, sink))
+            source--;
 
-    while (source != UINT32_MAX && !isConnected_gmtx(gmtx, source, sink))
-        source--;
-
-    return source;
+        return source;
+    }
 }
 
 void free_gmtx(GraphMatrix gmtx[static const 1]) {
@@ -185,17 +194,17 @@ bool isConnected_gmtx(
     GraphMatrix const gmtx[static const 1], uint32_t const source, uint32_t const sink
 ) {
     DEBUG_ASSERT(isValid_gmtx(gmtx))
-    uint64_t const edge_id = (uint64_t)gmtx->width * (uint64_t)source + (uint64_t)sink;
-
-    return (gmtx->array[edge_id >> 6] & (
-        B8(B_10000000,B_00000000,B_00000000,B_00000000,B_00000000,B_00000000,B_00000000,B_00000000) >>
-        (edge_id % B_01000000))
-    );
+    {
+        uint64_t const edge_id = (uint64_t)gmtx->width * (uint64_t)source + (uint64_t)sink;
+        return (gmtx->array[edge_id >> 6] & (
+            B8(B_10000000,B_00000000,B_00000000,B_00000000,B_00000000,B_00000000,B_00000000,B_00000000) >>
+            (edge_id % B_01000000))
+        );
+    }
 }
 
 bool isValid_gmtx(GraphMatrix const gmtx[static const 1]) {
-    return gmtx != NULL         &&
-           gmtx->height != 0    &&
+    return gmtx->height != 0    &&
            gmtx->width != 0     &&
            gmtx->array != NULL;
 }
@@ -211,16 +220,18 @@ void resizeIfNecessary_gmtx(
     if (new_height == gmtx->height && new_width == gmtx->width)
         return;
 
-    GraphMatrix new_gmtx[1];
-    construct_gmtx(new_gmtx, new_height, new_width);
+    {
+        GraphMatrix new_gmtx[1] = { NOT_A_GRAPH_MATRIX };
+        construct_gmtx(new_gmtx, new_height, new_width);
 
-    /* Remake all the previous connections. */
-    for (uint32_t source = 0; source < gmtx->height; source++)
-        for (uint32_t sink = 0; sink < gmtx->width; sink++)
-            if (isConnected_gmtx(gmtx, source, sink))
-                connect_gmtx(new_gmtx, source, sink);
+        /* Remake all the previous connections. */
+        for (uint32_t source = 0; source < gmtx->height; source++)
+            for (uint32_t sink = 0; sink < gmtx->width; sink++)
+                if (isConnected_gmtx(gmtx, source, sink))
+                    connect_gmtx(new_gmtx, source, sink);
 
-    /* Replace the old GraphMatrix. */
-    free_gmtx(gmtx);
-    gmtx[0] = new_gmtx[0];
+        /* Replace the old GraphMatrix. */
+        free_gmtx(gmtx);
+        gmtx[0] = new_gmtx[0];
+    }
 }
