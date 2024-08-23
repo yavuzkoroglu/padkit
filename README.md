@@ -50,15 +50,15 @@ The reasoning behind the above tip is simple. An average coder is neither intere
 
 1. Open the `Terminal.app`. You can use Spotlight to locate your application as below.
 
-![figures/Section_A1i_MacOS_Spotlight.png](figures/Section_A1i_MacOS_Spotlight.png)
+![figures/sections/a1i/macos/spotlight.png](figures/sections/a1i/macos/spotlight.png)
 
 2. Now, you need to see a terminal window as below. Notice that the title gives away the fact that the shell is `zsh`[^5].
 
-![figures/Section_A1i_MacOS_TerminalWindow.png](figures/Section_A1i_MacOS_TerminalWindow.png)
+![figures/sections/a1i/macos/terminalwindow.png](figures/sections/a1i/macos/terminalwindow.png)
 
 3. Type `bash` and press Enter to start a bash session. The string `bash-3.2` indicates the shell version.
 
-![figures/Section_A1i_MacOS_bash.png](figures/Section_A1i_MacOS_bash.png)
+![figures/sections/a1i/macos/bash.png](figures/sections/a1i/macos/bash.png)
 
 #### Linux
 
