@@ -48,7 +48,7 @@ The reasoning behind the above tip is simple. An average coder is neither intere
 
 #### MacOS
 
-1. Open the `Terminal.app`. You can use Spotlight to locate your application as below.
+1. Open the `Terminal.app`. You can use *Spotlight* to locate your application as below.
 
 ![figures/sections/a1i/macos/spotlight.png](figures/sections/a1i/macos/spotlight.png)
 
@@ -62,7 +62,7 @@ The reasoning behind the above tip is simple. An average coder is neither intere
 
 #### Linux
 
-1. Open the `Terminal`. On Ubuntu 22.04.4 LTS, it is possible to locate it using the `Show Applications` menu.
+1. Open the `Terminal`. On Ubuntu 22.04.4 LTS, it is possible to locate it using the *Show Applications* menu.
 
 ![figures/sections/a1i/macos/showapps.png](figures/sections/a1i/linux/showapps.png)
 
