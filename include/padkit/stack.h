@@ -13,7 +13,7 @@
      * @def NOT_A_STACK
      *   A special Stack denoting a NOT-Stack. It cannot pass the isValid_stack() test.
      */
-    #define NOT_A_STACK                     ((Stack){ 0, 0, 0, NULL })
+    #define NOT_A_STACK                     ((Stack){ 0, 0, 0, nullptr })
 
     /**
      * @def STACK_RECOMMENDED_INITIAL_CAP

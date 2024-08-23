@@ -17,7 +17,7 @@
      * @def NOT_A_CHUNK
      *   A special Chunk that cannot pass the isValid_chunk() test.
      */
-    #define NOT_A_CHUNK                             ((Chunk){0, 0, 0, NULL, NULL, 0})
+    #define NOT_A_CHUNK                             ((Chunk){0, 0, 0, nullptr, nullptr, 0})
 
     /**
      * @def CHUNK_RECOMMENDED_INITIAL_CAP
@@ -194,7 +194,7 @@
     /**
      * @brief Reads a whole stream and adds it as strings to a Chunk.
      *
-     * NULL delimeters will be replaced by the default delimeters.
+     * Null delimeters will be replaced by the default delimeters.
      *
      * @param[in,out]      chunk A constant non-null pointer to at least one Chunk.
      * @param[in,out]     stream A constant non-null pointer to at least one FILE.
@@ -258,7 +258,7 @@
     /**
      * @brief Splits the last string of a Chunk using delimeters.
      *
-     * NULL delimeters will be replaced by the default delimeters.
+     * Null delimeters will be replaced by the default delimeters.
      *
      * @param[in,out]      chunk A constant non-null pointer to at least one Chunk.
      * @param[in]     delimeters A pointer to an array of constant characters.

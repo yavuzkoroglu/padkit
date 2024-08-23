@@ -11,7 +11,7 @@
      * @def NOT_A_GRAPH_MATRIX
      *   A special GraphMatrix denoting a NOT-GraphMatrix. This GraphMatrix cannot pass the isValid_gmtx() test.
      */
-    #define NOT_A_GRAPH_MATRIX ((GraphMatrix){ 0, 0, NULL })
+    #define NOT_A_GRAPH_MATRIX ((GraphMatrix){ 0, 0, nullptr })
 
     /**
      * @struct GraphMatrix

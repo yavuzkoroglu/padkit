@@ -35,11 +35,11 @@
 bool overlaps_ptr(void const* const p0, void const* const p1, size_t const sz0, size_t const sz1) {
     char const* const p[2] = { p0, p1 };
 
-    if (p[0] == NULL)   return (p[1] == NULL);
-    if (p[1] == NULL)   return 0;
-    if (sz0 == 0)       return 0;
-    if (sz1 == 0)       return 0;
-    if (p[0] == p[1])   return 1;
+    if (p[0] == nullptr)    return (p[1] == nullptr);
+    if (p[1] == nullptr)    return 0;
+    if (sz0 == 0)           return 0;
+    if (sz1 == 0)           return 0;
+    if (p[0] == p[1])       return 1;
 
     if (sz0 > 1) {
         char const* q = p[0] + sz0;

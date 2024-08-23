@@ -41,7 +41,7 @@ static void adjust(ChunkTable tbl[static const 1], Chunk const chunk[static cons
         constructEmpty_ctbl(newTbl, tbl->capKeys, tbl->loadPercent);
 
         for (uint32_t row_id = 0; row_id < tbl->nRows; row_id++) {
-            if (tbl->rows[row_id] != NULL) {
+            if (tbl->rows[row_id] != nullptr) {
                 ChunkTableEntry const* const entry = tbl->rows[row_id] + 1;
                 for (uint32_t n = tbl->rowSizes[row_id]; n > 0; n--) {
                     #ifndef NDEBUG
@@ -112,7 +112,7 @@ ChunkTableEntry* get_ctbl(
     DEBUG_ASSERT(isValid_chunk(chunk))
     {
         uint32_t const row_id = hash_str(key, key_len) % tbl->nRows;
-        if (tbl->rows[row_id] == NULL) return NULL;
+        if (tbl->rows[row_id] == nullptr) return nullptr;
 
         for (
             ChunkTableEntry* candidate = tbl->rows[row_id] + tbl->rowSizes[row_id];
@@ -120,13 +120,13 @@ ChunkTableEntry* get_ctbl(
             candidate--
         ) {
             char const* const candidate_key = get_chunk(chunk, candidate->key_id);
-            if (candidate_key == NULL) continue;
+            if (candidate_key == nullptr) continue;
 
             if (str_eq_n(key, candidate_key, key_len)) return candidate;
         }
     }
 
-    return NULL;
+    return nullptr;
 }
 
 uint32_t getEntryCount_ctbl(ChunkTable const tbl[static const 1]) {
@@ -148,7 +148,7 @@ ChunkTableEntry* getExact_ctbl(
     DEBUG_ASSERT(strlen(key) >= key_len)
     {
         uint32_t const row_id = hash_str(key, key_len) % tbl->nRows;
-        if (tbl->rows[row_id] == NULL) return NULL;
+        if (tbl->rows[row_id] == nullptr) return nullptr;
 
         for (
             ChunkTableEntry* candidate = tbl->rows[row_id] + tbl->rowSizes[row_id];
@@ -156,14 +156,14 @@ ChunkTableEntry* getExact_ctbl(
             candidate--
         ) {
             char const* const candidate_key = get_chunk(chunk, candidate->key_id);
-            if (candidate_key == NULL) continue;
+            if (candidate_key == nullptr) continue;
 
             if (str_eq_n(key, candidate_key, key_len) && value == candidate->value)
                 return candidate;
         }
     }
 
-    return NULL;
+    return nullptr;
 }
 
 uint32_t getKeyCount_ctbl(ChunkTable const tbl[static const 1]) {
@@ -185,7 +185,7 @@ int insert_ctbl(
         uint32_t const row_id  = hash_str(key, key_len) % tbl->nRows;
 
         /* Initialize a new row if necessary. */
-        if (tbl->rows[row_id] == NULL) {
+        if (tbl->rows[row_id] == nullptr) {
             tbl->rowCaps[row_id] = CHUNK_TABLE_INITIAL_ROW_CAP;
             tbl->rows[row_id] = mem_alloc(
                 (size_t)tbl->rowCaps[row_id] * sizeof(ChunkTableEntry)
@@ -283,13 +283,13 @@ bool isValid_ctblitr(CTblConstIterator const itr[static const 1]) {
 ChunkTableEntry const* next_ctblitr(CTblConstIterator itr[static const 1]) {
     DEBUG_ASSERT(isValid_ctblitr(itr))
 
-    if (!isValid_cte(itr->entry)) return NULL;
+    if (!isValid_cte(itr->entry)) return nullptr;
 
     {
         ChunkTableEntry const* const entry_to_be_returned = itr->entry;
         while (isValid_cte(--itr->entry)) {
             char const* const candidate_key = get_chunk(itr->chunk, itr->entry->key_id);
-            if (candidate_key != NULL && str_eq_n(itr->key, candidate_key, itr->key_len))
+            if (candidate_key != nullptr && str_eq_n(itr->key, candidate_key, itr->key_len))
                 break;
         }
 

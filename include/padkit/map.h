@@ -12,7 +12,7 @@
      * @def NOT_A_MAP
      *   A special Map denoting a NOT-Map. This Map cannot pass the isValid_map() test.
      */
-    #define NOT_A_MAP ((Map){ 0, 0, NULL })
+    #define NOT_A_MAP ((Map){ 0, 0, nullptr })
 
     /**
      * @struct Map

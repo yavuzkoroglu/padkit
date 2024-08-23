@@ -237,7 +237,7 @@ uint32_t fromStream_chunk(
 ) {
     DEBUG_ASSERT(isValid_chunk(chunk))
 
-    if (delimeters == NULL) delimeters = defaultDelimeters;
+    if (delimeters == nullptr) delimeters = defaultDelimeters;
 
     {
         uint32_t const str_id = fromStreamAsWhole_chunk(chunk, stream);
@@ -310,7 +310,7 @@ uint32_t splitLast_chunk(Chunk chunk[static const 1], char const delimeters[]) {
     DEBUG_ASSERT(isValid_chunk(chunk))
     DEBUG_ERROR_IF(chunk->nStrings == 0)
 
-    if (delimeters == NULL) delimeters = defaultDelimeters;
+    if (delimeters == nullptr) delimeters = defaultDelimeters;
 
     {
         uint32_t const str_id = chunk->nStrings - 1;
@@ -336,7 +336,7 @@ uint32_t splitLast_chunk(Chunk chunk[static const 1], char const delimeters[]) {
             /* In-Place Split */
             uint32_t nSplitted = 1;
             for (char* chr = str_start; chr < str_end; chr++) {
-                if (strchr(delimeters, *chr) == NULL) continue;
+                if (strchr(delimeters, *chr) == nullptr) continue;
 
                 /* Realloc stringOffsets if necessary */
                 REALLOC_IF_NECESSARY(

@@ -13,7 +13,7 @@
      * @def NOT_A_CIRCBUFF
      *   A special CircularBuffer that cannot pass the isValid_cbuff() test.
      */
-    #define NOT_A_CIRCBUFF                      ((CircularBuffer){ 0, 0, 0, NULL, 0, 0 })
+    #define NOT_A_CIRCBUFF                      ((CircularBuffer){ 0, 0, 0, nullptr, 0, 0 })
 
     /**
      * @def CIRCBUFF_RECOMMENDED_INITIAL_CAP

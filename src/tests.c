@@ -159,10 +159,10 @@ static void test_chunk_fromStream(void) {
     constructEmpty_chunk(strings, CHUNK_RECOMMENDED_PARAMETERS);
     {
         FILE* const stream = fopen("src/tests.c", "r");
-        DEBUG_ERROR_IF(stream == NULL)
+        DEBUG_ERROR_IF(stream == nullptr)
 
-        DEBUG_ERROR_IF(fromStream_chunk(strings, stream, NULL) == 0xFFFFFFFF)
-        NDEBUG_EXECUTE(fromStream_chunk(strings, stream, NULL))
+        DEBUG_ERROR_IF(fromStream_chunk(strings, stream, nullptr) == 0xFFFFFFFF)
+        NDEBUG_EXECUTE(fromStream_chunk(strings, stream, nullptr))
 
         TEST_FAIL_IF(!STR_CONTAINS_CONST(getFirst_chunk(strings), "/""**"))
         TEST_FAIL_IF(!STR_EQ_CONST(getFirst_chunk(strings), "/""**"))
@@ -378,7 +378,7 @@ static void test_ctbl(void) {
 
     construct_ctblitr(itr, scores, people, name[ALICE], 5);
 
-    while (next_ctblitr(itr) != NULL) count_scores++;
+    while (next_ctblitr(itr) != nullptr) count_scores++;
 
     TEST_FAIL_IF(count_scores != 2)
 
@@ -388,10 +388,10 @@ static void test_ctbl(void) {
     TEST_FAIL_IF(getEntryCount_ctbl(ages) != PEOPLE_COUNT)
     TEST_FAIL_IF(getEntryCount_ctbl(scores) != PEOPLE_COUNT * EXAM_COUNT - 1)
 
-    TEST_FAIL_IF(get_ctbl(ages, people, "Alice", 5) == NULL)
-    TEST_FAIL_IF(get_ctbl(scores, people, "Luke", 4) != NULL)
-    TEST_FAIL_IF(getExact_ctbl(scores, people, "Wendy", 5, 122) == NULL)
-    TEST_FAIL_IF(getExact_ctbl(ages, people, "Alice", 5, 1) != NULL)
+    TEST_FAIL_IF(get_ctbl(ages, people, "Alice", 5) == nullptr)
+    TEST_FAIL_IF(get_ctbl(scores, people, "Luke", 4) != nullptr)
+    TEST_FAIL_IF(getExact_ctbl(scores, people, "Wendy", 5, 122) == nullptr)
+    TEST_FAIL_IF(getExact_ctbl(ages, people, "Alice", 5, 1) != nullptr)
 
     TEST_PASS
 
@@ -445,7 +445,7 @@ static void test_jsonp(void) {
     JSONParser jp[1];
     char const* const filename = "test_artifacts/model002.json";
     FILE* const fp = fopen(filename, "r");
-    TEST_FAIL_IF(fp == NULL)
+    TEST_FAIL_IF(fp == nullptr)
 
     construct_jsonp(jp, fp, JSON_PARSER_DEFAULT_EVENTS);
     jp->atObjectStart = test_jsonp_countObjects;
@@ -590,27 +590,27 @@ static void test_overlap(void) {
     memcpy(c1, "stuvw", 6);
     memcpy(c2, "xyz", 4);
 
-    TEST_FAIL_IF(!overlaps_ptr(NULL, NULL, 0, 0))
+    TEST_FAIL_IF(!overlaps_ptr(nullptr, nullptr, 0, 0))
 
-    TEST_FAIL_IF(overlaps_ptr(NULL, a1, 0, 6))
-    TEST_FAIL_IF(overlaps_ptr(NULL, a2, 0, 5))
-    TEST_FAIL_IF(overlaps_ptr(NULL, a3, 0, 2))
-    TEST_FAIL_IF(overlaps_ptr(NULL, b1, 0, 6))
-    TEST_FAIL_IF(overlaps_ptr(NULL, b2, 0, 5))
-    TEST_FAIL_IF(overlaps_ptr(NULL, b3, 0, 2))
-    TEST_FAIL_IF(overlaps_ptr(NULL, c1, 0, 6))
-    TEST_FAIL_IF(overlaps_ptr(NULL, c2, 0, 5))
-    TEST_FAIL_IF(overlaps_ptr(NULL, c3, 0, 2))
+    TEST_FAIL_IF(overlaps_ptr(nullptr, a1, 0, 6))
+    TEST_FAIL_IF(overlaps_ptr(nullptr, a2, 0, 5))
+    TEST_FAIL_IF(overlaps_ptr(nullptr, a3, 0, 2))
+    TEST_FAIL_IF(overlaps_ptr(nullptr, b1, 0, 6))
+    TEST_FAIL_IF(overlaps_ptr(nullptr, b2, 0, 5))
+    TEST_FAIL_IF(overlaps_ptr(nullptr, b3, 0, 2))
+    TEST_FAIL_IF(overlaps_ptr(nullptr, c1, 0, 6))
+    TEST_FAIL_IF(overlaps_ptr(nullptr, c2, 0, 5))
+    TEST_FAIL_IF(overlaps_ptr(nullptr, c3, 0, 2))
 
-    TEST_FAIL_IF(overlaps_ptr(a1, NULL, 6, 0))
-    TEST_FAIL_IF(overlaps_ptr(a2, NULL, 5, 0))
-    TEST_FAIL_IF(overlaps_ptr(a3, NULL, 2, 0))
-    TEST_FAIL_IF(overlaps_ptr(b1, NULL, 6, 0))
-    TEST_FAIL_IF(overlaps_ptr(b2, NULL, 5, 0))
-    TEST_FAIL_IF(overlaps_ptr(b3, NULL, 2, 0))
-    TEST_FAIL_IF(overlaps_ptr(c1, NULL, 6, 0))
-    TEST_FAIL_IF(overlaps_ptr(c2, NULL, 5, 0))
-    TEST_FAIL_IF(overlaps_ptr(c3, NULL, 2, 0))
+    TEST_FAIL_IF(overlaps_ptr(a1, nullptr, 6, 0))
+    TEST_FAIL_IF(overlaps_ptr(a2, nullptr, 5, 0))
+    TEST_FAIL_IF(overlaps_ptr(a3, nullptr, 2, 0))
+    TEST_FAIL_IF(overlaps_ptr(b1, nullptr, 6, 0))
+    TEST_FAIL_IF(overlaps_ptr(b2, nullptr, 5, 0))
+    TEST_FAIL_IF(overlaps_ptr(b3, nullptr, 2, 0))
+    TEST_FAIL_IF(overlaps_ptr(c1, nullptr, 6, 0))
+    TEST_FAIL_IF(overlaps_ptr(c2, nullptr, 5, 0))
+    TEST_FAIL_IF(overlaps_ptr(c3, nullptr, 2, 0))
 
     TEST_FAIL_IF(!overlaps_ptr(a1, a1, 6, 6))
     TEST_FAIL_IF(!overlaps_ptr(a2, a2, 5, 5))
@@ -755,7 +755,7 @@ static void test_reallocate_recalloc(void) {
 
     char* buffer            = mem_calloc(OLD_SIZE, 1);
     char* const new_buffer  = RECALLOC(buffer, OLD_SIZE, NEW_SIZE, char);
-    List list[1]            = { (List){ 0, 0, NULL } };
+    List list[1]            = { (List){ 0, 0, nullptr } };
 
     TEST_FAIL_IF(new_buffer != buffer)
     for (unsigned i = 0; i < NEW_SIZE; i++)
@@ -764,7 +764,7 @@ static void test_reallocate_recalloc(void) {
     list->cap   = OLD_SIZE;
     list->size  = 0;
     list->array = calloc((size_t)list->cap, sizeof(Obj));
-    DEBUG_ERROR_IF(list->array == NULL)
+    DEBUG_ERROR_IF(list->array == nullptr)
 
     REPEAT ((NEW_SIZE >> 1) + 1) {
         RECALLOC_IF_NECESSARY(Obj, list->array, uint32_t, list->cap, list->size)
@@ -916,10 +916,10 @@ static void test_streq_strcmp_as_comparator(void) {
 
         switch (i) {
             case ONIONS:
-                TEST_FAIL_IF(match == NULL)
+                TEST_FAIL_IF(match == nullptr)
                 break;
             case SPINACH:
-                TEST_FAIL_IF(match != NULL)
+                TEST_FAIL_IF(match != nullptr)
                 [[fallthrough]];
             default:
                 break;

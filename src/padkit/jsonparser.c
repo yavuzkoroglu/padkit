@@ -22,7 +22,7 @@
         }                                                                   \
         {                                                                   \
             unsigned char* new_stack = realloc(jp->stack, jp->stack_cap);   \
-            if (new_stack == NULL) {                                        \
+            if (new_stack == nullptr) {                                     \
                 jp->errorCode = JSON_PARSER_MEMORY_ERROR;                   \
                 return;                                                     \
             }                                                               \
@@ -341,7 +341,7 @@ static void s07_jp(JSONParser jp[static const 1]) {
         jp->str_cap = new_cap;
         {
             char* new_str = realloc(jp->str, new_cap);
-            if (new_str == NULL) {
+            if (new_str == nullptr) {
                 jp->errorCode = JSON_PARSER_MEMORY_ERROR;
                 return;
             }
@@ -487,7 +487,7 @@ static void s11_jp(JSONParser jp[static const 1]) {
         jp->str_cap = new_cap;
         {
             char* new_str = realloc(jp->str, new_cap);
-            if (new_str == NULL) {
+            if (new_str == nullptr) {
                 jp->errorCode = JSON_PARSER_MEMORY_ERROR;
                 return;
             }
@@ -673,7 +673,7 @@ static void s15_jp(JSONParser jp[static const 1]) {
         jp->str_cap = new_cap;
         {
             char* new_str = realloc(jp->str, new_cap);
-            if (new_str == NULL) {
+            if (new_str == nullptr) {
                 jp->errorCode = JSON_PARSER_MEMORY_ERROR;
                 return;
             }
@@ -919,12 +919,12 @@ void free_jsonp(JSONParser jsonParser[static const 1]) {
 }
 
 bool isValid_jsonp(JSONParser const jsonParser[static const 1]) {
-    if (jsonParser->inputStream == NULL)                return 0;
-    if (jsonParser->stack == NULL)                      return 0;
+    if (jsonParser->inputStream == nullptr)             return 0;
+    if (jsonParser->stack == nullptr)                   return 0;
     if (jsonParser->stack_cap == 0)                     return 0;
     if (jsonParser->stack_size > jsonParser->stack_cap) return 0;
     if (jsonParser->str_cap == 0)                       return 0;
-    if (jsonParser->str == NULL)                        return 0;
+    if (jsonParser->str == nullptr)                     return 0;
     return 1;
 }
 

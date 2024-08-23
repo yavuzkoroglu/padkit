@@ -89,9 +89,9 @@
      * @def NOT_A_JSON_PARSER
      *   A special JSONParser denoting a NOT-JSONParser. This JSONParser fails the isValid_jsonp() test.
      */
-    #define NOT_A_JSON_PARSER ((JSONParser){            \
-        NULL, 0, 0, NULL, 0, 0, NULL, JSON_PARSER_OK,   \
-        JSON_PARSER_DEFAULT_EVENTS                      \
+    #define NOT_A_JSON_PARSER ((JSONParser){                    \
+        nullptr, 0, 0, nullptr, 0, 0, nullptr, JSON_PARSER_OK,  \
+        JSON_PARSER_DEFAULT_EVENTS                              \
     })
 
     /**

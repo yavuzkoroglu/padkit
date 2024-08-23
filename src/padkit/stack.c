@@ -69,7 +69,7 @@ bool isValid_stack(Stack const stack[static const 1]) {
     if (stack->cap == 0)                            return 0;
     if (stack->cap == UINT32_MAX)                   return 0;
     if (stack->size > stack->cap)                   return 0;
-    if (stack->array == NULL)                       return 0;
+    if (stack->array == nullptr)                    return 0;
 
     return 1;
 }
@@ -131,7 +131,7 @@ void* push_stack(Stack stack[static const 1], void const* const restrict ptr) {
 void* pushBottom_stack(Stack stack[static const 1], void const* const restrict ptr) {
     DEBUG_ASSERT(isValid_stack(stack))
 
-    DEBUG_ERROR_IF(pushTop_stack(stack, ptr) == NULL)
+    DEBUG_ERROR_IF(pushTop_stack(stack, ptr) == nullptr)
     NDEBUG_EXECUTE(pushTop_stack(stack, ptr))
 
     rotateUp_stack(stack, 1);
@@ -158,19 +158,19 @@ void* pushTop_stack(Stack stack[static const 1], void const* const restrict ptr)
 void* pushZeros_stack(Stack stack[static const 1]) {
     DEBUG_ASSERT(isValid_stack(stack))
 
-    return pushTop_stack(stack, NULL);
+    return pushTop_stack(stack, nullptr);
 }
 
 void* pushZerosBottom_stack(Stack stack[static const 1]) {
     DEBUG_ASSERT(isValid_stack(stack))
 
-    return pushBottom_stack(stack, NULL);
+    return pushBottom_stack(stack, nullptr);
 }
 
 void* pushZerosTop_stack(Stack stack[static const 1]) {
     DEBUG_ASSERT(isValid_stack(stack))
 
-    return pushTop_stack(stack, NULL);
+    return pushTop_stack(stack, nullptr);
 }
 
 void reallocIfNecessary_stack(Stack stack[static const 1]) {
@@ -187,7 +187,7 @@ void reallocIfNecessary_stack(Stack stack[static const 1]) {
                 stack->array,
                 (size_t)newCap * stack->element_size_in_bytes
             );
-            if (newArray == NULL) REALLOC_ERROR
+            if (newArray == nullptr) REALLOC_ERROR
 
             stack->cap      = newCap;
             stack->array    = newArray;
@@ -295,7 +295,7 @@ void set_stack(Stack stack[static const 1], uint32_t const elementId, void const
             DEBUG_ERROR_IF(overlaps_ptr(dest, ptr, sz_element, sz_element))
         }
 
-        if (ptr == NULL)
+        if (ptr == nullptr)
             memset(dest, 0, stack->element_size_in_bytes);
         else
             memcpy(dest, ptr, stack->element_size_in_bytes); /* UB if dest and ptr overlap. */
@@ -306,5 +306,5 @@ void setZeros_stack(Stack stack[static const 1], uint32_t const elementId) {
     DEBUG_ASSERT(isValid_stack(stack))
     DEBUG_ASSERT(elementId < stack->size)
 
-    set_stack(stack, elementId, NULL);
+    set_stack(stack, elementId, nullptr);
 }

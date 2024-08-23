@@ -66,12 +66,12 @@ void* enqueue_o_cbuff(CircularBuffer buffer[static const 1], void const* const r
 
 void* enqueueZeros_cbuff(CircularBuffer buffer[static const 1]) {
     DEBUG_ASSERT(isValid_cbuff(buffer))
-    return enqueue_cbuff(buffer, NULL);
+    return enqueue_cbuff(buffer, nullptr);
 }
 
 void* enqueueZeros_o_cbuff(CircularBuffer buffer[static const 1]) {
     DEBUG_ASSERT(isValid_cbuff(buffer))
-    return enqueue_o_cbuff(buffer, NULL);
+    return enqueue_o_cbuff(buffer, nullptr);
 }
 
 void flush_cbuff(CircularBuffer buffer[static const 1]) {
@@ -105,7 +105,7 @@ bool isValid_cbuff(CircularBuffer const buffer[static const 1]) {
     if (buffer->cap == 0)                               return 0;
     if (buffer->cap == UINT32_MAX)                      return 0;
     if (buffer->size > buffer->cap)                     return 0;
-    if (buffer->array == NULL)                          return 0;
+    if (buffer->array == nullptr)                       return 0;
 
     if (buffer->size == 0) {
         if (buffer->bottomElementId != UINT32_MAX)      return 0;
@@ -294,7 +294,7 @@ void reallocIfNecessary_cbuff(CircularBuffer buffer[static const 1]) {
                 buffer->array,
                 (size_t)newCap * buffer->element_size_in_bytes
             );
-            if (newArray == NULL) REALLOC_ERROR
+            if (newArray == nullptr) REALLOC_ERROR
 
             if (buffer->bottomElementId > buffer->topElementId) {
                 uint32_t const nShift = buffer->cap - buffer->bottomElementId;
@@ -375,7 +375,7 @@ void set_cbuff(
             DEBUG_ERROR_IF(overlaps_ptr(dest, ptr, sz_element, sz_element))
         }
 
-        if (ptr == NULL)
+        if (ptr == nullptr)
             memset(dest, 0, buffer->element_size_in_bytes);
         else
             memcpy(dest, ptr, buffer->element_size_in_bytes); /* UB if dest and ptr overlap. */
@@ -386,5 +386,5 @@ void setZeros_cbuff(CircularBuffer buffer[static const 1], uint32_t const elemen
     DEBUG_ASSERT(isValid_cbuff(buffer))
     DEBUG_ERROR_IF(buffer->size == 0)
 
-    set_cbuff(buffer, elementId, NULL);
+    set_cbuff(buffer, elementId, nullptr);
 }

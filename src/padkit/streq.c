@@ -30,8 +30,8 @@ bool str_eq_n(char const a[static 1], char const b[static 1], size_t n) {
 }
 
 int strcmp_as_comparator(void const* needle, void const* haystack) {
-    DEBUG_ERROR_IF(needle == NULL)
-    DEBUG_ERROR_IF(haystack == NULL)
+    DEBUG_ERROR_IF(needle == nullptr)
+    DEBUG_ERROR_IF(haystack == nullptr)
     {
         char const* const key = needle;
         char const* const candidate = ((char const* const* const)haystack)[0];

@@ -79,7 +79,7 @@ uint32_t addKey_cset(ChunkSet set[static const 1], char const key[static const 1
         uint32_t const row_id = hash_str(key, n) % set->nRows;
 
         /* Initialize the row if necessary. */
-        if (set->table[row_id] == NULL) {
+        if (set->table[row_id] == nullptr) {
             uint32_t* const row_ptr = mem_alloc(
                 (size_t)CHUNK_SET_INITIAL_ROW_CAP * sizeof(uint32_t)
             );
@@ -165,7 +165,7 @@ uint32_t getKeyId_cset(ChunkSet const set[static const 1], char const key[static
         Chunk const* const chunk = (Chunk const*)set;
         uint32_t const row_id    = hash_str(key, n) % set->nRows;
 
-        if (set->table[row_id] == NULL) return UINT32_MAX;
+        if (set->table[row_id] == nullptr) return UINT32_MAX;
 
         for (
             uint32_t* key_id = set->table[row_id] + set->rowSize[row_id];

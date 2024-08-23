@@ -11,7 +11,8 @@
      * @def NOT_A_CHUNK_SET
      *   A special ChunkSet denoting a NOT-ChunkSet. This ChunkSet cannot pass the isValid_cset() test.
      */
-    #define NOT_A_CHUNK_SET                     ((ChunkSet){ 0, 0, 0, NULL, NULL, 0, 0, 0, NULL, NULL, NULL })
+    #define NOT_A_CHUNK_SET                     \
+        ((ChunkSet){ 0, 0, 0, nullptr, nullptr, 0, 0, 0, nullptr, nullptr, nullptr })
 
     /**
      * @def CHUNK_SET_RECOMMENDED_LOAD_PERCENT
@@ -117,7 +118,7 @@
      * @param[in]    set A constant non-null pointer to at least one constant ChunkSet.
      * @param[in] key_id A constant 32-bit unsigned integer.
      *
-     * @return A pointer to a character constants (the begining of the string found, NULL otherwise).
+     * @return A pointer to a character constants (the begining of the string found, or nullptr).
      */
     char const* getKey_cset(ChunkSet const set[static const 1], uint32_t const key_id);
 

@@ -12,7 +12,7 @@ void* mem_alloc(size_t const size) {
     DEBUG_ASSERT(size <= SIZE_MAX >> (sizeof(size_t) >> 1))
     {
         void* const ptr = malloc(size);
-        if (ptr == NULL) MALLOC_ERROR
+        if (ptr == nullptr) MALLOC_ERROR
 
         return ptr;
     }
@@ -25,7 +25,7 @@ void* mem_calloc(size_t const nmemb, size_t const size) {
     DEBUG_ASSERT(size <= SIZE_MAX >> (sizeof(size_t) >> 1))
     {
         void* const ptr = calloc(nmemb, size);
-        if (ptr == NULL) CALLOC_ERROR
+        if (ptr == nullptr) CALLOC_ERROR
 
         return ptr;
     }

@@ -11,19 +11,22 @@
      * @def NOT_A_CHUNK_TABLE
      *   A special ChunkTable that  cannot pass the isValid_ctbl() test.
      */
-    #define NOT_A_CHUNK_TABLE                           ((ChunkTable){ 0, 0, NULL, 0, 0, NULL, NULL, NULL })
+    #define NOT_A_CHUNK_TABLE                           \
+        ((ChunkTable){ 0, 0, nullptr, 0, 0, nullptr, nullptr, nullptr })
 
     /**
      * @def NOT_A_CHUNK_TABLE_ENTRY
      *   A special ChunkTableEntry denoting a NOT-ChunkTableEntry.
      */
-    #define NOT_A_CHUNK_TABLE_ENTRY                     ((ChunkTableEntry){ UINT32_MAX, UINT32_MAX })
+    #define NOT_A_CHUNK_TABLE_ENTRY                     \
+        ((ChunkTableEntry){ UINT32_MAX, UINT32_MAX })
 
     /**
      * @def NOT_A_CHUNK_TABLE_ITR
      *   A special CTblConstIterator denoting a NOT-CTblConstIterator.
      */
-    #define NOT_A_CHUNK_TABLE_ITR                       ((CTblConstIterator){ NULL, NULL, NULL, 0, NULL })
+    #define NOT_A_CHUNK_TABLE_ITR                       \
+        ((CTblConstIterator){ nullptr, nullptr, nullptr, 0, nullptr })
 
     /**
      * @def CHUNK_TABLE_RECOMMENDED_INITIAL_CAP
