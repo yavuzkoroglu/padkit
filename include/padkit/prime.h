@@ -10,7 +10,7 @@
     /**
      * @brief Checks if a given odd number is prime.
      *
-     * @param[in] odd_x A constant 32-bit unsigned integer (must be odd and > 2).
+     * @param[in] odd_x A constant 32-bit unsigned integer (must be odd and > 1).
      *
      * @return A Boolean value.
      */

@@ -8,9 +8,9 @@ OS=$(shell uname)
 #MODE=release
 MODE=debug
 
-STD=gnu23
+PADKIT_VERSION=1.3beta
 
-PADKIT_VERSION=1.1beta
+STD=gnu23
 
 ifeq (${OS},Darwin)
 DYNAMIC_LIB_FLAGS=-dynamiclib -fvisibility="default"
