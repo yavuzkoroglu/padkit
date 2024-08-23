@@ -7,6 +7,7 @@
  *
  * @author Yavuz Koroglu
  */
+#include <stdckdint.h>
 #include <string.h>
 #include "padkit/debug.h"
 #include "padkit/memalloc.h"
@@ -18,16 +19,20 @@ void* reallocate(
 ) {
     DEBUG_ERROR_IF(*ptrptr == nullptr)
     DEBUG_ASSERT(old_element_count > 0)
-    DEBUG_ASSERT(old_element_count <= SIZE_MAX >> (sizeof(size_t) >> 1))
+    DEBUG_ASSERT(old_element_count < RSIZE_MAX)
     DEBUG_ASSERT(element_size > 0)
-    DEBUG_ASSERT(element_size <= SIZE_MAX >> (sizeof(size_t) >> 1))
+    DEBUG_ASSERT(element_size < RSIZE_MAX)
     DEBUG_ASSERT(new_element_count > old_element_count)
-    DEBUG_ASSERT(new_element_count <= SIZE_MAX >> (sizeof(size_t) >> 1))
+    DEBUG_ASSERT(new_element_count < RSIZE_MAX)
     {
-        size_t const size   = new_element_count * element_size;
-        void* const ptr     = realloc(*ptrptr, size);
-        if (ptr == nullptr) REALLOC_ERROR
-        return (*ptrptr = ptr);
+        DEBUG_EXECUTE(size_t size)
+        DEBUG_ERROR_IF(ckd_mul(&size, new_element_count, element_size))
+        NDEBUG_EXECUTE(size_t const size = new_element_count * element_size)
+        {
+            void* const ptr = realloc(*ptrptr, size);
+            if (ptr == nullptr) REALLOC_ERROR
+            return (*ptrptr = ptr);
+        }
     }
 }
 
@@ -37,14 +42,16 @@ void* recalloc(
 ) {
     DEBUG_ERROR_IF(*ptrptr == nullptr)
     DEBUG_ASSERT(old_element_count > 0)
-    DEBUG_ASSERT(old_element_count <= SIZE_MAX >> (sizeof(size_t) >> 1))
+    DEBUG_ASSERT(old_element_count < RSIZE_MAX)
     DEBUG_ASSERT(element_size > 0)
-    DEBUG_ASSERT(element_size <= SIZE_MAX >> (sizeof(size_t) >> 1))
+    DEBUG_ASSERT(element_size < RSIZE_MAX)
     DEBUG_ASSERT(new_element_count > old_element_count)
-    DEBUG_ASSERT(new_element_count <= SIZE_MAX >> (sizeof(size_t) >> 1))
+    DEBUG_ASSERT(new_element_count < RSIZE_MAX)
     {
-        size_t const memcpy_size    = old_element_count * element_size;
-        void* const ptr             = mem_calloc(new_element_count, element_size);
+        void* const ptr = mem_calloc(new_element_count, element_size);
+        DEBUG_EXECUTE(size_t memcpy_size)
+        DEBUG_ERROR_IF(ckd_mul(&memcpy_size, old_element_count, element_size))
+        NDEBUG_EXECUTE(size_t const memcpy_size = old_element_count * element_size)
         memcpy(ptr, *ptrptr, memcpy_size);
         free(*ptrptr);
         return (*ptrptr = ptr);

@@ -3,13 +3,14 @@
  * @brief Implements mem_alloc() and mem_calloc() functions.
  * @author Yavuz Koroglu
  */
+#include <stdckdint.h>
 #include <stdint.h>
 #include "padkit/debug.h"
 #include "padkit/memalloc.h"
 
 void* mem_alloc(size_t const size) {
     DEBUG_ASSERT(size > 0)
-    DEBUG_ASSERT(size <= SIZE_MAX >> (sizeof(size_t) >> 1))
+    DEBUG_ASSERT(size < RSIZE_MAX)
     {
         void* const ptr = malloc(size);
         if (ptr == nullptr) MALLOC_ERROR
@@ -20,9 +21,13 @@ void* mem_alloc(size_t const size) {
 
 void* mem_calloc(size_t const nmemb, size_t const size) {
     DEBUG_ASSERT(nmemb > 0)
-    DEBUG_ASSERT(nmemb <= SIZE_MAX >> (sizeof(size_t) >> 1))
+    DEBUG_ASSERT(nmemb < RSIZE_MAX)
     DEBUG_ASSERT(size > 0)
-    DEBUG_ASSERT(size <= SIZE_MAX >> (sizeof(size_t) >> 1))
+    DEBUG_ASSERT(size < RSIZE_MAX)
+    {
+        DEBUG_EXECUTE(size_t tmp[1])
+        DEBUG_ERROR_IF(ckd_mul(tmp, nmemb, size))
+    }
     {
         void* const ptr = calloc(nmemb, size);
         if (ptr == nullptr) CALLOC_ERROR

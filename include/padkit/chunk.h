@@ -78,11 +78,7 @@
      *
      * @return A 32-bit unsigned integer (the chunk index of the added string).
      */
-    uint32_t add_chunk(
-        Chunk chunk[static const 1],
-        char const str[static const restrict 1],
-        uint64_t const n
-    );
+    uint32_t add_chunk(Chunk chunk[static const 1], char const str[static const restrict 1], uint64_t const n);
 
     /**
      * @brief Re-inserts one string of a Chunk to the end of that Chunk.
