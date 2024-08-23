@@ -41,8 +41,7 @@ A terminal environment is a command-line interface (CLI) with which a user inter
 > [!TIP]
 > The best shell is the most universal shell.
 
-> [!NOTE]
-> If you have a terminal, and know how to use it, you can skip to Section **[A1ii. A Text Editor](#a1ii-a-text-editor)**.
+The reasoning behind the above tip is simple. An average coder is neither interested in small differences between different shell implementations (e.g. between `bash` and `zsh`) nor bound to shell features that target a specific OS (e.g. `powershell`). The average coder's shell should be as much cross-platform as possible. Ideally, the shell should be available in MacOS, Linux, and Windows. Therefore, I deduce that the average coder should prefer `bash`, especially the most commonly available versions of it. 
 
 ## A2. How to Build 
 
