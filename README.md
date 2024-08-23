@@ -7,14 +7,14 @@ Portable Application (App.) Development (Dev.) KIT (PADKIT) is a library of C ma
 # Table of Contents
 
 - [A. Straight to Business](#a-straight-to-business)
-	- [A1. Prerequisites](#a1-prerequisites)
-		- [A1i. A Terminal-Supporting Platform](#a1i-a-terminal-supporting-platform)
-		- [A1ii. A Text Editor](#a1ii-a-text-editor)
-		- [A1iii. A Standard-Conforming C Compilation Environment](#a1iii-a-standard-conforming-c-compilation-environment)
-	- [A2. How to Build](#a2-how-to-build)
- 		- [A2i. Debug Build for PADKIT-C23](#a2i-debug-build-for-padkit-c23)
+    - [A1. Prerequisites](#a1-prerequisites)
+        - [A1i. A Terminal-Supporting Platform](#a1i-a-terminal-supporting-platform)
+        - [A1ii. A Text Editor](#a1ii-a-text-editor)
+        - [A1iii. A Standard-Conforming C Compilation Environment](#a1iii-a-standard-conforming-c-compilation-environment)
+    - [A2. How to Build](#a2-how-to-build)
+        - [A2i. Debug Build for PADKIT-C23](#a2i-debug-build-for-padkit-c23)
         - [A2ii. Build Parameters](#a2ii-build-parameters)
-	- [A3. Examples](#a3-examples)
+    - [A3. Examples](#a3-examples)
 - [B. Introduction](#b-introduction)
 - C. 
 - [References](#references)
@@ -47,6 +47,18 @@ The reasoning behind the above tip is simple. An average coder is neither intere
 > If you have `bash`, and familiar with it, you may skip to Section **[A1ii. A Text Editor](#a1ii-a-text-editor)**.
 
 #### MacOS
+
+1. Open the `Terminal.app`. You can use Spotlight to locate your application as below.
+
+![figures/Section_A1i_MacOS_Spotlight.png](figures/Section_A1i_MacOS_Spotlight.png)
+
+2. Now, you need to see a terminal window as below. Notice that the title gives away the fact that the shell is `zsh`[^5].
+
+![figures/Section_A1i_MacOS_TerminalWindow.png](figures/Section_A1i_MacOS_TerminalWindow.png)
+
+3. Type `bash` and press Enter to start a bash session. The string `bash-3.2` indicates the shell version.
+
+![figures/Section_A1i_MacOS_bash.png](figures/Section_A1i_MacOS_bash.png)
 
 #### Linux
 
