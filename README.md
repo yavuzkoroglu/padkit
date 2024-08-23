@@ -64,13 +64,21 @@ The reasoning behind the above tip is simple. An average coder is neither intere
 
 1. Open the `Terminal`. On Ubuntu 22.04.4 LTS, it is possible to locate it using the *Show Applications* menu.
 
-![figures/sections/a1i/macos/showapps.png](figures/sections/a1i/linux/showapps.png)
+![figures/sections/a1i/linux/showapps.png](figures/sections/a1i/linux/showapps.png)
 
 2. The default shell in Linux is `bash`[^4]. You can check the bash version by typing `bash --version` and pressing Enter.
 
-![figures/sections/a1i/macos/showapps.png](figures/sections/a1i/linux/bash.png)
+![figures/sections/a1i/linux/bash.png](figures/sections/a1i/linux/bash.png)
 
 #### Windows
+
+1. Install `MSYS2`[^8].
+
+2. Open `MSYS2`.
+
+3. You can check the bash version by typing `bash --version` and pressing Enter.
+
+![figures/sections/a1i/windows/bash.png](figures/sections/a1i/windows/bash.png)
 
 ### A1ii. A Text Editor
 
@@ -101,3 +109,4 @@ I used UTM to try PADKIT on both Linux and Windows. It would have been very hard
 [^5]: P. Falstad, "Z shell", https://zsh.sourceforge.io/ -- last accessed @ `[2024-08-23 20:38:44]`
 [^6]: Microsoft, "PowerShell", https://learn.microsoft.com/en-us/powershell/ -- last accessed @ `[2024-08-23 20:38:44]`
 [^7]: "Shell (computing)", https://en.wikipedia.org/wiki/Shell_(computing) -- last accessed @ `[2024-08-23 21:41:54]`
+[^8]: "MSYS2 software distribution and building platform for windows", https://www.msys2.org -- last accessed @ `[2024-08-23 23:25:48]`
