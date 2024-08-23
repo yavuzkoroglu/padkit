@@ -41,7 +41,18 @@ A terminal environment is a command-line interface (CLI) with which a user inter
 > [!TIP]
 > The best shell is the most universal shell.
 
-The reasoning behind the above tip is simple. An average coder is neither interested in small differences between different shell implementations (e.g. between `bash` and `zsh`) nor bound to shell features that target a specific OS (e.g. `powershell`). The average coder's shell should be as much cross-platform as possible. Ideally, the shell should be available in MacOS, Linux, and Windows. Therefore, I deduce that the average coder should prefer `bash`, especially the most commonly available versions of it. 
+The reasoning behind the above tip is simple. An average coder is neither interested in small differences between different shell implementations (e.g. between `bash`[^4] and `zsh`[^5]) nor bound to shell features that target a specific OS (e.g. `powershell`[^6]). The average coder's shell should be as much cross-platform as possible. Ideally, the shell should be available in MacOS, Linux, and Windows. Therefore, I deduce that the average coder should prefer `bash`[^4], especially the most commonly available versions of it. Now, I will describe how to use `bash`[^4] in MacOS, Linux, and Windows.
+
+> [!NOTE]
+> If you have `bash`, and familiar with it, you may skip to Section **[A1ii. A Text Editor](#a1ii-a-text-editor)**.
+
+#### MacOS
+
+#### Linux
+
+#### Windows
+
+### A1ii. A Text Editor
 
 ## A2. How to Build 
 
@@ -58,5 +69,8 @@ make -e MODE=debug
 ### References
 
 [^1]: D. Ho, "Nodepad++", https://notepad-plus-plus.org/downloads/ -- last accessed @ `[2024-08-23 01:17:09]`
-[^2]: Free Software Foundation Inc., "GCC, the GNU Compiler Collection" https://gcc.gnu.org -- last accessed @ `[2024-08-23 09:24:15]`
+[^2]: Free Software Foundation Inc., "GCC, the GNU compiler collection", https://gcc.gnu.org -- last accessed @ `[2024-08-23 09:24:15]`
 [^3]: LLVM Foundation, "Clang: a C language family frontend for LLVM", https://clang.llvm.org -- last accessed @ `[2024-08-23 01:17:09]`
+[^4]: Free Software Foundation Inc., "GNU bourne again shell", https://www.gnu.org/software/bash/ -- last accessed @ `[2024-08-23 20:34:13]`
+[^5]: P. Falstad, "Z shell", https://zsh.sourceforge.io/ -- last accessed @ `[2024-08-23 20:38:44]`
+[^6]: Microsoft, "PowerShell", https://learn.microsoft.com/en-us/powershell/ -- last accessed @ `[2024-08-23 20:38:44]`
