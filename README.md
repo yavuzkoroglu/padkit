@@ -86,13 +86,13 @@ make -e MODE=debug
 
 ### A2ii. Build Parameters
 
-### Acknowledgment
+# Acknowledgment
 
 I wish to start by stating that not one word of this documentation would have been written, if not for my wife, Dilara, and her unwavering support.
 
 I used UTM to try PADKIT on both Linux and Windows. It would have been very hard to test all OSs without UTM.
 
-### References
+# References
 
 [^1]: D. Ho, "Nodepad++", https://notepad-plus-plus.org/downloads/ -- last accessed @ `[2024-08-23 01:17:09]`
 [^2]: Free Software Foundation Inc., "GCC, the GNU compiler collection", https://gcc.gnu.org -- last accessed @ `[2024-08-23 09:24:15]`
