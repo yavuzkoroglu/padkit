@@ -8,14 +8,16 @@ Portable Application (App.) Development (Dev.) KIT (PADKIT) is a library of C ma
 
 - [A. Straight to Business](#a-straight-to-business)
 	- [A1. Prerequisites](#a1-prerequisites)
-		- A1a. A Terminal-Supporting Platform
-		- A1b. A Text Editor
-		- A1c. A Standard-Conforming C Compilation Environment
-	- A2. How to Build
-	- A3. Examples
-- B. Introduction
+		- [A1i. A Terminal-Supporting Platform](#a1i-a-terminal-supporting-platform)
+		- [A1ii. A Text Editor](#a1ii-a-text-editor)
+		- [A1iii. A Standard-Conforming C Compilation Environment](#a1iii-a-standard-conforming-c-compilation-environment)
+	- [A2. How to Build](#a2-how-to-build)
+ 		- [A2i. Debug Build for PADKIT-C23](#a2i-debug-build-for-padkit-c23)
+        - [A2ii. Build Parameters](#a2ii-build-parameters)
+	- [A3. Examples](#a3-examples)
+- [B. Introduction](#b-introduction)
 - C. 
-- References
+- [References](#references)
 
 # A. Straight to Business
 
@@ -29,13 +31,30 @@ To use PADKIT, you only need three things:
 2. Text Editor (e.g. nano, or Notepad++[^1] )
 3. Standard-Conforming C Compilation Environment (`gcc`[^2], `llvm-clang`[^3], etc.)
 
-### A1a. A Terminal-Supporting Platform
+> [!NOTE]
+> If you have all these three things, you can skip to Section **[A2. How to Build](#a2-how-to-build)**.
+
+### A1i. A Terminal-Supporting Platform
+
+A terminal environment is a command-line interface (CLI) with which a user interacts. A terminal environment comprises a shell and a window. A terminal window is about aesthetics. So, choosing a terminal window is purely a matter of taste. On the other hand, shell selection is about functionality and has real consequences for the user.
+
+> [!TIP]
+> The best shell is the most universal shell.
+
+> [!NOTE]
+> If you have a terminal, and know how to use it, you can skip to Section **[A1ii. A Text Editor](#a1ii-a-text-editor)**.
+
+## A2. How to Build 
+
+### A2i. Debug Build for PADKIT-C23
 
 ```
 git clone -b C23 https://github.com/yavuzkoroglu/padkit.git 
 cd padkit
-make
+make -e MODE=debug
 ```
+
+### A2ii. Build Parameters
 
 ### References
 
