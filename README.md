@@ -36,7 +36,7 @@ To use PADKIT, you only need three things:
 
 ### A1i. A Terminal-Supporting Platform
 
-A terminal environment is a command-line interface (CLI) with which a user interacts. A terminal environment comprises a shell and a window. A terminal window is about aesthetics. So, choosing a terminal window is purely a matter of taste. On the other hand, shell selection is about functionality and has real consequences for the user.
+A terminal environment is a command-line interface (CLI) with which a user interacts. A terminal environment comprises a shell and a window. A terminal window is about aesthetics. So, choosing a terminal window is purely a matter of taste. On the other hand, shell selection is about functionality and has real consequences for the user. A shell is a computer program that exposes OS services to the user or other[^7]. Having a standard shell allows the average coder to use almost the same features across different OS platforms.
 
 > [!TIP]
 > For the average coder, the best shell is the most universal shell.
@@ -100,3 +100,4 @@ I used UTM to try PADKIT on both Linux and Windows. It would have been very hard
 [^4]: Free Software Foundation Inc., "GNU bourne again shell", https://www.gnu.org/software/bash/ -- last accessed @ `[2024-08-23 20:34:13]`
 [^5]: P. Falstad, "Z shell", https://zsh.sourceforge.io/ -- last accessed @ `[2024-08-23 20:38:44]`
 [^6]: Microsoft, "PowerShell", https://learn.microsoft.com/en-us/powershell/ -- last accessed @ `[2024-08-23 20:38:44]`
+[^7]: "Shell (computing)", https://en.wikipedia.org/wiki/Shell_(computing) -- last accessed @ `[2024-08-23 21:41:54]`
