@@ -16,7 +16,7 @@ Portable Application (App.) Development (Dev.) KIT (PADKIT) is a library of C ma
         - [A2ii. Build Parameters](#a2ii-build-parameters)
     - [A3. Examples](#a3-examples)
 - [B. Introduction](#b-introduction)
-- C. 
+- [Acknowledgment](#acknowledgment) 
 - [References](#references)
 
 # A. Straight to Business
@@ -85,6 +85,12 @@ make -e MODE=debug
 ```
 
 ### A2ii. Build Parameters
+
+### Acknowledgment
+
+I wish to start by stating that not one word of this documentation would have been written, if not for my wife, Dilara, and her unwavering support.
+
+I used UTM to try PADKIT on both Linux and Windows. It would have been very hard to test all OSs without UTM.
 
 ### References
 
