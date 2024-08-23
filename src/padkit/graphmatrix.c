@@ -112,7 +112,6 @@ void construct_gmtx(
     DEBUG_ERROR_IF(initial_height == UINT32_MAX)
     DEBUG_ERROR_IF(initial_width == 0)
     DEBUG_ERROR_IF(initial_width == UINT32_MAX)
-
     {
         uint64_t const size = (((uint64_t)initial_height * (uint64_t)initial_width) >> 6) + 1;
         DEBUG_ERROR_IF(size == 0)
@@ -221,7 +220,7 @@ void resizeIfNecessary_gmtx(
         return;
 
     {
-        GraphMatrix new_gmtx[1];
+        GraphMatrix new_gmtx[1] = { NOT_A_GRAPH_MATRIX };
         construct_gmtx(new_gmtx, new_height, new_width);
 
         /* Remake all the previous connections. */
