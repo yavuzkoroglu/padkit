@@ -39,7 +39,7 @@ To use PADKIT, you only need three things:
 A terminal environment is a command-line interface (CLI) with which a user interacts. A terminal environment comprises a shell and a window. A terminal window is about aesthetics. So, choosing a terminal window is purely a matter of taste. On the other hand, shell selection is about functionality and has real consequences for the user.
 
 > [!TIP]
-> The best shell is the most universal shell.
+> For the average coder, the best shell is the most universal shell.
 
 The reasoning behind the above tip is simple. An average coder is neither interested in small differences between different shell implementations (e.g. between `bash`[^4] and `zsh`[^5]) nor bound to shell features that target a specific OS (e.g. `powershell`[^6]). The average coder's shell should be as much cross-platform as possible. Ideally, the shell should be available in MacOS, Linux, and Windows. Therefore, I deduce that the average coder should prefer `bash`[^4], especially the most commonly available versions of it. Now, I will describe how to use `bash`[^4] in MacOS, Linux, and Windows. I use Ubuntu 22.04.4 LTS for Linux examples but feel free to adapt the examples to your preferred Linux distribution.
 
