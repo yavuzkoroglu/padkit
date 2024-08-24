@@ -82,6 +82,14 @@ The reasoning behind the above tip is simple. An average coder is neither intere
 
 ### A1ii. A Text Editor
 
+A text editor is necessary to write code. Text editors, like terminals, comprise a text window and text features. The average coder must carefully select the text editor, according to the text features.
+
+> [!IMPORTANT]
+> A good text editor must NOT do the coding for the average coder.
+
+> [!IMPORTANT]
+> A good text editor must facilitate code reviewing and refactoring.
+
 ## A2. How to Build 
 
 ### A2i. Debug Build for PADKIT-C23
