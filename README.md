@@ -27,9 +27,9 @@ This chapter comprises three sections. First, the prerequisites necessary to bui
 
 To use PADKIT, you only need three things:
 
-1. A Terminal-Supporting Platform (MacOS, Linux, or Windows)
-2. Text Editor (e.g. nano, or Notepad++[^1] )
-3. Standard-Conforming C Compilation Environment (`gcc`[^2], `llvm-clang`[^3], etc.)
+1. A terminal-supporting platform (MacOS, Linux, or Windows),
+2. A text editor, and
+3. A standard-conforming C compilation environment.
 
 > [!TIP]
 > If you have all these three things, you can skip to Section **[A2. How to Build](#a2-how-to-build)**.
@@ -87,8 +87,35 @@ A text editor is necessary to write code. Text editors, like terminals, comprise
 > [!IMPORTANT]
 > A good text editor must NOT do the coding for the average coder.
 
+Many powerful integrated development environments (IDEs) supposedly facilitate "coding" by automatically generating code snippets and performing automatic code completion. At first glance, you might think that these text features are designed to help the average coder. In fact, they are more useful for the advanced coder and potentially harmful for the average coder. The average coder may not know many features of a programming language, especially in the case of a low-level language, like C. The automatic coding experience produces working code at the expense of the learning experience, i.e., the average coder learns to rely on the IDE too much instead of learning the fine details of the programming language. Then, the best practice is to start by avoiding IDEs, using a simple text editor. When the coder feels that he/she comprehends every line of his/her code, i.e., can describe what that line does with its every caveat, then he/she may consider upgrading to an IDE.
+
+#### Avoid These Text Features
+
+1. Automatic code generation
+2. Automatic code completion
+3. Automatic code repair
+
 > [!IMPORTANT]
 > A good text editor must facilitate code reviewing and refactoring.
+
+The average coder must accept the fact that the first version of a code block is almost never going to be the final version. Most code blocks change many times as the software under implementation evolves. Identifying and modyfing lines of code may become a routine and cumbersome task for the coder. Hence, the coder must seek a text editor that facilitates these operations.
+
+#### Seek These Text Features
+
+1. Syntax highlighting
+2. Easily cut and paste multiple words and lines
+3. Search and replace features, preferably with regular expression support
+4. A right margin or a guide line that indicate a code line consists more than, e.g. 120 characters.
+5. Automatic indentation
+6. Line numbering
+7. Bracket matching and highlighting
+
+#### Example Text Editors
+
+GUI-based text editors are intuitive and easy-to-learn. GEdit[^1] could be a good place to start as it is available for all OSs (MacOS, Linux, and Windows).
+
+> [!TIP]
+> Did you know that you could also use a terminal-based text editor? Nano[^9], Vim[^10], and Emacs[^11] are good examples. They are harder to learn but provide much better code reviewing/refactoring features. I personally use Nano but also envy Vim and Emacs users.
 
 ## A2. How to Build 
 
@@ -110,7 +137,7 @@ I used UTM to try PADKIT on both Linux and Windows. It would have been very hard
 
 # References
 
-[^1]: D. Ho, "Nodepad++", https://notepad-plus-plus.org/downloads/ -- last accessed @ `[2024-08-23 01:17:09]`
+[^1]: The GNOME Project, "gedit", https://gedit-technology.github.io/apps/gedit/ -- last accessed @ `[2024-08-24 09:08:21]`
 [^2]: Free Software Foundation Inc., "GCC, the GNU compiler collection", https://gcc.gnu.org -- last accessed @ `[2024-08-23 09:24:15]`
 [^3]: LLVM Foundation, "Clang: a C language family frontend for LLVM", https://clang.llvm.org -- last accessed @ `[2024-08-23 01:17:09]`
 [^4]: Free Software Foundation Inc., "GNU bourne again shell", https://www.gnu.org/software/bash/ -- last accessed @ `[2024-08-23 20:34:13]`
@@ -118,3 +145,6 @@ I used UTM to try PADKIT on both Linux and Windows. It would have been very hard
 [^6]: Microsoft, "PowerShell", https://learn.microsoft.com/en-us/powershell/ -- last accessed @ `[2024-08-23 20:38:44]`
 [^7]: "Shell (computing)", https://en.wikipedia.org/wiki/Shell_(computing) -- last accessed @ `[2024-08-23 21:41:54]`
 [^8]: "MSYS2 software distribution and building platform for windows", https://www.msys2.org -- last accessed @ `[2024-08-23 23:25:48]`
+[^9]: Free Software Foundation Inc., "The GNU nano", https://nano-editor.org/ -- last accessed @ `[2024-08-24 09:13:27]`
+[^10]: "Vim - the ubiquitous text editor", https://www.vim.org -- last accessed @ `[2024-08-24 09:16:12]`
+[^11]: Free Software Foundation Inc., "GNU Emacs - an extensible, customizable, free/libre text editor -- and more", https://www.gnu.org/software/emacs/ -- last accessed @ `[2024-08-24 09:17:50]`
