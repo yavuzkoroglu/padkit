@@ -45,7 +45,7 @@ uint32_t binarySearchRightmostKey_map(Map const map[static const 1], uint32_t co
 
 void constructEmpty_map(Map map[static const 1], uint32_t const initial_cap) {
     DEBUG_ERROR_IF(initial_cap == 0)
-    DEBUG_ERROR_IF(initial_cap == UINT32_MAX)
+    DEBUG_ERROR_IF(initial_cap == INT32_MAX)
 
     map->size = 0;
     map->cap  = initial_cap;
@@ -90,10 +90,12 @@ void insert_map(Map map[static const 1], uint32_t const key_id, Value const valu
 }
 
 bool isValid_map(Map const map[static const 1]) {
-    return map->cap != 0          &&
-           map->cap != UINT32_MAX &&
-           map->size <= map->cap  &&
-           map->mappings != NULL;
+    if (map->cap == 0)          return 0;
+    if (map->cap >= INT32_MAX)  return 0;
+    if (map->size > map->cap)   return 0;
+    if (map->mappings == NULL)  return 0;
+
+    return 1;
 }
 
 uint32_t linearSearchBackward_map(
@@ -160,9 +162,9 @@ uint32_t linearSearchForward_map(
 ) {
     DEBUG_ASSERT(isValid_map(map))
 
-    if (map->size == 0) return UINT32_MAX;
-
-    {
+    if (map->size == 0) {
+        return UINT32_MAX;
+    } else {
         uint32_t id = search_start_id;
         while (
             id < map->size && (
@@ -181,9 +183,9 @@ uint32_t linearSearchForwardKey_map(
 ) {
     DEBUG_ASSERT(isValid_map(map))
 
-    if (map->size == 0) return UINT32_MAX;
-
-    {
+    if (map->size == 0) {
+        return UINT32_MAX;
+    } else {
         uint32_t id = search_start_id;
         while (id < map->size && map->mappings[id].key_id < key_id) id++;
         return id;
@@ -195,9 +197,9 @@ uint32_t linearSearchForwardValue_map(
 ) {
     DEBUG_ASSERT(isValid_map(map))
 
-    if (map->size == 0) return UINT32_MAX;
-
-    {
+    if (map->size == 0) {
+        return UINT32_MAX;
+    } else {
         uint32_t id = search_start_id;
         while (id < map->size && !areEqual_val(map->mappings[id].value, value)) id++;
         return id;
