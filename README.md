@@ -12,6 +12,10 @@ Portable Application (App.) Development (Dev.) KIT (PADKIT) is a library of C ma
         - [A1ii. A Text Editor](#a1ii-a-text-editor)
         - [A1iii. A Standard-Conforming C Compilation Environment](#a1iii-a-standard-conforming-c-compilation-environment)
     - [A2. Compile PADKIT](#a2-compile-padkit)
+        - [A2i. Source-Control Management System](#a2i-source-control-management-system)
+        - [A2ii. Compilation Automation Tool](#a2ii-compilation-automation-tool)
+        - [A2iii. C Compiler](#a2iii-C-compiler)
+        - [A2iv. PADKIT Compilation Steps](#a2iv-padkit-compilation-steps)
     - [A3. Examples](#a3-examples)
 - [B. Introduction](#b-introduction)
 - [Acknowledgment](#acknowledgment) 
@@ -117,15 +121,58 @@ GUI-based text editors are intuitive and easy-to-learn. GEdit[^1] could be a goo
 
 ## A2. Compile PADKIT
 
-The next step is to compile PADKIT. You already have a terminal with a `bash`[^4] shell but three more tools are essentials:
+The next step is to compile PADKIT. You already have a terminal with a `bash`[^4] shell but three more tools are required:
 
-1. `git`[^12] distributed version control system,
-2. `make`[^13] , and
-3. `gcc`[^2] or `clang`[^3] C compiler.
+1. `git`[^12] source-control management (SCM) system,
+2. `make`[^13] compilation automation tool, and
+3. at least one of the `gcc`[^2] or `clang`[^3] C compilers.
 
-### A2i. Debug Build for PADKIT-C23
+> [!TIP]
+> If you have these tools, you may skip to Section xx
 
-### A2ii. Build Parameters
+### A2i. Source-Control Management System
+
+#### MacOS
+
+#### Linux
+
+#### Windows
+
+### A2ii. Compilation Automation Tool
+
+#### MacOS
+
+#### Linux
+
+#### Windows
+
+### A2iii. C Compiler
+
+#### MacOS
+
+#### Linux
+
+#### Windows
+
+### A2iv. PADKIT Compilation Steps
+
+```
+git clone -b (C99|C23) https://github.com/yavuzkoroglu/padkit.git
+cd padkit
+make -e CC=(clang|cc) -e MODE=(debug|release) all
+```
+
+#### MacOS and Linux
+
+```
+bin/tests.out
+```
+
+#### Windows
+
+```
+bin/tests.exe
+```
 
 # Acknowledgment
 
