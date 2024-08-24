@@ -11,9 +11,7 @@ Portable Application (App.) Development (Dev.) KIT (PADKIT) is a library of C ma
         - [A1i. A Terminal-Supporting Platform](#a1i-a-terminal-supporting-platform)
         - [A1ii. A Text Editor](#a1ii-a-text-editor)
         - [A1iii. A Standard-Conforming C Compilation Environment](#a1iii-a-standard-conforming-c-compilation-environment)
-    - [A2. How to Build](#a2-how-to-build)
-        - [A2i. Debug Build for PADKIT-C23](#a2i-debug-build-for-padkit-c23)
-        - [A2ii. Build Parameters](#a2ii-build-parameters)
+    - [A2. Compile PADKIT](#a2-compile-padkit)
     - [A3. Examples](#a3-examples)
 - [B. Introduction](#b-introduction)
 - [Acknowledgment](#acknowledgment) 
@@ -32,7 +30,7 @@ To use PADKIT, you only need three things:
 3. A standard-conforming C compilation environment.
 
 > [!TIP]
-> If you have all these three things, you can skip to Section **[A2. How to Build](#a2-how-to-build)**.
+> If you have all these three things, you can skip to Section **[A2. Compile PADKIT](#a2-compile-padkit)**.
 
 ### A1i. A Terminal-Supporting Platform
 
@@ -117,15 +115,15 @@ GUI-based text editors are intuitive and easy-to-learn. GEdit[^1] could be a goo
 > [!TIP]
 > Did you know that you could also use a terminal-based text editor? Nano[^9], Vim[^10], and Emacs[^11] are good examples. They are harder to learn but provide much better code reviewing/refactoring features. I personally use Nano but also envy Vim and Emacs users.
 
-## A2. How to Build 
+## A2. Compile PADKIT
+
+The next step is to compile PADKIT. You already have a terminal with a `bash`[^4] shell but three more tools are essentials:
+
+1. `git`[^12] distributed version control system,
+2. `make`[^13] , and
+3. `gcc`[^2] or `clang`[^3] C compiler.
 
 ### A2i. Debug Build for PADKIT-C23
-
-```
-git clone -b C23 https://github.com/yavuzkoroglu/padkit.git 
-cd padkit
-make -e MODE=debug
-```
 
 ### A2ii. Build Parameters
 
@@ -148,3 +146,5 @@ I used UTM to try PADKIT on both Linux and Windows. It would have been very hard
 [^9]: Free Software Foundation Inc., "The GNU nano", https://nano-editor.org/ -- last accessed @ `[2024-08-24 09:13:27]`
 [^10]: "Vim - the ubiquitous text editor", https://www.vim.org -- last accessed @ `[2024-08-24 09:16:12]`
 [^11]: Free Software Foundation Inc., "GNU Emacs - an extensible, customizable, free/libre text editor -- and more", https://www.gnu.org/software/emacs/ -- last accessed @ `[2024-08-24 09:17:50]`
+[^12]: https://git-scm.com -- last accessed @ `[2024-08-24 19:22:09]`
+[^13]: Free Software Foundation Inc., "GNU Make", https://www.gnu.org/software/make/#documentation -- last accessed @ `[2024-08-24 19:24:36]`
