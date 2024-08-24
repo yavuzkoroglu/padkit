@@ -35,7 +35,7 @@
     /**
      * @brief Wraps malloc().
      *
-     * @param[in] size A constant size (must be > 0 && < sqrt(SIZE_MAX + 1)).
+     * @param[in] size A constant size (must be > 0 && < SIZE_MAX / 2).
      *
      * @return A pointer to an object.
      */
@@ -44,8 +44,8 @@
     /**
      * @brief Wraps calloc().
      *
-     * @param[in] nmemb A constant size (must be > 0 && < sqrt(SIZE_MAX + 1)).
-     * @param[in] size A constant size (must be > 0 && < sqrt(SIZE_MAX + 1)).
+     * @param[in] nmemb A constant size (must be > 0 && < SIZE_MAX / 2).
+     * @param[in] size A constant size (must be > 0 && < SIZE_MAX / 2).
      *
      * @return A pointer to an object.
      */

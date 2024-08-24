@@ -84,8 +84,8 @@
      * @brief A reallocator that uses realloc().
      *
      * @param[in,out]            ptrptr A non-null constant pointer to at least one object pointer.
-     * @param[in]     new_element_count A constant size.
-     * @param[in]          element_size A constant size.
+     * @param[in]     new_element_count A constant size (must be > 0 && < SIZE_MAX / 2).
+     * @param[in]          element_size A constant size (must be > 0 && < SIZE_MAX / 2).
      *
      * @return A pointer to an object.
      */
@@ -95,9 +95,9 @@
      * @brief A reallocator that uses calloc() & memcpy() instead of realloc().
      *
      * @param[in,out]            ptrptr A non-null constant pointer to at least one object pointer.
-     * @param[in]     old_element_count A constant size.
-     * @param[in]     new_element_count A constant size.
-     * @param[in]          element_size A constant size.
+     * @param[in]     old_element_count A constant size (must be > 0 && < SIZE_MAX / 2).
+     * @param[in]     new_element_count A constant size (must be > 0 && < SIZE_MAX / 2).
+     * @param[in]          element_size A constant size (must be > 0 && < SIZE_MAX / 2).
      *
      * @return A pointer to an object.
      */
