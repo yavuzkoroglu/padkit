@@ -43,6 +43,8 @@ include/padkit.h: ;                                                         @\
     echo ' */'                                          >> include/padkit.h; \
     echo '#ifndef PADKIT_H'                             >> include/padkit.h; \
     echo '    #define PADKIT_H'                         >> include/padkit.h; \
+    echo '    #define PADKIT_VERSION "'${PADKIT_VERSION}'"' >> include/padkit.h; \
+    echo '    #define PADKIT_TARGET  "'${PADKIT_TARGET}'"' >> include/padkit.h; \
     echo '    #include "padkit/bliterals.h"'            >> include/padkit.h; \
     echo '    #include "padkit/chunkset.h"'             >> include/padkit.h; \
     echo '    #include "padkit/chunktable.h"'           >> include/padkit.h; \
