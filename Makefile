@@ -18,14 +18,14 @@ default: libs
 .PHONY: all clean default documentation libs objects tests version
 
 ${DYNAMIC_LIB}: lib src/padkit/*.c \
-    ; ${COMPILE} ${DYNAMIC_LIB_FLAGS} src/padkit/*.c -o ${DYNAMIC_LIB}
+    ; ${COMPILE} ${DYNAMIC_LIB_FLAGS} -Iinclude src/padkit/*.c -o ${DYNAMIC_LIB}
 
 ${TESTS_OUT}:        \
     bin              \
     include/padkit.h \
     src/padkit/*.c   \
     src/tests.c      \
-    ; ${COMPILE} --coverage -fprofile-arcs -ftest-coverage src/padkit/*.c src/tests.c -o ${TESTS_OUT}
+    ; ${COMPILE} -Iinclude --coverage -fprofile-arcs -ftest-coverage src/padkit/*.c src/tests.c -o ${TESTS_OUT}
 
 all: clean libs tests
 
@@ -85,7 +85,7 @@ obj/padkit/chunk.o: obj/padkit          \
     include/padkit/overlap.h            \
     include/padkit/reallocate.h         \
     src/padkit/chunk.c                  \
-    ; ${COMPILE} src/padkit/chunk.c -c -o obj/padkit/chunk.o
+    ; ${COMPILE} -Iinclude src/padkit/chunk.c -c -o obj/padkit/chunk.o
 
 obj/padkit/chunkset.o: obj/padkit       \
     include/padkit/chunk.h              \
@@ -97,7 +97,7 @@ obj/padkit/chunkset.o: obj/padkit       \
     include/padkit/reallocate.h         \
     include/padkit/streq.h              \
     src/padkit/chunkset.c               \
-    ; ${COMPILE} src/padkit/chunkset.c -c -o obj/padkit/chunkset.o
+    ; ${COMPILE} -Iinclude src/padkit/chunkset.c -c -o obj/padkit/chunkset.o
 
 obj/padkit/chunktable.o: obj/padkit     \
     include/padkit/chunk.h              \
@@ -109,7 +109,7 @@ obj/padkit/chunktable.o: obj/padkit     \
     include/padkit/reallocate.h         \
     include/padkit/streq.h              \
     src/padkit/chunktable.c             \
-    ; ${COMPILE} src/padkit/chunktable.c -c -o obj/padkit/chunktable.o
+    ; ${COMPILE} -Iinclude src/padkit/chunktable.c -c -o obj/padkit/chunktable.o
 
 obj/padkit/circbuff.o: obj/padkit       \
     include/padkit/circbuff.h           \
@@ -120,7 +120,7 @@ obj/padkit/circbuff.o: obj/padkit       \
     include/padkit/repeat.h             \
     include/padkit/stack.h              \
     src/padkit/circbuff.c               \
-    ; ${COMPILE} src/padkit/circbuff.c -c -o obj/padkit/circbuff.o
+    ; ${COMPILE} -Iinclude src/padkit/circbuff.c -c -o obj/padkit/circbuff.o
 
 obj/padkit/graphmatrix.o: obj/padkit    \
     include/padkit/bliterals.h          \
@@ -128,12 +128,12 @@ obj/padkit/graphmatrix.o: obj/padkit    \
     include/padkit/graphmatrix.h        \
     include/padkit/memalloc.h           \
     src/padkit/graphmatrix.c            \
-    ; ${COMPILE} src/padkit/graphmatrix.c -c -o obj/padkit/graphmatrix.o
+    ; ${COMPILE} -Iinclude src/padkit/graphmatrix.c -c -o obj/padkit/graphmatrix.o
 
 obj/padkit/hash.o: obj/padkit           \
     include/padkit/hash.h               \
     src/padkit/hash.c                   \
-    ; ${COMPILE} src/padkit/hash.c -c -o obj/padkit/hash.o
+    ; ${COMPILE} -Iinclude src/padkit/hash.c -c -o obj/padkit/hash.o
 
 obj/padkit/jsonparser.o: obj/padkit     \
     include/padkit/debug.h              \
@@ -141,7 +141,7 @@ obj/padkit/jsonparser.o: obj/padkit     \
     include/padkit/memalloc.h           \
     include/padkit/reallocate.h         \
     src/padkit/jsonparser.c             \
-    ; ${COMPILE} src/padkit/jsonparser.c -c -o obj/padkit/jsonparser.o
+    ; ${COMPILE} -Iinclude src/padkit/jsonparser.c -c -o obj/padkit/jsonparser.o
 
 obj/padkit/map.o: obj/padkit            \
     include/padkit/debug.h              \
@@ -151,30 +151,30 @@ obj/padkit/map.o: obj/padkit            \
     include/padkit/reallocate.h         \
     include/padkit/value.h              \
     src/padkit/map.c                    \
-    ; ${COMPILE} src/padkit/map.c -c -o obj/padkit/map.o
+    ; ${COMPILE} -Iinclude src/padkit/map.c -c -o obj/padkit/map.o
 
 obj/padkit/memalloc.o: obj/padkit       \
     include/padkit/debug.h              \
     include/padkit/memalloc.h           \
     src/padkit/memalloc.c               \
-    ; ${COMPILE} src/padkit/memalloc.c -c -o obj/padkit/memalloc.o
+    ; ${COMPILE} -Iinclude src/padkit/memalloc.c -c -o obj/padkit/memalloc.o
 
 obj/padkit/overlap.o: obj/padkit        \
     src/padkit/overlap.c                \
-    ; ${COMPILE} src/padkit/overlap.c -c -o obj/padkit/overlap.o
+    ; ${COMPILE} -Iinclude src/padkit/overlap.c -c -o obj/padkit/overlap.o
 
 obj/padkit/prime.o: obj/padkit          \
     include/padkit/debug.h              \
     include/padkit/prime.h              \
     src/padkit/prime.c                  \
-    ; ${COMPILE} src/padkit/prime.c -c -o obj/padkit/prime.o
+    ; ${COMPILE} -Iinclude src/padkit/prime.c -c -o obj/padkit/prime.o
 
 obj/padkit/reallocate.o: obj/padkit     \
     include/padkit/debug.h              \
     include/padkit/memalloc.h           \
     include/padkit/reallocate.h         \
     src/padkit/reallocate.c             \
-    ; ${COMPILE} src/padkit/reallocate.c -c -o obj/padkit/reallocate.o
+    ; ${COMPILE} -Iinclude src/padkit/reallocate.c -c -o obj/padkit/reallocate.o
 
 obj/padkit/stack.o: obj/padkit          \
     include/padkit/debug.h              \
@@ -183,24 +183,24 @@ obj/padkit/stack.o: obj/padkit          \
     include/padkit/reallocate.h         \
     include/padkit/stack.h              \
     src/padkit/stack.c                  \
-    ; ${COMPILE} src/padkit/stack.c -c -o obj/padkit/stack.o
+    ; ${COMPILE} -Iinclude src/padkit/stack.c -c -o obj/padkit/stack.o
 
 obj/padkit/streq.o: obj/padkit          \
     include/padkit/debug.h              \
     include/padkit/streq.h              \
     src/padkit/streq.c                  \
-    ; ${COMPILE} src/padkit/streq.c -c -o obj/padkit/streq.o
+    ; ${COMPILE} -Iinclude src/padkit/streq.c -c -o obj/padkit/streq.o
 
 obj/padkit/timestamp.o: obj/padkit      \
     include/padkit/debug.h              \
     include/padkit/timestamp.h          \
     src/padkit/timestamp.c              \
-    ; ${COMPILE} src/padkit/timestamp.c -c -o obj/padkit/timestamp.o
+    ; ${COMPILE} -Iinclude src/padkit/timestamp.c -c -o obj/padkit/timestamp.o
 
 obj/padkit/value.o: obj/padkit          \
     include/padkit/value.h              \
     src/padkit/value.c                  \
-    ; ${COMPILE} src/padkit/value.c -c -o obj/padkit/value.o
+    ; ${COMPILE} -Iinclude src/padkit/value.c -c -o obj/padkit/value.o
 
 objects:                        \
     obj/padkit/chunk.o          \

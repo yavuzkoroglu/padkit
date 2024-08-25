@@ -36,10 +36,10 @@ endif
 
 ifeq (${CC},clang)
 SILENCED=-Wno-unsafe-buffer-usage -Wno-unused-parameter
-ARGS=${ARCH_ARGS} ${FLAGS} -Weverything ${SILENCED} -Iinclude ${STDLIBS}
+ARGS=${ARCH_ARGS} ${FLAGS} -Weverything ${SILENCED} ${STDLIBS}
 else
 SILENCED=-Wno-unused-parameter
-ARGS=${ARCH_ARGS} ${FLAGS} -Wall -Wextra ${SILENCED} -Iinclude ${STDLIBS}
+ARGS=${ARCH_ARGS} ${FLAGS} -Wall -Wextra ${SILENCED} ${STDLIBS}
 endif
 
 COMPILE=${CC} ${ARGS}
