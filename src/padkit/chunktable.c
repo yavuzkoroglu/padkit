@@ -65,17 +65,23 @@ static void adjust(ChunkTable tbl[static const 1], Chunk const chunk[static cons
 }
 
 bool isValid_cte(ChunkTableEntry const entry[static const 1]) {
-    return entry->key_id != UINT32_MAX;
+    if (entry->key_id >= INT32_MAX) return 0;
+
+    return 1;
 }
 
 void constructEmpty_ctbl(ChunkTable tbl[static const 1], uint32_t const initial_cap, uint32_t const loadPercent) {
-    DEBUG_ERROR_IF(initial_cap == 0)
+    size_t const sz = (size_t)initial_cap * sizeof(int);
+
+    DEBUG_ASSERT(initial_cap > 0)
     DEBUG_ASSERT(initial_cap < UINT32_MAX / 100)
-    DEBUG_ERROR_IF(loadPercent == 0)
+    DEBUG_ASSERT(loadPercent > 0)
+    DEBUG_ASSERT(loadPercent < INT32_MAX)
+    DEBUG_ASSERT(sz / sizeof(int) == (size_t)initial_cap)
 
     tbl->nKeys          = 0;
     tbl->capKeys        = initial_cap;
-    tbl->keys           = mem_alloc((size_t)initial_cap * sizeof(int));
+    tbl->keys           = mem_alloc(sz);
     tbl->loadPercent    = loadPercent;
     tbl->nRows          = determineNRows(initial_cap, loadPercent);
     tbl->rowSizes       = mem_calloc((size_t)tbl->nRows, sizeof(uint32_t));
@@ -110,6 +116,11 @@ ChunkTableEntry* get_ctbl(
 ) {
     DEBUG_ASSERT(isValid_ctbl(tbl))
     DEBUG_ASSERT(isValid_chunk(chunk))
+    #if INT64_MAX < RSIZE_MAX
+        DEBUG_ASSERT(key_len < INT64_MAX)
+    #else
+        DEBUG_ASSERT(key_len < RSIZE_MAX)
+    #endif
     {
         uint32_t const row_id = hash_str(key, key_len) % tbl->nRows;
         if (tbl->rows[row_id] == nullptr) return nullptr;
@@ -122,7 +133,7 @@ ChunkTableEntry* get_ctbl(
             char const* const candidate_key = get_chunk(chunk, candidate->key_id);
             if (candidate_key == nullptr) continue;
 
-            if (str_eq_n(key, candidate_key, key_len)) return candidate;
+            if (str_eq_n(key, candidate_key, (size_t)key_len)) return candidate;
         }
     }
 
@@ -145,7 +156,11 @@ ChunkTableEntry* getExact_ctbl(
 ) {
     DEBUG_ASSERT(isValid_ctbl(tbl))
     DEBUG_ASSERT(isValid_chunk(chunk))
-    DEBUG_ASSERT(strlen(key) >= key_len)
+    #if INT64_MAX < RSIZE_MAX
+        DEBUG_ASSERT(key_len < INT64_MAX)
+    #else
+        DEBUG_ASSERT(key_len < RSIZE_MAX)
+    #endif
     {
         uint32_t const row_id = hash_str(key, key_len) % tbl->nRows;
         if (tbl->rows[row_id] == nullptr) return nullptr;
@@ -158,7 +173,7 @@ ChunkTableEntry* getExact_ctbl(
             char const* const candidate_key = get_chunk(chunk, candidate->key_id);
             if (candidate_key == nullptr) continue;
 
-            if (str_eq_n(key, candidate_key, key_len) && value == candidate->value)
+            if (str_eq_n(key, candidate_key, (size_t)key_len) && value == candidate->value)
                 return candidate;
         }
     }
@@ -179,13 +194,15 @@ int insert_ctbl(
     DEBUG_ASSERT(isValid_ctbl(tbl))
     DEBUG_ASSERT(isValid_chunk(chunk))
     DEBUG_ASSERT(key_id < chunk->nStrings)
+    DEBUG_ASSERT(IS_VALID_CTBL_INSERT_BEHAVIOR(ctbl_insert_behavior))
     {
-        char const* const key = get_chunk(chunk, key_id);
-        uint64_t const key_len = strlen_chunk(chunk, key_id);
-        uint32_t const row_id  = hash_str(key, key_len) % tbl->nRows;
+        char const* const key   = get_chunk(chunk, key_id);
+        uint64_t const key_len  = strlen_chunk(chunk, key_id);
+        uint32_t const row_id   = hash_str(key, key_len) % tbl->nRows;
 
         /* Initialize a new row if necessary. */
         if (tbl->rows[row_id] == nullptr) {
+            DEBUG_ASSERT(CHUNK_TABLE_INITIAL_ROW_CAP < SIZE_MAX / sizeof(ChunkTableEntry))
             tbl->rowCaps[row_id] = CHUNK_TABLE_INITIAL_ROW_CAP;
             tbl->rows[row_id] = mem_alloc(
                 (size_t)tbl->rowCaps[row_id] * sizeof(ChunkTableEntry)
@@ -210,6 +227,7 @@ int insert_ctbl(
                         case CTBL_BEHAVIOR_REPLACE:
                             entry->value = value;
                             return CTBL_INSERT_DUPLICATE_KEY;
+                        case CTBL_BEHAVIOR_UNIQUE:
                         default:
                             return CTBL_INSERT_DUPLICATE_KEY;
                     }
@@ -246,15 +264,19 @@ int insert_ctbl(
 }
 
 bool isValid_ctbl(ChunkTable const tbl[static const 1]) {
-    return tbl->capKeys > 0                &&
-           tbl->capKeys < UINT32_MAX / 100 &&
-           tbl->nKeys <= tbl->capKeys      &&
-           tbl->keys != NULL               &&
-           tbl->loadPercent != 0           &&
-           tbl->nRows != 0                 &&
-           tbl->rowSizes != NULL           &&
-           tbl->rowCaps != NULL            &&
-           tbl->rows != NULL;
+    if (tbl->capKeys == 0)                  return 0;
+    if (tbl->capKeys >= UINT32_MAX / 100)   return 0;
+    if (tbl->nKeys > tbl->capKeys)          return 0;
+    if (tbl->keys == nullptr)               return 0;
+    if (tbl->loadPercent == 0)              return 0;
+    if (tbl->loadPercent >= INT32_MAX)      return 0;
+    if (tbl->nRows == 0)                    return 0;
+    if (tbl->nRows >= INT32_MAX)            return 0;
+    if (tbl->rowSizes == nullptr)           return 0;
+    if (tbl->rowCaps == nullptr)            return 0;
+    if (tbl->rows == nullptr)               return 0;
+
+    return 1;
 }
 
 void construct_ctblitr(
@@ -264,7 +286,7 @@ void construct_ctblitr(
 ) {
     DEBUG_ASSERT(isValid_ctbl(tbl))
     DEBUG_ASSERT(isValid_chunk(chunk))
-    DEBUG_ASSERT(strlen(key) >= key_len)
+    DEBUG_ASSERT(key_len < INT64_MAX)
 
     itr->tbl        = tbl;
     itr->chunk      = chunk;
@@ -274,22 +296,29 @@ void construct_ctblitr(
 }
 
 bool isValid_ctblitr(CTblConstIterator const itr[static const 1]) {
-    return  isValid_ctbl(itr->tbl)      &&
-            isValid_chunk(itr->chunk)   &&
-            itr->key != NULL            &&
-            itr->key_len != UINT64_MAX;
+    if (itr->tbl == nullptr)            return 0;
+    if (!isValid_ctbl(itr->tbl))        return 0;
+    if (itr->chunk == nullptr)          return 0;
+    if (!isValid_chunk(itr->chunk))     return 0;
+    if (itr->key == nullptr)            return 0;
+    if (itr->key_len >= INT64_MAX)      return 0;
+
+    return 1;
 }
 
 ChunkTableEntry const* next_ctblitr(CTblConstIterator itr[static const 1]) {
     DEBUG_ASSERT(isValid_ctblitr(itr))
+    #if RSIZE_MAX < INT64_MAX
+        DEBUG_ASSERT(itr->key_len < RSIZE_MAX)
+    #endif
 
-    if (!isValid_cte(itr->entry)) return nullptr;
-
-    {
+    if (!isValid_cte(itr->entry)) {
+        return nullptr;
+    } else {
         ChunkTableEntry const* const entry_to_be_returned = itr->entry;
         while (isValid_cte(--itr->entry)) {
             char const* const candidate_key = get_chunk(itr->chunk, itr->entry->key_id);
-            if (candidate_key != nullptr && str_eq_n(itr->key, candidate_key, itr->key_len))
+            if (candidate_key != nullptr && str_eq_n(itr->key, candidate_key, (size_t)itr->key_len))
                 break;
         }
 

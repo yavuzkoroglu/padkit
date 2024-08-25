@@ -192,14 +192,17 @@
     uint32_t getKeyCount_ctbl(ChunkTable const tbl[static const 1]);
 
     /* Return values for insert_ctbl */
-    #define CTBL_INSERT_OK                  (0)
-    #define CTBL_INSERT_DUPLICATE_ENTRY     (1)
-    #define CTBL_INSERT_DUPLICATE_KEY       (2)
+    #define CTBL_INSERT_OK                      (0)
+    #define CTBL_INSERT_DUPLICATE_ENTRY         (1)
+    #define CTBL_INSERT_DUPLICATE_KEY           (2)
 
     /* Values for ctbl_insert_behavior */
-    #define CTBL_BEHAVIOR_MULTIPLE          (0)
-    #define CTBL_BEHAVIOR_REPLACE           (1)
-    #define CTBL_BEHAVIOR_UNIQUE            (2)
+    #define CTBL_BEHAVIOR_MULTIPLE              (0)
+    #define CTBL_BEHAVIOR_REPLACE               (1)
+    #define CTBL_BEHAVIOR_UNIQUE                (2)
+    #define CTBL_BEHAVIOR_FIRST                 CTBL_BEHAVIOR_MULTIPLE
+    #define CTBL_BEHAVIOR_LAST                  CTBL_BEHAVIOR_UNIQUE
+    #define IS_VALID_CTBL_INSERT_BEHAVIOR(b)    (CTBL_BEHAVIOR_FIRST <= b && b <= CTBL_BEHAVIOR_LAST)
 
     /**
      * @brief Inserts (replaces if exists) a ChunkTableEntry.

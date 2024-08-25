@@ -15,7 +15,8 @@
 
 static uint32_t determineNRows(uint32_t const str_count, uint32_t const loadPercent) {
     DEBUG_ASSERT(str_count < UINT32_MAX / 100)
-    DEBUG_ERROR_IF(loadPercent == 0)
+    DEBUG_ASSERT(loadPercent > 0)
+    DEBUG_ASSERT(loadPercent < INT32_MAX)
     {
         uint32_t nRows = (str_count > loadPercent)
             ? (str_count / loadPercent) * 100
@@ -33,6 +34,11 @@ static void adjust(ChunkSet set[static const 1]) {
     {
         Chunk* const chunk      = (Chunk*)set;
         uint32_t const newNRows = determineNRows(chunk->nStrings, set->loadPercent);
+        #if INT32_MAX < RSIZE_MAX
+            DEBUG_ASSERT(newNRows < INT32_MAX)
+        #else
+            DEBUG_ASSERT(newNRows < RSIZE_MAX)
+        #endif
         if (newNRows <= set->nRows) return;
 
         free(set->rowSize);
@@ -51,6 +57,7 @@ static void adjust(ChunkSet set[static const 1]) {
             uint32_t const row_id   = hash_str(key, key_len) % newNRows;
 
             /* Initialize the row if necessary. */
+            DEBUG_ASSERT(CHUNK_SET_INITIAL_ROW_CAP < SIZE_MAX / sizeof(uint32_t))
             if (set->rowSize[row_id] == 0) {
                 uint32_t* const row_ptr = mem_alloc(
                     (size_t)CHUNK_SET_INITIAL_ROW_CAP * sizeof(uint32_t)
@@ -73,12 +80,17 @@ static void adjust(ChunkSet set[static const 1]) {
 
 uint32_t addKey_cset(ChunkSet set[static const 1], char const key[static const 1], uint64_t const n) {
     DEBUG_ASSERT(isValid_cset(set))
-    DEBUG_ASSERT((size_t)n <= strlen(key))
+    #if INT64_MAX < RSIZE_MAX
+        DEBUG_ASSERT(n < INT64_MAX)
+    #else
+        DEBUG_ASSERT(n < RSIZE_MAX)
+    #endif
     {
-        Chunk* const chunk = (Chunk*)set;
-        uint32_t const row_id = hash_str(key, n) % set->nRows;
+        Chunk* const chunk      = (Chunk*)set;
+        uint32_t const row_id   = hash_str(key, n) % set->nRows;
 
         /* Initialize the row if necessary. */
+        DEBUG_ASSERT(CHUNK_SET_INITIAL_ROW_CAP < SIZE_MAX / sizeof(uint32_t))
         if (set->table[row_id] == nullptr) {
             uint32_t* const row_ptr = mem_alloc(
                 (size_t)CHUNK_SET_INITIAL_ROW_CAP * sizeof(uint32_t)
@@ -92,7 +104,7 @@ uint32_t addKey_cset(ChunkSet set[static const 1], char const key[static const 1
             --key_id >= set->table[row_id];
         ) {
             char const* const candidate = get_chunk(chunk, *key_id);
-            if (!str_eq_n(key, candidate, n)) continue;
+            if (!str_eq_n(key, candidate, (size_t)n)) continue;
             /* This exact key exists in the ChunkSet. Do nothing more. */
             return *key_id;
         }
@@ -118,7 +130,12 @@ void constructEmpty_cset(
     ChunkSet set[static const 1], uint64_t const initial_cap,
     uint32_t const initial_stringsCap, uint32_t const loadPercent
 ) {
-    DEBUG_ERROR_IF(loadPercent == 0)
+    DEBUG_ASSERT(initial_cap > 0)
+    DEBUG_ASSERT(initial_cap < INT64_MAX)
+    DEBUG_ASSERT(initial_stringsCap > 0)
+    DEBUG_ASSERT(initial_stringsCap < INT32_MAX)
+    DEBUG_ASSERT(loadPercent > 0)
+    DEBUG_ASSERT(loadPercent < INT32_MAX)
 
     constructEmpty_chunk((Chunk*)set, initial_cap, initial_stringsCap);
 
@@ -149,7 +166,7 @@ void free_cset(ChunkSet set[static const 1]) {
 
 char const* getKey_cset(ChunkSet const set[static const 1], uint32_t const key_id) {
     DEBUG_ASSERT(isValid_cset(set))
-    DEBUG_ERROR_IF(set->nStrings == 0)
+    DEBUG_ASSERT(key_id < set->nStrings)
     return get_chunk((Chunk const*)set, key_id);
 }
 
@@ -160,7 +177,7 @@ uint32_t getKeyCount_cset(ChunkSet const set[static const 1]) {
 
 uint32_t getKeyId_cset(ChunkSet const set[static const 1], char const key[static const 1], uint64_t const n) {
     DEBUG_ASSERT(isValid_cset(set))
-    DEBUG_ASSERT((size_t)n <= strlen(key))
+    DEBUG_ASSERT(n < INT64_MAX)
     {
         Chunk const* const chunk = (Chunk const*)set;
         uint32_t const row_id    = hash_str(key, n) % set->nRows;
@@ -173,7 +190,8 @@ uint32_t getKeyId_cset(ChunkSet const set[static const 1], char const key[static
         ) {
             char const* const candidate  = get_chunk(chunk, *key_id);
             uint64_t const candidate_len = strlen_chunk(chunk, *key_id);
-            if (!str_eq_n(key, candidate, candidate_len)) continue;
+            DEBUG_ASSERT(candidate_len < RSIZE_MAX)
+            if (!str_eq_n(key, candidate, (size_t)candidate_len)) continue;
             return *key_id;
         }
     }
@@ -183,15 +201,20 @@ uint32_t getKeyId_cset(ChunkSet const set[static const 1], char const key[static
 }
 
 bool isValid_cset(ChunkSet const set[static const 1]) {
-    return isValid_chunk((Chunk const*)set) &&
-           set->loadPercent != 0            &&
-           set->nRows != 0                  &&
-           set->rowSize != NULL             &&
-           set->rowCap != NULL              &&
-           set->table != NULL;
+    if (!isValid_chunk((Chunk const*)set))  return 0;
+    if (set->loadPercent == 0)              return 0;
+    if (set->loadPercent >= INT32_MAX)      return 0;
+    if (set->nRows == 0)                    return 0;
+    if (set->nRows >= INT32_MAX)            return 0;
+    if (set->rowSize == nullptr)            return 0;
+    if (set->rowCap == nullptr)             return 0;
+    if (set->table == nullptr)              return 0;
+
+    return 1;
 }
 
 uint64_t strlen_cset(ChunkSet const set[static const 1], uint32_t const key_id) {
     DEBUG_ASSERT(isValid_cset(set))
+    DEBUG_ASSERT(key_id < set->nStrings)
     return strlen_chunk((Chunk const*)set, key_id);
 }

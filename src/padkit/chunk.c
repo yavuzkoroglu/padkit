@@ -5,6 +5,7 @@
  * @author Yavuz Koroglu
  */
 #include <ctype.h>
+#include <limits.h>
 #include <string.h>
 #include "padkit/chunk.h"
 #include "padkit/debug.h"
@@ -51,7 +52,12 @@ char const* append_chunk(
     uint64_t const n
 ) {
     DEBUG_ASSERT(isValid_chunk(chunk))
-    DEBUG_ASSERT(n < INT64_MAX)
+    #if INT64_MAX < RSIZE_MAX
+        DEBUG_ASSERT(n < INT64_MAX)
+    #else
+        DEBUG_ASSERT(n < RSIZE_MAX)
+        DEBUG_ASSERT(chunk->len < RSIZE_MAX)
+    #endif
     {
         DEBUG_EXECUTE(size_t const sz_chunk = (size_t)chunk->len)
         DEBUG_EXECUTE(size_t const sz_str   = (size_t)n)
@@ -153,7 +159,11 @@ void constructEmpty_chunk(
     size_t const sz = (size_t)initial_stringsCap * sizeof(uint64_t);
 
     DEBUG_ASSERT(initial_cap > 0)
-    DEBUG_ASSERT(initial_cap < INT64_MAX)
+    #if INT64_MAX < RSIZE_MAX
+        DEBUG_ASSERT(initial_cap < INT64_MAX)
+    #else
+        DEBUG_ASSERT(initial_cap < RSIZE_MAX)
+    #endif
     DEBUG_ASSERT((size_t)initial_cap < SIZE_MAX >> 1)
     DEBUG_ASSERT(initial_stringsCap > 0)
     DEBUG_ASSERT(initial_stringsCap < INT32_MAX)
@@ -256,6 +266,10 @@ uint32_t fromStreamAsWhole_chunk(Chunk chunk[static const 1], FILE stream[static
             long const size = ftell(stream);
             if (size < 0L) {
                 return UINT32_MAX;
+            #if LONG_MAX > RSIZE_MAX
+                } else if ((unsigned long)size >= RSIZE_MAX) {
+                    return UINT32_MAX;
+            #endif
             } else if (fseek(stream, 0L, SEEK_SET) != 0) {
                 return UINT32_MAX;
             } else {
@@ -295,6 +309,7 @@ char const* getLast_chunk(Chunk const chunk[static const 1]) {
 bool isValid_chunk(Chunk const chunk[static const 1]) {
     if (chunk->cap == 0)                        return 0;
     if (chunk->cap >= INT64_MAX)                return 0;
+    if (chunk->cap >= RSIZE_MAX)                return 0;
     if (chunk->stringsCap == 0)                 return 0;
     if (chunk->stringsCap >= INT32_MAX)         return 0;
     if (chunk->stringOffsets == nullptr)        return 0;

@@ -89,28 +89,27 @@ static void test_chunk_appendSpace(void) {
 }
 
 static void test_chunk_concat(void) {
+    Chunk chunk[2][1] = { { NOT_A_CHUNK }, { NOT_A_CHUNK } };
+
     constructEmpty_chunk(strings, CHUNK_RECOMMENDED_PARAMETERS);
-    {
-        Chunk chunk[2][1] = { { NOT_A_CHUNK }, { NOT_A_CHUNK } };
 
-        for (int i = 0; i < 2; i++) {
-            constructEmpty_chunk(chunk[i], CHUNK_RECOMMENDED_PARAMETERS);
-            concat_chunk(strings, chunk[i]);
-        }
-
-        add_chunk(chunk[0], "abc", 3);
-        add_chunk(chunk[1], "def", 3);
-
-        for (int i = 0; i < 2; i++)
-            concat_chunk(strings, chunk[i]);
-
-        TEST_FAIL_IF(strings->len != 7)
-        TEST_FAIL_IF(strings->nStrings != 2)
-        TEST_PASS
-
-        for (int i = 0; i < 2; i++)
-            free_chunk(chunk[i]);
+    for (int i = 0; i < 2; i++) {
+        constructEmpty_chunk(chunk[i], CHUNK_RECOMMENDED_PARAMETERS);
+        concat_chunk(strings, chunk[i]);
     }
+
+    add_chunk(chunk[0], "abc", 3);
+    add_chunk(chunk[1], "def", 3);
+
+    for (int i = 0; i < 2; i++)
+        concat_chunk(strings, chunk[i]);
+
+    TEST_FAIL_IF(strings->len != 7)
+    TEST_FAIL_IF(strings->nStrings != 2)
+    TEST_PASS
+
+    for (int i = 0; i < 2; i++)
+        free_chunk(chunk[i]);
 
     free_chunk(strings);
 }
@@ -156,21 +155,20 @@ static void test_chunk_deleteLast(void) {
 }
 
 static void test_chunk_fromStream(void) {
+    FILE* const stream = fopen("src/tests.c", "r");
+    DEBUG_ERROR_IF(stream == nullptr)
+
     constructEmpty_chunk(strings, CHUNK_RECOMMENDED_PARAMETERS);
-    {
-        FILE* const stream = fopen("src/tests.c", "r");
-        DEBUG_ERROR_IF(stream == nullptr)
 
-        DEBUG_ERROR_IF(fromStream_chunk(strings, stream, nullptr) == 0xFFFFFFFF)
-        NDEBUG_EXECUTE(fromStream_chunk(strings, stream, nullptr))
+    DEBUG_ERROR_IF(fromStream_chunk(strings, stream, nullptr) == 0xFFFFFFFF)
+    NDEBUG_EXECUTE(fromStream_chunk(strings, stream, nullptr))
 
-        TEST_FAIL_IF(!STR_CONTAINS_CONST(getFirst_chunk(strings), "/""**"))
-        TEST_FAIL_IF(!STR_EQ_CONST(getFirst_chunk(strings), "/""**"))
-        TEST_PASS
+    TEST_FAIL_IF(!STR_CONTAINS_CONST(getFirst_chunk(strings), "/""**"))
+    TEST_FAIL_IF(!STR_EQ_CONST(getFirst_chunk(strings), "/""**"))
+    TEST_PASS
 
-        DEBUG_ERROR_IF(fclose(stream) == EOF)
-        NDEBUG_EXECUTE(fclose(stream))
-    }
+    DEBUG_ERROR_IF(fclose(stream) == EOF)
+    NDEBUG_EXECUTE(fclose(stream))
 
     free_chunk(strings);
 }
