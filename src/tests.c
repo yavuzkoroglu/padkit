@@ -89,9 +89,9 @@ static void test_chunk_appendSpace(void) {
 }
 
 static void test_chunk_concat(void) {
-    constructEmpty_chunk(strings, CHUNK_RECOMMENDED_PARAMETERS);
-
     Chunk chunk[2][1] = { { NOT_A_CHUNK }, { NOT_A_CHUNK } };
+
+    constructEmpty_chunk(strings, CHUNK_RECOMMENDED_PARAMETERS);
 
     for (int i = 0; i < 2; i++) {
         constructEmpty_chunk(chunk[i], CHUNK_RECOMMENDED_PARAMETERS);
@@ -155,10 +155,10 @@ static void test_chunk_deleteLast(void) {
 }
 
 static void test_chunk_fromStream(void) {
-    constructEmpty_chunk(strings, CHUNK_RECOMMENDED_PARAMETERS);
-
     FILE* const stream = fopen("src/tests.c", "r");
     DEBUG_ERROR_IF(stream == NULL)
+
+    constructEmpty_chunk(strings, CHUNK_RECOMMENDED_PARAMETERS);
 
     DEBUG_ERROR_IF(fromStream_chunk(strings, stream, NULL) == 0xFFFFFFFF)
     NDEBUG_EXECUTE(fromStream_chunk(strings, stream, NULL))
@@ -291,20 +291,22 @@ static void test_ctbl(void) {
     char const* const name[PEOPLE_COUNT] =
         { [ALICE]="Alice", [HARRY]="Harry", [LENNY]="Lenny", [WENDY]="Wendy" };
 
-    uint32_t person_id[PEOPLE_COUNT];
+    DEBUG_EXECUTE(uint32_t person_id[PEOPLE_COUNT])
+    Chunk people[1]             = { NOT_A_CHUNK };
+    ChunkTable ages[1]          = { NOT_A_CHUNK_TABLE };
+    ChunkTable scores[1]        = { NOT_A_CHUNK_TABLE };
+    CTblConstIterator itr[1]    = { NOT_A_CHUNK_TABLE_ITR };
+    unsigned count_scores       = 0;
 
-    Chunk people[1] = { NOT_A_CHUNK };
     constructEmpty_chunk(people, CHUNK_RECOMMENDED_PARAMETERS);
-
-    ChunkTable ages[1] = { NOT_A_CHUNK_TABLE };
     constructEmpty_ctbl(ages, CHUNK_TABLE_RECOMMENDED_PARAMETERS);
-
-    ChunkTable scores[1] = { NOT_A_CHUNK_TABLE };
     constructEmpty_ctbl(scores, CHUNK_TABLE_RECOMMENDED_PARAMETERS);
 
     for (unsigned person = ALICE; person < PEOPLE_COUNT; person++) {
-        person_id[person] = add_chunk(people, name[person], 5);
+        DEBUG_EXECUTE(person_id[person] = add_chunk(people, name[person], 5))
         DEBUG_ERROR_IF(person_id[person] != person)
+
+        NDEBUG_EXECUTE(add_chunk(people, name[person], 5))
     }
 
     switch (
@@ -316,7 +318,6 @@ static void test_ctbl(void) {
     ) {
         case CTBL_INSERT_OK:
             break;
-        case CTBL_INSERT_ERROR:
         case CTBL_INSERT_DUPLICATE_KEY:
         default:
             TEST_FAIL_MESSAGE(insert_ctbl);
@@ -333,7 +334,6 @@ static void test_ctbl(void) {
         case CTBL_INSERT_DUPLICATE_KEY:
         case CTBL_INSERT_OK:
             break;
-        case CTBL_INSERT_ERROR:
         default:
             TEST_FAIL_MESSAGE(insert_ctbl);
             goto END_TEST_CTBL;
@@ -349,7 +349,6 @@ static void test_ctbl(void) {
         ) {
             case CTBL_INSERT_OK:
                 break;
-            case CTBL_INSERT_ERROR:
             case CTBL_INSERT_DUPLICATE_KEY:
             default:
                 TEST_FAIL_MESSAGE(insert_ctbl);
@@ -369,17 +368,14 @@ static void test_ctbl(void) {
                 case CTBL_INSERT_DUPLICATE_ENTRY:
                 case CTBL_INSERT_OK:
                     break;
-                case CTBL_INSERT_ERROR:
                 default:
                     TEST_FAIL_MESSAGE(insert_ctbl);
             }
         }
     }
 
-    CTblConstIterator itr[1];
     construct_ctblitr(itr, scores, people, name[ALICE], 5);
 
-    unsigned count_scores = 0;
     while (next_ctblitr(itr) != NULL) count_scores++;
 
     TEST_FAIL_IF(count_scores != 2)
@@ -757,12 +753,12 @@ static void test_reallocate_recalloc(void) {
 
     char* buffer            = mem_calloc(OLD_SIZE, 1);
     char* const new_buffer  = RECALLOC(buffer, OLD_SIZE, NEW_SIZE, 1);
+    List list[1]            = { (List){ 0, 0, NULL } };
 
     TEST_FAIL_IF(new_buffer != buffer)
     for (unsigned i = 0; i < NEW_SIZE; i++)
         TEST_FAIL_IF(new_buffer[i] != '\0')
 
-    List list[1];
     list->cap   = OLD_SIZE;
     list->size  = 0;
     list->array = calloc((size_t)list->cap, sizeof(Obj));
@@ -922,6 +918,9 @@ static void test_streq_strcmp_as_comparator(void) {
                 break;
             case SPINACH:
                 TEST_FAIL_IF(match != NULL)
+                break;
+            default:
+                break;
         }
     }
 

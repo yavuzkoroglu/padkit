@@ -65,7 +65,7 @@ void* get_stack(Stack const stack[static const 1], uint32_t const elementId) {
     DEBUG_ASSERT(isValid_stack(stack))
     DEBUG_ASSERT(elementId < stack->size)
 
-    return stack->array + (size_t)elementId * stack->element_size_in_bytes;
+    return stack->array + offset;
 }
 
 bool isValid_stack(Stack const stack[static const 1]) {

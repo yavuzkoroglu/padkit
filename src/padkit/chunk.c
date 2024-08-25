@@ -5,6 +5,7 @@
  * @author Yavuz Koroglu
  */
 #include <ctype.h>
+#include <limits.h>
 #include <string.h>
 #include "padkit/chunk.h"
 #include "padkit/debug.h"
@@ -51,7 +52,12 @@ char const* append_chunk(
     uint64_t const n
 ) {
     DEBUG_ASSERT(isValid_chunk(chunk))
-    DEBUG_ASSERT(n < INT64_MAX)
+    #if UINT64_MAX < SIZE_MAX
+        DEBUG_ASSERT(n < INT64_MAX)
+    #else
+        DEBUG_ASSERT(n < SIZE_MAX >> 1)
+        DEBUG_ASSERT(chunk->len < SIZE_MAX >> 1)
+    #endif
     {
         DEBUG_EXECUTE(size_t const sz_chunk = (size_t)chunk->len)
         DEBUG_EXECUTE(size_t const sz_str   = (size_t)n)
@@ -153,8 +159,11 @@ void constructEmpty_chunk(
     size_t const sz = (size_t)initial_stringsCap * sizeof(uint64_t);
 
     DEBUG_ASSERT(initial_cap > 0)
-    DEBUG_ASSERT(initial_cap < INT64_MAX)
-    DEBUG_ASSERT((size_t)initial_cap < SIZE_MAX >> 1)
+    #if UINT64_MAX < SIZE_MAX
+        DEBUG_ASSERT(initial_cap < INT64_MAX)
+    #else
+        DEBUG_ASSERT(initial_cap < SIZE_MAX >> 1)
+    #endif
     DEBUG_ASSERT(initial_stringsCap > 0)
     DEBUG_ASSERT(initial_stringsCap < INT32_MAX)
     DEBUG_ASSERT(sz / sizeof(uint64_t) == (size_t)initial_stringsCap)
@@ -256,6 +265,10 @@ uint32_t fromStreamAsWhole_chunk(Chunk chunk[static const 1], FILE stream[static
             long const size = ftell(stream);
             if (size < 0L) {
                 return UINT32_MAX;
+            #if ULONG_MAX > SIZE_MAX
+                } else if ((unsigned long)size >= SIZE_MAX >> 1) {
+                    return UINT32_MAX;
+            #endif
             } else if (fseek(stream, 0L, SEEK_SET) != 0) {
                 return UINT32_MAX;
             } else {
@@ -295,6 +308,7 @@ char const* getLast_chunk(Chunk const chunk[static const 1]) {
 bool isValid_chunk(Chunk const chunk[static const 1]) {
     if (chunk->cap == 0)                        return 0;
     if (chunk->cap >= INT64_MAX)                return 0;
+    if (chunk->cap >= SIZE_MAX >> 1)            return 0;
     if (chunk->stringsCap == 0)                 return 0;
     if (chunk->stringsCap >= INT32_MAX)         return 0;
     if (chunk->stringOffsets == NULL)           return 0;
