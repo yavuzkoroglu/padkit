@@ -23,10 +23,10 @@ void* reallocate(
     DEBUG_ASSERT(element_size < RSIZE_MAX)
     DEBUG_ASSERT(new_element_count > old_element_count)
     DEBUG_ASSERT(new_element_count < RSIZE_MAX)
+    DEBUG_ASSERT((new_element_count * element_size) / new_element_count == element_size)
     {
         size_t const size   = new_element_count * element_size;
         void* const ptr     = realloc(*ptrptr, size);
-        DEBUG_ASSERT(size / new_element_count == element_size)
         if (ptr == nullptr) REALLOC_ERROR
         return (*ptrptr = ptr);
     }
@@ -43,10 +43,10 @@ void* recalloc(
     DEBUG_ASSERT(element_size < RSIZE_MAX)
     DEBUG_ASSERT(new_element_count > old_element_count)
     DEBUG_ASSERT(new_element_count < RSIZE_MAX)
+    DEBUG_ASSERT((new_element_count * element_size) / new_element_count == element_size)
     {
         void* const ptr = mem_calloc(new_element_count, element_size);
         size_t const memcpy_size = old_element_count * element_size;
-        DEBUG_ASSERT(memcpy_size / old_element_count == element_size)
         memcpy(ptr, *ptrptr, memcpy_size);
         free(*ptrptr);
         return (*ptrptr = ptr);

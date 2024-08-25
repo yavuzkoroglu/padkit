@@ -922,8 +922,10 @@ bool isValid_jsonp(JSONParser const jsonParser[static const 1]) {
     if (jsonParser->inputStream == nullptr)             return 0;
     if (jsonParser->stack == nullptr)                   return 0;
     if (jsonParser->stack_cap == 0)                     return 0;
+    if (jsonParser->stack_cap >= RSIZE_MAX)             return 0;
     if (jsonParser->stack_size > jsonParser->stack_cap) return 0;
     if (jsonParser->str_cap == 0)                       return 0;
+    if (jsonParser->str_cap >= RSIZE_MAX)               return 0;
     if (jsonParser->str == nullptr)                     return 0;
     return 1;
 }

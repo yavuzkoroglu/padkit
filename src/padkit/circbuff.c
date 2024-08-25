@@ -22,7 +22,7 @@ static uint32_t calculateNewCap_cbuff(CircularBuffer const buffer[static const 1
         uint32_t newCap = buffer->cap;
         while (newCap <= buffer->size) {
             newCap <<= 1;
-            if (newCap <= buffer->cap) return UINT32_MAX;
+            if (newCap >= INT32_MAX) return UINT32_MAX;
         }
 
         return newCap;
@@ -34,10 +34,10 @@ void constructEmpty_cbuff(
     size_t const element_size_in_bytes,
     uint32_t const initial_cap
 ) {
-    DEBUG_ERROR_IF(element_size_in_bytes == 0)
-    DEBUG_ERROR_IF(element_size_in_bytes == SIZE_MAX)
-    DEBUG_ERROR_IF(initial_cap == 0)
-    DEBUG_ERROR_IF(initial_cap == UINT32_MAX)
+    DEBUG_ASSERT(element_size_in_bytes > 0)
+    DEBUG_ASSERT(element_size_in_bytes < SIZE_MAX >> 1)
+    DEBUG_ASSERT(initial_cap > 0)
+    DEBUG_ASSERT(initial_cap < INT32_MAX)
 
     buffer->element_size_in_bytes   = element_size_in_bytes;
     buffer->cap                     = initial_cap;
@@ -92,18 +92,20 @@ void free_cbuff(CircularBuffer buffer[static const 1]) {
 void* get_cbuff(CircularBuffer const buffer[static const 1], uint32_t const elementId) {
     DEBUG_ASSERT(isValid_cbuff(buffer))
     DEBUG_ERROR_IF(buffer->size == 0)
+    {
+        size_t const m      = ((size_t)buffer->bottomElementId + (size_t)(elementId % buffer->size)) % buffer->cap;
+        size_t const offset = m * buffer->element_size_in_bytes;
+        DEBUG_ASSERT(m == 0 || offset / m == buffer->element_size_in_bytes)
 
-    return
-        buffer->array +
-            (uint64_t)((buffer->bottomElementId + (elementId % buffer->size)) % buffer->cap) *
-            (uint64_t)buffer->element_size_in_bytes;
+        return buffer->array + offset;
+    }
 }
 
 bool isValid_cbuff(CircularBuffer const buffer[static const 1]) {
     if (buffer->element_size_in_bytes == 0)             return 0;
-    if (buffer->element_size_in_bytes == UINT64_MAX)    return 0;
+    if (buffer->element_size_in_bytes >= RSIZE_MAX)     return 0;
     if (buffer->cap == 0)                               return 0;
-    if (buffer->cap == UINT32_MAX)                      return 0;
+    if (buffer->cap >= INT32_MAX)                       return 0;
     if (buffer->size > buffer->cap)                     return 0;
     if (buffer->array == nullptr)                       return 0;
 
@@ -120,7 +122,7 @@ bool isValid_cbuff(CircularBuffer const buffer[static const 1]) {
     if (buffer->topElementId < buffer->bottomElementId) {
         if (buffer->size !=
                 buffer->topElementId + 1 +
-                buffer->cap - buffer->bottomElementId
+                (buffer->cap - buffer->bottomElementId)
         ) return 0;
 
         return 1;
@@ -210,8 +212,9 @@ void* push_o_cbuff(CircularBuffer buffer[static const 1], void const* const rest
 void* pushBottom_cbuff(CircularBuffer buffer[static const 1], void const* const restrict ptr) {
     DEBUG_ASSERT(isValid_cbuff(buffer))
     {
-        DEBUG_EXECUTE(size_t const sz_buff    = (size_t)buffer->cap * buffer->element_size_in_bytes)
         DEBUG_EXECUTE(size_t const sz_element = buffer->element_size_in_bytes)
+        DEBUG_EXECUTE(size_t const sz_buff    = (size_t)buffer->cap * sz_element)
+        DEBUG_ASSERT(sz_buff / (size_t)buffer->cap == sz_element)
         DEBUG_ERROR_IF(overlaps_ptr(buffer->array, ptr, sz_buff, sz_element))
     }
 
@@ -248,8 +251,9 @@ void* pushBottom_o_cbuff(CircularBuffer buffer[static const 1], void const* cons
 void* pushTop_cbuff(CircularBuffer buffer[static const 1], void const* const restrict ptr) {
     DEBUG_ASSERT(isValid_cbuff(buffer))
     {
-        DEBUG_EXECUTE(size_t const sz_buff    = (size_t)buffer->cap * buffer->element_size_in_bytes)
         DEBUG_EXECUTE(size_t const sz_element = buffer->element_size_in_bytes)
+        DEBUG_EXECUTE(size_t const sz_buff    = (size_t)buffer->cap * sz_element)
+        DEBUG_ASSERT(sz_buff / (size_t)buffer->cap == sz_element)
         DEBUG_ERROR_IF(overlaps_ptr(buffer->array, ptr, sz_buff, sz_element))
     }
 
@@ -285,11 +289,9 @@ void reallocIfNecessary_cbuff(CircularBuffer buffer[static const 1]) {
     DEBUG_ASSERT(isValid_cbuff(buffer))
     {
         uint32_t const newCap = calculateNewCap_cbuff(buffer);
-        if (newCap == UINT32_MAX) REALLOC_ERROR
+        if (newCap >= INT32_MAX) REALLOC_ERROR
 
-        if (newCap == buffer->cap) return;
-
-        {
+        if (newCap > buffer->cap) {
             char* const newArray = realloc(
                 buffer->array,
                 (size_t)newCap * buffer->element_size_in_bytes
@@ -328,9 +330,7 @@ void rotateDown_cbuff(CircularBuffer buffer[static const 1], uint32_t n) {
 
     if (buffer->size <= 1) return;
 
-    if ((n %= buffer->size) == 0) return;
-
-    {
+    if ((n %= buffer->size) > 0) {
         void* const copy = mem_alloc(buffer->element_size_in_bytes);
         REPEAT(n) {
             void* const element = popBottom_cbuff(buffer);
@@ -346,9 +346,7 @@ void rotateUp_cbuff(CircularBuffer buffer[static const 1], uint32_t n) {
 
     if (buffer->size <= 1) return;
 
-    if ((n %= buffer->size) == 0) return;
-
-    {
+    if ((n %= buffer->size) > 0) {
         void* const copy = mem_alloc(buffer->element_size_in_bytes);
         REPEAT(n) {
             void* const element = popTop_cbuff(buffer);
