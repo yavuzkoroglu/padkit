@@ -55,8 +55,9 @@
     #define REALLOC_IF_NECESSARY(obj_t, obj, obj_cap_t, obj_cap, obj_sz) {              \
         obj_cap_t _new_cap = obj_cap;                                                   \
         while (_new_cap <= (obj_cap_t)obj_sz) {                                         \
+            if (_new_cap & ((obj_cap_t)1 << ((sizeof(obj_cap_t) << 3) - 1)))            \
+                REALLOC_ERROR                                                           \
             _new_cap <<= 1;                                                             \
-            if (_new_cap <= obj_cap) REALLOC_ERROR                                      \
         }                                                                               \
         if (_new_cap > obj_cap) {                                                       \
             REALLOCATE(obj, obj_cap, _new_cap, obj_t);                                  \
@@ -71,8 +72,9 @@
     #define RECALLOC_IF_NECESSARY(obj_t, obj, obj_cap_t, obj_cap, obj_sz) {             \
         obj_cap_t _new_cap = obj_cap;                                                   \
         while (_new_cap <= (obj_cap_t)obj_sz) {                                         \
+            if (_new_cap & ((obj_cap_t)1 << ((sizeof(obj_cap_t) << 3) - 1)))            \
+                RECALLOC_ERROR                                                          \
             _new_cap <<= 1;                                                             \
-            if (_new_cap <= obj_cap) RECALLOC_ERROR                                     \
         }                                                                               \
         if (_new_cap > obj_cap) {                                                       \
             RECALLOC(obj, obj_cap, _new_cap, obj_t);                                    \

@@ -21,7 +21,7 @@ static uint32_t calculateNewCap_stack(Stack const stack[static const 1]) {
         uint32_t newCap = stack->cap;
         while (newCap <= stack->size) {
             newCap <<= 1;
-            if (newCap <= stack->cap) return UINT32_MAX;
+            if (newCap >= INT32_MAX) return UINT32_MAX;
         }
         return newCap;
     }
@@ -147,9 +147,9 @@ void* pushTop_stack(Stack stack[static const 1], void const* const restrict ptr)
     DEBUG_ASSERT(isValid_stack(stack))
 
     {
-        DEBUG_EXECUTE(size_t const sz_stack     = (size_t)stack->cap * stack->element_size_in_bytes)
         DEBUG_EXECUTE(size_t const sz_element   = stack->element_size_in_bytes)
-        DEBUG_ASSERT(sz_stack / (size_t)stack->cap == stack->element_size_in_bytes)
+        DEBUG_EXECUTE(size_t const sz_stack     = (size_t)stack->cap * sz_element)
+        DEBUG_ASSERT(sz_stack / (size_t)stack->cap == sz_element)
         DEBUG_ERROR_IF(overlaps_ptr(stack->array, ptr, sz_stack, sz_element))
     }
 
@@ -182,7 +182,7 @@ void reallocIfNecessary_stack(Stack stack[static const 1]) {
     DEBUG_ASSERT(isValid_stack(stack))
     {
         uint32_t const newCap = calculateNewCap_stack(stack);
-        if (newCap == UINT32_MAX) REALLOC_ERROR
+        if (newCap >= INT32_MAX) REALLOC_ERROR
 
         if (newCap > stack->cap) {
             size_t const sz = (size_t)newCap * stack->element_size_in_bytes;

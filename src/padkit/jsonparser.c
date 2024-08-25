@@ -13,26 +13,28 @@
 
 #define POP_JP(jp) jp->stack_size--
 
-#define PUSH_JP(jp, element)                                            \
-    if (jp->stack_size == jp->stack_cap) {                              \
-        jp->stack_cap <<= 1;                                            \
-        if (jp->stack_cap <= jp->stack_size) {                          \
-            jp->errorCode = JSON_PARSER_STACK_ERROR;                    \
-            return;                                                     \
-        }                                                               \
-        unsigned char* new_stack = realloc(jp->stack, jp->stack_cap);   \
-        if (new_stack == NULL) {                                        \
-            jp->errorCode = JSON_PARSER_MEMORY_ERROR;                   \
-            return;                                                     \
-        }                                                               \
-        jp->stack = new_stack;                                          \
-    }                                                                   \
+#define PUSH_JP(jp, element)                                                \
+    if (jp->stack_size == jp->stack_cap) {                                  \
+        jp->stack_cap <<= 1;                                                \
+        if (jp->stack_cap <= jp->stack_size) {                              \
+            jp->errorCode = JSON_PARSER_STACK_ERROR;                        \
+            return;                                                         \
+        }                                                                   \
+        {                                                                   \
+            unsigned char* new_stack = realloc(jp->stack, jp->stack_cap);   \
+            if (new_stack == NULL) {                                        \
+                jp->errorCode = JSON_PARSER_MEMORY_ERROR;                   \
+                return;                                                     \
+            }                                                               \
+            jp->stack = new_stack;                                          \
+        }                                                                   \
+    }                                                                       \
     jp->stack[jp->stack_size++] = element
 
-#define UNREAD_JP(jp)                                                   \
-    if (ungetc(jp->str[0], jp->inputStream) == EOF) {                   \
-        jp->errorCode = JSON_PARSER_STREAM_ERROR;                       \
-        return;                                                         \
+#define UNREAD_JP(jp)                                                       \
+    if (ungetc(jp->str[0], jp->inputStream) == EOF) {                       \
+        jp->errorCode = JSON_PARSER_STREAM_ERROR;                           \
+        return;                                                             \
     }
 
 typedef void(*ParseFunction)(JSONParser[static const 1]);
@@ -129,9 +131,10 @@ static void s01_jp(JSONParser jp[static const 1]) {
     };
 
     /* read() */
-    unsigned char const i = (unsigned char)fgetc(jp->inputStream);
-
-    nextState[i](jp);
+    {
+        unsigned char const i = (unsigned char)fgetc(jp->inputStream);
+        nextState[i](jp);
+    }
 }
 
 static void s02_jp(JSONParser jp[static const 1]) {
@@ -188,10 +191,11 @@ static void s04_jp(JSONParser jp[static const 1]) {
     };
 
     /* read() */
-    unsigned char const i = (unsigned char)fgetc(jp->inputStream);
-    jp->str[0] = (char)i;
-
-    nextState[i](jp);
+    {
+        unsigned char const i = (unsigned char)fgetc(jp->inputStream);
+        jp->str[0] = (char)i;
+        nextState[i](jp);
+    }
 }
 
 static void s05_jp(JSONParser jp[static const 1]) {
@@ -228,9 +232,10 @@ static void s05_jp(JSONParser jp[static const 1]) {
     };
 
     /* read() */
-    unsigned char const i = (unsigned char)fgetc(jp->inputStream);
-
-    nextState[i](jp);
+    {
+        unsigned char const i = (unsigned char)fgetc(jp->inputStream);
+        nextState[i](jp);
+    }
 }
 
 static void s06_jp(JSONParser jp[static const 1]) {
@@ -291,9 +296,10 @@ static void s07b_jp(JSONParser jp[static const 1]) {
     };
 
     /* str[len] = read() */
-    unsigned char const i = (unsigned char)(jp->str[jp->str_len] = (char)fgetc(jp->inputStream));
-
-    nextState[i](jp);
+    {
+        unsigned char const i = (unsigned char)(jp->str[jp->str_len] = (char)fgetc(jp->inputStream));
+        nextState[i](jp);
+    }
 }
 static void s07c_jp(JSONParser jp[static const 1]) {
     /* read() */
@@ -324,12 +330,14 @@ static void s07_jp(JSONParser jp[static const 1]) {
             return;
         }
         jp->str_cap = new_cap;
-        char* new_str = realloc(jp->str, new_cap);
-        if (new_str == NULL) {
-            jp->errorCode = JSON_PARSER_MEMORY_ERROR;
-            return;
+        {
+            char* new_str = realloc(jp->str, new_cap);
+            if (new_str == NULL) {
+                jp->errorCode = JSON_PARSER_MEMORY_ERROR;
+                return;
+            }
+            jp->str = new_str;
         }
-        jp->str = new_str;
     }
 
     s07b_jp(jp);
@@ -434,9 +442,10 @@ static void s11b_jp(JSONParser jp[static const 1]) {
     };
 
     /* str[len] = read() */
-    unsigned char const i = (unsigned char)(jp->str[jp->str_len] = (char)fgetc(jp->inputStream));
-
-    nextState[i](jp);
+    {
+        unsigned char const i = (unsigned char)(jp->str[jp->str_len] = (char)fgetc(jp->inputStream));
+        nextState[i](jp);
+    }
 }
 static void s11c_jp(JSONParser jp[static const 1]) {
     /* read() */
@@ -467,12 +476,14 @@ static void s11_jp(JSONParser jp[static const 1]) {
             return;
         }
         jp->str_cap = new_cap;
-        char* new_str = realloc(jp->str, new_cap);
-        if (new_str == NULL) {
-            jp->errorCode = JSON_PARSER_MEMORY_ERROR;
-            return;
+        {
+            char* new_str = realloc(jp->str, new_cap);
+            if (new_str == NULL) {
+                jp->errorCode = JSON_PARSER_MEMORY_ERROR;
+                return;
+            }
+            jp->str = new_str;
         }
-        jp->str = new_str;
     }
 
     s11b_jp(jp);
@@ -512,9 +523,10 @@ static void s12_jp(JSONParser jp[static const 1]) {
     };
 
     /* read() */
-    unsigned char const i = (unsigned char)fgetc(jp->inputStream);
-
-    nextState[i](jp);
+    {
+        unsigned char const i = (unsigned char)fgetc(jp->inputStream);
+        nextState[i](jp);
+    }
 }
 
 static void s13_jp(JSONParser jp[static const 1]) {
@@ -551,10 +563,11 @@ static void s13_jp(JSONParser jp[static const 1]) {
     };
 
     /* read() */
-    unsigned char const i = (unsigned char)fgetc(jp->inputStream);
-    jp->str[0] = (char)i;
-
-    nextState[i](jp);
+    {
+        unsigned char const i = (unsigned char)fgetc(jp->inputStream);
+        jp->str[0] = (char)i;
+        nextState[i](jp);
+    }
 }
 
 static void s14_jp(JSONParser jp[static const 1]) {
@@ -615,9 +628,10 @@ static void s15b_jp(JSONParser jp[static const 1]) {
     };
 
     /* str[len] = read() */
-    unsigned char const i = (unsigned char)(jp->str[jp->str_len] = (char)fgetc(jp->inputStream));
-
-    nextState[i](jp);
+    {
+        unsigned char const i = (unsigned char)(jp->str[jp->str_len] = (char)fgetc(jp->inputStream));
+        nextState[i](jp);
+    }
 }
 static void s15c_jp(JSONParser jp[static const 1]) {
     /* read() */
@@ -648,12 +662,14 @@ static void s15_jp(JSONParser jp[static const 1]) {
             return;
         }
         jp->str_cap = new_cap;
-        char* new_str = realloc(jp->str, new_cap);
-        if (new_str == NULL) {
-            jp->errorCode = JSON_PARSER_MEMORY_ERROR;
-            return;
+        {
+            char* new_str = realloc(jp->str, new_cap);
+            if (new_str == NULL) {
+                jp->errorCode = JSON_PARSER_MEMORY_ERROR;
+                return;
+            }
+            jp->str = new_str;
         }
-        jp->str = new_str;
     }
 
     s15b_jp(jp);
@@ -750,9 +766,10 @@ static void s19_jp(JSONParser jp[static const 1]) {
     };
 
     /* read() */
-    unsigned char const i = (unsigned char)fgetc(jp->inputStream);
-
-    nextState[i](jp);
+    {
+        unsigned char const i = (unsigned char)fgetc(jp->inputStream);
+        nextState[i](jp);
+    }
 }
 
 static void s20_jp(JSONParser jp[static const 1]) {
@@ -789,9 +806,10 @@ static void s20_jp(JSONParser jp[static const 1]) {
     };
 
     /* read() */
-    unsigned char const i = (unsigned char)fgetc(jp->inputStream);
-
-    nextState[i](jp);
+    {
+        unsigned char const i = (unsigned char)fgetc(jp->inputStream);
+        nextState[i](jp);
+    }
 }
 
 static void s21_jp(JSONParser jp[static const 1]) {
@@ -822,9 +840,10 @@ static void s23_jp(JSONParser jp[static const 1]) {
     };
 
     /* peek() */
-    unsigned char const i = PEEK_JP(jp);
-
-    nextState[i](jp);
+    {
+        unsigned char const i = PEEK_JP(jp);
+        nextState[i](jp);
+    }
 }
 
 static void s24_jp(JSONParser jp[static const 1]) {
@@ -859,9 +878,6 @@ void construct_jsonp(
     JSONParserVoidEvent     eventAtValueEnd,
     JSONParserVoidEvent     eventAtValueStart
 ) {
-    DEBUG_ERROR_IF(jsonParser == NULL)
-    DEBUG_ERROR_IF(inputStream == NULL)
-
     jsonParser->inputStream   = inputStream;
     jsonParser->stack_cap     = JSON_PARSER_INITIAL_STACK_CAP;
     jsonParser->stack_size    = 0;
@@ -895,12 +911,13 @@ void free_jsonp(JSONParser jsonParser[static const 1]) {
 }
 
 bool isValid_jsonp(JSONParser const jsonParser[static const 1]) {
-    if (jsonParser == NULL)                             return 0;
     if (jsonParser->inputStream == NULL)                return 0;
     if (jsonParser->stack == NULL)                      return 0;
     if (jsonParser->stack_cap == 0)                     return 0;
+    if (jsonParser->stack_cap >= SIZE_MAX >> 1)         return 0;
     if (jsonParser->stack_size > jsonParser->stack_cap) return 0;
     if (jsonParser->str_cap == 0)                       return 0;
+    if (jsonParser->str_cap >= SIZE_MAX >> 1)           return 0;
     if (jsonParser->str == NULL)                        return 0;
     return 1;
 }

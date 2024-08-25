@@ -34,10 +34,10 @@ FLAGS=-std=${STD} -Ofast -DNDEBUG
 endif
 
 ifeq (${CC},clang)
-SILENCED=-Wno-unsafe-buffer-usage
+SILENCED=-Wno-unsafe-buffer-usage -Wno-unused-parameter
 ARGS=${ARCH_ARGS} ${FLAGS} -Weverything ${SILENCED} -Iinclude ${STDLIBS}
 else
-SILENCED=
+SILENCED=-Wno-unused-parameter
 ARGS=${ARCH_ARGS} ${FLAGS} -Wall -Wextra ${SILENCED} -Iinclude ${STDLIBS}
 endif
 

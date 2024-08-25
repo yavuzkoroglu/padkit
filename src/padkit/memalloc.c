@@ -23,6 +23,7 @@ void* mem_calloc(size_t const nmemb, size_t const size) {
     DEBUG_ASSERT(nmemb < SIZE_MAX >> 1)
     DEBUG_ASSERT(size > 0)
     DEBUG_ASSERT(size < SIZE_MAX >> 1)
+    DEBUG_ASSERT((nmemb * size) / nmemb == size)
     {
         void* const ptr = calloc(nmemb, size);
         if (ptr == NULL) CALLOC_ERROR

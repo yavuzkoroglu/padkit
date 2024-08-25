@@ -44,8 +44,8 @@ uint32_t binarySearchRightmostKey_map(Map const map[static const 1], uint32_t co
 }
 
 void constructEmpty_map(Map map[static const 1], uint32_t const initial_cap) {
-    DEBUG_ERROR_IF(initial_cap == 0)
-    DEBUG_ERROR_IF(initial_cap >= INT32_MAX)
+    DEBUG_ASSERT(initial_cap > 0)
+    DEBUG_ASSERT(initial_cap < INT32_MAX)
 
     map->size = 0;
     map->cap  = initial_cap;
