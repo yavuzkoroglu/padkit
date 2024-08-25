@@ -9,8 +9,9 @@ OS=$(shell uname)
 MODE=debug
 
 PADKIT_VERSION=1.3beta
+PADKIT_TARGET=c99
 
-STD=c99
+STD=${PADKIT_TARGET}
 
 ifeq (${OS},Darwin)
 DYNAMIC_LIB_FLAGS=-dynamiclib -fvisibility="default"
