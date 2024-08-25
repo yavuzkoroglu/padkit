@@ -35,10 +35,10 @@ endif
 
 ifeq (${CC},clang)
 SILENCED=-Wno-unsafe-buffer-usage -Wno-pre-c23-compat -Wno-gnu-binary-literal
-ARGS=${ARCH_ARGS} ${FLAGS} -Iinclude -Weverything ${SILENCED}
+ARGS=${ARCH_ARGS} ${FLAGS} -Weverything ${SILENCED}
 else
 SILENCED=
-ARGS=${ARCH_ARGS} ${FLAGS} -Iinclude -Wall -Wextra ${SILENCED}
+ARGS=${ARCH_ARGS} ${FLAGS} -Wall -Wextra ${SILENCED}
 endif
 
 COMPILE=${CC} ${ARGS}
