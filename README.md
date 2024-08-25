@@ -1,4 +1,4 @@
-# PADKIT: Portable App. Dev. KIT for C23 (ISO/IEC 9899:2023) 
+# PADKIT: Portable App. Dev. KIT for C23
 
 ## How to Build
 
@@ -11,7 +11,7 @@ The above steps should produce
 1. The libraries in `lib/` and
 2. The automatically generated headers in `include/`.
 
-## Tested Environments (v1.3beta)
+## Tested Environments (v1.2)
 
 | Date (ISO 8601) |                  OS |                   `uname -sm` |     Compiler |
 |----------------:|--------------------:|------------------------------:|-------------:|
@@ -104,7 +104,7 @@ The C standard employs many more features that PADKIT simply does NOT use, yet. 
  
 ## Version History 
 
-### Changes v1.2beta -> v1.3beta
+### Changes v1.1 -> v1.2
 
 * Major overhaul #2. Now, PADKIT aligns with [ISO/IEC 9899:2023 (C23), Working Draft, N3096, April 2024](https://www.open-std.org/JTC1/SC22/WG14/www/docs/n3096.pdf).
 * Major overhaul. Replaced `#ifndef NDEBUG` clauses with `include/padkit/debug.h` routines.
@@ -112,9 +112,6 @@ The C standard employs many more features that PADKIT simply does NOT use, yet. 
 * Replaced all macros in `include/padkit/stack.h` with struct and functions.
 * `REALLOC_IF_NECESSARY` ceased to take an `err` parameter.
 * `include/padkit/reallocate.h` does NOT include `include/padkit/debug.h`
-
-### Changes v1.1 -> v1.2beta
-
 * Added `include/padkit/circbuff.h` and a `test_circbuff()` function to `src/tests.c`.
 * Added `include/padkit/stack.h` and a `test_stack()` function to `src/tests.c`.
 * Added `include/padkit/preprocessor.h`.

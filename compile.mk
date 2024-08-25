@@ -8,7 +8,7 @@ OS=$(shell uname)
 #MODE=release
 MODE=debug
 
-PADKIT_VERSION=1.3beta
+PADKIT_VERSION=1.2
 PADKIT_TARGET=c23
 
 # -std=c23 adopts the older c2x standard. Only -std=gnu23 allows some of the c23 features.
