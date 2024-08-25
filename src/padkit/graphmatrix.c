@@ -116,6 +116,9 @@ void construct_gmtx(
     DEBUG_ASSERT(initial_width < INT32_MAX)
     {
         uint64_t const size = (((uint64_t)initial_height * (uint64_t)initial_width) >> 6) + 1;
+        #if RSIZE_MAX < INT64_MAX
+            DEBUG_ASSERT(size < RSIZE_MAX)
+        #endif
         *gmtx = (GraphMatrix){ initial_height, initial_width, mem_calloc((size_t)size, sizeof(uint64_t)) };
     }
 }

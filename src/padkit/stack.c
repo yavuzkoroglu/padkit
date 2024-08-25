@@ -221,7 +221,7 @@ void rotateDown_stack(Stack stack[static const 1], uint32_t n) {
             (size_t)(stack->size - n) * stack->element_size_in_bytes
         };
         DEBUG_ASSERT(n == 0 || sz[0] / (size_t)n == stack->element_size_in_bytes)
-        DEBUG_ASSERT(sz[0] / (size_t)(stack->size - n) == stack->element_size_in_bytes)
+        DEBUG_ASSERT(sz[1] / (size_t)(stack->size - n) == stack->element_size_in_bytes)
 
         {
             char* const buffer = mem_alloc(sz[0]);
@@ -246,7 +246,7 @@ void rotateUp_stack(Stack stack[static const 1], uint32_t n) {
             (size_t)(stack->size - n) * stack->element_size_in_bytes
         };
         DEBUG_ASSERT(n == 0 || sz[0] / (size_t)n == stack->element_size_in_bytes)
-        DEBUG_ASSERT(sz[0] / (size_t)(stack->size - n) == stack->element_size_in_bytes)
+        DEBUG_ASSERT(sz[1] / (size_t)(stack->size - n) == stack->element_size_in_bytes)
 
         {
             char* const buffer = mem_alloc(sz[0]);
