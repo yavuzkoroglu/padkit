@@ -33,15 +33,18 @@ void constructEmpty_cbuff(
     size_t const element_size_in_bytes,
     uint32_t const initial_cap
 ) {
+    size_t const sz = (size_t)initial_cap * element_size_in_bytes;
+
     DEBUG_ASSERT(element_size_in_bytes > 0)
     DEBUG_ASSERT(element_size_in_bytes < SIZE_MAX >> 1)
     DEBUG_ASSERT(initial_cap > 0)
     DEBUG_ASSERT(initial_cap < INT32_MAX)
+    DEBUG_ASSERT(sz / (size_t)initial_cap == element_size_in_bytes)
 
     buffer->element_size_in_bytes   = element_size_in_bytes;
     buffer->cap                     = initial_cap;
     buffer->size                    = 0;
-    buffer->array                   = mem_alloc((size_t)initial_cap * element_size_in_bytes);
+    buffer->array                   = mem_alloc(sz);
     buffer->bottomElementId         = UINT32_MAX;
     buffer->topElementId            = UINT32_MAX;
 }
@@ -286,15 +289,17 @@ void* pushTop_o_cbuff(CircularBuffer buffer[static const 1], void const* const r
 
 void reallocIfNecessary_cbuff(CircularBuffer buffer[static const 1]) {
     DEBUG_ASSERT(isValid_cbuff(buffer))
+    #if UINT64_MAX < SIZE_MAX
+        DEBUG_ASSERT(buffer->element_size_in_bytes < INT64_MAX)
+    #endif
     {
         uint32_t const newCap = calculateNewCap_cbuff(buffer);
         if (newCap >= INT32_MAX) REALLOC_ERROR
 
         if (newCap > buffer->cap) {
-            char* const newArray = realloc(
-                buffer->array,
-                (size_t)newCap * buffer->element_size_in_bytes
-            );
+            size_t const sz = (size_t)newCap * buffer->element_size_in_bytes;
+            char* const newArray = realloc(buffer->array, sz);
+            DEBUG_ASSERT(sz / buffer->element_size_in_bytes == (size_t)newCap)
             if (newArray == NULL) REALLOC_ERROR
 
             if (buffer->bottomElementId > buffer->topElementId) {
