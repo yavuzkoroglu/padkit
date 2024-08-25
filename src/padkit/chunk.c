@@ -131,7 +131,7 @@ void concat_chunk(Chunk to[static const 1], Chunk const from[static const 1]) {
     DEBUG_ASSERT(isValid_chunk(to))
     DEBUG_ASSERT(isValid_chunk(from))
 
-    if (from->nStrings == 0) {
+    if (from->nStrings > 0) {
         uint64_t const hasStrings = (to->nStrings > 0);
         char* const append_start = appendSpace_chunk(to, from->len + hasStrings) + hasStrings;
         memcpy(append_start, from->start, from->len + 1);

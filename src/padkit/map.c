@@ -44,13 +44,16 @@ uint32_t binarySearchRightmostKey_map(Map const map[static const 1], uint32_t co
 }
 
 void constructEmpty_map(Map map[static const 1], uint32_t const initial_cap) {
+    size_t const sz = (size_t)initial_cap * sizeof(Mapping);
+
     DEBUG_ASSERT(initial_cap > 0)
     DEBUG_ASSERT(initial_cap < INT32_MAX)
+    DEBUG_ASSERT(sz / (size_t)initial_cap == sizeof(Mapping))
 
     map->size = 0;
     map->cap  = initial_cap;
 
-    map->mappings = mem_alloc((size_t)initial_cap * sizeof(Mapping));
+    map->mappings = mem_alloc(sz);
 }
 
 void deleteLast_map(Map map[static const 1]) {
@@ -79,13 +82,14 @@ void insert_map(Map map[static const 1], uint32_t const key_id, Value const valu
 
     {
         /* Selection Sort on already sorted list, O(n) worst case. */
-        uint32_t const id = linearSearchBackwardKey_map(map, map->size - 1, key_id) + 1;
+        uint32_t const id   = linearSearchBackwardKey_map(map, map->size - 1, key_id) + 1;
+        size_t const n      = (size_t)(map->size - id) * sizeof(Mapping);
+        DEBUG_ERROR_IF(map->size < id)
+        DEBUG_ASSERT(map->size == id || n / (size_t)(map->size - id) == sizeof(Mapping))
 
-        memmove(
-            map->mappings + id + 1, map->mappings + id,
-            (size_t)(map->size++ - id) * sizeof(Mapping)
-        );
+        memmove(map->mappings + id + 1, map->mappings + id, n);
         map->mappings[id] = (Mapping){ key_id, value };
+        map->size++;
     }
 }
 
