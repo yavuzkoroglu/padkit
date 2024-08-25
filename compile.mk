@@ -8,7 +8,7 @@ OS=$(shell uname)
 #MODE=release
 MODE=debug
 
-PADKIT_VERSION=1.3beta
+PADKIT_VERSION=1.2
 PADKIT_TARGET=c99
 
 STD=${PADKIT_TARGET}

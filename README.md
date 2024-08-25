@@ -11,32 +11,24 @@ The above steps should produce
 1. The libraries in `lib/` and
 2. The automatically generated headers in `include/`.
 
-## Tested Environments (v1.2beta)
+## Tested Environments (v1.2)
 
 | Date (ISO 8601) |                  OS |                   `uname -sm` |     Compiler |
 |----------------:|--------------------:|------------------------------:|-------------:|
-|      2024-06-26 |   macOS Sonoma 14.5 |                  Darwin arm64 | clang 18.1.8 |
-|      2024-06-09 |   macOS Sonoma 14.5 |                  Darwin arm64 | clang 18.1.7 |
-|      2024-05-26 |   macOS Sonoma 14.5 |                  Darwin arm64 | clang 18.1.6 |
-|      2024-05-14 |   macOS Sonoma 14.5 |                  Darwin arm64 | clang 18.1.5 |
-|      2024-05-08 | macOS Sonoma 14.4.1 |                  Darwin arm64 |   gcc 14.1.0 |
-|      2024-05-06 | macOS Sonoma 14.4.1 |                  Darwin arm64 | clang 18.1.5 |
-|      2024-04-27 |  Ubuntu 22.04.3 LTS |                  Linux x86_64 |   gcc 11.4.0 |
-|      2024-04-27 |  Ubuntu 22.04.3 LTS |                 Linux aarch64 | clang 14.0.0 |
-|      2024-04-23 | macOS Sonoma 14.4.1 |                  Darwin arm64 | clang 18.1.4 |
+|      2024-08-22 | macOS Sonoma 14.6.1 |                  Darwin arm64 | clang 18.1.8 |
+|      2024-08-22 | macOS Sonoma 14.6.1 |                  Darwin arm64 |   gcc 14.2.0 |
+|      2024-08-22 |  Ubuntu 22.04.4 LTS |                 Linux aarch64 | clang 18.1.8 |
+|      2024-08-22 |  Ubuntu 22.04.4 LTS |                 Linux aarch64 |   gcc 14.2.0 |
 
 ## Changes 
 
-### Changes v1.2beta -> v1.3beta
+### Changes v1.1 -> v1.2
 
 * Major overhaul. Replaced `#ifndef NDEBUG` clauses with `include/padkit/debug.h` routines.
 * Replaced all macros in `include/padkit/circbuff.h` with struct and functions.
 * Replaced all macros in `include/padkit/stack.h` with struct and functions.
 * `REALLOC_IF_NECESSARY` ceased to take an `err` parameter.
 * `include/padkit/reallocate.h` does NOT include `include/padkit/debug.h`
-
-### Changes v1.1 -> v1.2beta
-
 * Added `include/padkit/circbuff.h` and a `test_circbuff()` function to `src/tests.c`.
 * Added `include/padkit/stack.h` and a `test_stack()` function to `src/tests.c`.
 * Added `include/padkit/preprocessor.h`.
