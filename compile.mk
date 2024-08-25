@@ -11,7 +11,7 @@ MODE=debug
 PADKIT_VERSION=1.3beta
 PADKIT_TARGET=c23
 
-# -std=c23 adopts the c2x standard. Only -std=gnu23 allows some of the c23 features.
+# -std=c23 adopts the older c2x standard. Only -std=gnu23 allows some of the c23 features.
 STD=gnu23
 
 ifeq (${OS},Darwin)
