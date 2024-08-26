@@ -134,7 +134,7 @@ Type `git --version` in the terminal and press Enter to execute. This command in
 
 Execute `git --version` and check if you have `git`.
 
-If you do not have `git`, follow the instructions at [https://git-scm.com/download/linux](https://git-scm.com/download/linux) to install it.
+If you do not have `git`, follow the instructions at the git website^[20].
 
 #### Windows
 
@@ -179,3 +179,4 @@ I used UTM to try PADKIT on both Linux and Windows. It would have been very hard
 [^17]: ISO/IEC 9899:202x (C2x), N2310, November 2018, https://www.open-std.org/jtc1/sc22/wg14/www/docs/n2310.pdf -- last accessed @ `[]`
 [^18]: ISO/IEC 9899:2023 (C23), Working Draft, N3096, April 2024, https://www.open-std.org/JTC1/SC22/WG14/www/docs/n3096.pdf -- last accessed @ `[]`
 [^19]: ISO/IEC 9899:202y (C2y), Working Draft, N3301, https://www.open-std.org/jtc1/sc22/wg14/www/docs/n3301.pdf -- last accessed @ `[]`
+[^20]: https://git-scm.com/download/linux -- last accessed @ `[]`
