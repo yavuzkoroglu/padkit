@@ -12,7 +12,7 @@ Portable Application (App.) Development (Dev.) KIT (PADKIT) is a library of C ma
         - [A1ii. A Text Editor](#a1ii-a-text-editor)
         - [A1iii. Source-Control Management Tool](#a1iii-source-control-management-tool)
         - [A1iv. Compiler Automation Tool](#a1iv-compiler-automation-tool)
-        - [A1v. Standard-Conforming C Compilers](#a1v-standard-conforming-c-compilers)
+        - [A1v. C Compilers](#a1v-c-compilers)
     - [A2. Download PADKIT](#a2-download-padkit)
     - [A3. Compile PADKIT](#a3-compile-padkit)
         - [A3i. Compilation Tools](#a3i-compilation-tools)
@@ -32,9 +32,9 @@ To use PADKIT, you only need five things:
 
 1. A terminal-supporting platform (MacOS, Linux, or Windows),
 2. A text editor (GEdit[^1], nano[^9], Vim[^10], Emacs[^11], etc.),
-3. The source-control management (SCM) tool (git[^12]),
-4. The compiler automation tool (make[^13]), and
-5. Standard-conforming (C99[^15] and C23[^18]) compilers (gcc[^2] and clang[^3]).
+3. The source-control management (SCM) tool, git[^12],
+4. The compiler automation tool, make[^13], and
+5. C compilers, gcc[^2] and clang[^3].
 
 > [!TIP]
 > If you have all these five things, you can skip to Section **[A2. Download PADKIT](#a2-download-padkit)**.
@@ -170,7 +170,7 @@ Execute `make --version` to check if `make` exists. If not, use your package man
 
 Execute `make --version` to check if `make` exists. If not, execute `pacman -S make` to install it.
 
-### A1v. Standard-Conforming C Compilers
+### A1v. C Compilers
 
 > [!IMPORTANT]
 > The `gcc` version must be at least `14.2.0`.
