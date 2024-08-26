@@ -8,7 +8,7 @@ Portable Application (App.) Development (Dev.) KIT (PADKIT) is a library of C ma
 
 - [A. Straight to Business](#a-straight-to-business)
     - [A1. Prerequisites](#a1-prerequisites)
-        - [A1i. A Terminal-Supporting Platform](#a1i-a-terminal-supporting-platform)
+        - [A1i. A Terminal](#a1i-a-terminal)
         - [A1ii. A Text Editor](#a1ii-a-text-editor)
         - [A1iii. Source-Control Management Tool](#a1iii-source-control-management-tool)
         - [A1iv. Compiler Automation Tool](#a1iv-compiler-automation-tool)
@@ -30,7 +30,7 @@ This chapter comprises three sections. First, the prerequisites necessary to bui
 
 To use PADKIT, you only need five things:
 
-1. A terminal-supporting platform (MacOS, Linux, or Windows),
+1. A terminal for MacOS, Linux, or Windows,
 2. A text editor (GEdit[^1], nano[^9], Vim[^10], Emacs[^11], etc.),
 3. The source-control management (SCM) tool, git[^12],
 4. The compiler automation tool, make[^13], and
@@ -39,9 +39,9 @@ To use PADKIT, you only need five things:
 > [!TIP]
 > If you have all these five things, you can skip to Section **[A2. Download PADKIT](#a2-download-padkit)**.
 
-### A1i. A Terminal-Supporting Platform
+### A1i. A Terminal
 
-A terminal environment is a command-line interface (CLI) with which a user interacts. A terminal environment comprises a shell and a window. A terminal window is about aesthetics. So, choosing a terminal window is purely a matter of taste. On the other hand, shell selection is about functionality and has real consequences for the user. A shell is a computer program that exposes OS services to the user or other[^7]. Having a standard shell allows the average coder to use almost the same features across different OS platforms.
+A terminal is a command-line interface (CLI) with which a user interacts. A terminal environment a shell and a window. A terminal window is about aesthetics. So, choosing a terminal window is purely a matter of taste. On the other hand, shell selection is about functionality and has real consequences for the user. A shell is a computer program that exposes OS services to the user or other[^7]. Having a standard shell allows the average coder to use almost the same features across different OS platforms.
 
 > [!IMPORTANT]
 > For the average coder, the best shell is the most universal shell.
