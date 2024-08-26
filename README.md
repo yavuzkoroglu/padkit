@@ -141,9 +141,9 @@ If you do not have `git`, follow the instructions at [https://git-scm.com/downlo
 ## A2. Download PADKIT
 
 ```
-git clone -b main https://github.com/yavuzkoroglu/padkit.git
-git clone -b C99  https://github.com/yavuzkoroglu/padkit.git
-git clone -b C23  https://github.com/yavuzkoroglu/padkit.git
+git clone -b main https://github.com/yavuzkoroglu/padkit.git padkit
+git clone -b C99  https://github.com/yavuzkoroglu/padkit.git padkit-C99
+git clone -b C23  https://github.com/yavuzkoroglu/padkit.git padkit-C23
 ```
 
 ## A3. Compile PADKIT
