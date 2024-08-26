@@ -122,7 +122,7 @@ GUI-based text editors are intuitive and easy-to-learn. GEdit[^1] could be a goo
 > [!TIP]
 > Did you know that you could also use a terminal-based text editor? Nano[^9], Vim[^10], and Emacs[^11] are good examples. They are harder to learn but provide much better code reviewing/refactoring features. I personally use Nano but also envy Vim and Emacs users.
 
-### A1iii. Source Control Management System
+### A1iii. Source Control Management Tool
 
 To download PADKIT, you need to have `git`[^12], which is a source-control management (SCM) system.
 
@@ -135,6 +135,8 @@ Type `git --version` in the terminal and press Enter to execute. This command in
 Execute `git --version` and check if you have `git`.
 
 If you do not have `git`, follow the instructions at [https://git-scm.com/download/linux](https://git-scm.com/download/linux) to install it.
+
+#### Windows
 
 ## A2. Download PADKIT
 
