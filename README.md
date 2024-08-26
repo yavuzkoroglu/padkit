@@ -32,9 +32,9 @@ To use PADKIT, you only need five things:
 
 1. A terminal-supporting platform (MacOS, Linux, or Windows),
 2. A text editor (GEdit[^1], nano[^9], Vim[^10], Emacs[^11], etc.),
-3. A standard-conforming C compilation environment (C99^[15] and C23^[^18]), and
-4. The source-control management (SCM) tool, `git`[^12].
-5. The compiler automation tool, `make`[^13].
+3. The source-control management (SCM) tool (`git`[^12]),
+4. The compiler automation tool (`make`[^13]), and
+5. Standard-conforming (C99[^15] and C23^[^18]) compilers (`gcc`[^2] and `clang`[^3]).
 
 > [!TIP]
 > If you have all these five things, you can skip to Section **[A2. Download PADKIT](#a2-download-padkit)**.
@@ -147,13 +147,63 @@ Execute `git --version` and check if you have `git`. The table below shows possi
 
 |         `git` Exists |                       Otherwise |
 |---------------------:|--------------------------------:|
-| `git version 2.34.1` | `-bash: git: command not found` |
+| `git version 2.45.2` | `-bash: git: command not found` |
 
-If `git` does NOT exist, execute the following command to install it.
+If `git` does NOT exist, execute `pacman -S git` command to install it.
+
+### A1iv. Compiler Automation Tool
+
+`make`[^13] is a compiler automation tool, facilitating compilation especially when the compiled software consists multiple source files.
+
+#### MacOS
+
+Execute `make --version` to check if `make` exists. If not, execute `brew install make` to install it.
+
+> [!TIP]
+> You can install `brew` by following the instructions at the Homebrew website[^21].
+
+#### Linux
+
+Execute `make --version` to check if `make` exists. If not, use your package manager to install it. On Ubuntu, executing `sudo apt-get install make` performs the installation.
+
+#### Windows
+
+Execute `make --version` to check if `make` exists. If not, execute `pacman -S make` to install it.
+
+### A1v. Standard-Conforming C Compilers
+
+> [!IMPORTANT]
+> The `gcc` version must be at least 14.2.0
+> The `clang` version must be at least 18.1.8
+
+#### MacOS
+
+> [!TIP]
+> Do NOT forget to install `brew`[^21] first, if you do not have Homebrew.
+
+Execute the following commands to install the latest `gcc` and `clang` as defaults.
 
 ```
-pacman -S git
+
+brew install gcc llvm
+if ! grep 'alias gcc=gcc-$(ls $(brew --prefix)/opt/ | grep gcc | tail -1 | sed s/gcc@//)' ~/.bashrc &> /dev/null
+then
+    echo 'alias gcc=gcc-$(ls $(brew --prefix)/opt/ | grep gcc | tail -1 | sed s/gcc@//)' >> ~/.bashrc
+fi
+if ! grep 'export PATH=$(brew --prefix)/opt/llvm/bin:${PATH}' ~/.bashrc &> dev/null
+then
+    echo 'export PATH=$(brew --prefix)/opt/llvm/bin:${PATH}' >> ~/.bashrc
+fi
+
 ```
+
+#### Linux
+
+Use your package manager to install `gcc` and `llvm`. On Ubuntu, you can use `sudo apt-get install gcc clang`.
+
+#### Windows
+
+Execute `pacman -S mingw-w64-x86_64-gcc mingw-w64-x86_64-clang` to install both `gcc` and `clang`.
 
 ## A2. Download PADKIT
 
@@ -197,3 +247,4 @@ I used UTM to try PADKIT on both Linux and Windows. It would have been very hard
 [^18]: ISO/IEC 9899:2023 (C23), Working Draft, N3096, April 2024, https://www.open-std.org/JTC1/SC22/WG14/www/docs/n3096.pdf -- last accessed @ `[]`
 [^19]: ISO/IEC 9899:202y (C2y), Working Draft, N3301, https://www.open-std.org/jtc1/sc22/wg14/www/docs/n3301.pdf -- last accessed @ `[]`
 [^20]: https://git-scm.com/download/linux -- last accessed @ `[]`
+[^21]: M. Howell, "Homebrew -- the missing package manager of MacOS (or Linux)", https://brew.sh -- last accessed @ `[]`
