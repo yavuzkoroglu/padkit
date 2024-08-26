@@ -131,15 +131,37 @@ The next step is to compile PADKIT. You already have a terminal with a `bash`[^4
 
 On MacOS, all the compilation tools must be readily available. You can check the versions using the `--version` parameter.
 
-> [!IMPORTANT]
-> The `gcc` and `clang` versions should be at least `14.2.0` and `18.1.8`, respectively.
-
 ![figures/sections/a2i/macos/versions.png](figures/sections/a2i/macos/versions.png)
+
+> [!IMPORTANT]
+> The `gcc` and `clang` versions must be at least `14.2.0` and `18.1.8`, respectively.
+
+If your `gcc` and `clang` versions are below `14.2.0` and `18.1.8`, do not worry. You can use the steps below to install the appropriate versions:
+
+1. Install `homebrew`[^14] using the following command.
+
+```
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+```
+
+2. Ensure that you have `homebrew` is installed correctly using the following command.
+
+```
+brew --version
+```
+
+3. Install `gcc` and `clang` using the following command. `llvm` is a package that contains `clang`.
+
+```
+brew install gcc llvm
+```
 
 #### Linux
 
+On Linux, all the compilation tools must be readily available. You can check the versions using the `--version` parameter.
+
 > [!IMPORTANT]
-> The `gcc` and `clang` versions should be at least `14.2.0` and `18.1.8`, respectively.
+> The `gcc` and `clang` versions must be at least `14.2.0` and `18.1.8`, respectively. If not, please install appropriate versions.
 
 ![figures/sections/a2i/linux/versions.png](figures/sections/a2i/linux/versions.png)
 
@@ -184,3 +206,4 @@ I used UTM to try PADKIT on both Linux and Windows. It would have been very hard
 [^11]: Free Software Foundation Inc., "GNU Emacs - an extensible, customizable, free/libre text editor -- and more", https://www.gnu.org/software/emacs/ -- last accessed @ `[2024-08-24 09:17:50]`
 [^12]: https://git-scm.com -- last accessed @ `[2024-08-24 19:22:09]`
 [^13]: Free Software Foundation Inc., "GNU Make", https://www.gnu.org/software/make/#documentation -- last accessed @ `[2024-08-24 19:24:36]`
+[^14]:
