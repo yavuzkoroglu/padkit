@@ -32,9 +32,9 @@ To use PADKIT, you only need five things:
 
 1. A terminal-supporting platform (MacOS, Linux, or Windows),
 2. A text editor (GEdit[^1], nano[^9], Vim[^10], Emacs[^11], etc.),
-3. The source-control management (SCM) tool (`git`[^12]),
-4. The compiler automation tool (`make`[^13]), and
-5. Standard-conforming (C99[^15] and C23^[^18]) compilers (`gcc`[^2] and `clang`[^3]).
+3. The source-control management (SCM) tool (*git*[^12]),
+4. The compiler automation tool (*make*[^13]), and
+5. Standard-conforming (C99[^15] and C23^[^18]) compilers (*gcc*[^2] and *clang*[^3]).
 
 > [!TIP]
 > If you have all these five things, you can skip to Section **[A2. Download PADKIT](#a2-download-padkit)**.
