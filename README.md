@@ -144,7 +144,7 @@ If your `gcc` and `clang` versions are below `14.2.0` and `18.1.8`, do not worry
 bash
 ```
 
-2. Check if you have `homebrew`[^14] installed. If it is installed, go to step #6. 
+2. Check if you have `homebrew`[^14] installed. If it is installed, go to step #6. Again, use the following command.
 
 ```
 if ! command -v brew &> /dev/null; then echo "Homebrew is NOT installed"; else echo "Homebrew is installed"; fi
