@@ -11,7 +11,7 @@ Portable Application (App.) Development (Dev.) KIT (PADKIT) is a library of C ma
         - [A1i. A Terminal-Supporting Platform](#a1i-a-terminal-supporting-platform)
         - [A1ii. A Text Editor](#a1ii-a-text-editor)
         - [A1iii. A Standard-Conforming C Compilation Environment](#a1iii-a-standard-conforming-c-compilation-environment)
-    - [A2. Download PADKIT]
+    - [A2. Download PADKIT](#a2-download-padkit)
     - [A3. Compile PADKIT](#a3-compile-padkit)
         - [A3i. Compilation Tools](#a3i-compilation-tools)
         - [A3ii. Compilation Steps](#a3ii-compilation-steps)
@@ -120,6 +120,16 @@ GUI-based text editors are intuitive and easy-to-learn. GEdit[^1] could be a goo
 
 ## A2. Download PADKIT
 
+To download PADKIT, you need to have `git`[^12], which is a source control management (SCM) system.
+
+### MacOS
+
+MacOS comes with `git` installed. You can check if it exists by typing `git --version` and pressing Enter.
+
+|       Output If NOT Installed |          Example Output If Installed |
+|------------------------------:|-------------------------------------:|
+| `bash: gi: command not found` | `git version 2.39.3 (Apple Git-146)` |
+
 ## A3. Compile PADKIT
 
 The next step is to compile PADKIT. You already have a terminal with a `bash`[^4] shell but three more tools are required.
@@ -145,4 +155,3 @@ I used UTM to try PADKIT on both Linux and Windows. It would have been very hard
 [^11]: Free Software Foundation Inc., "GNU Emacs - an extensible, customizable, free/libre text editor -- and more", https://www.gnu.org/software/emacs/ -- last accessed @ `[2024-08-24 09:17:50]`
 [^12]: https://git-scm.com -- last accessed @ `[2024-08-24 19:22:09]`
 [^13]: Free Software Foundation Inc., "GNU Make", https://www.gnu.org/software/make/#documentation -- last accessed @ `[2024-08-24 19:24:36]`
-[^14]:
