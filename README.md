@@ -152,9 +152,7 @@ Execute `git --version` and check if you have `git`. The table below shows possi
 If `git` does NOT exist, execute the following command to install it.
 
 ```
-
 pacman -S git
-
 ```
 
 ## A2. Download PADKIT
