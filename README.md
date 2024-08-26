@@ -132,11 +132,30 @@ Type `git --version` in the terminal and press Enter to execute. This command in
 
 #### Linux
 
-Execute `git --version` and check if you have `git`.
+Execute `git --version` and check if you have `git`. The table below shows possible outputs.
 
-If you do not have `git`, follow the instructions at the git website[^20].
+|         `git` Exists |                Otherwise |
+|---------------------:|-------------------------:|
+| `git version 2.34.1` | `git: command not found` |
+
+
+If `git` does NOT exist, follow the instructions at the git website[^20] to install it.
 
 #### Windows
+
+Execute `git --version` and check if you have `git`. The table below shows possible outputs.
+
+|         `git` Exists |                       Otherwise |
+|---------------------:|--------------------------------:|
+| `git version 2.34.1` | `-bash: git: command not found` |
+
+If `git` does NOT exist, execute the following command to install it.
+
+```
+
+pacman -S git
+
+```
 
 ## A2. Download PADKIT
 
@@ -160,19 +179,19 @@ I used UTM to try PADKIT on both Linux and Windows. It would have been very hard
 
 # References
 
-[^1]: The GNOME Project, "gedit", https://gedit-technology.github.io/apps/gedit/ -- last accessed @ `[2024-08-24 09:08:21]`
-[^2]: Free Software Foundation Inc., "GCC, the GNU compiler collection", https://gcc.gnu.org -- last accessed @ `[2024-08-23 09:24:15]`
-[^3]: LLVM Foundation, "Clang: a C language family frontend for LLVM", https://clang.llvm.org -- last accessed @ `[2024-08-23 01:17:09]`
-[^4]: Free Software Foundation Inc., "GNU bourne again shell", https://www.gnu.org/software/bash/ -- last accessed @ `[2024-08-23 20:34:13]`
-[^5]: P. Falstad, "Z shell", https://zsh.sourceforge.io/ -- last accessed @ `[2024-08-23 20:38:44]`
-[^6]: Microsoft, "PowerShell", https://learn.microsoft.com/en-us/powershell/ -- last accessed @ `[2024-08-23 20:38:44]`
-[^7]: "Shell (computing)", https://en.wikipedia.org/wiki/Shell_(computing) -- last accessed @ `[2024-08-23 21:41:54]`
-[^8]: "MSYS2 software distribution and building platform for windows", https://www.msys2.org -- last accessed @ `[2024-08-23 23:25:48]`
-[^9]: Free Software Foundation Inc., "The GNU nano", https://nano-editor.org/ -- last accessed @ `[2024-08-24 09:13:27]`
-[^10]: "Vim - the ubiquitous text editor", https://www.vim.org -- last accessed @ `[2024-08-24 09:16:12]`
-[^11]: Free Software Foundation Inc., "GNU Emacs - an extensible, customizable, free/libre text editor -- and more", https://www.gnu.org/software/emacs/ -- last accessed @ `[2024-08-24 09:17:50]`
-[^12]: https://git-scm.com -- last accessed @ `[2024-08-24 19:22:09]`
-[^13]: Free Software Foundation Inc., "GNU Make", https://www.gnu.org/software/make/#documentation -- last accessed @ `[2024-08-24 19:24:36]`
+[^1]: The GNOME Project, "gedit", https://gedit-technology.github.io/apps/gedit/ -- last accessed @ `[]`
+[^2]: Free Software Foundation Inc., "GCC, the GNU compiler collection", https://gcc.gnu.org -- last accessed @ `[]`
+[^3]: LLVM Foundation, "Clang: a C language family frontend for LLVM", https://clang.llvm.org -- last accessed @ `[]`
+[^4]: Free Software Foundation Inc., "GNU bourne again shell", https://www.gnu.org/software/bash/ -- last accessed @ `[]`
+[^5]: P. Falstad, "Z shell", https://zsh.sourceforge.io/ -- last accessed @ `[]`
+[^6]: Microsoft, "PowerShell", https://learn.microsoft.com/en-us/powershell/ -- last accessed @ `[]`
+[^7]: "Shell (computing)", https://en.wikipedia.org/wiki/Shell_(computing) -- last accessed @ `[]`
+[^8]: "MSYS2 software distribution and building platform for windows", https://www.msys2.org -- last accessed @ `[]`
+[^9]: Free Software Foundation Inc., "The GNU nano", https://nano-editor.org/ -- last accessed @ `[]`
+[^10]: "Vim - the ubiquitous text editor", https://www.vim.org -- last accessed @ `[]`
+[^11]: Free Software Foundation Inc., "GNU Emacs - an extensible, customizable, free/libre text editor -- and more", https://www.gnu.org/software/emacs/ -- last accessed @ `[]`
+[^12]: https://git-scm.com -- last accessed @ `[]`
+[^13]: Free Software Foundation Inc., "GNU Make", https://www.gnu.org/software/make/#documentation -- last accessed @ `[]`
 [^14]: ISO/IEC 9899:1990 (C90), published by ANSI, August 1992, https://web.archive.org/web/20200909074736if_/https://www.pdf-archive.com/2014/10/02/ansi-iso-9899-1990-1/ansi-iso-9899-1990-1.pdf -- last accessed @ `[]`
 [^15]: ISO/IEC 9899:TC3 (C99), Committee Draft, N1256, September 2007, https://www.open-std.org/JTC1/SC22/WG14/www/docs/n1256.pdf -- last accessed @ `[]`
 [^16]: ISO/IEC 9899:2011 (C1x), Committee Draft, N1570, April 2011, https://www.open-std.org/jtc1/sc22/wg14/www/docs/n1570.pdf -- last accessed @ `[]`
