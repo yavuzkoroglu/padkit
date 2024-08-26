@@ -147,7 +147,7 @@ bash
 2. Check if you have `homebrew`[^14] installed. If it is installed, go to step #6. Again, use the following command.
 
 ```
-if ! command -v brew &> /dev/null; then echo "Homebrew is NOT installed"; else echo "Homebrew is installed"; fi
+echo ""; if ! command -v brew &> /dev/null; then echo "Homebrew is NOT installed"; else echo "Homebrew is installed"; fi; echo ""
 ```
 
 3. Install `homebrew`[^14].
