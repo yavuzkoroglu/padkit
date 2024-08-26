@@ -10,8 +10,9 @@ Portable Application (App.) Development (Dev.) KIT (PADKIT) is a library of C ma
     - [A1. Prerequisites](#a1-prerequisites)
         - [A1i. A Terminal-Supporting Platform](#a1i-a-terminal-supporting-platform)
         - [A1ii. A Text Editor](#a1ii-a-text-editor)
-        - [A1iii. A Standard-Conforming C Compilation Environment](#a1iii-a-standard-conforming-c-compilation-environment)
-        - [A1iv. Source-Control Management Tool](#a1iv-source-control-management-tool)
+        - [A1iii. Source-Control Management Tool](#a1iii-source-control-management-tool)
+        - [A1iv. Compiler Automation Tool](#a1iv-compiler-automation-tool)
+        - [A1v. Standard-Conforming C Compilers](#a1v-standard-conforming-c-compilers)
     - [A2. Download PADKIT](#a2-download-padkit)
     - [A3. Compile PADKIT](#a3-compile-padkit)
         - [A3i. Compilation Tools](#a3i-compilation-tools)
@@ -121,7 +122,7 @@ GUI-based text editors are intuitive and easy-to-learn. GEdit[^1] could be a goo
 > [!TIP]
 > Did you know that you could also use a terminal-based text editor? Nano[^9], Vim[^10], and Emacs[^11] are good examples. They are harder to learn but provide much better code reviewing/refactoring features. I personally use Nano but also envy Vim and Emacs users.
 
-### A1iv. Source Control Management System
+### A1iii. Source Control Management System
 
 To download PADKIT, you need to have `git`[^12], which is a source-control management (SCM) system.
 
@@ -137,31 +138,15 @@ If you do not have `git`, follow the instructions at [https://git-scm.com/downlo
 
 ## A2. Download PADKIT
 
-#### MacOS
-
-Type the following command and press Enter to execute it.
-
 ```
-git --version
+git clone -b main https://github.com/yavuzkoroglu/padkit.git
+git clone -b C99  https://github.com/yavuzkoroglu/padkit.git
+git clone -b C23  https://github.com/yavuzkoroglu/padkit.git
 ```
-
-> [!NOTE]
-> The above command installs `git` if it is NOT already installed.
-
-Now, execute the following command to download this README file and its related scripts.
-
-```
-git clone https://github.com/yavuzkoroglu/padkit.git
-```
-
-> [!NOTE]
-> The `main` branch of PADKIT does not have the source files.
-
-The PADKIT source files have two branches, C99[^15] and C23[^18].
 
 ## A3. Compile PADKIT
 
-The next step is to compile PADKIT. You already have a terminal with a `bash`[^4] shell but three more tools are required.
+## A4. Examples
 
 # Acknowledgment
 
