@@ -173,9 +173,9 @@ Execute `make --version` to check if `make` exists. If not, execute `pacman -S m
 ### A1v. Standard-Conforming C Compilers
 
 > [!IMPORTANT]
-> The `gcc` version must be at least 14.2.0
+> The `gcc` version must be at least `14.2.0`.
 >
-> The `clang` version must be at least 18.1.8
+> The `clang` version must be at least `18.1.8`.
 
 #### MacOS
 
