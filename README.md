@@ -12,10 +12,8 @@ Portable Application (App.) Development (Dev.) KIT (PADKIT) is a library of C ma
         - [A1ii. A Text Editor](#a1ii-a-text-editor)
         - [A1iii. A Standard-Conforming C Compilation Environment](#a1iii-a-standard-conforming-c-compilation-environment)
     - [A2. Compile PADKIT](#a2-compile-padkit)
-        - [A2i. Source-Control Management System](#a2i-source-control-management-system)
-        - [A2ii. Compilation Automation Tool](#a2ii-compilation-automation-tool)
-        - [A2iii. C Compiler](#a2iii-C-compiler)
-        - [A2iv. PADKIT Compilation Steps](#a2iv-padkit-compilation-steps)
+        - [A2i. Compilation Tools](#a2i-compilation-tools)
+        - [A2ii. Compilation Steps](#a2ii-compilation-steps)
     - [A3. Examples](#a3-examples)
 - [B. Introduction](#b-introduction)
 - [Acknowledgment](#acknowledgment) 
@@ -129,12 +127,23 @@ The next step is to compile PADKIT. You already have a terminal with a `bash`[^4
 2. `make`[^13] compilation automation tool, and
 3. at least one of the `gcc`[^2] or `clang`[^3] C compilers.
 
-On MacOS and Linux, these tools are readily available. You can check your `git`, `make`, `gcc`, and `clang` versions using the `--version` parameter.
+#### MacOS
+
+On MacOS, all the compilation tools must be readily available. You can check the versions using the `--version` parameter.
+
+> [!IMPORTANT]
+> The `gcc` and `clang` versions should be at least `14.2.0` and `18.1.8`, respectively.
 
 ![figures/sections/a2i/macos/versions.png](figures/sections/a2i/macos/versions.png)
+
+#### Linux
+
+> [!IMPORTANT]
+> The `gcc` and `clang` versions should be at least `14.2.0` and `18.1.8`, respectively.
+
 ![figures/sections/a2i/linux/versions.png](figures/sections/a2i/linux/versions.png)
 
-### A2ii. PADKIT Compilation Steps
+### A2ii. Compilation Steps
 
 ```
 git clone -b (C99|C23) https://github.com/yavuzkoroglu/padkit.git
