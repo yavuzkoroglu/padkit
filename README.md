@@ -124,11 +124,25 @@ To download PADKIT, you need to have `git`[^12], which is a source control manag
 
 ### MacOS
 
-MacOS comes with `git` installed. You can check if it exists by typing `git --version` and pressing Enter.
+Type the following command and press Enter to execute it.
 
-|       Output If NOT Installed |          Example Output If Installed |
-|------------------------------:|-------------------------------------:|
-| `bash: gi: command not found` | `git version 2.39.3 (Apple Git-146)` |
+```
+git --version
+```
+
+> [!NOTE]
+> The above command installs `git` if it is NOT already installed.
+
+Now, execute the following command to download this README file and its related scripts.
+
+```
+git clone https://github.com/yavuzkoroglu/padkit.git
+```
+
+> [!NOTE]
+> The `main` branch of PADKIT does not have the source files.
+
+The PADKIT source files have two branches, C99[^15] and C23[^18].
 
 ## A3. Compile PADKIT
 
@@ -155,3 +169,9 @@ I used UTM to try PADKIT on both Linux and Windows. It would have been very hard
 [^11]: Free Software Foundation Inc., "GNU Emacs - an extensible, customizable, free/libre text editor -- and more", https://www.gnu.org/software/emacs/ -- last accessed @ `[2024-08-24 09:17:50]`
 [^12]: https://git-scm.com -- last accessed @ `[2024-08-24 19:22:09]`
 [^13]: Free Software Foundation Inc., "GNU Make", https://www.gnu.org/software/make/#documentation -- last accessed @ `[2024-08-24 19:24:36]`
+[^14]: ISO/IEC 9899:1990 (C90), published by ANSI, August 1992, https://web.archive.org/web/20200909074736if_/https://www.pdf-archive.com/2014/10/02/ansi-iso-9899-1990-1/ansi-iso-9899-1990-1.pdf -- last accessed @ `[]`
+[^15]: ISO/IEC 9899:TC3 (C99), Committee Draft, N1256, September 2007, https://www.open-std.org/JTC1/SC22/WG14/www/docs/n1256.pdf -- last accessed @ `[]`
+[^16]: ISO/IEC 9899:2011 (C1x), Committee Draft, N1570, April 2011, https://www.open-std.org/jtc1/sc22/wg14/www/docs/n1570.pdf -- last accessed @ `[]`
+[^17]: ISO/IEC 9899:202x (C2x), N2310, November 2018, https://www.open-std.org/jtc1/sc22/wg14/www/docs/n2310.pdf -- last accessed @ `[]`
+[^18]: ISO/IEC 9899:2023 (C23), Working Draft, N3096, April 2024, https://www.open-std.org/JTC1/SC22/WG14/www/docs/n3096.pdf -- last accessed @ `[]`
+[^19]: ISO/IEC 9899:202y (C2y), Working Draft, N3301, https://www.open-std.org/jtc1/sc22/wg14/www/docs/n3301.pdf -- last accessed @ `[]`
