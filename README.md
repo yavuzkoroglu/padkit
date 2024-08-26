@@ -11,6 +11,7 @@ Portable Application (App.) Development (Dev.) KIT (PADKIT) is a library of C ma
         - [A1i. A Terminal-Supporting Platform](#a1i-a-terminal-supporting-platform)
         - [A1ii. A Text Editor](#a1ii-a-text-editor)
         - [A1iii. A Standard-Conforming C Compilation Environment](#a1iii-a-standard-conforming-c-compilation-environment)
+        - [A1iv. Source-Control Management Tool](#a1iv-source-control-management-tool)
     - [A2. Download PADKIT](#a2-download-padkit)
     - [A3. Compile PADKIT](#a3-compile-padkit)
         - [A3i. Compilation Tools](#a3i-compilation-tools)
@@ -26,14 +27,16 @@ This chapter comprises three sections. First, the prerequisites necessary to bui
 
 ## A1. Prerequisites
 
-To use PADKIT, you only need three things:
+To use PADKIT, you only need five things:
 
 1. A terminal-supporting platform (MacOS, Linux, or Windows),
-2. A text editor, and
-3. A standard-conforming C compilation environment.
+2. A text editor (GEdit[^1], nano[^9], Vim[^10], Emacs[^11], etc.),
+3. A standard-conforming C compilation environment (C99^[15] and C23^[^18]), and
+4. The source-control management (SCM) tool, `git`[^12].
+5. The compiler automation tool, `make`[^13].
 
 > [!TIP]
-> If you have all these three things, you can skip to Section **[A2. Download PADKIT](#a2-download-padkit)**.
+> If you have all these five things, you can skip to Section **[A2. Download PADKIT](#a2-download-padkit)**.
 
 ### A1i. A Terminal-Supporting Platform
 
@@ -63,7 +66,7 @@ The reasoning behind the above tip is simple. An average coder is neither intere
 
 #### Linux
 
-1. Open the `Terminal`. On Ubuntu 22.04.4 LTS, it is possible to locate it using the *Show Applications* menu.
+1. Open a `Terminal`. On Ubuntu 22.04.4 LTS, it is possible to locate it using the *Show Applications* menu.
 
 ![figures/sections/a1i/linux/showapps.png](figures/sections/a1i/linux/showapps.png)
 
@@ -118,11 +121,23 @@ GUI-based text editors are intuitive and easy-to-learn. GEdit[^1] could be a goo
 > [!TIP]
 > Did you know that you could also use a terminal-based text editor? Nano[^9], Vim[^10], and Emacs[^11] are good examples. They are harder to learn but provide much better code reviewing/refactoring features. I personally use Nano but also envy Vim and Emacs users.
 
+### A1iv. Source Control Management System
+
+To download PADKIT, you need to have `git`[^12], which is a source-control management (SCM) system.
+
+#### MacOS
+
+Type `git --version` in the terminal and press Enter to execute. This command installs `git` if it is not available.
+
+#### Linux
+
+Execute `git --version` and check if you have `git`.
+
+If you do not have `git`, follow the instructions at [https://git-scm.com/download/linux](https://git-scm.com/download/linux) to install it.
+
 ## A2. Download PADKIT
 
-To download PADKIT, you need to have `git`[^12], which is a source control management (SCM) system.
-
-### MacOS
+#### MacOS
 
 Type the following command and press Enter to execute it.
 
