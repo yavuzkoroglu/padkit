@@ -136,18 +136,60 @@ On MacOS, all the compilation tools must be readily available. You can check the
 > [!IMPORTANT]
 > The `gcc` and `clang` versions must be at least `14.2.0` and `18.1.8`, respectively.
 
-If your `gcc` and `clang` versions are below `14.2.0` and `18.1.8`, do not worry. You can use the steps below to install the appropriate versions:
+If your `gcc` and `clang` versions are below `14.2.0` and `18.1.8`, do not worry. You can use the steps below to install the appropriate versions.
 
-1. Install `homebrew`[^14] using the following command.
+1. Do not forget to start a `bash` session using the following command. We will always use `bash` instead of `zsh`.
+
+```
+bash
+```
+
+2. Install `homebrew`[^14].
 
 ```
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 ```
 
-2. Install `gcc` and `clang` using the following command. `llvm` is a package that contains `clang`.
+3. Exit the current `bash` session. You may need to start a new `bash` session for the changes from step #2 can take effect.
+
+```
+exit
+```
+
+4. Start a new `bash` session.
+
+```
+bash
+```
+
+5. Install `gcc` and `clang`.
 
 ```
 brew install gcc llvm
+```
+
+6. Alias the `gcc` to its latest version.
+
+```
+echo 'alias gcc=gcc-$(ls $(brew --prefix)/opt/ | grep gcc | tail -1 | sed s/gcc@//)' >> ~/.bashrc
+```
+
+7. Add the `clang` to the `PATH` variable.
+
+```
+echo 'export PATH=$(brew --prefix)/opt/llvm/bin:${PATH}' >> ~/.bashrc
+```
+
+8. Exit this `bash` session. Again, this is just to ensure that the changes can take effect.
+
+```
+exit
+```
+
+9. Start a new `bash` session.
+
+```
+bash
 ```
 
 #### Linux
