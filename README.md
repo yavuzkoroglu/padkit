@@ -34,7 +34,7 @@ To use PADKIT, you only need five things:
 2. A text editor (GEdit[^1], nano[^9], Vim[^10], Emacs[^11], etc.),
 3. The source-control management (SCM) tool (git[^12]),
 4. The compiler automation tool (make[^13]), and
-5. Standard-conforming (C99[^15] and C23^[^18]) compilers (gcc[^2] and clang[^3]).
+5. Standard-conforming (C99[^15] and C23[^18]) compilers (gcc[^2] and clang[^3]).
 
 > [!TIP]
 > If you have all these five things, you can skip to Section **[A2. Download PADKIT](#a2-download-padkit)**.
@@ -46,28 +46,28 @@ A terminal environment is a command-line interface (CLI) with which a user inter
 > [!IMPORTANT]
 > For the average coder, the best shell is the most universal shell.
 
-The reasoning behind the above tip is simple. An average coder is neither interested in small differences between different shell implementations (e.g. between `bash`[^4] and `zsh`[^5]) nor bound to shell features that target a specific OS (e.g. `powershell`[^6]). The average coder's shell should be as much cross-platform as possible. Ideally, the shell should be available in MacOS, Linux, and Windows. Therefore, I deduce that the average coder should prefer `bash`[^4], especially the most commonly available versions of it. Now, I will describe how to use `bash`[^4] in MacOS, Linux, and Windows. I use Ubuntu 22.04.4 LTS for Linux examples but feel free to adapt the examples to your preferred Linux distribution.
+The reasoning behind the above tip is simple. An average coder is neither interested in small differences between different shell implementations (e.g. between bash[^4] and zsh[^5]) nor bound to shell features that target a specific OS (e.g. powershell[^6]). The average coder's shell should be as much cross-platform as possible. Ideally, the shell should be available in MacOS, Linux, and Windows. Therefore, I deduce that the average coder should prefer bash, especially the most commonly available versions of it. Now, I will describe how to use bash in MacOS, Linux, and Windows. I use Ubuntu 22.04.4 LTS for Linux examples but feel free to adapt the examples to your preferred Linux distribution.
 
 > [!TIP]
-> If you have `bash`, and familiar with it, you may skip to Section **[A1ii. A Text Editor](#a1ii-a-text-editor)**.
+> If you have bash, and familiar with it, you may skip to Section **[A1ii. A Text Editor](#a1ii-a-text-editor)**.
 
 #### MacOS
 
-1. Open the `Terminal.app`. You can use *Spotlight* to locate your application as below.
+1. Open the **Terminal.app**. You can use *Spotlight* to locate your application as below.
 
 ![figures/sections/a1i/macos/spotlight.png](figures/sections/a1i/macos/spotlight.png)
 
-2. Now, you need to see a terminal window as below. Notice that the title gives away the fact that the shell is `zsh`[^5].
+2. Now, you need to see a terminal window as below. Notice that the title gives away the fact that the shell is zsh[^5] and NOT bash.
 
 ![figures/sections/a1i/macos/terminalwindow.png](figures/sections/a1i/macos/terminalwindow.png)
 
-3. Type `bash` and press Enter to start a bash session. The string `bash-3.2` indicates the shell version.
+3. Type `bash` and press Enter to start a bash session.
 
 ![figures/sections/a1i/macos/bash.png](figures/sections/a1i/macos/bash.png)
 
 #### Linux
 
-1. Open a `Terminal`. On Ubuntu 22.04.4 LTS, it is possible to locate it using the *Show Applications* menu.
+1. Open a **Terminal**. On Ubuntu 22.04.4 LTS, it is possible to locate it using the *Show Applications* menu.
 
 ![figures/sections/a1i/linux/showapps.png](figures/sections/a1i/linux/showapps.png)
 
