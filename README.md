@@ -144,13 +144,7 @@ If your `gcc` and `clang` versions are below `14.2.0` and `18.1.8`, do not worry
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 ```
 
-2. Ensure that you have `homebrew` is installed correctly using the following command.
-
-```
-brew --version
-```
-
-3. Install `gcc` and `clang` using the following command. `llvm` is a package that contains `clang`.
+2. Install `gcc` and `clang` using the following command. `llvm` is a package that contains `clang`.
 
 ```
 brew install gcc llvm
