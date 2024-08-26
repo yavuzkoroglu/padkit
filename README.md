@@ -11,10 +11,11 @@ Portable Application (App.) Development (Dev.) KIT (PADKIT) is a library of C ma
         - [A1i. A Terminal-Supporting Platform](#a1i-a-terminal-supporting-platform)
         - [A1ii. A Text Editor](#a1ii-a-text-editor)
         - [A1iii. A Standard-Conforming C Compilation Environment](#a1iii-a-standard-conforming-c-compilation-environment)
-    - [A2. Compile PADKIT](#a2-compile-padkit)
-        - [A2i. Compilation Tools](#a2i-compilation-tools)
-        - [A2ii. Compilation Steps](#a2ii-compilation-steps)
-    - [A3. Examples](#a3-examples)
+    - [A2. Download PADKIT]
+    - [A3. Compile PADKIT](#a3-compile-padkit)
+        - [A3i. Compilation Tools](#a3i-compilation-tools)
+        - [A3ii. Compilation Steps](#a3ii-compilation-steps)
+    - [A4. Examples](#a4-examples)
 - [B. Introduction](#b-introduction)
 - [Acknowledgment](#acknowledgment) 
 - [References](#references)
@@ -32,7 +33,7 @@ To use PADKIT, you only need three things:
 3. A standard-conforming C compilation environment.
 
 > [!TIP]
-> If you have all these three things, you can skip to Section **[A2. Compile PADKIT](#a2-compile-padkit)**.
+> If you have all these three things, you can skip to Section **[A2. Download PADKIT](#a2-download-padkit)**.
 
 ### A1i. A Terminal-Supporting Platform
 
@@ -117,109 +118,11 @@ GUI-based text editors are intuitive and easy-to-learn. GEdit[^1] could be a goo
 > [!TIP]
 > Did you know that you could also use a terminal-based text editor? Nano[^9], Vim[^10], and Emacs[^11] are good examples. They are harder to learn but provide much better code reviewing/refactoring features. I personally use Nano but also envy Vim and Emacs users.
 
-## A2. Compile PADKIT
+## A2. Download PADKIT
+
+## A3. Compile PADKIT
 
 The next step is to compile PADKIT. You already have a terminal with a `bash`[^4] shell but three more tools are required.
-
-### A2i. Compilation Tools
-
-1. `git`[^12] source-control management (SCM) system,
-2. `make`[^13] compilation automation tool, and
-3. at least one of the `gcc`[^2] or `clang`[^3] C compilers.
-
-#### MacOS
-
-On MacOS, all the compilation tools must be readily available. You can check the versions using the `--version` parameter.
-
-![figures/sections/a2i/macos/versions.png](figures/sections/a2i/macos/versions.png)
-
-> [!IMPORTANT]
-> The `gcc` and `clang` versions must be at least `14.2.0` and `18.1.8`, respectively.
-
-If your `gcc` and `clang` versions are below `14.2.0` and `18.1.8`, do not worry. You can use the steps below to install the appropriate versions.
-
-1. Start a `bash` session if you still did not do so in your terminal. Do not forget that we will always use `bash`. Use the following command:
-
-```
-bash
-```
-
-2. Check if you have `homebrew`[^14] installed. If it is installed, go to step #6. Again, use the following command.
-
-```
-echo ""; if ! command -v brew &> /dev/null; then echo "Homebrew is NOT installed"; else echo "Homebrew is installed"; fi; echo ""
-```
-
-3. Install `homebrew`[^14].
-
-```
-/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-```
-
-4. Exit the current `bash` session. You may need to start a new `bash` session for the changes from step #3 can take effect.
-
-```
-exit
-```
-
-5. Start a new `bash` session.
-
-```
-bash
-```
-
-6. Install the latest `gcc` and `clang`.
-
-```
-brew install gcc llvm
-```
-
-7. Alias the `gcc` to its latest version.
-
-```
-echo 'alias gcc=gcc-$(ls $(brew --prefix)/opt/ | grep gcc | tail -1 | sed s/gcc@//)' >> ~/.bashrc
-```
-
-8. Add the `clang` to the `PATH` variable.
-
-```
-echo 'export PATH=$(brew --prefix)/opt/llvm/bin:${PATH}' >> ~/.bashrc
-```
-
-9. Make your changes take effect.
-
-```
-source ~/.bashrc
-```
-
-#### Linux
-
-On Linux, all the compilation tools must be readily available. You can check the versions using the `--version` parameter.
-
-> [!IMPORTANT]
-> The `gcc` and `clang` versions must be at least `14.2.0` and `18.1.8`, respectively. If not, please install appropriate versions.
-
-![figures/sections/a2i/linux/versions.png](figures/sections/a2i/linux/versions.png)
-
-### A2ii. Compilation Steps
-
-```
-git clone -b (C99|C23) https://github.com/yavuzkoroglu/padkit.git
-cd padkit
-make -e CC=(clang|cc) -e MODE=(debug|release) all
-```
-
-#### MacOS and Linux
-
-```
-bin/tests.out
-```
-
-#### Windows
-
-```
-bin/tests.exe
-```
 
 # Acknowledgment
 
