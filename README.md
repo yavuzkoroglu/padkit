@@ -121,40 +121,20 @@ GUI-based text editors are intuitive and easy-to-learn. GEdit[^1] could be a goo
 
 ## A2. Compile PADKIT
 
-The next step is to compile PADKIT. You already have a terminal with a `bash`[^4] shell but three more tools are required:
+The next step is to compile PADKIT. You already have a terminal with a `bash`[^4] shell but three more tools are required.
+
+### A2i. Compilation Tools
 
 1. `git`[^12] source-control management (SCM) system,
 2. `make`[^13] compilation automation tool, and
 3. at least one of the `gcc`[^2] or `clang`[^3] C compilers.
 
-> [!TIP]
-> If you have these tools, you may skip to Section xx
+On MacOS and Linux, these tools are readily available. You can check your `git`, `make`, `gcc`, and `clang` versions using the `--version` parameter.
 
-### A2i. Source-Control Management System
+![figures/sections/a2i/macos/versions.png](figures/sections/a2i/macos/versions.png)
+![figures/sections/a2i/linux/versions.png](figures/sections/a2i/linux/versions.png)
 
-#### MacOS
-
-#### Linux
-
-#### Windows
-
-### A2ii. Compilation Automation Tool
-
-#### MacOS
-
-#### Linux
-
-#### Windows
-
-### A2iii. C Compiler
-
-#### MacOS
-
-#### Linux
-
-#### Windows
-
-### A2iv. PADKIT Compilation Steps
+### A2ii. PADKIT Compilation Steps
 
 ```
 git clone -b (C99|C23) https://github.com/yavuzkoroglu/padkit.git
