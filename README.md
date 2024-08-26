@@ -1,4 +1,4 @@
-# PADKIT: Portable Application Development KIT for C 
+# PADKIT: Portable Application Development KIT for C
 
 # Abstract
 
@@ -134,7 +134,7 @@ Type `git --version` in the terminal and press Enter to execute. This command in
 
 Execute `git --version` and check if you have `git`.
 
-If you do not have `git`, follow the instructions at the git website^[20].
+If you do not have `git`, follow the instructions at the git website[^20].
 
 #### Windows
 
