@@ -182,6 +182,9 @@ Execute `make --version` to check if `make` exists. If not, execute `pacman -S m
 > [!TIP]
 > Do NOT forget to install `brew`[^21] first, if you do not have Homebrew.
 
+> [!TIP]
+> Do NOT forget to execute the installation commands in a `bash` session.
+
 Execute the following commands to install the latest `gcc` and `clang` as defaults.
 
 ```
