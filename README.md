@@ -71,7 +71,7 @@ The reasoning behind the above tip is simple. An average coder is neither intere
 
 ![figures/sections/a1i/linux/showapps.png](figures/sections/a1i/linux/showapps.png)
 
-2. The default shell in Linux is **bash**[^4]. You can check the bash version by typing `bash --version` and pressing Enter.
+2. The default shell in Linux is **bash**[^4]. You can check its version by typing `bash --version` and pressing Enter.
 
 ![figures/sections/a1i/linux/bash.png](figures/sections/a1i/linux/bash.png)
 
@@ -81,7 +81,7 @@ The reasoning behind the above tip is simple. An average coder is neither intere
 
 2. Open **MSYS2**.
 
-3. You can check the bash version by typing `bash --version` and pressing Enter.
+3. You can check the **bash** version by typing `bash --version` and pressing Enter.
 
 ![figures/sections/a1i/windows/bash.png](figures/sections/a1i/windows/bash.png)
 
@@ -117,75 +117,75 @@ The average coder must accept the fact that the first version of a code block is
 
 #### Example Text Editors
 
-GUI-based text editors are intuitive and easy-to-learn. GEdit[^1] could be a good place to start as it is available for all OSs (MacOS, Linux, and Windows).
+GUI-based text editors are intuitive and easy-to-learn. **GEdit**[^1] could be a good place to start as it is available for all OSs (MacOS, Linux, and Windows).
 
 > [!TIP]
-> Did you know that you could also use a terminal-based text editor? Nano[^9], Vim[^10], and Emacs[^11] are good examples. They are harder to learn but provide much better code reviewing/refactoring features. I personally use Nano but also envy Vim and Emacs users.
+> Did you know that you could also use a terminal-based text editor? **nano**[^9], **Vim**[^10], and **Emacs**[^11] are good examples. They are harder to learn but provide much better code reviewing/refactoring features. I personally use **nano** but also envy **Vim** and **Emacs** users.
 
 ### A1iii. Source Control Management Tool
 
-To download PADKIT, you need to have `git`[^12], which is a source-control management (SCM) system.
+To download PADKIT, you need to have **git**[^12], which is a source-control management (SCM) system.
 
 #### MacOS
 
-Type `git --version` in the terminal and press Enter to execute. This command installs `git` if it is not available.
+Type `git --version` in the terminal and press Enter to execute. This command installs **git** if it is not available.
 
 #### Linux
 
-Execute `git --version` and check if you have `git`. The table below shows possible outputs.
+Execute `git --version` and check if you have **git**. The table below shows possible outputs.
 
-|         `git` Exists |                Otherwise |
+|       **git** Exists |                Otherwise |
 |---------------------:|-------------------------:|
 | `git version 2.34.1` | `git: command not found` |
 
 
-If `git` does NOT exist, follow the instructions at the git website[^20] to install it.
+If **git** does NOT exist, follow the instructions at the **git** website[^20] to install it.
 
 #### Windows
 
-Execute `git --version` and check if you have `git`. The table below shows possible outputs.
+Execute `git --version` and check if you have **git**. The table below shows possible outputs.
 
-|         `git` Exists |                       Otherwise |
+|       **git** Exists |                       Otherwise |
 |---------------------:|--------------------------------:|
 | `git version 2.45.2` | `-bash: git: command not found` |
 
-If `git` does NOT exist, execute `pacman -S git` command to install it.
+If **git** does NOT exist, execute `pacman -S git` command to install it.
 
 ### A1iv. Compiler Automation Tool
 
-`make`[^13] is a compiler automation tool, facilitating compilation especially when the compiled software consists multiple source files.
+**make**[^13] is a compiler automation tool, facilitating compilation especially when the compiled software consists multiple source files.
 
 #### MacOS
 
-Execute `make --version` to check if `make` exists. If not, execute `brew install make` to install it.
+Execute `make --version` to check if **make** exists. If not, execute `brew install make` to install it.
 
 > [!TIP]
-> You can install `brew` by following the instructions at the Homebrew website[^21].
+> You can install **brew** by following the instructions at the Homebrew website[^21].
 
 #### Linux
 
-Execute `make --version` to check if `make` exists. If not, use your package manager to install it. On Ubuntu, executing `sudo apt-get install make` performs the installation.
+Execute `make --version` to check if **make** exists. If not, use your package manager to install it. On Ubuntu, executing `sudo apt-get install make` performs the installation.
 
 #### Windows
 
-Execute `make --version` to check if `make` exists. If not, execute `pacman -S make` to install it.
+Execute `make --version` to check if **make** exists. If not, execute `pacman -S make` to install it.
 
 ### A1v. C Compilers
 
 > [!IMPORTANT]
-> The `gcc` version must be at least `14.2.0`.
+> The **gcc** version must be at least *14.2.0*.
 >
-> The `clang` version must be at least `18.1.8`.
+> The **clang** version must be at least *18.1.8*.
 
 #### MacOS
 
 > [!TIP]
-> Do NOT forget to install `brew`[^21] first, if you do not have Homebrew.
+> Do NOT forget to install **brew**[^21] first.
 
 > [!TIP]
-> Do NOT forget to execute the installation commands in a `bash` session.
+> Do NOT forget to execute the installation commands in a **bash** session.
 
-Execute the following commands to install the latest `gcc` and `clang` as defaults.
+Execute the following commands to install the latest **gcc** and **clang** as defaults.
 
 ```
 
@@ -203,11 +203,11 @@ fi
 
 #### Linux
 
-Use your package manager to install `gcc` and `llvm`. On Ubuntu, you can use `sudo apt-get install gcc clang`.
+Use your package manager to install **gcc** and **clang**. On Ubuntu, you can use `sudo apt-get install gcc clang`.
 
 #### Windows
 
-Execute `pacman -S mingw-w64-x86_64-gcc mingw-w64-x86_64-clang` to install both `gcc` and `clang`.
+Execute `pacman -S mingw-w64-x86_64-gcc mingw-w64-x86_64-clang` to install both **gcc** and **clang**.
 
 ## A2. Download PADKIT
 
