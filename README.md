@@ -55,6 +55,9 @@ The reasoning behind the above tip is simple. An average coder is neither intere
 
 1. Open the **Terminal.app**. You can use *Spotlight* to locate your application as below.
 
+> [!TIP]
+> I use **iTerm2**[^22] instead of **Terminal**. Selecting a terminal window is just a matter of taste.
+
 ![figures/sections/a1i/macos/spotlight.png](figures/sections/a1i/macos/spotlight.png)
 
 2. Now, you need to see a terminal window as below. Notice that the title gives away the fact that the shell is **zsh**[^5] and NOT **bash**.
@@ -252,3 +255,4 @@ I used UTM to try PADKIT on both Linux and Windows. It would have been very hard
 [^19]: ISO/IEC 9899:202y (C2y), Working Draft, N3301, https://www.open-std.org/jtc1/sc22/wg14/www/docs/n3301.pdf -- last accessed @ `[]`
 [^20]: https://git-scm.com/download/linux -- last accessed @ `[]`
 [^21]: M. Howell, "Homebrew -- the missing package manager of MacOS (or Linux)", https://brew.sh -- last accessed @ `[]`
+[^22]:
