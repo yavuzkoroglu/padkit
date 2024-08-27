@@ -228,12 +228,12 @@ git clone -b C23  https://github.com/yavuzkoroglu/padkit.git padkit-C23
 
 The PADKIT compilation procedure has two binary environment options, resulting in four different combinations in total as shown in the following table.
 
-| Environment Variables |    CC |    MODE |
-|----------------------:|------:|--------:|
-|                    #1 | clang |   debug |
-|                    #2 | clang | release |
-|                    #3 |   gcc |   debug |
-|                    #4 |   gcc | release |
+| Environment Configuration |    CC |    MODE |
+|--------------------------:|------:|--------:|
+|                        #1 | clang |   debug |
+|                        #2 | clang | release |
+|                        #3 |   gcc |   debug |
+|                        #4 |   gcc | release |
 
 In addition to the above options, PADKIT can target either the **C99**[^15] or the **C23**[^18] standards. So, the parameterized compilation procedure for PADKIT looks like as follows.
 
@@ -244,6 +244,13 @@ make -e CC=<cc> -e MODE=<mode> all
 
 > [!NOTE]
 > The `make -e` option initializes or overrides an environment variable throughout the compilation procedure.
+
+For example, to compile **PADKIT-C99** library with **clang** in **debug** mode, you can execute the following commands.
+
+```
+cd padkit-C99
+make -e CC=clang -e MODE=debug all
+```
 
 Once the compilation is successful, you can test your library by executing the compiled test executable. The test executable performs several tests on the PADKIT library functions and informs the user if the tests PASS or FAIL. Please contact me if some tests FAIL. I would like to know how it could ever happen :)
 
