@@ -24,7 +24,7 @@ Portable Application (App.) Development (Dev.) KIT (PADKIT) is a library of C ma
 
 # A. Straight to Business
 
-This chapter comprises three sections. First, the prerequisites necessary to build and use PADKIT. Then, the steps to build the PADKIT C99 and C23 branches in MacOS, Linux, and Windows platforms. Finally, some examples to demonstrate how to practically use PADKIT.
+This chapter comprises four sections. First, I describe and explain the prerequisites to build and use PADKIT. The next two sections contain the steps to download and build the PADKIT C99 and C23 branches in MacOS, Linux, and Windows platforms. The last section provides some examples to demonstrate how to practically use PADKIT.
 
 ## A1. Prerequisites
 
@@ -46,7 +46,7 @@ A **terminal** is a command-line interface (CLI) with which a user interacts. A 
 > [!IMPORTANT]
 > For the average coder, the best shell is the most universal shell.
 
-The reasoning behind the above tip is simple. An average coder is neither interested in small differences between different shell implementations (e.g. between **bash**[^4] and **zsh**[^5]) nor bound to shell features that target a specific OS (e.g. **powershell**[^6]). The average coder's shell should be as much cross-platform as possible. Ideally, the shell should be available in MacOS, Linux, and Windows. Therefore, I deduce that the average coder should prefer bash, especially the most commonly available versions of it. Now, I will describe how to use bash in MacOS, Linux, and Windows. I use Ubuntu 22.04.4 LTS for Linux examples but feel free to adapt the examples to your preferred Linux distribution.
+The reasoning behind the above tip is simple. An average coder is neither interested in small differences between different shell implementations (e.g. between **bash**[^4] and **zsh**[^5]) nor bound to shell features that target a specific OS (e.g. **powershell**[^6]). The average coder's shell should be as much cross-platform as possible. Ideally, the shell should be available in MacOS, Linux, and Windows. Therefore, I deduce that the average coder should prefer **bash**, especially the most commonly available versions of it. Now, I will describe how to use **bash** in MacOS, Linux, and Windows. I use Ubuntu 22.04.4 LTS for Linux examples but feel free to adapt the examples to your preferred Linux distribution.
 
 > [!TIP]
 > If you have bash, and familiar with it, you may skip to Section **[A1ii. A Text Editor](#a1ii-a-text-editor)**.
@@ -84,7 +84,7 @@ The reasoning behind the above tip is simple. An average coder is neither intere
 
 2. Open **MSYS2**.
 
-3. You can check the **bash** version by typing `bash --version` and pressing Enter.
+3. The default **MSYS2** shell is **bash**. You can check the **bash** version by typing `bash --version` and pressing Enter.
 
 ![figures/sections/a1i/windows/bash.png](figures/sections/a1i/windows/bash.png)
 
@@ -95,7 +95,7 @@ A text editor is necessary to write code. Text editors, like terminals, comprise
 > [!IMPORTANT]
 > A good text editor must NOT do the coding for the average coder.
 
-Many powerful integrated development environments (IDEs) supposedly facilitate "coding" by automatically generating code snippets and performing automatic code completion. At first glance, you might think that these text features are designed to help the average coder. In fact, they are more useful for the advanced coder and potentially harmful for the average coder. The average coder may not know many features of a programming language, especially in the case of a low-level language, like C. The automatic coding experience produces working code at the expense of the learning experience, i.e., the average coder learns to rely on the IDE too much instead of learning the fine details of the programming language. Then, the best practice is to start by avoiding IDEs, using a simple text editor. When the coder feels that he/she comprehends every line of his/her code, i.e., can describe what that line does with its every caveat, then he/she may consider upgrading to an IDE.
+Many powerful integrated development environments (IDEs) supposedly facilitate "coding" by automatically generating code snippets and performing automatic code completion. At first glance, you might think that these text features are designed to help the average coder. In fact, they are more useful for the advanced coder and potentially harmful for the average coder. The average coder may not know many features of a programming language, especially in the case of a low-level language, like C. The automatic coding experience produces working code at the expense of the learning experience, i.e., the average coder learns to rely on the IDE too much instead of learning the fine details of the programming language. Then, the best practice is to start by avoiding IDEs, using a simple text editor. When the coder feels that he/she comprehends every line of his/her code, i.e., can describe what that line does along with potential caveats, then he/she may consider upgrading to an IDE.
 
 #### Avoid These Text Features
 
@@ -106,7 +106,7 @@ Many powerful integrated development environments (IDEs) supposedly facilitate "
 > [!IMPORTANT]
 > A good text editor must facilitate code reviewing and refactoring.
 
-The average coder must accept the fact that the first version of a code block is almost never going to be the final version. Most code blocks change many times as the software under implementation evolves. Identifying and modyfing lines of code may become a routine and cumbersome task for the coder. Hence, the coder must seek a text editor that facilitates these operations.
+The average coder must accept the fact that the first version of a code block is almost never going to be the final version. Most code blocks change many times as the software under implementation evolves. Identifying and modifying lines of code may become a routine and cumbersome task for the coder. Hence, the coder must seek a text editor that facilitates these operations.
 
 #### Seek These Text Features
 
@@ -156,7 +156,7 @@ If **git** does NOT exist, execute `pacman -S git` command to install it.
 
 ### A1iv. Compiler Automation Tool
 
-**make**[^13] is a compiler automation tool, facilitating compilation especially when the compiled software consists multiple source files.
+**make**[^13] is a compiler automation tool, facilitating compilation especially when the software consists multiple source files.
 
 #### MacOS
 
@@ -214,6 +214,8 @@ Execute `pacman -S mingw-w64-x86_64-gcc mingw-w64-x86_64-clang` to install both 
 
 ## A2. Download PADKIT
 
+PADKIT has three branches, **main**, **C99**, and **C23**. The **main** branch contains this README file and figures. The PADKIT source code has two flavors, located only in **C99** and **C23** branches, respectively. To download all these branches, execute the three commands below.
+
 ```
 
 git clone -b main https://github.com/yavuzkoroglu/padkit.git padkit
@@ -224,13 +226,52 @@ git clone -b C23  https://github.com/yavuzkoroglu/padkit.git padkit-C23
 
 ## A3. Compile PADKIT
 
+The PADKIT compilation procedure has two binary environment options, resulting in four different combinations in total as shown in the following table.
+
+| Environment Variables |    CC |    MODE |
+|----------------------:|------:|--------:|
+|                    #1 | clang |   debug |
+|                    #2 | clang | release |
+|                    #3 |   gcc |   debug |
+|                    #4 |   gcc | release |
+
+In addition to the above options, PADKIT can target either the **C99**[^15] or the **C23**[^18] standards. So, the parameterized compilation procedure for PADKIT looks like as follows.
+
+```
+cd padkit-<target-standard>
+make -e CC=<cc> -e MODE=<mode> all
+```
+
+> [!NOTE]
+> The `make -e` option initializes or overrides an environment variable throughout the compilation procedure.
+
+Once the compilation is successful, you can test your library by executing the compiled test executable. The test executable performs several tests on the PADKIT library functions and informs the user if the tests PASS or FAIL. Please contact me if some tests FAIL. I would like to know how it could ever happen :)
+
+> [!TIP]
+> The test executable can have different file extensions depending on the OS. Use the appropriate file extension for your OS.
+
+### MacOS and Linux
+
+```
+bin/tests.out
+```
+
+### Windows
+
+```
+bin/tests.exe
+```
+
 ## A4. Examples
 
 # Acknowledgment
 
 I wish to start by stating that not one word of this documentation would have been written, if not for my wife, Dilara, and her unwavering support.
 
-I used UTM to try PADKIT on both Linux and Windows. It would have been very hard to test all OSs without UTM.
+I used UTM[^23] to try PADKIT on both Linux and Windows. It would have been very hard to test all OSs without UTM.
+
+> [!NOTE]
+> I believe UTM stands for **Universal Turing Machine**.
 
 # References
 
@@ -255,4 +296,5 @@ I used UTM to try PADKIT on both Linux and Windows. It would have been very hard
 [^19]: ISO/IEC 9899:202y (C2y), Working Draft, N3301, https://www.open-std.org/jtc1/sc22/wg14/www/docs/n3301.pdf -- last accessed @ `[]`
 [^20]: https://git-scm.com/download/linux -- last accessed @ `[]`
 [^21]: M. Howell, "Homebrew -- the missing package manager of MacOS (or Linux)", https://brew.sh -- last accessed @ `[]`
-[^22]:
+[^22]: G. Nachman, "iTerm2 is a terminal emulator for macOS that does amazing things", website by M. Freeman, G. Nachman, and J. A. Rosen, https://iterm2.com -- last accessed @ `[]`
+[^23]: osy, "UTM: Securely run operating systems on your Mac", https://mac.getutm.app -- last accessed @ `[]`
