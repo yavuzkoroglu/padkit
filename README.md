@@ -238,8 +238,10 @@ The PADKIT compilation procedure has two binary environment options, resulting i
 In addition to the above options, PADKIT can target either the **C99**[^15] or the **C23**[^18] standards. So, the parameterized compilation procedure for PADKIT looks like as follows.
 
 ```
+
 cd padkit-<target-standard>
 make -e CC=<cc> -e MODE=<mode> all
+
 ```
 
 > [!NOTE]
@@ -248,8 +250,10 @@ make -e CC=<cc> -e MODE=<mode> all
 For example, to compile **PADKIT-C99** library with **clang** in **debug** mode, you can execute the following commands.
 
 ```
+
 cd padkit-C99
 make -e CC=clang -e MODE=debug all
+
 ```
 
 Once the compilation is successful, you can test your library by executing the compiled test executable. The test executable performs several tests on the PADKIT library functions and informs the user if the tests PASS or FAIL. Please contact me if some tests FAIL. I would like to know how it could ever happen :)
