@@ -18,6 +18,8 @@ Portable Application (App.) Development (Dev.) KIT (PADKIT) is a library of C ma
         - [A3i. Compilation Tools](#a3i-compilation-tools)
         - [A3ii. Compilation Steps](#a3ii-compilation-steps)
     - [A4. Examples](#a4-examples)
+        - [A4i. Righttriangle](#a4i-righttriangle)
+        - [A4ii. JSONStats](#a4ii-jsonstats)
 - [B. Introduction](#b-introduction)
 - [Acknowledgment](#acknowledgment) 
 - [References](#references)
@@ -275,6 +277,31 @@ bin/tests.exe
 
 ## A4. Examples
 
+This chapter consists example C projects using PADKIT features.
+
+### A4i. RightTriangle
+
+This example, called **RightTriangle**[^24], takes a positive integer, and generates all the integer right triangles (i.e., pythagorean triples) whose shortest side length is less than or equal to that positive integer.
+
+**RightTriangle** utilizes the **git submodule** feature to include **PADKIT-C99** as a third-party library. It uses PADKIT's **Stack** object to store all the generated right triangles.
+
+> [!TIP]
+> The **git submodule** feature, in the PADKIT examples, is superior to the alternatives like **git subtree** because, in this case, we want to use the PADKIT library but not change it. More importantly, the submodule feature *detaches* and *locks* the latest PADKIT version, protecting the software from later PADKIT updates and changes (unless the developer explicitly pulls a newer PADKIT version). As a result the software remains functional with a low maintenance cost.
+
+### A4ii. JSONStats
+
+This example, called **JSONStats**[^25], takes a JSON file, and reports statistics about that JSON file.
+
+> [!NOTE]
+> In contrast to, **RightTriangle**, **JSONStats** uses **PADKIT-C23**.
+
+**JSONStats** uses PADKIT's **JSONParser** object to parse any JSON file, using event-driven programming[^26] concepts.
+
+> [!TIP]
+> C is a low-level language with no explicit support for high-level features like object-oriented and event-driven programming. However, you can always follow the general principles of these programming paradigms in C, whenever you need them.
+
+# B. Introduction
+
 # Acknowledgment
 
 I wish to start by stating that not one word of this documentation would have been written, if not for my wife, Dilara, and her unwavering support.
@@ -309,3 +336,7 @@ I used UTM[^23] to try PADKIT on both Linux and Windows. It would have been very
 [^21]: M. Howell, "Homebrew -- the missing package manager of MacOS (or Linux)", https://brew.sh -- last accessed @ `[]`
 [^22]: G. Nachman, "iTerm2 is a terminal emulator for macOS that does amazing things", website by M. Freeman, G. Nachman, and J. A. Rosen, https://iterm2.com -- last accessed @ `[]`
 [^23]: osy, "UTM: Securely run operating systems on your Mac", https://mac.getutm.app -- last accessed @ `[]`
+[^24]: Y. Koroglu, "Righttriangle", https://github.com/yavuzkoroglu/righttriangle -- last accessed @ `[]`
+[^25]: Y. Koroglu, "JSONStats", https://github.com/yavuzkoroglu/jsonstats -- last accessed @ `[]`
+[^26]: "Event-driven programming", https://en.wikipedia.org/wiki/Event-driven_programming -- last accessed @ `[]`
+
