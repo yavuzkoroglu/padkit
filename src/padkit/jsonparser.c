@@ -255,10 +255,12 @@ static void s06_jp(JSONParser jp[static const 1]) {
     /* atValueStart() */
     (*jp->atValueStart)(jp);
 
+    /* atNull('ull') */
+    (*jp->atNull)(jp);
+
     /* atValueEnd() */
     (*jp->atValueEnd)(jp);
 
-    /* atNull('ull') */
     nextState[(fread(ull, 1, 3, jp->inputStream) == 3 && ull[0] == 'u' && ull[1] == 'l' && ull[2] == 'l')](jp);
 }
 
@@ -382,10 +384,12 @@ static void s09_jp(JSONParser jp[static const 1]) {
     /* atValueStart() */
     (*jp->atValueStart)(jp);
 
+    /* atTrue('rue') */
+    (*jp->atTrue)(jp);
+
     /* atValueEnd() */
     (*jp->atValueEnd)(jp);
 
-    /* atTrue('rue') */
     nextState[(fread(rue, 1, 3, jp->inputStream) == 3 && rue[0] == 'r' && rue[1] == 'u' && rue[2] == 'e')](jp);
 }
 
@@ -397,10 +401,12 @@ static void s10_jp(JSONParser jp[static const 1]) {
     /* atValueStart() */
     (*jp->atValueStart)(jp);
 
+    /* atFalse('alse') */
+    (*jp->atFalse)(jp);
+
     /* atValueEnd() */
     (*jp->atValueEnd)(jp);
 
-    /* atFalse('alse') */
     nextState[(
         fread(alse, 1, 4, jp->inputStream) == 4 &&
         alse[0] == 'a' && alse[1] == 'l'        &&
@@ -587,10 +593,12 @@ static void s14_jp(JSONParser jp[static const 1]) {
     /* atValueStart() */
     (*jp->atValueStart)(jp);
 
+    /* atNull('ull') */
+    (*jp->atNull)(jp);
+
     /* atValueEnd() */
     (*jp->atValueEnd)(jp);
 
-    /* atNull('ull') */
     nextState[(fread(ull, 1, 3, jp->inputStream) == 3 && ull[0] == 'u' && ull[1] == 'l' && ull[2] == 'l')](jp);
 }
 
@@ -714,10 +722,12 @@ static void s17_jp(JSONParser jp[static const 1]) {
     /* atValueStart() */
     (*jp->atValueStart)(jp);
 
+    /* atTrue('rue') */
+    (*jp->atTrue)(jp);
+
     /* atValueEnd() */
     (*jp->atValueEnd)(jp);
 
-    /* atTrue('rue') */
     nextState[(fread(rue, 1, 3, jp->inputStream) == 3 && rue[0] == 'r' && rue[1] == 'u' && rue[2] == 'e')](jp);
 }
 
@@ -729,10 +739,12 @@ static void s18_jp(JSONParser jp[static const 1]) {
     /* atValueEnd() */
     (*jp->atValueEnd)(jp);
 
+    /* atFalse('alse') */
+    (*jp->atFalse)(jp);
+
     /* atValueStart() */
     (*jp->atValueStart)(jp);
 
-    /* atFalse('alse') */
     nextState[(
         fread(alse, 1, 4, jp->inputStream) == 4 &&
         alse[0] == 'a' && alse[1] == 'l'        &&
