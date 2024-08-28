@@ -727,14 +727,14 @@ static void s18_jp(JSONParser jp[static const 1]) {
 
     char alse[4];
 
-    /* atValueEnd() */
-    (*jp->atValueEnd)(jp);
+    /* atValueStart() */
+    (*jp->atValueStart)(jp);
 
     /* atFalse('alse') */
     (*jp->atFalse)(jp);
 
-    /* atValueStart() */
-    (*jp->atValueStart)(jp);
+    /* atValueEnd() */
+    (*jp->atValueEnd)(jp);
 
     nextState[(
         fread(alse, 1, 4, jp->inputStream) == 4 &&
