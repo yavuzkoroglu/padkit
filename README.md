@@ -201,14 +201,8 @@ Execute the following commands to install the latest **gcc** and **clang** as de
 ```
 
 brew install gcc llvm
-if ! grep 'alias gcc=gcc-$(ls $(brew --prefix)/opt/ | grep gcc | tail -1 | sed s/gcc@//)' ~/.bashrc &> /dev/null
-then
-    echo 'alias gcc=gcc-$(ls $(brew --prefix)/opt/ | grep gcc | tail -1 | sed s/gcc@//)' >> ~/.bashrc
-fi
-if ! grep 'export PATH=$(brew --prefix)/opt/llvm/bin:${PATH}' ~/.bashrc &> dev/null
-then
-    echo 'export PATH=$(brew --prefix)/opt/llvm/bin:${PATH}' >> ~/.bashrc
-fi
+ln -s $(brew --prefix)/Cellar/gcc/$(ls $(brew --prefix)/Cellar/gcc/ | tail -1)/bin/$(ls $(brew --prefix)/Cellar/gcc/$(ls $(brew --prefix)/Cellar/gcc/ | tail -1)/bin/ | grep -E '^gcc-[0-9]+') $(brew --prefix)/bin/gcc
+ln -s $(brew --prefix)/Cellar/llvm/$(ls $(brew --prefix)/Cellar/llvm/ | tail -1)/bin/$(ls $(brew --prefix)/Cellar/llvm/$(ls $(brew --prefix)/Cellar/llvm/ | tail -1)/bin/ | grep -E '^clang-[0-9]+') $(brew --prefix)/bin/clang
 
 ```
 
