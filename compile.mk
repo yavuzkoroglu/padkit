@@ -34,7 +34,9 @@ else
 FLAGS=-std=${STD} -Ofast -DNDEBUG
 endif
 
-ifeq (${CC},clang)
+CCNAME=$(findstring clang,${CC})
+
+ifeq (${CCNAME},clang)
 SILENCED=-Wno-unsafe-buffer-usage -Wno-unused-parameter
 ARGS=${ARCH_ARGS} ${FLAGS} -Weverything ${SILENCED} ${STDLIBS}
 else
