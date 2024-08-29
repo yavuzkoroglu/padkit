@@ -207,7 +207,7 @@ ln -s $(brew --prefix)/Cellar/llvm/$(ls $(brew --prefix)/Cellar/llvm/ | tail -1)
 ```
 
 > [!NOTE]
-> Homework for you: Why do we need the `ln -s` commands? Could `brew install` NOT execute these commands, automatically?
+> **Homework:** Why do we need the `ln -s` commands? Could `brew install` NOT execute these commands, automatically?
 
 #### Linux
 
