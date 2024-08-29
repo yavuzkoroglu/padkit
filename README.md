@@ -201,8 +201,8 @@ Execute the following commands to install the latest **gcc** and **clang** as de
 ```
 
 brew install gcc llvm
-ln -sF $(find $(brew --prefix gcc)/bin -type f -mindepth 1 -maxdepth 1 | grep -E '/gcc-[0-9]+' | sort | tail -1) $(brew --prefix)/bin/gcc
-ln -sF $(find $(brew --prefix llvm)/bin -type f -mindepth 1 -maxdepth 1 | grep -E '/clang-[0-9]+' | sort | tail -1) $(brew --prefix)/bin/clang
+ln -sF $(find $(brew --prefix gcc)/bin/* -type f -maxdepth 0 | grep -E '/gcc-[0-9]+' | sort | tail -1) $(brew --prefix)/bin/gcc
+ln -sF $(find $(brew --prefix llvm)/bin/* -type f -maxdepth 0 | grep -E '/clang-[0-9]+' | sort | tail -1) $(brew --prefix)/bin/clang
 
 ```
 
