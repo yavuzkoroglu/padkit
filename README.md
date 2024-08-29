@@ -201,13 +201,13 @@ Execute the following commands to install the latest **gcc** and **clang** as de
 ```
 
 brew install gcc llvm
-ln -s $(brew --prefix)/Cellar/gcc/$(ls $(brew --prefix)/Cellar/gcc/ | tail -1)/bin/$(ls $(brew --prefix)/Cellar/gcc/$(ls $(brew --prefix)/Cellar/gcc/ | tail -1)/bin/ | grep -E '^gcc-[0-9]+' | tail -1) $(brew --prefix)/bin/gcc
-ln -s $(brew --prefix)/Cellar/llvm/$(ls $(brew --prefix)/Cellar/llvm/ | tail -1)/bin/$(ls $(brew --prefix)/Cellar/llvm/$(ls $(brew --prefix)/Cellar/llvm/ | tail -1)/bin/ | grep -E '^clang-[0-9]+' | tail -1) $(brew --prefix)/bin/clang
+ln -sF $(find $(brew --prefix gcc)/bin -type f -mindepth 1 -maxdepth 1 | grep -E '/gcc-[0-9]+' | sort | tail -1) $(brew --prefix)/bin/gcc
+ln -sF $(find $(brew --prefix llvm)/bin -type f -mindepth 1 -maxdepth 1 | grep -E '/clang-[0-9]+' | sort | tail -1) $(brew --prefix)/bin/clang
 
 ```
 
 > [!NOTE]
-> **Homework:** Why do we need the `ln -s` commands? Could `brew install` NOT execute these commands, automatically?
+> **Homework:** Why do we need the `ln -sF` commands? Could `brew install` NOT execute these commands, automatically?
 
 #### Linux
 
