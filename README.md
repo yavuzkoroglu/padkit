@@ -2,14 +2,9 @@
 
 ## How to Build
 
-1. `git clone https://github.com/yavuzkoroglu/padkit.git`
+1. `git clone -b C23 https://github.com/yavuzkoroglu/padkit.git padkit-C23`
 2. `cd padkit`
 3. `make`
-
-The above steps should produce
-
-1. The libraries in `lib/` and
-2. The automatically generated headers in `include/`.
 
 ## Tested Environments (v1.2)
 
@@ -41,19 +36,19 @@ PADKIT uses binary literals, e.g. `0b11111111'11111111'11111111'11110110`, which
 
 PADKIT's binary literals conform to the [ISO/IEC 9899:2023 (C23), Working Draft, April 2024](https://www.open-std.org/JTC1/SC22/WG14/www/docs/n3096.pdf), Section 6.4.4.1, p. 57-59.
 
-Before the C23 adoption, PADKIT used its own `include/padkit/bliterals.h`, which defined every binary literal from `B_00000000` to `B_11111111` as macros.
+PADKIT-C99 uses its own `include/padkit/bliterals.h`, which defines every binary literal from `B_00000000` to `B_11111111` as macros.
 
 #### A2. `bool` Keyword
 
-#### A3. Checked Integer Arithmetic
+According to [ISO/IEC 9899:TC3 (C99), Committee Draft, September 2007](https://www.open-std.org/JTC1/SC22/WG14/www/docs/n1256.pdf), 
 
-#### A4. `[[maybe_unsued]]` Keyword
+#### A3. `[[maybe_unsued]]` Keyword
 
-#### A5. `restrict` Keyword
+#### A4. `restrict` Keyword
 
 According to [ISO/IEC 9899:TC3 (C99), Committee Draft, September 2007](https://www.open-std.org/JTC1/SC22/WG14/www/docs/n1256.pdf)
 
-#### A6. `static` Keyword in Array Parameters of Function Declarators
+#### A5. `static` Keyword in Array Parameters of Function Declarators
 
 According to [ISO/IEC 9899:TC3 (C99), Committee Draft, September 2007](https://www.open-std.org/JTC1/SC22/WG14/www/docs/n1256.pdf), Section 6.7.5.3, p. 119, item 7, the `static` keyword ensures that a function parameter is a non-null pointer to at least `n` elements, e.g.:
 
@@ -76,6 +71,8 @@ could require the code to explicitly check if `password` is a null pointer. Also
 #### B1. `auto` Keyword (Type Inference)
 
 #### B2. `false` and `true` Keywords
+
+#### B3. Checked Integer Arithmetic
 
 #### B3. Flexible Array Members
 
@@ -102,31 +99,4 @@ The C standard employs many more features that PADKIT simply does NOT use, yet. 
  - [ISO/IEC 9899:2023 (C23), Working Draft, N3096, April 2024](https://www.open-std.org/JTC1/SC22/WG14/www/docs/n3096.pdf)
  - [ISO/IEC 9899:202y (C2y), Working Draft, N3301](https://www.open-std.org/jtc1/sc22/wg14/www/docs/n3301.pdf)
  
-## Version History 
-
-### Changes v1.1 -> v1.2
-
-* Major overhaul #2. Now, PADKIT aligns with [ISO/IEC 9899:2023 (C23), Working Draft, N3096, April 2024](https://www.open-std.org/JTC1/SC22/WG14/www/docs/n3096.pdf).
-* Major overhaul. Replaced `#ifndef NDEBUG` clauses with `include/padkit/debug.h` routines.
-* Replaced all macros in `include/padkit/circbuff.h` with struct and functions.
-* Replaced all macros in `include/padkit/stack.h` with struct and functions.
-* `REALLOC_IF_NECESSARY` ceased to take an `err` parameter.
-* `include/padkit/reallocate.h` does NOT include `include/padkit/debug.h`
-* Added `include/padkit/circbuff.h` and a `test_circbuff()` function to `src/tests.c`.
-* Added `include/padkit/stack.h` and a `test_stack()` function to `src/tests.c`.
-* Added `include/padkit/preprocessor.h`.
-
-### Changes v1.0 -> v1.1
-
-* Silenced some warning messages for `clang` and `gcc` in `compile.mk`.
-* `GraphMatrix` objects now allocate bits in 64-bit blocks instead of 8-bit blocks.
-* Updated `include/padkit/reallocate.h`.
-* Corrected `NOT_A_JSON_PARSER` in `include/padkit/jsonparser.h`.
-* Encapsulated debug messages within extra code blocks in `include/padkit/debug.h`.
-* Added `CTblConstIterator` and related functions.
-* Added `include/padkit/jsonparser.h` and `src/padkit/jsonparser.c`.
-* External scripts now can import the `${COMPILE}` command in the `Makefile`.
-* In `src/padkit/timestamp.c`, timestamps now conform to ISO 8601.
-* Removed `extern Chunk strings[1];` and `void free_strings(void)` from `Chunk`.
-* Solved a bug in `src/padkit/streq.c::str_eq_n()`.
-* Slight code corrections in `src/padkit/hash.c`.
+## Version History
