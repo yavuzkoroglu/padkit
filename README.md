@@ -2,8 +2,8 @@
 
 ## How to Build
 
-1. `git clone https://github.com/yavuzkoroglu/padkit.git`
-2. `cd padkit`
+1. `git clone -b C99 https://github.com/yavuzkoroglu/padkit.git padkit-C99`
+2. `cd padkit-C99`
 3. `make`
 
 The above steps should produce
@@ -24,6 +24,11 @@ The above steps should produce
 
 ### Changes v1.1 -> v1.2
 
+* Splitted into two branches, **C99** and **C23**.
+* Added overlapping pointer checks to `Chunk`, `CircularBuffer`, and `Stack` in debug mode.
+* Resolved several bugs in `JSONParser`.
+* Added `include/padkit/overlap.h` and `src/padkit/overlap.c`, to debug restricted pointer overlapping issues.
+* Added `include/padkit/memalloc.h` and `src/padkit/memalloc.c`, along with corresponding tests.
 * Major overhaul. Replaced `#ifndef NDEBUG` clauses with `include/padkit/debug.h` routines.
 * Replaced all macros in `include/padkit/circbuff.h` with struct and functions.
 * Replaced all macros in `include/padkit/stack.h` with struct and functions.
@@ -31,7 +36,7 @@ The above steps should produce
 * `include/padkit/reallocate.h` does NOT include `include/padkit/debug.h`
 * Added `include/padkit/circbuff.h` and a `test_circbuff()` function to `src/tests.c`.
 * Added `include/padkit/stack.h` and a `test_stack()` function to `src/tests.c`.
-* Added `include/padkit/preprocessor.h`.
+* Added `include/padkit/preprocessor.h` that implements preprocessor tricks.
 
 ### Changes v1.0 -> v1.1
 
