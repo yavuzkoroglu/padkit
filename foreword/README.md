@@ -1,3 +1,5 @@
+- Home: [Table of Contents](..)
+
 # Foreword
 
 > If I do not spend time tidying up my room today, I may use that time more productively. If I leave my room untidy for a month, even all the time in the world cannot make me productive anymore.
