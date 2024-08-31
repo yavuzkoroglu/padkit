@@ -12,4 +12,3 @@ I used [UTM](https://mac.getutm.app)[^1] to try PADKIT on different OS platforms
 [1]: https://mac.getutm.app -- last accessed @ `[]`
 
 - Prev: [?](?)
-- Next: [License](../LICENSE)
