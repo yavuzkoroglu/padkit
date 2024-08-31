@@ -10,7 +10,8 @@ Formally, PADKIT is a collection of the following three components.
 
 I designed PADKIT to accommodate the needs of a general-purpose C program, in contrast to C code for specific domains like embedded systems, automotive software, operating system implementations, and more. PADKIT's main objective is the following.
 
-> [!IMPORTANT] **PADKIT's objective:** To provide the general-purpose program coder with a platform-independent method to implement and share a small project with a long maintenance-free lifespan.
+> [!IMPORTANT]
+> **PADKIT's objective:** To provide the general-purpose program coder with a platform-independent method to implement and share a small project with a long maintenance-free lifespan.
 
 A platform-independent implementation method guarantees the software behavior to be the same across different operating systems and execution environments. A small project comprises as few dependencies as possible except the programming language's core libraries. A typical software project, if left unattended, often becomes unusable in time due to upgraded dependencies and changes in the execution environments. PADKIT aims to achieve the case that once the programmer ensures the correct behavior and finalizes the project, it has a long lifespan without any maintenance and changes.
 
