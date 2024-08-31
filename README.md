@@ -2,7 +2,7 @@
 
 # Table of Contents
 
-- [Foreword](foreword/README.md)
+- [Foreword](foreword)
 - [A. Straight to Business](#a-straight-to-business)
     - [A1. Prerequisites](#a1-prerequisites)
         - [A1i. A Terminal](#a1i-a-terminal)
