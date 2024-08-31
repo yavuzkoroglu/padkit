@@ -4,7 +4,7 @@
 - [Abstract](abstract)
 - [A. Introduction](introduction)
 - [Acknowledgment](acknowledgment)
-- [License](LICENSE.md)
+- [License](LICENSE)
 
 <!--
 - [A. Straight to Business](#a-straight-to-business)
