@@ -11,4 +11,4 @@ I used [UTM](https://mac.getutm.app)[^1] to try PADKIT on different OS platforms
 
 [^1]: https://mac.getutm.app -- last accessed @ `[2024-08-31 14:17:47]`
 
-- Prev: [A. Introduction](introduction)
+- Prev: [C. PADKIT Manual](../padkit-manual)
