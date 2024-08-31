@@ -1,8 +1,11 @@
 # PADKIT: Portable Application Development KIT for C
 
-# Table of Contents
-
 - [Foreword](foreword)
+- [Abstract](abstract)
+- [A. Introduction](introduction)
+- [Acknowledgment](acknowledgment)
+
+<!--
 - [A. Straight to Business](#a-straight-to-business)
     - [A1. Prerequisites](#a1-prerequisites)
         - [A1i. A Terminal](#a1i-a-terminal)
@@ -20,3 +23,4 @@
 - [B. Introduction](#b-introduction)
 - [Acknowledgment](#acknowledgment)
 - [References](#references)
+-->
