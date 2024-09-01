@@ -3,8 +3,8 @@
  * @brief Defines some functions regarding prime numbers.
  * @author Yavuz Koroglu
  */
-#ifndef PRIME_H
-    #define PRIME_H
+#ifndef PADKIT_PRIME_H
+    #define PADKIT_PRIME_H
     #include <stdbool.h>
     #include <stdint.h>
 

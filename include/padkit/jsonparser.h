@@ -3,8 +3,8 @@
  * @brief Defines JSONParser.
  * @author Yavuz Koroglu
  */
-#ifndef JSONPARSER_H
-    #define JSONPARSER_H
+#ifndef PADKIT_JSONPARSER_H
+    #define PADKIT_JSONPARSER_H
     #include <stdbool.h>
     #include <stdio.h>
 

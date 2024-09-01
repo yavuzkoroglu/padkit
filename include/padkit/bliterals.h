@@ -8,8 +8,8 @@
  *
  * @author Yavuz Koroglu
  */
-#ifndef BLITERALS_H
-    #define BLITERALS_H /* Binary Literals (may become deprecated after C23) */
+#ifndef PADKIT_BLITERALS_H
+    #define PADKIT_BLITERALS_H /* Binary Literals (may become deprecated after C23) */
     #include <stdint.h>
 
     /**

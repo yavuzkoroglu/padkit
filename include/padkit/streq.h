@@ -3,8 +3,8 @@
  * @brief Defines string comparison functions and macros.
  * @author Yavuz Koroglu
  */
-#ifndef STREQ_H
-    #define STREQ_H
+#ifndef PADKIT_STREQ_H
+    #define PADKIT_STREQ_H
     #include <stdbool.h>
     #include <stddef.h>
 

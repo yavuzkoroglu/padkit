@@ -45,6 +45,7 @@ include/padkit.h: ;                                                         @\
     echo '    #define PADKIT_H'                         >> include/padkit.h; \
     echo '    #define PADKIT_VERSION "'${PADKIT_VERSION}'"' >> include/padkit.h; \
     echo '    #define PADKIT_TARGET  "'${PADKIT_TARGET}'"' >> include/padkit.h; \
+    echo '    #include "padkit/arraylist.h"'            >> include/padkit.h; \
     echo '    #include "padkit/bliterals.h"'            >> include/padkit.h; \
     echo '    #include "padkit/chunkset.h"'             >> include/padkit.h; \
     echo '    #include "padkit/chunktable.h"'           >> include/padkit.h; \
@@ -62,6 +63,7 @@ include/padkit.h: ;                                                         @\
     echo '    #include "padkit/prime.h"'                >> include/padkit.h; \
     echo '    #include "padkit/reallocate.h"'           >> include/padkit.h; \
     echo '    #include "padkit/repeat.h"'               >> include/padkit.h; \
+    echo '    #include "padkit/size.h"'                 >> include/padkit.h; \
     echo '    #include "padkit/stack.h"'                >> include/padkit.h; \
     echo '    #include "padkit/streq.h"'                >> include/padkit.h; \
     echo '    #include "padkit/timestamp.h"'            >> include/padkit.h; \
@@ -77,6 +79,15 @@ libs: clean lib/libpadkit.a ${DYNAMIC_LIB}
 obj: ; mkdir obj
 
 obj/padkit: obj ; mkdir obj/padkit
+
+obj/padkit/arraylist.o: obj/padkit      \
+    include/padkit/arraylist.h          \
+    include/padkit/debug.h              \
+    include/padkit/memalloc.h           \
+    include/padkit/overlap.h            \
+    include/padkit/size.h               \
+    src/padkit/arraylist.c              \
+    ; ${COMPILE} -Iinclude src/padkit/arraylist.c -c -o obj/padkit/arraylist.o
 
 obj/padkit/chunk.o: obj/padkit          \
     include/padkit/chunk.h              \
@@ -156,6 +167,7 @@ obj/padkit/map.o: obj/padkit            \
 obj/padkit/memalloc.o: obj/padkit       \
     include/padkit/debug.h              \
     include/padkit/memalloc.h           \
+    include/padkit/size.h               \
     src/padkit/memalloc.c               \
     ; ${COMPILE} -Iinclude src/padkit/memalloc.c -c -o obj/padkit/memalloc.o
 
@@ -203,6 +215,7 @@ obj/padkit/value.o: obj/padkit          \
     ; ${COMPILE} -Iinclude src/padkit/value.c -c -o obj/padkit/value.o
 
 objects:                        \
+    obj/padkit/arraylist.o      \
     obj/padkit/chunk.o          \
     obj/padkit/chunkset.o       \
     obj/padkit/chunktable.o     \

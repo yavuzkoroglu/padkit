@@ -3,8 +3,8 @@
  * @brief Defines some CSV related macros.
  * @author Yavuz Koroglu
  */
-#ifndef CSV_H
-    #define CSV_H
+#ifndef PADKIT_CSV_H
+    #define PADKIT_CSV_H
 
     /**
      * @def CSV_INITIAL_DELIMETER

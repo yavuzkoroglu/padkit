@@ -3,8 +3,8 @@
  * @brief Defines CircularBuffer and related functions.
  * @author Yavuz Koroglu
  */
-#ifndef CIRCBUFF_H
-    #define CIRCBUFF_H
+#ifndef PADKIT_CIRCBUFF_H
+    #define PADKIT_CIRCBUFF_H
     #include <stdbool.h>
     #include <stddef.h>
     #include <stdint.h>

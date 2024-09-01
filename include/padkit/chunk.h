@@ -8,8 +8,8 @@
  *
  * @author Yavuz Koroglu
  */
-#ifndef CHUNK_H
-    #define CHUNK_H
+#ifndef PADKIT_CHUNK_H
+    #define PADKIT_CHUNK_H
     #include <stdbool.h>
     #include <stdio.h>
     #include <stdint.h>

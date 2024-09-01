@@ -3,8 +3,8 @@
  * @brief Defines some preprocessor tricks.
  * @author Yavuz Koroglu
  */
-#ifndef PREPROCESSOR_H
-    #define PREPROCESSOR_H
+#ifndef PADKIT_PREPROCESSOR_H
+    #define PADKIT_PREPROCESSOR_H
 
     /**
      * @def MKSTR(x)

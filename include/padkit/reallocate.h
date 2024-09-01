@@ -3,8 +3,8 @@
  * @brief Defines a safe REALLOCATE macro accompanied with a _reallocate() function.
  * @author Yavuz Koroglu
  */
-#ifndef REALLOCATE_H
-    #define REALLOCATE_H
+#ifndef PADKIT_REALLOCATE_H
+    #define PADKIT_REALLOCATE_H
     #include <stdbool.h>
 
     /**

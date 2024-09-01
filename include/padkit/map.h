@@ -4,8 +4,8 @@
  * @author Yavuz Koroglu
  * @see Value
  */
-#ifndef MAP_H
-    #define MAP_H
+#ifndef PADKIT_MAP_H
+    #define PADKIT_MAP_H
     #include "padkit/mapping.h"
 
     /**

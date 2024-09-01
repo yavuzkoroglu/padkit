@@ -13,15 +13,25 @@
     #include "padkit/overlap.h"
 #endif
 
-static uint32_t calculateNewCap_stack(Stack const stack[static const 1]);
+static uint32_t calculateNewCap_stack(Stack const stack[static const 1], uint32_t const n);
 
-static uint32_t calculateNewCap_stack(Stack const stack[static const 1]) {
+static uint32_t calculateNewCap_stack(Stack const stack[static const 1], uint32_t const n) {
     DEBUG_ASSERT(isValid_stack(stack))
+    DEBUG_ASSERT(n > 0)
+    #if UINT32_MAX < SIZE_MAX
+        DEBUG_ASSERT(n < INT32_MAX)
+    #else
+        DEBUG_ASSERT(n < SIZE_MAX >> 1)
+    #endif
     {
         uint32_t newCap = stack->cap;
-        while (newCap <= stack->size) {
+        while (newCap <= stack->size + n - 1) {
             newCap <<= 1;
-            if (newCap >= INT32_MAX) return UINT32_MAX;
+            #if UINT32_MAX < SIZE_MAX
+                if (newCap >= INT32_MAX)        return UINT32_MAX;
+            #else
+                if (newCap >= SIZE_MAX >> 1)    return UINT32_MAX;
+            #endif
         }
         return newCap;
     }
@@ -32,18 +42,22 @@ void constructEmpty_stack(
     size_t const element_size_in_bytes,
     uint32_t const initial_cap
 ) {
-    size_t const sz = (size_t)initial_cap * element_size_in_bytes;
+    size_t const sz = (size_t)initial_cap * sz_element;
 
     DEBUG_ASSERT(element_size_in_bytes > 0)
     DEBUG_ASSERT(element_size_in_bytes < SIZE_MAX >> 1)
     DEBUG_ASSERT(initial_cap > 0)
-    DEBUG_ASSERT(initial_cap < INT32_MAX)
+    #if UINT32_MAX < SIZE_MAX
+        DEBUG_ASSERT(initial_cap < INT32_MAX)
+    #else
+        DEBUG_ASSERT(initial_cap < SIZE_MAX >> 1)
+    #endif
     DEBUG_ASSERT(sz / (size_t)initial_cap == element_size_in_bytes)
 
-    stack->element_size_in_bytes    = element_size_in_bytes;
-    stack->cap                      = initial_cap;
-    stack->size                     = 0;
-    stack->array                    = mem_alloc(sz);
+    stack->sz_element   = sz_element;
+    stack->cap          = initial_cap;
+    stack->size         = 0;
+    stack->array        = mem_alloc(sz);
 }
 
 void flush_stack(Stack stack[static const 1]) {
@@ -59,7 +73,7 @@ void free_stack(Stack stack[static const 1]) {
 }
 
 void* get_stack(Stack const stack[static const 1], uint32_t const elementId) {
-    size_t const offset = (size_t)elementId * stack->element_size_in_bytes;
+    size_t const offset = (size_t)elementId * stack->sz_element;
     DEBUG_ASSERT(elementId == 0 || offset / (size_t)elementId == stack->element_size_in_bytes)
 
     DEBUG_ASSERT(isValid_stack(stack))
@@ -69,12 +83,16 @@ void* get_stack(Stack const stack[static const 1], uint32_t const elementId) {
 }
 
 bool isValid_stack(Stack const stack[static const 1]) {
-    if (stack->element_size_in_bytes == 0)          return 0;
-    if (stack->element_size_in_bytes >= INT64_MAX)  return 0;
-    if (stack->cap == 0)                            return 0;
-    if (stack->cap >= INT32_MAX)                    return 0;
-    if (stack->size > stack->cap)                   return 0;
-    if (stack->array == NULL)                       return 0;
+    if (stack->sz_element == 0)             return 0;
+    if (stack->sz_element >= SIZE_MAX >> 1) return 0;
+    if (stack->cap == 0)                    return 0;
+    #if UINT32_MAX < SIZE_MAX
+        if (stack->cap >= INT32_MAX)        return 0;
+    #else
+        if (stack->cap >= SIZE_MAX >> 1)    return 0;
+    #endif
+    if (stack->size > stack->cap)           return 0;
+    if (stack->array == NULL)               return 0;
 
     return 1;
 }
@@ -126,59 +144,71 @@ void* popTop_stack(Stack stack[static const 1]) {
     }
 }
 
-void* push_stack(Stack stack[static const 1], void const* const restrict ptr) {
+void* push_stack(Stack stack[static const 1], uint32_t const n, void const* const restrict ptr) {
     DEBUG_ASSERT(isValid_stack(stack))
+    DEBUG_ASSERT(n > 0)
+    DEBUG_ASSERT(n < INT32_MAX)
 
     return pushTop_stack(stack, ptr);
 }
 
-void* pushBottom_stack(Stack stack[static const 1], void const* const restrict ptr) {
+void* pushBottom_stack(Stack stack[static const 1], uint32_t const n, void const* const restrict ptr) {
     DEBUG_ASSERT(isValid_stack(stack))
+    DEBUG_ASSERT(n > 0)
+    DEBUG_ASSERT(n < INT32_MAX)
 
-    DEBUG_ERROR_IF(pushTop_stack(stack, ptr) == NULL)
-    NDEBUG_EXECUTE(pushTop_stack(stack, ptr))
+    DEBUG_ERROR_IF(pushTop_stack(stack, n, ptr) == NULL)
+    NDEBUG_EXECUTE(pushTop_stack(stack, n, ptr))
 
-    rotateUp_stack(stack, 1);
+    rotateUp_stack(stack, n);
 
-    return stack->array;
+    return stack->array + n - 1;
 }
 
-void* pushTop_stack(Stack stack[static const 1], void const* const restrict ptr) {
+void* pushTop_stack(Stack stack[static const 1], uint32_t const n, void const* const restrict ptr) {
     DEBUG_ASSERT(isValid_stack(stack))
+    DEBUG_ASSERT(n > 0)
+    DEBUG_ASSERT(n < INT32_MAX)
 
     {
-        DEBUG_EXECUTE(size_t const sz_element   = stack->element_size_in_bytes)
-        DEBUG_EXECUTE(size_t const sz_stack     = (size_t)stack->cap * sz_element)
-        DEBUG_ASSERT(sz_stack / (size_t)stack->cap == sz_element)
-        DEBUG_ERROR_IF(overlaps_ptr(stack->array, ptr, sz_stack, sz_element))
+        DEBUG_EXECUTE(size_t const sz_stack = (size_t)stack->cap * stack->sz_element)
+        DEBUG_ASSERT(sz_stack / (size_t)stack->cap == stack->sz_element)
+        DEBUG_ERROR_IF(overlaps_ptr(stack->array, ptr, sz_stack, stack->sz_element))
     }
 
-    reallocIfNecessary_stack(stack); /* May invalidate ptr if stack->array and ptr overlap. */
+    reallocIfNecessary_stack(stack, n); /* May invalidate ptr if stack->array and ptr overlap. */
 
-    set_stack(stack, ++stack->size - 1, ptr);
+    set_stack(stack, stack->size, n, ptr);
+    stack->size += n;
 
-    return peekTop_stack(stack);
+    return stack->array + stack->size - n;
 }
 
-void* pushZeros_stack(Stack stack[static const 1]) {
+void* pushZeros_stack(Stack stack[static const 1], uint32_t const n) {
     DEBUG_ASSERT(isValid_stack(stack))
+    DEBUG_ASSERT(n > 0)
+    DEBUG_ASSERT(n < INT32_MAX)
 
-    return pushTop_stack(stack, NULL);
+    return pushTop_stack(stack, n, NULL);
 }
 
-void* pushZerosBottom_stack(Stack stack[static const 1]) {
+void* pushZerosBottom_stack(Stack stack[static const 1], uint32_t const n) {
     DEBUG_ASSERT(isValid_stack(stack))
+    DEBUG_ASSERT(n > 0)
+    DEBUG_ASSERT(n < INT32_MAX)
 
-    return pushBottom_stack(stack, NULL);
+    return pushBottom_stack(stack, n, NULL);
 }
 
-void* pushZerosTop_stack(Stack stack[static const 1]) {
+void* pushZerosTop_stack(Stack stack[static const 1], uint32_t const n) {
     DEBUG_ASSERT(isValid_stack(stack))
+    DEBUG_ASSERT(n > 0)
+    DEBUG_ASSERT(n < INT32_MAX)
 
-    return pushTop_stack(stack, NULL);
+    return pushTop_stack(stack, n, NULL);
 }
 
-void reallocIfNecessary_stack(Stack stack[static const 1]) {
+void reallocIfNecessary_stack(Stack stack[static const 1], uint32_t const n) {
     DEBUG_ASSERT(isValid_stack(stack))
     {
         uint32_t const newCap = calculateNewCap_stack(stack);
@@ -280,12 +310,24 @@ void reverse_stack(Stack stack[static const 1]) {
     }
 }
 
-void set_stack(Stack stack[static const 1], uint32_t const elementId, void const* const restrict ptr) {
+void set_stack(
+    Stack stack[static const 1],
+    uint32_t const startId,
+    uint32_t const n,
+    void const* const restrict ptr
+) {
     DEBUG_ASSERT(isValid_stack(stack))
-    DEBUG_ASSERT(elementId < stack->size)
+    DEBUG_ASSERT(startId < stack->size)
+    DEBUG_ASSERT(n < stack->size)
+    #if SIZE_MAX < UINT32_MAX
+        DEBUG_ASSERT(n < SIZE_MAX)
+    #endif
+    DEBUG_ASSERT(startId + n <= stack_size)
 
     {
-        void* const dest = get_stack(stack, elementId);
+        void* const dest    = get_stack(stack, startId);
+        size_t const sz     = (size_t)n * stack->element_size_in_bytes;
+
         if (dest == ptr) return;
 
         {
@@ -300,9 +342,11 @@ void set_stack(Stack stack[static const 1], uint32_t const elementId, void const
     }
 }
 
-void setZeros_stack(Stack stack[static const 1], uint32_t const elementId) {
+void setZeros_stack(Stack stack[static const 1], uint32_t const startId, uint32_t const n) {
     DEBUG_ASSERT(isValid_stack(stack))
-    DEBUG_ASSERT(elementId < stack->size)
+    DEBUG_ASSERT(startId < stack->size)
+    DEBUG_ASSERT(n < stack->size)
+    DEBUG_ASSERT(startId + n <= stack_size)
 
-    set_stack(stack, elementId, NULL);
+    set_stack(stack, startId, n, NULL);
 }

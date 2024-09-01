@@ -3,8 +3,8 @@
  * @brief Defines ChunkSet.
  * @author Yavuz Koroglu
  */
-#ifndef CHUNKSET_H
-    #define CHUNKSET_H
+#ifndef PADKIT_CHUNKSET_H
+    #define PADKIT_CHUNKSET_H
     #include "padkit/chunk.h"
 
     /**

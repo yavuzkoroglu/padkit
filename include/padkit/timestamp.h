@@ -3,8 +3,8 @@
  * @brief Formatted timestamps for verbose/log outputs.
  * @author Yavuz Koroglu
  */
-#ifndef TIMESTAMP_H
-    #define TIMESTAMP_H
+#ifndef PADKIT_TIMESTAMP_H
+    #define PADKIT_TIMESTAMP_H
 
     /**
      * @def TS_FMT

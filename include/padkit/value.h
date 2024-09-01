@@ -4,8 +4,8 @@
  * @author Yavuz Koroglu
  * @see Pair
  */
-#ifndef VALUE_H
-    #define VALUE_H
+#ifndef PADKIT_VALUE_H
+    #define PADKIT_VALUE_H
     #include <stdbool.h>
     #include <stdint.h>
 

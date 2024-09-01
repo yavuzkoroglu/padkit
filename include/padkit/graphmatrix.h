@@ -3,8 +3,8 @@
  * @brief Defines GraphMatrix.
  * @author Yavuz Koroglu
  */
-#ifndef GRAPHMATRIX_H
-    #define GRAPHMATRIX_H
+#ifndef PADKIT_GRAPHMATRIX_H
+    #define PADKIT_GRAPHMATRIX_H
     #include <stdbool.h>
     #include <stdint.h>
 

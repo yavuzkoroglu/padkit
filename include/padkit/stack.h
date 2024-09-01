@@ -3,8 +3,8 @@
  * @brief Defines Stack and related functions.
  * @author Yavuz Koroglu
  */
-#ifndef STACK_H
-    #define STACK_H
+#ifndef PADKIT_STACK_H
+    #define PADKIT_STACK_H
     #include <stdbool.h>
     #include <stddef.h>
     #include <stdint.h>
@@ -26,7 +26,7 @@
      * @struct Stack
      * @brief A stack of elements located in heap memory.
      *
-     * @var Stack::element_size_in_bytes
+     * @var Stack::sz_element
      *   The size of one element in the Stack, in bytes.
      * @var Stack::cap
      *   The maximum number of elements the Stack can hold.
@@ -36,7 +36,7 @@
      *   A pointer to the first element in the Stack.
      */
     typedef struct StackBody {
-        size_t      element_size_in_bytes;
+        size_t      sz_element;
         uint32_t    cap;
         uint32_t    size;
         char*       array;
@@ -46,8 +46,8 @@
      * @brief Constructs an empty Stack.
      *
      * @param[in,out]                 stack A constant non-null pointer to at least one Stack.
-     * @param[in]      element_size_in_bytes A constant size.
-     * @param[in]                initial_cap A constant 32-bit unsigned integer.
+     * @param[in]     element_size_in_bytes A constant size.
+     * @param[in]               initial_cap A constant 32-bit unsigned integer.
      */
     void constructEmpty_stack(
         Stack stack[static const 1],
@@ -143,43 +143,47 @@
     void* popTop_stack(Stack stack[static const 1]);
 
     /**
+     * @brief Pushes n copies of an element to the top of a Stack.
+     *
+     * @param[in,out] stack A constant non-null pointer to at least one Stack.
+     * @param[in]         n A constant 32-bit unsigned integer.
+     * @param[in]       ptr A constant restricted pointer to a constant object.
+     *
+     * @return A pointer to an object.
+     */
+    void* push_stack(Stack stack[static const 1], uint32_t const n, void const* const restrict ptr);
+
+    /**
+     * @brief Pushes n copies of an element to the bottom of a Stack.
+     *
+     * @param[in,out] stack A constant non-null pointer to at least one Stack.
+     * @param[in]         n A constant 32-bit unsigned integer.
+     * @param[in]       ptr A constant restricted pointer to a constant object.
+     *
+     * @return A pointer to an object.
+     */
+    void* pushBottom_stack(Stack stack[static const 1], uint32_t const n, void const* const restrict ptr);
+
+    /**
      * @brief Pushes the copy of an element to the top of a Stack.
      *
      * @param[in,out] stack A constant non-null pointer to at least one Stack.
-     * @param[in]        ptr A constant restricted pointer to a constant object.
+     * @param[in]         n A constant 32-bit unsigned integer.
+     * @param[in]       ptr A constant restricted pointer to a constant object.
      *
      * @return A pointer to an object.
      */
-    void* push_stack(Stack stack[static const 1], void const* const restrict ptr);
+    void* pushTop_stack(Stack stack[static const 1], uint32_t const n, void const* const restrict ptr);
 
     /**
-     * @brief Pushes the copy of an element to the bottom of a Stack.
+     * @brief Pushes n elements of zeros to the top of a Stack.
      *
      * @param[in,out] stack A constant non-null pointer to at least one Stack.
-     * @param[in]        ptr A constant restricted pointer to a constant object.
+     * @param[in]         n A constant 32-bit unsigned integer.
      *
      * @return A pointer to an object.
      */
-    void* pushBottom_stack(Stack stack[static const 1], void const* const restrict ptr);
-
-    /**
-     * @brief Pushes the copy of an element to the top of a Stack.
-     *
-     * @param[in,out] stack A constant non-null pointer to at least one Stack.
-     * @param[in]        ptr A constant restricted pointer to a constant object.
-     *
-     * @return A pointer to an object.
-     */
-    void* pushTop_stack(Stack stack[static const 1], void const* const restrict ptr);
-
-    /**
-     * @brief Pushes one element of zeros to the top of a Stack.
-     *
-     * @param[in,out] stack A constant non-null pointer to at least one Stack.
-     *
-     * @return A pointer to an object.
-     */
-    void* pushZeros_stack(Stack stack[static const 1]);
+    void* pushZeros_stack(Stack stack[static const 1], uint32_t const n);
 
     /**
      * @brief Pushes one element of zeros to the bottom of a Stack.
@@ -238,19 +242,26 @@
     void reverse_stack(Stack stack[static const 1]);
 
     /**
-     * @brief Sets one element of a Stack to a value.
+     * @brief Sets n element of a Stack to a value.
      *
-     * @param[in,out]      stack A constant non-null pointer to at least one Stack.
-     * @param[in]       elementId A constant 32-bit unsigned integer.
-     * @param[in]             ptr A constant restricted pointer to a constant object.
+     * @param[in,out]   stack A constant non-null pointer to at least one Stack.
+     * @param[in]     startId A constant 32-bit unsigned integer.
+     * @param[in]           n A constant 32-bit unsigned integer.
+     * @param[in]         ptr A constant restricted pointer to a constant object.
      */
-    void set_stack(Stack stack[static const 1], uint32_t const elementId, void const* const restrict ptr);
+    void set_stack(
+        Stack stack[static const 1],
+        uint32_t const startId,
+        uint32_t const n,
+        void const* const restrict ptr
+    );
 
     /**
      * @brief Sets one element of a Stack to zeros.
      *
-     * @param[in,out]      stack A constant non-null pointer to at least one Stack.
-     * @param[in]       elementId A constant 32-bit unsigned integer.
+     * @param[in,out]    stack A constant non-null pointer to at least one Stack.
+     * @param[in]      startId A constant 32-bit unsigned integer.
+     * @param[in]            n A constant 32-bit unsigned integer.
      */
-    void setZeros_stack(Stack stack[static const 1], uint32_t const elementId);
+    void setZeros_stack(Stack stack[static const 1], uint32_t const startId, uint32_t const n);
 #endif

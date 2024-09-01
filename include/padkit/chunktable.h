@@ -3,8 +3,8 @@
  * @brief Defines ChunkTable.
  * @author Yavuz Koroglu
  */
-#ifndef CHUNK_TABLE_H
-    #define CHUNK_TABLE_H
+#ifndef PADKIT_CHUNK_TABLE_H
+    #define PADKIT_CHUNK_TABLE_H
     #include "padkit/chunk.h"
 
     /**

@@ -3,8 +3,8 @@
  * @brief Defines the REPEAT macro.
  * @author Yavuz Koroglu
  */
-#ifndef REPEAT_H
-    #define REPEAT_H
+#ifndef PADKIT_REPEAT_H
+    #define PADKIT_REPEAT_H
 
     /**
      * @def REPEAT(n)

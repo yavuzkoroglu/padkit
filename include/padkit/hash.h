@@ -3,8 +3,8 @@
  * @brief Defines a string hash function.
  * @author Yavuz Koroglu
  */
-#ifndef HASH_H
-    #define HASH_H
+#ifndef PADKIT_HASH_H
+    #define PADKIT_HASH_H
     #include <stddef.h>
     #include <stdint.h>
 

@@ -3,8 +3,8 @@
  * @brief Defines a check for overlapping pointers.
  * @author Yavuz Koroglu
  */
-#ifndef OVERLAP_H
-    #define OVERLAP_H
+#ifndef PADKIT_OVERLAP_H
+    #define PADKIT_OVERLAP_H
     #include <stdbool.h>
     #include <stddef.h>
 
