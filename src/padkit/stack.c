@@ -1,8 +1,3 @@
-/**
- * @file stack.c
- * @brief Implements the functions defined stack.h
- * @author Yavuz Koroglu
- */
 #include <string.h>
 #include "padkit/debug.h"
 #include "padkit/memalloc.h"
@@ -100,12 +95,34 @@ void* pushBottom_stack(Stack stack[static const 1], uint32_t const n, void const
     DEBUG_ASSERT(n > 0)
     DEBUG_ASSERT(n < SZ32_MAX)
 
-    DEBUG_ERROR_IF(pushTop_stack(stack, n, ptr) == NULL)
-    NDEBUG_EXECUTE(pushTop_stack(stack, n, ptr))
-
+    pushTop_stack(stack, n, ptr);
     rotateUp_stack(stack, n);
 
     return get_alist(stack, n - 1);
+}
+
+void* pushIndeterminate_stack(Stack stack[static const 1], uint32_t const n) {
+    DEBUG_ASSERT(isValid_stack(stack))
+    DEBUG_ASSERT(n > 0)
+    DEBUG_ASSERT(n < SZ32_MAX)
+
+    return pushIndeterminateTop_stack(stack, n);
+}
+
+void* pushIndeterminateBottom_stack(Stack stack[static const 1], uint32_t const n) {
+    DEBUG_ASSERT(isValid_stack(stack))
+    DEBUG_ASSERT(n > 0)
+    DEBUG_ASSERT(n < SZ32_MAX)
+
+    return pushBottom_stack(stack, n, NULL);
+}
+
+void* pushIndeterminateTop_stack(Stack stack[static const 1], uint32_t const n) {
+    DEBUG_ASSERT(isValid_stack(stack))
+    DEBUG_ASSERT(n > 0)
+    DEBUG_ASSERT(n < SZ32_MAX)
+
+    return pushTop_stack(stack, n, NULL);
 }
 
 void* pushTop_stack(Stack stack[static const 1], uint32_t const n, void const* const restrict ptr) {
@@ -122,7 +139,7 @@ void* pushZeros_stack(Stack stack[static const 1], uint32_t const n) {
     DEBUG_ASSERT(n > 0)
     DEBUG_ASSERT(n < SZ32_MAX)
 
-    return pushTop_stack(stack, n, NULL);
+    return pushZerosTop_stack(stack, n);
 }
 
 void* pushZerosBottom_stack(Stack stack[static const 1], uint32_t const n) {
@@ -130,7 +147,8 @@ void* pushZerosBottom_stack(Stack stack[static const 1], uint32_t const n) {
     DEBUG_ASSERT(n > 0)
     DEBUG_ASSERT(n < SZ32_MAX)
 
-    return pushBottom_stack(stack, n, NULL);
+    pushBottom_stack(stack, n, NULL);
+    return setZeros_alist(stack, 0, n);
 }
 
 void* pushZerosTop_stack(Stack stack[static const 1], uint32_t const n) {
@@ -138,7 +156,7 @@ void* pushZerosTop_stack(Stack stack[static const 1], uint32_t const n) {
     DEBUG_ASSERT(n > 0)
     DEBUG_ASSERT(n < SZ32_MAX)
 
-    return pushTop_stack(stack, n, NULL);
+    return addZeros_alist(stack, n);
 }
 
 void rotate_stack(Stack stack[static const 1], uint32_t n) {

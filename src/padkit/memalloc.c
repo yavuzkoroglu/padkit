@@ -1,8 +1,3 @@
-/**
- * @file memalloc.c
- * @brief Implements safe memory allocation functions.
- * @author Yavuz Koroglu
- */
 #include <stdint.h>
 #include <string.h>
 #include "padkit/debug.h"

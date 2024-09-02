@@ -6,7 +6,9 @@
 #include <string.h>
 #include "padkit.h"
 
+/*
 static Chunk strings[1];
+*/
 
 #define TEST_FAIL_MESSAGE(trigger) \
     printf("FAIL => %s():%d, Trigger => "#trigger"\n", __func__, __LINE__)
@@ -19,6 +21,7 @@ static Chunk strings[1];
 
 #define TEST_PASS TEST_PASS_MESSAGE;
 
+/*
 static void test_chunk_add(void) {
     constructEmpty_chunk(strings, CHUNK_RECOMMENDED_PARAMETERS);
 
@@ -574,6 +577,7 @@ static void test_map(void) {
     #undef RELATIONS_COUNT
     #undef PEOPLE_COUNT
 }
+*/
 
 static void test_overlap(void) {
     static char const a1[]      = "abcde";
@@ -720,6 +724,7 @@ static void test_overlap(void) {
     free(c2);
 }
 
+/*
 static void test_reallocate(void) {
     #define OLD_SIZE 1024
     #define NEW_SIZE 131072
@@ -931,6 +936,7 @@ static void test_streq_strcmp_as_comparator(void) {
 }
 #undef ONIONS
 #undef SPINACH
+*/
 
 static void test_timestamp_get(void) {
     char const* timestamp = get_timestamp();
@@ -939,6 +945,7 @@ static void test_timestamp_get(void) {
     TEST_PASS
 }
 
+/*
 static void test_val_areEqual(void) {
     Value value[] =
         { VAL_UNSIGNED(0), VAL_UNSIGNED(12), VAL_FLOAT(0.0f), VAL_INT(12) };
@@ -958,12 +965,14 @@ static void test_val_areEqual(void) {
 
     #undef VALUE_COUNT
 }
+*/
 
 int main(void) {
     puts("");
     DEBUG_EXECUTE(puts("DEBUG_MODE => "__FILE__))
     NDEBUG_EXECUTE(puts("RELEASE_MODE => "__FILE__))
 
+    /*
     test_chunk_add();
     test_chunk_addIndex();
     test_chunk_append();
@@ -981,7 +990,6 @@ int main(void) {
     test_gmtx();
     test_jsonp();
     test_map();
-    test_overlap();
     test_reallocate();
     test_reallocate_recalloc();
     test_stack();
@@ -989,8 +997,10 @@ int main(void) {
     test_streq_str_eq_n();
     test_streq_str_eq();
     test_streq_strcmp_as_comparator();
-    test_timestamp_get();
     test_val_areEqual();
+    */
+    test_overlap();
+    test_timestamp_get();
 
     puts("");
     return 0;

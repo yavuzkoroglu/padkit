@@ -13,19 +13,33 @@ TESTS_OUT=bin/tests.exe
 endif
 endif
 
+OBJECTS=obj/padkit/arraylist.o          \
+        obj/padkit/memalloc.o           \
+        obj/padkit/overlap.o            \
+        obj/padkit/stack.o              \
+        obj/padkit/timestamp.o
+
+SOURCES=src/padkit/arraylist.c          \
+        src/padkit/memalloc.c           \
+        src/padkit/overlap.c            \
+        src/padkit/stack.c              \
+        src/padkit/timestamp.c          \
+
+TEST_PARAM=--coverage -fprofile-arcs -ftest-coverage
+
 default: all
 
-.PHONY: all clean default documentation libs objects tests version
+.PHONY: all clean default documentation libs objects target tests version
 
-${DYNAMIC_LIB}: lib src/padkit/*.c \
-    ; ${COMPILE} ${DYNAMIC_LIB_FLAGS} -Iinclude src/padkit/*.c -o ${DYNAMIC_LIB}
+${DYNAMIC_LIB}: lib                     \
+                ${SOURCES}              \
+                ; ${COMPILE} ${DYNAMIC_LIB_FLAGS} -Iinclude ${SOURCES} -o ${DYNAMIC_LIB}
 
-${TESTS_OUT}:        \
-    bin              \
-    include/padkit.h \
-    src/padkit/*.c   \
-    src/tests.c      \
-    ; ${COMPILE} -Iinclude --coverage -fprofile-arcs -ftest-coverage src/padkit/*.c src/tests.c -o ${TESTS_OUT}
+${TESTS_OUT}:   bin                     \
+                include/padkit.h        \
+                ${SOURCES}              \
+                src/tests.c             \
+                ; ${COMPILE} -Iinclude ${TEST_PARAM} ${SOURCES} src/tests.c -o ${TESTS_OUT}
 
 all: clean libs tests
 
@@ -35,44 +49,29 @@ clean: ; rm -rf include/padkit.h obj/* bin/* lib/* *.gcno *.gcda *.gcov html lat
 
 documentation: ; doxygen
 
-include/padkit.h: ;                                                         @\
-    echo '/**'                                           > include/padkit.h; \
-    echo ' * @file padkit.h'                            >> include/padkit.h; \
-    echo ' * @brief An automatically generated header.' >> include/padkit.h; \
-    echo ' * @author Yavuz Koroglu'                     >> include/padkit.h; \
-    echo ' */'                                          >> include/padkit.h; \
-    echo '#ifndef PADKIT_H'                             >> include/padkit.h; \
-    echo '    #define PADKIT_H'                         >> include/padkit.h; \
+include/padkit.h: ;                                                             @\
+    echo '/**'                                               > include/padkit.h; \
+    echo ' * @file padkit.h'                                >> include/padkit.h; \
+    echo ' * @brief An automatically generated header.'     >> include/padkit.h; \
+    echo ' * @author Yavuz Koroglu'                         >> include/padkit.h; \
+    echo ' */'                                              >> include/padkit.h; \
+    echo '#ifndef PADKIT_H'                                 >> include/padkit.h; \
+    echo '    #define PADKIT_H'                             >> include/padkit.h; \
     echo '    #define PADKIT_VERSION "'${PADKIT_VERSION}'"' >> include/padkit.h; \
-    echo '    #define PADKIT_TARGET  "'${PADKIT_TARGET}'"' >> include/padkit.h; \
-    echo '    #include "padkit/arraylist.h"'            >> include/padkit.h; \
-    echo '    #include "padkit/bliterals.h"'            >> include/padkit.h; \
-    echo '    #include "padkit/chunkset.h"'             >> include/padkit.h; \
-    echo '    #include "padkit/chunktable.h"'           >> include/padkit.h; \
-    echo '    #include "padkit/circbuff.h"'             >> include/padkit.h; \
-    echo '    #include "padkit/csv.h"'                  >> include/padkit.h; \
-    echo '    #include "padkit/debug.h"'                >> include/padkit.h; \
-    echo '    #include "padkit/graphmatrix.h"'          >> include/padkit.h; \
-    echo '    #include "padkit/hash.h"'                 >> include/padkit.h; \
-    echo '    #include "padkit/jsonparser.h"'           >> include/padkit.h; \
-    echo '    #include "padkit/map.h"'                  >> include/padkit.h; \
-    echo '    #include "padkit/mapping.h"'              >> include/padkit.h; \
-    echo '    #include "padkit/memalloc.h"'             >> include/padkit.h; \
-    echo '    #include "padkit/overlap.h"'              >> include/padkit.h; \
-    echo '    #include "padkit/preprocessor.h"'         >> include/padkit.h; \
-    echo '    #include "padkit/prime.h"'                >> include/padkit.h; \
-    echo '    #include "padkit/reallocate.h"'           >> include/padkit.h; \
-    echo '    #include "padkit/repeat.h"'               >> include/padkit.h; \
-    echo '    #include "padkit/size.h"'                 >> include/padkit.h; \
-    echo '    #include "padkit/stack.h"'                >> include/padkit.h; \
-    echo '    #include "padkit/streq.h"'                >> include/padkit.h; \
-    echo '    #include "padkit/timestamp.h"'            >> include/padkit.h; \
-    echo '    #include "padkit/value.h"'                >> include/padkit.h; \
-    echo '#endif'                                       >> include/padkit.h;
+    echo '    #define PADKIT_TARGET  "'${PADKIT_TARGET}'"'  >> include/padkit.h; \
+    echo '    #include "padkit/arraylist.h"'                >> include/padkit.h; \
+    echo '    #include "padkit/debug.h"'                    >> include/padkit.h; \
+    echo '    #include "padkit/invalid.h"'                  >> include/padkit.h; \
+    echo '    #include "padkit/memalloc.h"'                 >> include/padkit.h; \
+    echo '    #include "padkit/overlap.h"'                  >> include/padkit.h; \
+    echo '    #include "padkit/size.h"'                     >> include/padkit.h; \
+    echo '    #include "padkit/stack.h"'                    >> include/padkit.h; \
+    echo '    #include "padkit/timestamp.h"'                >> include/padkit.h; \
+    echo '#endif'                                           >> include/padkit.h;
 
 lib: ; mkdir lib
 
-lib/libpadkit.a: lib objects; ar -rcs lib/libpadkit.a obj/padkit/*.o
+lib/libpadkit.a: lib objects; ar -rcs lib/libpadkit.a ${OBJECTS}
 
 libs: lib/libpadkit.a ${DYNAMIC_LIB}
 
@@ -89,81 +88,6 @@ obj/padkit/arraylist.o: obj/padkit      \
     src/padkit/arraylist.c              \
     ; ${COMPILE} -Iinclude src/padkit/arraylist.c -c -o obj/padkit/arraylist.o
 
-obj/padkit/chunk.o: obj/padkit          \
-    include/padkit/chunk.h              \
-    include/padkit/debug.h              \
-    include/padkit/memalloc.h           \
-    include/padkit/overlap.h            \
-    include/padkit/reallocate.h         \
-    src/padkit/chunk.c                  \
-    ; ${COMPILE} -Iinclude src/padkit/chunk.c -c -o obj/padkit/chunk.o
-
-obj/padkit/chunkset.o: obj/padkit       \
-    include/padkit/chunk.h              \
-    include/padkit/chunkset.h           \
-    include/padkit/debug.h              \
-    include/padkit/hash.h               \
-    include/padkit/memalloc.h           \
-    include/padkit/prime.h              \
-    include/padkit/reallocate.h         \
-    include/padkit/streq.h              \
-    src/padkit/chunkset.c               \
-    ; ${COMPILE} -Iinclude src/padkit/chunkset.c -c -o obj/padkit/chunkset.o
-
-obj/padkit/chunktable.o: obj/padkit     \
-    include/padkit/chunk.h              \
-    include/padkit/chunktable.h         \
-    include/padkit/debug.h              \
-    include/padkit/hash.h               \
-    include/padkit/memalloc.h           \
-    include/padkit/prime.h              \
-    include/padkit/reallocate.h         \
-    include/padkit/streq.h              \
-    src/padkit/chunktable.c             \
-    ; ${COMPILE} -Iinclude src/padkit/chunktable.c -c -o obj/padkit/chunktable.o
-
-obj/padkit/circbuff.o: obj/padkit       \
-    include/padkit/circbuff.h           \
-    include/padkit/debug.h              \
-    include/padkit/memalloc.h           \
-    include/padkit/overlap.h            \
-    include/padkit/reallocate.h         \
-    include/padkit/repeat.h             \
-    include/padkit/stack.h              \
-    src/padkit/circbuff.c               \
-    ; ${COMPILE} -Iinclude src/padkit/circbuff.c -c -o obj/padkit/circbuff.o
-
-obj/padkit/graphmatrix.o: obj/padkit    \
-    include/padkit/bliterals.h          \
-    include/padkit/debug.h              \
-    include/padkit/graphmatrix.h        \
-    include/padkit/memalloc.h           \
-    src/padkit/graphmatrix.c            \
-    ; ${COMPILE} -Iinclude src/padkit/graphmatrix.c -c -o obj/padkit/graphmatrix.o
-
-obj/padkit/hash.o: obj/padkit           \
-    include/padkit/hash.h               \
-    src/padkit/hash.c                   \
-    ; ${COMPILE} -Iinclude src/padkit/hash.c -c -o obj/padkit/hash.o
-
-obj/padkit/jsonparser.o: obj/padkit     \
-    include/padkit/debug.h              \
-    include/padkit/jsonparser.h         \
-    include/padkit/memalloc.h           \
-    include/padkit/reallocate.h         \
-    src/padkit/jsonparser.c             \
-    ; ${COMPILE} -Iinclude src/padkit/jsonparser.c -c -o obj/padkit/jsonparser.o
-
-obj/padkit/map.o: obj/padkit            \
-    include/padkit/debug.h              \
-    include/padkit/map.h                \
-    include/padkit/mapping.h            \
-    include/padkit/memalloc.h           \
-    include/padkit/reallocate.h         \
-    include/padkit/value.h              \
-    src/padkit/map.c                    \
-    ; ${COMPILE} -Iinclude src/padkit/map.c -c -o obj/padkit/map.o
-
 obj/padkit/memalloc.o: obj/padkit       \
     include/padkit/debug.h              \
     include/padkit/memalloc.h           \
@@ -175,33 +99,15 @@ obj/padkit/overlap.o: obj/padkit        \
     src/padkit/overlap.c                \
     ; ${COMPILE} -Iinclude src/padkit/overlap.c -c -o obj/padkit/overlap.o
 
-obj/padkit/prime.o: obj/padkit          \
-    include/padkit/debug.h              \
-    include/padkit/prime.h              \
-    src/padkit/prime.c                  \
-    ; ${COMPILE} -Iinclude src/padkit/prime.c -c -o obj/padkit/prime.o
-
-obj/padkit/reallocate.o: obj/padkit     \
-    include/padkit/debug.h              \
-    include/padkit/memalloc.h           \
-    include/padkit/reallocate.h         \
-    src/padkit/reallocate.c             \
-    ; ${COMPILE} -Iinclude src/padkit/reallocate.c -c -o obj/padkit/reallocate.o
-
 obj/padkit/stack.o: obj/padkit          \
+    include/padkit/arraylist.h          \
     include/padkit/debug.h              \
     include/padkit/memalloc.h           \
     include/padkit/overlap.h            \
-    include/padkit/reallocate.h         \
+    include/padkit/size.h               \
     include/padkit/stack.h              \
     src/padkit/stack.c                  \
     ; ${COMPILE} -Iinclude src/padkit/stack.c -c -o obj/padkit/stack.o
-
-obj/padkit/streq.o: obj/padkit          \
-    include/padkit/debug.h              \
-    include/padkit/streq.h              \
-    src/padkit/streq.c                  \
-    ; ${COMPILE} -Iinclude src/padkit/streq.c -c -o obj/padkit/streq.o
 
 obj/padkit/timestamp.o: obj/padkit      \
     include/padkit/debug.h              \
@@ -209,28 +115,9 @@ obj/padkit/timestamp.o: obj/padkit      \
     src/padkit/timestamp.c              \
     ; ${COMPILE} -Iinclude src/padkit/timestamp.c -c -o obj/padkit/timestamp.o
 
-obj/padkit/value.o: obj/padkit          \
-    include/padkit/value.h              \
-    src/padkit/value.c                  \
-    ; ${COMPILE} -Iinclude src/padkit/value.c -c -o obj/padkit/value.o
+objects: ${OBJECTS}
 
-objects:                        \
-    obj/padkit/arraylist.o      \
-    obj/padkit/chunk.o          \
-    obj/padkit/chunkset.o       \
-    obj/padkit/chunktable.o     \
-    obj/padkit/graphmatrix.o    \
-    obj/padkit/hash.o           \
-    obj/padkit/jsonparser.o     \
-    obj/padkit/map.o            \
-    obj/padkit/memalloc.o       \
-    obj/padkit/overlap.o        \
-    obj/padkit/prime.o          \
-    obj/padkit/reallocate.o     \
-    obj/padkit/stack.o          \
-    obj/padkit/streq.o          \
-    obj/padkit/timestamp.o      \
-    obj/padkit/value.o
+target: ; @echo ${PADKIT_TARGET}
 
 tests: ${TESTS_OUT}
 

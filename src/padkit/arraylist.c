@@ -9,19 +9,7 @@
     #include "padkit/overlap.h"
 #endif
 
-/**
- * @brief Reallocates the array of an ArrayList and updates the ArrayList's capacity.
- *
- * Preconditions:
- *   isValid_alist(list)
- *   list->cap < new_cap < SZ32_MAX
- *   list->sz_element * new_cap < SZ32_MAX
- *   list->sz_element * new_cap does NOT overflow
- *
- * @param[in,out]    list A constant non-null pointer to an ArrayList.
- * @param[in]     new_cap A constant 32-bit unsigned integer.
- */
-static void _realloc_alist(ArrayList list[static const 1], uint32_t const new_cap);
+static void realloc_alist(ArrayList list[static const 1], uint32_t const new_cap);
 
 void* add_alist(ArrayList list[static const 1], uint32_t const n, void const* const restrict ptr) {
     DEBUG_ASSERT(isValid_alist(list))
@@ -44,13 +32,26 @@ void* add_alist(ArrayList list[static const 1], uint32_t const n, void const* co
             DEBUG_ASSERT(sz_array / list->sz_element == (size_t)list->cap)
             DEBUG_ASSERT(sz_array / sz_ptr == (size_t)n)
             DEBUG_ERROR_IF(overlaps_ptr(list->array, ptr, sz_array, sz_ptr))
-            _realloc_alist(list, new_cap); /* UB if ptr overlaps with list->array. */
+
+            /* UB if ptr overlaps with list->array. */
+            realloc_alist(list, new_cap);
         }
     }
 
     list->size += n;
 
-    return set_alist(list, list->size - n, n, ptr);
+    if (ptr == NULL)
+        return get_alist(list, list->size - n);
+    else
+        return set_alist(list, list->size - n, n, ptr);
+}
+
+void* addIndeterminate_alist(ArrayList list[static const 1], uint32_t const n) {
+    DEBUG_ASSERT(isValid_alist(list))
+    DEBUG_ASSERT(n > 0)
+    DEBUG_ASSERT(n < SZ32_MAX)
+
+    return add_alist(list, n, NULL);
 }
 
 void* addZeros_alist(ArrayList list[static const 1], uint32_t const n) {
@@ -58,7 +59,8 @@ void* addZeros_alist(ArrayList list[static const 1], uint32_t const n) {
     DEBUG_ASSERT(n > 0)
     DEBUG_ASSERT(n < SZ32_MAX)
 
-    return add_alist(list, n, NULL);
+    addIndeterminate_alist(list, n);
+    return setZeros_alist(list, list->size - n, n);
 }
 
 uint32_t bsearch_alist(
@@ -84,7 +86,7 @@ uint32_t bsearch_alist(
             ptrdiff_t const offset  = candidate - list->array;
             size_t const id         = (size_t)offset / list->sz_element;
             DEBUG_ASSERT(offset >= 0)
-            DEBUG_ASSERT(offset < SZSZ_MAX)
+            DEBUG_ASSERT(offset < SZPTRDIFF_MAX)
             DEBUG_ASSERT((size_t)offset % list->sz_element == 0)
             DEBUG_ASSERT(id < SZ32_MAX)
             DEBUG_ASSERT((uint32_t)id < list->size)
@@ -102,6 +104,8 @@ void concat_alist(ArrayList head[static const restrict 1], ArrayList const tail[
     DEBUG_ASSERT(isValid_alist(tail))
     DEBUG_ASSERT(sz_head < SZSZ_MAX)
     DEBUG_ASSERT(sz_tail < SZSZ_MAX)
+    DEBUG_ASSERT(sz_head / head->sz_element == (size_t)head->size)
+    DEBUG_ASSERT(sz_tail / tail->sz_element == (size_t)tail->size)
 
     if (tail->size == 0) return;
 
@@ -206,7 +210,7 @@ void qsort_alist(
     qsort(list->array, list->size, list->sz_element, compar);
 }
 
-static void _realloc_alist(ArrayList list[static const 1], uint32_t const new_cap) {
+static void realloc_alist(ArrayList list[static const 1], uint32_t const new_cap) {
     size_t const new_sz = list->sz_element * (size_t)new_cap;
 
     DEBUG_ASSERT(isValid_alist(list))
@@ -261,12 +265,11 @@ void* set_alist(
     DEBUG_ASSERT(n <= list->size - startId)
 
     {
-        void* const dest    = get_alist(stack, startId);
+        void* const dest    = get_alist(list, startId);
         size_t const sz     = list->sz_element * (size_t)n;
 
         DEBUG_ASSERT(sz < SZSZ_MAX)
         DEBUG_ASSERT(sz / list->sz_element == (size_t)n)
-        DEBUG_ERROR_IF(dest, ptr, sz_array, list->sz_element)
 
         if (ptr == NULL) {
             memset(dest, 0, sz);
@@ -274,9 +277,10 @@ void* set_alist(
             DEBUG_EXECUTE(size_t const sz_array = list->sz_element * (size_t)(list->size - startId))
             DEBUG_ASSERT(sz_array < SZSZ_MAX)
             DEBUG_ASSERT(sz_array / list->sz_element == (size_t)(list->size - startId))
-            DEBUG_ERROR_IF(overlaps_ptr(list->array + startId, ptr, sz_array, sz))
+            DEBUG_ERROR_IF(overlaps_ptr(dest, ptr, sz_array, sz))
 
-            memcpy(dest, ptr, sz); /* UB if ptr and list->array + startId overlap. */
+            /* UB if ptr and list->array + startId overlap. */
+            memcpy(dest, ptr, sz);
         }
 
         return dest;

@@ -1,9 +1,3 @@
-/**
- * @file timestamp.c
- * @brief Implements the functions in timestamp.h
- * @see timestamp.h
- * @author Yavuz Koroglu
- */
 #include <time.h>
 #include "padkit/debug.h"
 #include "padkit/timestamp.h"

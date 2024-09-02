@@ -53,18 +53,29 @@ void* get_llist(LinkedList const list[static const 1], uint32_t const id) {
     }
 }
 
-void insert_llist(LinkedList const list[static const 1], uint32_t const id, void const* const ptr) {
+void* insert_llist(
+    LinkedList const list[static const 1],
+    uint32_t const id,
+    void const* const restrict ptr
+) {
     DEBUG_ASSERT(isValid_llist(list))
+    DEBUG_ASSERT(id <= list->links->size)
 
-    if (list->links->size == 0) {
-        DEBUG_ASSERT(id == 0)
+    {
+        Link* link = addZeros_alist(list->links, 1);
+        if (list->links->size == 0) {
+            link->prevLinkId    = INVALID_UINT32;
+            link->nextLinkId    = INVALID_UINT32;
+            list->firstLinkId   = 0;
+            list->lastLinkId    = 0;
 
-        add_alist()
+            if (ptr != NULL)
+                memcpy(link->data, ptr, list->sz_element);
+        } else {
+            
+        }
 
-        list->firstLinkId   = 0;
-        list->lastLinkId    = 0;
-    } else {
-        
+        return link->data;
     }
 }
 

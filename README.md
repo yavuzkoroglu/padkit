@@ -25,6 +25,11 @@ The above steps should produce
 ### Changes v1.1 -> v1.2
 
 * Splitted into two branches, **C99** and **C23**.
+* Added `include/padkit/linkedlist.h` and `src/padkit/linkedlist.c`,
+* Added `include/padkit/size.h` for extra size limit macros.
+* Added `include/padkit/invalid.h` for invalid integer macros.
+* Removed `include/padkit/reallocate.h`. Transfered the functionality to `include/padkit/memalloc.h`
+* Added `include/padkit/arraylist.h` and `src/padkit/arraylist.c`,
 * Added overlapping pointer checks to `Chunk`, `CircularBuffer`, and `Stack` in debug mode.
 * Resolved several bugs in `JSONParser`.
 * Added `include/padkit/overlap.h` and `src/padkit/overlap.c`, to debug restricted pointer overlapping issues.

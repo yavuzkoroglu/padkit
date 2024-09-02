@@ -1,8 +1,3 @@
-/**
- * @file overlap.c
- * @brief Implements overlapping pointer checks.
- * @author Yavuz Koroglu
- */
 #include "padkit/overlap.h"
 
 /**
