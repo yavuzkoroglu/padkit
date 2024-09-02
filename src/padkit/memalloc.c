@@ -43,15 +43,16 @@ void* mem_calloc(size_t const nmemb, size_t const sz_memb) {
 }
 
 void mem_realloc(void* ptrptr[static const 1], size_t const new_sz) {
-    void* const ptr = realloc(*ptrptr, new_sz);
-
     DEBUG_ERROR_IF(*ptrptr == NULL)
     DEBUG_ASSERT(new_sz > 0)
-
     if (new_sz >= SZSZ_MAX) REALLOC_ERROR
-    if (ptr == NULL)        REALLOC_ERROR
 
-    *ptrptr = ptr;
+    {
+        void* const ptr = realloc(*ptrptr, new_sz);
+        if (ptr == NULL)    REALLOC_ERROR
+
+        *ptrptr = ptr;
+    }
 }
 
 void mem_recalloc(
@@ -62,23 +63,23 @@ void mem_recalloc(
 ) {
     size_t const old_sz = old_nmemb * sz_memb;
     size_t const new_sz = new_nmemb * sz_memb;
-    void* const ptr     = calloc(new_nmemb, sz_memb);
 
     DEBUG_ERROR_IF(*ptrptr == NULL)
     DEBUG_ASSERT(old_nmemb > 0)
     DEBUG_ASSERT(old_nmemb < new_nmemb)
-
-    if (new_nmemb >= SZSZ_MAX)  RECALLOC_ERROR
-
     DEBUG_ASSERT(sz_memb > 0)
 
+    if (new_nmemb >= SZSZ_MAX)  RECALLOC_ERROR
     if (sz_memb >= SZSZ_MAX)    RECALLOC_ERROR
+    if (new_sz >= SZSZ_MAX)     RECALLOC_ERROR
 
     DEBUG_ASSERT(new_sz / new_nmemb == sz_memb)
 
-    if (new_sz >= SZSZ_MAX)     RECALLOC_ERROR
-    if (ptr == NULL)            RECALLOC_ERROR
+    {
+        void* const ptr = calloc(new_nmemb, sz_memb);
+        if (ptr == NULL)        RECALLOC_ERROR
 
-    memcpy(ptr, *ptrptr, old_sz);
-    *ptrptr = ptr;
+        memcpy(ptr, *ptrptr, old_sz);
+        *ptrptr = ptr;
+    }
 }

@@ -5,79 +5,50 @@
  */
 #ifndef PADKIT_STACK_H
     #define PADKIT_STACK_H
-    #include <stdbool.h>
-    #include <stddef.h>
-    #include <stdint.h>
-    #include <stdio.h>
+    #include "padkit/arraylist.h"
 
     /**
      * @def NOT_A_STACK
      *   A special Stack denoting a NOT-Stack. It cannot pass the isValid_stack() test.
      */
-    #define NOT_A_STACK                     ((Stack){ 0, 0, 0, NULL })
+    #define NOT_A_STACK                     NOT_AN_ALIST
 
     /**
      * @def STACK_RECOMMENDED_INITIAL_CAP
      *   This initial capacity should work nicely in most situations.
      */
-    #define STACK_RECOMMENDED_INITIAL_CAP   (BUFSIZ)
+    #define STACK_RECOMMENDED_INITIAL_CAP   ALIST_RECOMMENDED_INITIAL_CAP
 
-    /**
-     * @struct Stack
-     * @brief A stack of elements located in heap memory.
-     *
-     * @var Stack::sz_element
-     *   The size of one element in the Stack, in bytes.
-     * @var Stack::cap
-     *   The maximum number of elements the Stack can hold.
-     * @var Stack::size
-     *   The number of elements in the Stack.
-     * @var Stack::array
-     *   A pointer to the first element in the Stack.
-     */
-    typedef struct StackBody {
-        size_t      sz_element;
-        uint32_t    cap;
-        uint32_t    size;
-        char*       array;
-    } Stack;
+    typedef ArrayList Stack;
 
     /**
      * @brief Constructs an empty Stack.
      *
-     * @param[in,out]                 stack A constant non-null pointer to at least one Stack.
-     * @param[in]     element_size_in_bytes A constant size.
-     * @param[in]               initial_cap A constant 32-bit unsigned integer.
+     * @param[in,out]       stack A constant non-null pointer to at least one Stack.
+     * @param[in]      sz_element A constant size.
+     * @param[in]     initial_cap A constant 32-bit unsigned integer.
      */
     void constructEmpty_stack(
         Stack stack[static const 1],
-        size_t const element_size_in_bytes,
+        size_t const sz_element,
         uint32_t const initial_cap
     );
 
     /**
-     * @brief Flushes the contents of a Stack.
+     * @brief Empties a Stack.
      *
      * @param[in,out] stack A constant non-null pointer to at least one Stack.
      */
     void flush_stack(Stack stack[static const 1]);
 
     /**
-     * @brief Frees the contents of a Stack.
+     * @brief Deallocates the contents of a Stack.
+     *
+     * Assigns NOT_A_STACK to the Stack.
      *
      * @param[in,out] stack A constant non-null pointer to at least one Stack.
      */
     void free_stack(Stack stack[static const 1]);
-
-    /**
-     * @brief Gets one element from a Stack.
-     *
-     * @param[in]     stack A constant non-null pointer to at least one constant Stack.
-     * @param[in] elementId A constant 32-bit unsigned integer.
-     *
-     * @return A pointer to an object.
-     */
-    void* get_stack(Stack const stack[static const 1], uint32_t const elementId);
 
     /**
      * @brief Checks if a Stack is valid.
@@ -186,29 +157,24 @@
     void* pushZeros_stack(Stack stack[static const 1], uint32_t const n);
 
     /**
-     * @brief Pushes one element of zeros to the bottom of a Stack.
+     * @brief Pushes n elements of zeros to the bottom of a Stack.
      *
      * @param[in,out] stack A constant non-null pointer to at least one Stack.
+     * @param[in]         n A constant 32-bit unsigned integer.
      *
      * @return A pointer to an object.
      */
-    void* pushZerosBottom_stack(Stack stack[static const 1]);
+    void* pushZerosBottom_stack(Stack stack[static const 1], uint32_t const n);
 
     /**
-     * @brief Pushes one element of zeros to the top of a Stack.
+     * @brief Pushes n elements of zeros to the top of a Stack.
      *
      * @param[in,out] stack A constant non-null pointer to at least one Stack.
+     * @param[in]         n A constant 32-bit unsigned integer.
      *
      * @return A pointer to an object.
      */
-    void* pushZerosTop_stack(Stack stack[static const 1]);
-
-    /**
-     * @brief Reallocates a Stack if necessary.
-     *
-     * @param[in,out] stack A constant non-null pointer to at least one Stack.
-     */
-    void reallocIfNecessary_stack(Stack stack[static const 1]);
+    void* pushZerosTop_stack(Stack stack[static const 1], uint32_t const n);
 
     /**
      * @brief Rotates down a Stack by n.
@@ -233,35 +199,4 @@
      * @param[in]          n A 32-bit unsigned integer.
      */
     void rotateUp_stack(Stack stack[static const 1], uint32_t n);
-
-    /**
-     * @brief Reverses the elements of a Stack.
-     *
-     * @param[in,out] stack A constant non-null pointer to at least one Stack.
-     */
-    void reverse_stack(Stack stack[static const 1]);
-
-    /**
-     * @brief Sets n element of a Stack to a value.
-     *
-     * @param[in,out]   stack A constant non-null pointer to at least one Stack.
-     * @param[in]     startId A constant 32-bit unsigned integer.
-     * @param[in]           n A constant 32-bit unsigned integer.
-     * @param[in]         ptr A constant restricted pointer to a constant object.
-     */
-    void set_stack(
-        Stack stack[static const 1],
-        uint32_t const startId,
-        uint32_t const n,
-        void const* const restrict ptr
-    );
-
-    /**
-     * @brief Sets one element of a Stack to zeros.
-     *
-     * @param[in,out]    stack A constant non-null pointer to at least one Stack.
-     * @param[in]      startId A constant 32-bit unsigned integer.
-     * @param[in]            n A constant 32-bit unsigned integer.
-     */
-    void setZeros_stack(Stack stack[static const 1], uint32_t const startId, uint32_t const n);
 #endif

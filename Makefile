@@ -13,7 +13,7 @@ TESTS_OUT=bin/tests.exe
 endif
 endif
 
-default: libs
+default: all
 
 .PHONY: all clean default documentation libs objects tests version
 
@@ -74,7 +74,7 @@ lib: ; mkdir lib
 
 lib/libpadkit.a: lib objects; ar -rcs lib/libpadkit.a obj/padkit/*.o
 
-libs: clean lib/libpadkit.a ${DYNAMIC_LIB}
+libs: lib/libpadkit.a ${DYNAMIC_LIB}
 
 obj: ; mkdir obj
 
@@ -232,6 +232,6 @@ objects:                        \
     obj/padkit/timestamp.o      \
     obj/padkit/value.o
 
-tests: clean ${TESTS_OUT}
+tests: ${TESTS_OUT}
 
 version: ; @echo ${PADKIT_VERSION}
