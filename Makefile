@@ -29,19 +29,23 @@ TEST_PARAM=--coverage -fprofile-arcs -ftest-coverage
 
 default: all
 
-.PHONY: all clean default documentation libs objects target tests version
+.FORCE:
 
-${DYNAMIC_LIB}: lib                     \
+.PHONY: .FORCE all clean default documentation libs objects target tests version
+
+${DYNAMIC_LIB}: .FORCE                  \
+                lib                     \
                 ${SOURCES}              \
                 ; ${COMPILE} ${DYNAMIC_LIB_FLAGS} -Iinclude ${SOURCES} -o ${DYNAMIC_LIB}
 
-${TESTS_OUT}:   bin                     \
+${TESTS_OUT}:   .FORCE                  \
+                bin                     \
                 include/padkit.h        \
-                ${SOURCES}              \
+                lib/libpadkit.a         \
                 src/tests.c             \
-                ; ${COMPILE} -Iinclude ${TEST_PARAM} ${SOURCES} src/tests.c -o ${TESTS_OUT}
+                ; ${COMPILE} -Iinclude ${TEST_PARAM} src/tests.c lib/libpadkit.a -o ${TESTS_OUT}
 
-all: clean libs tests
+all: libs tests
 
 bin: ; mkdir bin
 
@@ -71,7 +75,7 @@ include/padkit.h: ;                                                             
 
 lib: ; mkdir lib
 
-lib/libpadkit.a: lib objects; ar -rcs lib/libpadkit.a ${OBJECTS}
+lib/libpadkit.a: .FORCE lib objects; ar -rcs lib/libpadkit.a ${OBJECTS}
 
 libs: lib/libpadkit.a ${DYNAMIC_LIB}
 
@@ -79,7 +83,8 @@ obj: ; mkdir obj
 
 obj/padkit: obj ; mkdir obj/padkit
 
-obj/padkit/arraylist.o: obj/padkit      \
+obj/padkit/arraylist.o: .FORCE          \
+    obj/padkit                          \
     include/padkit/arraylist.h          \
     include/padkit/debug.h              \
     include/padkit/memalloc.h           \
@@ -88,18 +93,21 @@ obj/padkit/arraylist.o: obj/padkit      \
     src/padkit/arraylist.c              \
     ; ${COMPILE} -Iinclude src/padkit/arraylist.c -c -o obj/padkit/arraylist.o
 
-obj/padkit/memalloc.o: obj/padkit       \
+obj/padkit/memalloc.o: .FORCE           \
+    obj/padkit                          \
     include/padkit/debug.h              \
     include/padkit/memalloc.h           \
     include/padkit/size.h               \
     src/padkit/memalloc.c               \
     ; ${COMPILE} -Iinclude src/padkit/memalloc.c -c -o obj/padkit/memalloc.o
 
-obj/padkit/overlap.o: obj/padkit        \
+obj/padkit/overlap.o: .FORCE            \
+    obj/padkit                          \
     src/padkit/overlap.c                \
     ; ${COMPILE} -Iinclude src/padkit/overlap.c -c -o obj/padkit/overlap.o
 
-obj/padkit/stack.o: obj/padkit          \
+obj/padkit/stack.o: .FORCE              \
+    obj/padkit                          \
     include/padkit/arraylist.h          \
     include/padkit/debug.h              \
     include/padkit/memalloc.h           \
@@ -109,7 +117,8 @@ obj/padkit/stack.o: obj/padkit          \
     src/padkit/stack.c                  \
     ; ${COMPILE} -Iinclude src/padkit/stack.c -c -o obj/padkit/stack.o
 
-obj/padkit/timestamp.o: obj/padkit      \
+obj/padkit/timestamp.o: .FORCE          \
+    obj/padkit                          \
     include/padkit/debug.h              \
     include/padkit/timestamp.h          \
     src/padkit/timestamp.c              \

@@ -786,7 +786,7 @@ static void test_reallocate_recalloc(void) {
     #undef OLD_SIZE
     #undef NEW_SIZE
 }
-
+*/
 static void test_stack(void) {
     int a = 1;
     int b = 5;
@@ -798,12 +798,12 @@ static void test_stack(void) {
 
     TEST_FAIL_IF(stack->size != 0)
 
-    push_stack(stack, &a);
+    push_stack(stack, 1, &a);
 
     TEST_FAIL_IF(stack->size != 1)
     TEST_FAIL_IF(*(int*)(peek_stack(stack)) != a)
 
-    pushBottom_stack(stack, &b);
+    pushBottom_stack(stack, 1, &b);
 
     TEST_FAIL_IF(stack->size != 2)
     TEST_FAIL_IF(*(int*)(peekTop_stack(stack)) != a)
@@ -815,37 +815,37 @@ static void test_stack(void) {
     TEST_FAIL_IF(*(int*)(peekTop_stack(stack)) != b)
     TEST_FAIL_IF(*(int*)(peekBottom_stack(stack)) != b)
 
-    pushTop_stack(stack, &c);
+    pushTop_stack(stack, 1, &c);
 
     TEST_FAIL_IF(stack->size != 2)
     TEST_FAIL_IF(*(int*)(peekTop_stack(stack)) != c)
     TEST_FAIL_IF(*(int*)(peekBottom_stack(stack)) != b)
 
-    reverse_stack(stack);
+    reverse_alist(stack);
 
     TEST_FAIL_IF(stack->size != 2)
     TEST_FAIL_IF(*(int*)(peekTop_stack(stack)) != b)
     TEST_FAIL_IF(*(int*)(peekBottom_stack(stack)) != c)
 
-    pushTop_stack(stack, &d);
+    pushTop_stack(stack, 1, &d);
 
     TEST_FAIL_IF(stack->size != 3)
-    TEST_FAIL_IF(*(int*)(get_stack(stack, 0)) != c)
-    TEST_FAIL_IF(*(int*)(get_stack(stack, 1)) != b)
-    TEST_FAIL_IF(*(int*)(get_stack(stack, 2)) != d)
+    TEST_FAIL_IF(*(int*)(get_alist(stack, 0)) != c)
+    TEST_FAIL_IF(*(int*)(get_alist(stack, 1)) != b)
+    TEST_FAIL_IF(*(int*)(get_alist(stack, 2)) != d)
 
-    rotate_stack(stack,2);
+    rotate_stack(stack, 2);
 
     TEST_FAIL_IF(stack->size != 3)
-    TEST_FAIL_IF(*(int*)(get_stack(stack, 0)) != d)
-    TEST_FAIL_IF(*(int*)(get_stack(stack, 1)) != c)
-    TEST_FAIL_IF(*(int*)(get_stack(stack, 2)) != b)
+    TEST_FAIL_IF(*(int*)(get_alist(stack, 0)) != d)
+    TEST_FAIL_IF(*(int*)(get_alist(stack, 1)) != c)
+    TEST_FAIL_IF(*(int*)(get_alist(stack, 2)) != b)
 
     TEST_PASS
 
     free_stack(stack);
 }
-
+/*
 static void test_streq_mem_eq_n(void) {
     static char const* str[] = { "abc", "", "bca", "cab", "abc", "?" };
     static unsigned const len[] = { 3, 0, 3, 3, 3, 1 };
@@ -992,7 +992,6 @@ int main(void) {
     test_map();
     test_reallocate();
     test_reallocate_recalloc();
-    test_stack();
     test_streq_mem_eq_n();
     test_streq_str_eq_n();
     test_streq_str_eq();
@@ -1000,6 +999,7 @@ int main(void) {
     test_val_areEqual();
     */
     test_overlap();
+    test_stack();
     test_timestamp_get();
 
     puts("");

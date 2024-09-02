@@ -220,6 +220,7 @@ static void realloc_alist(ArrayList list[static const 1], uint32_t const new_cap
     DEBUG_ASSERT(new_sz / list->sz_element == (size_t)new_cap)
 
     mem_realloc((void**)&(list->array), new_sz);
+    list->cap = new_cap;
 }
 
 void removeLast_alist(ArrayList list[static const 1], uint32_t const n) {

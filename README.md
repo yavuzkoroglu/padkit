@@ -11,7 +11,7 @@ The above steps should produce
 1. The libraries in `lib/` and
 2. The automatically generated headers in `include/`.
 
-## Tested Environments (v1.2)
+## Tested Environments (v2.0)
 
 | Date (ISO 8601) |                  OS |                   `uname -sm` |     Compiler |
 |----------------:|--------------------:|------------------------------:|-------------:|
@@ -22,9 +22,12 @@ The above steps should produce
 
 ## Changes 
 
-### Changes v1.1 -> v1.2
+### Changes v1.1 -> v2.0
 
+* Most of the codebase is completely rewritten.
 * Splitted into two branches, **C99** and **C23**.
+
+<!--
 * Added `include/padkit/linkedlist.h` and `src/padkit/linkedlist.c`,
 * Added `include/padkit/size.h` for extra size limit macros.
 * Added `include/padkit/invalid.h` for invalid integer macros.
@@ -57,3 +60,4 @@ The above steps should produce
 * Removed `extern Chunk strings[1];` and `void free_strings(void)` from `Chunk`.
 * Solved a bug in `src/padkit/streq.c::str_eq_n()`.
 * Slight code corrections in `src/padkit/hash.c`.
+-->
