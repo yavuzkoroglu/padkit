@@ -115,7 +115,9 @@ static bool test_stack_peek_stack(void) {
     constructEmpty_stack(stack, sizeof(int), 4);
 
     pushZeros_stack(stack, 3);
-    TEST_FAIL_IF(peek_stack(stack) != stack->array + 2 * sizeof(int))
+    TEST_FAIL_IF(peek_stack(stack, 1) != stack->array + 2 * sizeof(int))
+    TEST_FAIL_IF(peek_stack(stack, 2) != stack->array + sizeof(int))
+    TEST_FAIL_IF(peek_stack(stack, 3) != stack->array)
 
     free_stack(stack);
     TEST_PASS
@@ -126,7 +128,7 @@ static bool test_stack_peekBottom_stack(void) {
     constructEmpty_stack(stack, sizeof(int), 4);
 
     pushZeros_stack(stack, 3);
-    TEST_FAIL_IF(peekBottom_stack(stack) != stack->array)
+    TEST_FAIL_IF(peekBottom_stack(stack, 2) != stack->array)
 
     free_stack(stack);
     TEST_PASS
@@ -137,7 +139,9 @@ static bool test_stack_peekTop_stack(void) {
     constructEmpty_stack(stack, sizeof(int), 4);
 
     pushZeros_stack(stack, 3);
-    TEST_FAIL_IF(peekTop_stack(stack) != stack->array + 2 * sizeof(int))
+    TEST_FAIL_IF(peekTop_stack(stack, 1) != stack->array + 2 * sizeof(int))
+    TEST_FAIL_IF(peekTop_stack(stack, 2) != stack->array + sizeof(int))
+    TEST_FAIL_IF(peekTop_stack(stack, 3) != stack->array)
 
     free_stack(stack);
     TEST_PASS
@@ -146,6 +150,7 @@ static bool test_stack_peekTop_stack(void) {
 static bool test_stack_pop_stack(void) {
     int const celsius[] = { 12, 16, 31, 42, -5, -18, -12 };
     size_t const nItems = sizeof(celsius) / sizeof(int);
+    Stack stack[1]      = { NOT_A_STACK };
     constructEmpty_stack(stack, sizeof(int), nItems);
 
     push_stack(stack, nItems, celsius);
@@ -164,6 +169,7 @@ static bool test_stack_pop_stack(void) {
 static bool test_stack_popBottom_stack(void) {
     int const celsius[] = { 12, 16, 31, 42, -5, -18, -12 };
     size_t const nItems = sizeof(celsius) / sizeof(int);
+    Stack stack[1]      = { NOT_A_STACK };
     constructEmpty_stack(stack, sizeof(int), nItems);
 
     push_stack(stack, nItems, celsius);
@@ -181,9 +187,9 @@ static bool test_stack_popBottom_stack(void) {
 }
 
 static bool test_stack_popTop_stack(void) {
-    int* negativeTemps  = NULL;
     int const celsius[] = { 12, 16, 31, 42, -5, -18, -12 };
     size_t const nItems = sizeof(celsius) / sizeof(int);
+    Stack stack[1]      = { NOT_A_STACK };
     constructEmpty_stack(stack, sizeof(int), nItems);
 
     push_stack(stack, nItems, celsius);

@@ -215,12 +215,16 @@ void qsort_alist(ArrayList const list[static const 1], int (*compar)(void const*
     qsort(list->array, list->size, list->sz_element, compar);
 }
 
-void removeLast_alist(ArrayList list[static const 1], uint32_t const n) {
+void* removeLast_alist(ArrayList list[static const 1], uint32_t const n) {
     assert(isValid_alist(list));
     assert(n > 0);
     assert(n <= list->size);
 
-    list->size -= n;
+    {
+        void* const ptr = get_alist(list, list->size - n);
+        list->size -= n;
+        return ptr;
+    }
 }
 
 void reverse_alist(ArrayList list[static const 1]) {

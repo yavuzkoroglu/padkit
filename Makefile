@@ -92,6 +92,7 @@ include/padkit.h: .FORCE;                                                       
     echo '    #include "padkit/size.h"'                     >> include/padkit.h; \
     echo '    #include "padkit/stack.h"'                    >> include/padkit.h; \
     echo '    #include "padkit/timestamp.h"'                >> include/padkit.h; \
+    echo '    #include "padkit/unused.h"'                   >> include/padkit.h; \
     echo '#endif'                                           >> include/padkit.h;
 
 lib: ; mkdir lib

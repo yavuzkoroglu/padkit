@@ -20,17 +20,17 @@
 
     bool isValid_stack(Stack const stack[static const 1]);
 
-    void* peek_stack(Stack const stack[static const 1]);
+    void* peek_stack(Stack const stack[static const 1], uint32_t const n);
 
-    void* peekBottom_stack(Stack const stack[static const 1]);
+    void* peekBottom_stack(Stack const stack[static const 1], uint32_t const n);
 
-    void* peekTop_stack(Stack const stack[static const 1]);
+    void* peekTop_stack(Stack const stack[static const 1], uint32_t const n);
 
-    void* pop_stack(Stack stack[static const 1]);
+    void* pop_stack(Stack stack[static const 1], uint32_t const n);
 
-    void* popBottom_stack(Stack stack[static const 1]);
+    void* popBottom_stack(Stack stack[static const 1], uint32_t const n);
 
-    void* popTop_stack(Stack stack[static const 1]);
+    void* popTop_stack(Stack stack[static const 1], uint32_t const n);
 
     void* push_stack(Stack stack[static const 1], uint32_t const n, void const* const restrict ptr);
 

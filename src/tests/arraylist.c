@@ -349,12 +349,19 @@ static bool test_arraylist_removeLast_alist(void) {
     TEST_FAIL_IF(list->size != 5)
     TEST_FAIL_IF(list->cap != nGrades)
 
-    removeLast_alist(list, 4);
+    {
+        int* const values = removeLast_alist(list, 4);
+        for (uint32_t i = 0; i < 4; i++)
+            TEST_FAIL_IF(values[i] != grades[i + 1])
+    }
 
     TEST_FAIL_IF(list->size != 1)
     TEST_FAIL_IF(list->cap != nGrades)
 
-    removeLast_alist(list, 1);
+    {
+        int* const grade = removeLast_alist(list, 1);
+        TEST_FAIL_IF(*grade != grades[0])
+    }
 
     TEST_FAIL_IF(list->size != 0)
     TEST_FAIL_IF(list->cap != nGrades)

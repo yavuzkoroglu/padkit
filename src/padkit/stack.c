@@ -3,6 +3,7 @@
 #include "padkit/memalloc.h"
 #include "padkit/size.h"
 #include "padkit/stack.h"
+#include "padkit/unused.h"
 
 void constructEmpty_stack(
     Stack stack[static const 1],
@@ -36,51 +37,55 @@ bool isValid_stack(Stack const stack[static const 1]) {
     return isValid_alist(stack);
 }
 
-void* peek_stack(Stack const stack[static const 1]) {
+void* peek_stack(Stack const stack[static const 1], uint32_t const n) {
     assert(isValid_stack(stack));
-    assert(stack->size > 0);
+    assert(n > 0);
+    assert(n <= stack->size);
 
-    return peekTop_stack(stack);
+    return peekTop_stack(stack, n);
 }
 
-void* peekBottom_stack(Stack const stack[static const 1]) {
+void* peekBottom_stack(Stack const stack[static const 1], uint32_t const n) {
+    MAYBE_UNUSED(n)
     assert(isValid_stack(stack));
-    assert(stack->size > 0);
+    assert(n > 0);
+    assert(n <= stack->size);
 
     return get_alist(stack, 0);
 }
 
-void* peekTop_stack(Stack const stack[static const 1]) {
+void* peekTop_stack(Stack const stack[static const 1], uint32_t const n) {
     assert(isValid_stack(stack));
-    assert(stack->size > 0);
+    assert(n > 0);
+    assert(n <= stack->size);
 
-    return get_alist(stack, stack->size - 1);
+    return get_alist(stack, stack->size - n);
 }
 
-void* pop_stack(Stack stack[static const 1]) {
+void* pop_stack(Stack stack[static const 1], uint32_t const n) {
     assert(isValid_stack(stack));
-    assert(stack->size > 0);
+    assert(n > 0);
+    assert(n <= stack->size);
 
-    return popTop_stack(stack);
+    return popTop_stack(stack, n);
 }
 
-void* popBottom_stack(Stack stack[static const 1]) {
+void* popBottom_stack(Stack stack[static const 1], uint32_t const n) {
     assert(isValid_stack(stack));
-    assert(stack->size > 0);
+    assert(n > 0);
+    assert(n <= stack->size);
 
-    rotateDown_stack(stack, 1);
+    rotateDown_stack(stack, n);
 
-    return popTop_stack(stack);
+    return popTop_stack(stack, n);
 }
 
-void* popTop_stack(Stack stack[static const 1]) {
+void* popTop_stack(Stack stack[static const 1], uint32_t const n) {
     assert(isValid_stack(stack));
-    assert(stack->size > 0);
-    {
-        void* const ptr = get_alist(stack, stack->size - 1);
-        stack->size--;
-        return ptr;
-    }
+    assert(n > 0);
+    assert(n <= stack->size);
+
+    return removeLast_alist(stack, n);
 }
 
 void* push_stack(Stack stack[static const 1], uint32_t const n, void const* const restrict ptr) {

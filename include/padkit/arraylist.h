@@ -51,7 +51,7 @@
 
     void qsort_alist(ArrayList const list[static const 1], int (*compar)(void const*, void const*));
 
-    void removeLast_alist(ArrayList list[static const 1], uint32_t const n);
+    void* removeLast_alist(ArrayList list[static const 1], uint32_t const n);
 
     void reverse_alist(ArrayList list[static const 1]);
 
