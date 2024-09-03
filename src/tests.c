@@ -14,6 +14,7 @@
 #define TEST_FAIL_IF(condition)     \
     if (condition) { TEST_FAIL(condition) }
 
+#include "tests/arraylist.c"
 #include "tests/hash.c"
 #include "tests/memalloc.c"
 #include "tests/prime.c"
@@ -51,12 +52,13 @@ int main(void) {
     puts("");
 
     printf("         TS_FMT = \"%s\"\n", TS_FMT);
-    printf("         TS_LEN = %"PRIXMAX"\n", (uintmax_t)TS_LEN);
+    printf("         TS_LEN = %"PRIuMAX"\n", (uintmax_t)TS_LEN);
 
     puts("");
 
     puts("src/tests.c");
     puts("-----------");
+    test_arraylist();
     test_hash();
     test_memalloc();
     test_prime();
