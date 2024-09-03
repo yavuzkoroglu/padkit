@@ -27,7 +27,15 @@ SOURCES=src/padkit/arraylist.c          \
         src/padkit/overlap.c            \
         src/padkit/prime.c              \
         src/padkit/stack.c              \
-        src/padkit/timestamp.c          \
+        src/padkit/timestamp.c
+
+TESTSRC=src/tests/arraylist.c           \
+        src/tests/hash.c                \
+        src/tests/memalloc.c            \
+        src/tests/overlap.c             \
+        src/tests/prime.c               \
+        src/tests/stack.c               \
+        src/tests/timestamp.c
 
 TEST_PARAM=-Isrc --coverage -fprofile-arcs -ftest-coverage src/tests.c lib/libpadkit.a
 
@@ -47,6 +55,7 @@ ${TESTS_OUT}: .FORCE        \
     bin                     \
     include/padkit.h        \
     lib/libpadkit.a         \
+    ${TESTSRC}              \
     src/tests.c             \
     ; ${COMPILE} -Iinclude ${TEST_PARAM} -o ${TESTS_OUT} && clear && ${TESTS_OUT}
 

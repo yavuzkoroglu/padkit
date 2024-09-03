@@ -17,7 +17,9 @@
 #include "tests/arraylist.c"
 #include "tests/hash.c"
 #include "tests/memalloc.c"
+#include "tests/overlap.c"
 #include "tests/prime.c"
+#include "tests/stack.c"
 #include "tests/timestamp.c"
 
 int main(void) {
@@ -61,7 +63,9 @@ int main(void) {
     test_arraylist();
     test_hash();
     test_memalloc();
+    test_overlap();
     test_prime();
+    test_stack();
     test_timestamp();
 
     puts("");
