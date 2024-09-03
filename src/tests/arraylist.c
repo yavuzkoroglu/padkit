@@ -1,13 +1,11 @@
+static int compar_char(void const* a, void const* b);
+
 static void test_arraylist(void);
 static bool test_arraylist_add_alist(void);
 static bool test_arraylist_addIndeterminate_alist(void);
 static bool test_arraylist_addZeros_alist(void);
 static bool test_arraylist_bsearch_alist(void);
 static bool test_arraylist_concat_alist(void);
-
-static int compar_char(void const* a, void const* b);
-
-/*
 static bool test_arraylist_constructEmpty_alist(void);
 static bool test_arraylist_flush_alist(void);
 static bool test_arraylist_free_alist(void);
@@ -20,7 +18,10 @@ static bool test_arraylist_removeLast_alist(void);
 static bool test_arraylist_reverse_alist(void);
 static bool test_arraylist_set_alist(void);
 static bool test_arraylist_setZeros_alist(void);
-*/
+
+static int compar_char(void const* a, void const* b) {
+    return (*(char const*)a - *(char const*)b);
+}
 
 static void test_arraylist(void) {
     bool allTestsPass = 1;
@@ -30,6 +31,18 @@ static void test_arraylist(void) {
     allTestsPass &= test_arraylist_addZeros_alist();
     allTestsPass &= test_arraylist_bsearch_alist();
     allTestsPass &= test_arraylist_concat_alist();
+    allTestsPass &= test_arraylist_constructEmpty_alist();
+    allTestsPass &= test_arraylist_flush_alist();
+    allTestsPass &= test_arraylist_free_alist();
+    allTestsPass &= test_arraylist_get_alist();
+    allTestsPass &= test_arraylist_isSorted_alist();
+    allTestsPass &= test_arraylist_isValid_alist();
+    allTestsPass &= test_arraylist_lsearch_alist();
+    allTestsPass &= test_arraylist_qsort_alist();
+    allTestsPass &= test_arraylist_removeLast_alist();
+    allTestsPass &= test_arraylist_reverse_alist();
+    allTestsPass &= test_arraylist_set_alist();
+    allTestsPass &= test_arraylist_setZeros_alist();
 
     if (allTestsPass) TESTS_PASS_MESSAGE
 }
@@ -100,7 +113,7 @@ static bool test_arraylist_bsearch_alist(void) {
     TEST_FAIL_IF(list->size != 0)
     TEST_FAIL_IF(list->cap != sizeof(letters))
 
-    TEST_FAIL_IF(strncmp(add_alist(list, sizeof(letters), letters), "adklmnqx", 8) != 0)
+    TEST_FAIL_IF(strncmp(add_alist(list, sizeof(letters), letters), letters, 8) != 0)
 
     TEST_FAIL_IF(list->size != sizeof(letters))
     TEST_FAIL_IF(list->cap != sizeof(letters))
@@ -113,10 +126,6 @@ static bool test_arraylist_bsearch_alist(void) {
 
     free_alist(list);
     TEST_PASS
-}
-
-static int compar_char(void const* a, void const* b) {
-    return (*(char const*)a - *(char const*)b);
 }
 
 static bool test_arraylist_concat_alist(void) {
@@ -165,5 +174,179 @@ static bool test_arraylist_concat_alist(void) {
 
     free_alist(head);
     free_alist(tail);
+    TEST_PASS
+}
+
+static bool test_arraylist_constructEmpty_alist(void) {
+    ArrayList list[2] = { NOT_AN_ALIST, NOT_AN_ALIST };
+    constructEmpty_alist(list, sizeof(int), 1);
+    constructEmpty_alist(list + 1, sizeof(int), SZ32_MAX - 1);
+
+    TEST_FAIL_IF(!isValid_alist(list))
+    TEST_FAIL_IF(!isValid_alist(list + 1))
+
+    free_alist(list);
+    free_alist(list + 1);
+    TEST_PASS
+}
+
+static bool test_arraylist_flush_alist(void) {
+    ArrayList list[1] = { NOT_AN_ALIST };
+    constructEmpty_alist(list, sizeof(int), 5);
+
+    TEST_FAIL_IF(list->size != 0)
+    TEST_FAIL_IF(list->cap != 5)
+
+    flush_alist(list);
+
+    TEST_FAIL_IF(list->size != 0)
+    TEST_FAIL_IF(list->cap != 5)
+
+    addZeros_alist(list, 5);
+
+    TEST_FAIL_IF(list->size != 5)
+    TEST_FAIL_IF(list->cap != 5)
+
+    flush_alist(list);
+
+    TEST_FAIL_IF(list->size != 0)
+    TEST_FAIL_IF(list->cap != 5)
+
+    free_alist(list);
+    TEST_PASS
+}
+
+static bool test_arraylist_free_alist(void) {
+    ArrayList list[1] = { NOT_AN_ALIST };
+    constructEmpty_alist(list, sizeof(int), SZ32_MAX - 1);
+    free_alist(list);
+    TEST_PASS
+}
+
+static bool test_arraylist_get_alist(void) {
+    int const grades[]      = { 92, 84, 76, 22, 45 };
+    uint32_t const nGrades  = sizeof(grades) / sizeof(grades[0]);
+    ArrayList list[1]       = { NOT_AN_ALIST };
+    constructEmpty_alist(list, sizeof(int), nGrades);
+
+    TEST_FAIL_IF(list->size != 0)
+    TEST_FAIL_IF(list->cap != nGrades)
+
+    add_alist(list, nGrades, grades);
+
+    TEST_FAIL_IF(list->size != nGrades)
+    TEST_FAIL_IF(list->cap != nGrades)
+
+    for (uint32_t i = 0; i < list->size; i++) {
+        int* const grade = get_alist(list, i);
+        TEST_FAIL_IF(*grade != grades[i])
+    }
+
+    free_alist(list);
+    TEST_PASS
+}
+
+static bool test_arraylist_isSorted_alist(void) {
+    char const unsorted[]       = { 'd', 'l', 'q', 'k', 'x', 'a', 'm', 'n' };
+    char const sorted[]         = { 'a', 'd', 'k', 'l', 'm', 'n', 'q', 'x' };
+    ArrayList unsortedList[1]   = { NOT_AN_ALIST };
+    ArrayList sortedList[1]     = { NOT_AN_ALIST };
+
+    constructEmpty_alist(unsortedList, 1, sizeof(unsorted));
+    constructEmpty_alist(sortedList, 1, sizeof(sorted));
+
+    TEST_FAIL_IF(!isSorted_alist(unsortedList, compar_char))
+    TEST_FAIL_IF(!isSorted_alist(sortedList, compar_char))
+
+    add_alist(unsortedList, sizeof(unsorted), unsorted);
+    add_alist(sortedList, sizeof(sorted), sorted);
+
+    TEST_FAIL_IF(isSorted_alist(unsortedList, compar_char))
+    TEST_FAIL_IF(!isSorted_alist(sortedList, compar_char))
+
+    free_alist(unsortedList);
+    free_alist(sortedList);
+    TEST_PASS
+}
+
+static bool test_arraylist_isValid_alist(void) {
+    ArrayList list[1] = { NOT_AN_ALIST };
+    TEST_FAIL_IF(isValid_alist(list))
+
+    constructEmpty_alist(list, 1, 1);
+    TEST_FAIL_IF(!isValid_alist(list))
+
+    free_alist(list);
+    TEST_FAIL_IF(isValid_alist(list))
+
+    TEST_PASS
+}
+
+static bool test_arraylist_lsearch_alist(void) {
+    char const letters[]    = { 'd', 'l', 'q', 'k', 'x', 'a', 'm', 'n' };
+    ArrayList list[1]       = { NOT_AN_ALIST };
+    constructEmpty_alist(list, 1, sizeof(letters));
+
+    TEST_FAIL_IF(list->size != 0)
+    TEST_FAIL_IF(list->cap != sizeof(letters))
+
+    TEST_FAIL_IF(strncmp(add_alist(list, sizeof(letters), letters), letters, 8) != 0)
+
+    TEST_FAIL_IF(list->size != sizeof(letters))
+    TEST_FAIL_IF(list->cap != sizeof(letters))
+
+    for (uint32_t i = 0; i < sizeof(letters); i++) {
+        char* key[1] = { NULL };
+        TEST_FAIL_IF(lsearch_alist((void**)key, list, letters + i) != i)
+        TEST_FAIL_IF(*key[0] != letters[i])
+    }
+
+    free_alist(list);
+    TEST_PASS
+}
+
+static bool test_arraylist_qsort_alist(void) {
+    char const unsorted[]       = { 'd', 'l', 'q', 'k', 'x', 'a', 'm', 'n' };
+    char const sorted[]         = { 'a', 'd', 'k', 'l', 'm', 'n', 'q', 'x' };
+    ArrayList unsortedList[1]   = { NOT_AN_ALIST };
+    ArrayList sortedList[1]     = { NOT_AN_ALIST };
+
+    constructEmpty_alist(unsortedList, 1, sizeof(unsorted));
+    constructEmpty_alist(sortedList, 1, sizeof(sorted));
+
+    TEST_FAIL_IF(!isSorted_alist(unsortedList, compar_char))
+    TEST_FAIL_IF(!isSorted_alist(sortedList, compar_char))
+
+    add_alist(unsortedList, sizeof(unsorted), unsorted);
+    add_alist(sortedList, sizeof(sorted), sorted);
+
+    TEST_FAIL_IF(isSorted_alist(unsortedList, compar_char))
+    TEST_FAIL_IF(!isSorted_alist(sortedList, compar_char))
+
+    qsort_alist(unsortedList, compar_char);
+    qsort_alist(sortedList, compar_char);
+
+    TEST_FAIL_IF(!isSorted_alist(unsortedList, compar_char))
+    TEST_FAIL_IF(!isSorted_alist(sortedList, compar_char))
+    TEST_FAIL_IF(strncmp(unsortedList->array, sorted, sizeof(unsorted)) != 0)
+
+    free_alist(unsortedList);
+    free_alist(sortedList);
+    TEST_PASS
+}
+
+static bool test_arraylist_removeLast_alist(void) {
+    TEST_PASS
+}
+
+static bool test_arraylist_reverse_alist(void) {
+    TEST_PASS
+}
+
+static bool test_arraylist_set_alist(void) {
+    TEST_PASS
+}
+
+static bool test_arraylist_setZeros_alist(void) {
     TEST_PASS
 }

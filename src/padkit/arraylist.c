@@ -162,7 +162,9 @@ bool isSorted_alist(ArrayList const list[static const 1], int (*compar)(void con
     assert(isValid_alist(list));
     assert(compar != NULL);
 
-    {
+    if (list->size == 0) {
+        return 1;
+    } else {
         void const* p[2] = { NULL, get_alist(list, 0) };
         for (uint32_t i = 1; i < list->size; i++) {
             p[0] = p[1];
@@ -171,9 +173,9 @@ bool isSorted_alist(ArrayList const list[static const 1], int (*compar)(void con
             if (compar(p[0], p[1]) > 0)
                 return 0;
         }
-    }
 
-    return 1;
+        return 1;
+    }
 }
 
 bool isValid_alist(ArrayList const list[static const 1]) {
@@ -206,9 +208,7 @@ uint32_t lsearch_alist(void* key[static const 1], ArrayList const list[static co
     return INVALID_UINT32;
 }
 
-void qsort_alist(
-    ArrayList const list[static const 1], int (*compar)(void const*, void const*)
-) {
+void qsort_alist(ArrayList const list[static const 1], int (*compar)(void const*, void const*)) {
     assert(isValid_alist(list));
     assert(compar != NULL);
 
