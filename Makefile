@@ -14,18 +14,22 @@ endif
 endif
 
 OBJECTS=obj/padkit/arraylist.o          \
+        obj/padkit/hash.o               \
         obj/padkit/memalloc.o           \
         obj/padkit/overlap.o            \
+        obj/padkit/prime.o              \
         obj/padkit/stack.o              \
         obj/padkit/timestamp.o
 
 SOURCES=src/padkit/arraylist.c          \
+        src/padkit/hash.c               \
         src/padkit/memalloc.c           \
         src/padkit/overlap.c            \
+        src/padkit/prime.c              \
         src/padkit/stack.c              \
         src/padkit/timestamp.c          \
 
-TEST_PARAM=--coverage -fprofile-arcs -ftest-coverage
+TEST_PARAM=-Isrc --coverage -fprofile-arcs -ftest-coverage src/tests.c lib/libpadkit.a
 
 default: all
 
@@ -33,27 +37,30 @@ default: all
 
 .PHONY: .FORCE all clean default documentation libs objects target tests version
 
-${DYNAMIC_LIB}: .FORCE                  \
-                lib                     \
-                ${SOURCES}              \
-                ; ${COMPILE} ${DYNAMIC_LIB_FLAGS} -Iinclude ${SOURCES} -o ${DYNAMIC_LIB}
+${DYNAMIC_LIB}: .FORCE      \
+    lib                     \
+    ${SOURCES}              \
+    ; ${COMPILE} ${DYNAMIC_LIB_FLAGS} -Iinclude ${SOURCES} -o ${DYNAMIC_LIB}
 
-${TESTS_OUT}:   .FORCE                  \
-                bin                     \
-                include/padkit.h        \
-                lib/libpadkit.a         \
-                src/tests.c             \
-                ; ${COMPILE} -Iinclude ${TEST_PARAM} src/tests.c lib/libpadkit.a -o ${TESTS_OUT}
+${TESTS_OUT}: .FORCE        \
+    cleancoverage           \
+    bin                     \
+    include/padkit.h        \
+    lib/libpadkit.a         \
+    src/tests.c             \
+    ; ${COMPILE} -Iinclude ${TEST_PARAM} -o ${TESTS_OUT} && clear && ${TESTS_OUT}
 
-all: libs tests
+all: include/padkit.h libs tests
 
 bin: ; mkdir bin
 
-clean: ; rm -rf include/padkit.h obj/* bin/* lib/* *.gcno *.gcda *.gcov html latex
+clean: cleancoverage; rm -rf include/padkit.h obj/* bin/* lib/* html latex
+
+cleancoverage: ; rm -rf *.gcno *.gcda *.gcov bin/*.gcno bin/*.gcda bin/*.gcov
 
 documentation: ; doxygen
 
-include/padkit.h: ;                                                             @\
+include/padkit.h: .FORCE;                                                       @\
     echo '/**'                                               > include/padkit.h; \
     echo ' * @file padkit.h'                                >> include/padkit.h; \
     echo ' * @brief An automatically generated header.'     >> include/padkit.h; \
@@ -64,10 +71,15 @@ include/padkit.h: ;                                                             
     echo '    #define PADKIT_VERSION "'${PADKIT_VERSION}'"' >> include/padkit.h; \
     echo '    #define PADKIT_TARGET  "'${PADKIT_TARGET}'"'  >> include/padkit.h; \
     echo '    #include "padkit/arraylist.h"'                >> include/padkit.h; \
-    echo '    #include "padkit/debug.h"'                    >> include/padkit.h; \
+    echo '    #include "padkit/bliterals.h"'                >> include/padkit.h; \
+    echo '    #include "padkit/error.h"'                    >> include/padkit.h; \
+    echo '    #include "padkit/hash.h"'                     >> include/padkit.h; \
     echo '    #include "padkit/invalid.h"'                  >> include/padkit.h; \
     echo '    #include "padkit/memalloc.h"'                 >> include/padkit.h; \
     echo '    #include "padkit/overlap.h"'                  >> include/padkit.h; \
+    echo '    #include "padkit/preprocessor.h"'             >> include/padkit.h; \
+    echo '    #include "padkit/prime.h"'                    >> include/padkit.h; \
+    echo '    #include "padkit/repeat.h"'                   >> include/padkit.h; \
     echo '    #include "padkit/size.h"'                     >> include/padkit.h; \
     echo '    #include "padkit/stack.h"'                    >> include/padkit.h; \
     echo '    #include "padkit/timestamp.h"'                >> include/padkit.h; \
@@ -86,16 +98,22 @@ obj/padkit: obj ; mkdir obj/padkit
 obj/padkit/arraylist.o: .FORCE          \
     obj/padkit                          \
     include/padkit/arraylist.h          \
-    include/padkit/debug.h              \
+    include/padkit/error.h              \
     include/padkit/memalloc.h           \
     include/padkit/overlap.h            \
     include/padkit/size.h               \
     src/padkit/arraylist.c              \
     ; ${COMPILE} -Iinclude src/padkit/arraylist.c -c -o obj/padkit/arraylist.o
 
+obj/padkit/hash.o: .FORCE               \
+    obj/padkit                          \
+    include/padkit/hash.h               \
+    src/padkit/hash.c                   \
+    ; ${COMPILE} -Iinclude src/padkit/hash.c -c -o obj/padkit/hash.o
+
 obj/padkit/memalloc.o: .FORCE           \
     obj/padkit                          \
-    include/padkit/debug.h              \
+    include/padkit/error.h              \
     include/padkit/memalloc.h           \
     include/padkit/size.h               \
     src/padkit/memalloc.c               \
@@ -106,10 +124,15 @@ obj/padkit/overlap.o: .FORCE            \
     src/padkit/overlap.c                \
     ; ${COMPILE} -Iinclude src/padkit/overlap.c -c -o obj/padkit/overlap.o
 
+obj/padkit/prime.o: .FORCE              \
+    obj/padkit                          \
+    src/padkit/prime.c                  \
+    ; ${COMPILE} -Iinclude src/padkit/prime.c -c -o obj/padkit/prime.o
+
 obj/padkit/stack.o: .FORCE              \
     obj/padkit                          \
     include/padkit/arraylist.h          \
-    include/padkit/debug.h              \
+    include/padkit/error.h              \
     include/padkit/memalloc.h           \
     include/padkit/overlap.h            \
     include/padkit/size.h               \
@@ -119,7 +142,7 @@ obj/padkit/stack.o: .FORCE              \
 
 obj/padkit/timestamp.o: .FORCE          \
     obj/padkit                          \
-    include/padkit/debug.h              \
+    include/padkit/error.h              \
     include/padkit/timestamp.h          \
     src/padkit/timestamp.c              \
     ; ${COMPILE} -Iinclude src/padkit/timestamp.c -c -o obj/padkit/timestamp.o

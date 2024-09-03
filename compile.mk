@@ -37,11 +37,11 @@ endif
 CCNAME=$(findstring clang,${CC})
 
 ifeq (${CCNAME},clang)
-SILENCED=-Wno-unsafe-buffer-usage -Wno-unused-parameter
-ARGS=${ARCH_ARGS} ${FLAGS} -Weverything ${SILENCED} ${STDLIBS}
+SILENCED=-Wno-unsafe-buffer-usage
+ARGS=${ARCH_ARGS} ${FLAGS} -Weverything -Werror ${SILENCED} ${STDLIBS}
 else
-SILENCED=-Wno-unused-parameter
-ARGS=${ARCH_ARGS} ${FLAGS} -Wall -Wextra ${SILENCED} ${STDLIBS}
+SILENCED=
+ARGS=${ARCH_ARGS} ${FLAGS} -Wall -Wextra -Werror ${SILENCED} ${STDLIBS}
 endif
 
 COMPILE=${CC} ${ARGS}

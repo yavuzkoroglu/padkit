@@ -1,5 +1,5 @@
+#include <assert.h>
 #include <time.h>
-#include "padkit/debug.h"
 #include "padkit/timestamp.h"
 
 char const* get_timestamp(void) {
@@ -7,8 +7,12 @@ char const* get_timestamp(void) {
     time_t const curtime = time(NULL);
     struct tm* const ltm = localtime(&curtime);
 
-    DEBUG_ASSERT(strftime(ts, sizeof(ts), TS_FMT, ltm) == sizeof(ts) - 1)
-    NDEBUG_EXECUTE(strftime(ts, sizeof(ts), TS_FMT, ltm))
+    #ifndef NDEBUG
+        size_t const ts_len = strftime(ts, sizeof(ts), TS_FMT, ltm);
+        assert(ts_len == sizeof(ts) - 1);
+    #else
+        strftime(ts, sizeof(ts), TS_FMT, ltm);
+    #endif
 
     return ts;
 }

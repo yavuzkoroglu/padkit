@@ -1,32 +1,12 @@
-/**
- * @file preprocessor.h
- * @brief Defines some preprocessor tricks.
- * @author Yavuz Koroglu
- */
 #ifndef PADKIT_PREPROCESSOR_H
     #define PADKIT_PREPROCESSOR_H
 
-    /**
-     * @def MKSTR(x)
-     *   Constructs a string literal from x.
-     */
-    #define MKSTR(x)    #x
+    #define MKSTR(x)            #x
+    #define STR(x)              MKSTR(x)
 
-    /**
-     * @def STR(x)
-     *   Performs macro replacement on x, then constructs a string literal from the replacement.
-     */
-    #define STR(x)      MKSTR(x)
+    #define MKCAT(x,y)          x##y
+    #define CAT(x,y)            MKCAT(x,y)
 
-    /**
-     * @def MKCAT(x,y)
-     *   Concatenates x and y.
-     */
-    #define MKCAT(x,y)  x##y
-
-    /**
-     * @def CAT(x,y)
-     *   Performs macro replacement on x and y, then concatenates them.
-     */
-    #define CAT(x,y)    MKCAT(x,y)
+    /* https://stackoverflow.com/questions/3599160/how-can-i-suppress-unused-parameter-warnings-in-c#3599170 */
+    #define MAYBE_UNUSED(...)   (void)(__VA_ARGS__);
 #endif
