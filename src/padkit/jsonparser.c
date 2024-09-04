@@ -1,13 +1,9 @@
-/**
- * @file jsonparser.c
- * @brief Implements the functions defined in jsonparser.h
- * @author Yavuz Koroglu
- */
+#include <assert.h>
 #include <ctype.h>
 #include <stdlib.h>
-#include "padkit/debug.h"
 #include "padkit/jsonparser.h"
 #include "padkit/memalloc.h"
+#include "padkit/unused.h"
 
 #define PEEK_JP(jp) jp->stack[jp->stack_size - 1]
 
@@ -39,9 +35,21 @@
 
 typedef void(*ParseFunction)(JSONParser[static const 1]);
 
-void emptyNumberEvent_jsonp(JSONParser jp[static const 1], double const number) {}
-void emptyStringEvent_jsonp(JSONParser jp[static const 1], char const string[static const 1], size_t const len) {}
-void emptyVoidEvent_jsonp(JSONParser jp[static const 1]) {}
+void emptyNumberEvent_jsonp(JSONParser jp[static const 1], double const number) {
+    MAYBE_UNUSED(jp)
+    MAYBE_UNUSED(number)
+}
+void emptyStringEvent_jsonp(
+    JSONParser jp[static const 1],
+    char const string[static const 1], size_t const len
+) {
+    MAYBE_UNUSED(jp)
+    MAYBE_UNUSED(string)
+    MAYBE_UNUSED(len)
+}
+void emptyVoidEvent_jsonp(JSONParser jp[static const 1]) {
+    MAYBE_UNUSED(jp)
+}
 
 static void err_jp(JSONParser jp[static const 1]);
 static void s00_jp(JSONParser jp[static const 1]);
@@ -864,9 +872,7 @@ static void s24_jp(JSONParser jp[static const 1]) {
     /* atRootEnd() */
     (*jp->atRootEnd)(jp);
 
-    #ifndef NDEBUG
-        if (jp->stack_size != 0) jp->errorCode = JSON_PARSER_STACK_ERROR;
-    #endif
+    if (jp->stack_size != 0) jp->errorCode = JSON_PARSER_STACK_ERROR;
 }
 
 
@@ -914,7 +920,7 @@ void construct_jsonp(
 }
 
 void free_jsonp(JSONParser jsonParser[static const 1]) {
-    DEBUG_ABORT_UNLESS(isValid_jsonp(jsonParser))
+    assert(isValid_jsonp(jsonParser));
 
     free(jsonParser->stack);
     free(jsonParser->str);

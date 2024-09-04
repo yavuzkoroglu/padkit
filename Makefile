@@ -16,6 +16,7 @@ endif
 OBJECTS=obj/padkit/arraylist.o          \
         obj/padkit/bitmatrix.o          \
         obj/padkit/hash.o               \
+        obj/padkit/jsonparser.o         \
         obj/padkit/memalloc.o           \
         obj/padkit/overlap.o            \
         obj/padkit/prime.o              \
@@ -25,6 +26,7 @@ OBJECTS=obj/padkit/arraylist.o          \
 SOURCES=src/padkit/arraylist.c          \
         src/padkit/bitmatrix.c          \
         src/padkit/hash.c               \
+        src/padkit/jsonparser.c         \
         src/padkit/memalloc.c           \
         src/padkit/overlap.c            \
         src/padkit/prime.c              \
@@ -134,6 +136,14 @@ obj/padkit/hash.o: .FORCE               \
     include/padkit/hash.h               \
     src/padkit/hash.c                   \
     ; ${COMPILE} -Iinclude src/padkit/hash.c -c -o obj/padkit/hash.o
+
+obj/padkit/jsonparser.o: .FORCE         \
+    obj/padkit                          \
+    include/padkit/error.h              \
+    include/padkit/jsonparser.h         \
+    include/padkit/memalloc.h           \
+    src/padkit/jsonparser.c             \
+    ; ${COMPILE} -Iinclude src/padkit/jsonparser.c -c -o obj/padkit/jsonparser.o
 
 obj/padkit/memalloc.o: .FORCE           \
     obj/padkit                          \
