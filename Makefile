@@ -91,6 +91,7 @@ include/padkit.h: .FORCE;                                                       
     echo '    #include "padkit/bliterals.h"'                >> include/padkit.h; \
     echo '    #include "padkit/error.h"'                    >> include/padkit.h; \
     echo '    #include "padkit/hash.h"'                     >> include/padkit.h; \
+    echo '    #include "padkit/jsonparser.h"'               >> include/padkit.h; \
     echo '    #include "padkit/invalid.h"'                  >> include/padkit.h; \
     echo '    #include "padkit/memalloc.h"'                 >> include/padkit.h; \
     echo '    #include "padkit/overlap.h"'                  >> include/padkit.h; \
