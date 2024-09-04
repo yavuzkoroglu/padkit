@@ -37,6 +37,7 @@ TESTSRC=src/tests/arraylist.c           \
         src/tests/bitmatrix.c           \
         src/tests/graphmatrix.c         \
         src/tests/hash.c                \
+        src/tests/jsonparser.c          \
         src/tests/memalloc.c            \
         src/tests/overlap.c             \
         src/tests/prime.c               \
@@ -142,6 +143,7 @@ obj/padkit/jsonparser.o: .FORCE         \
     include/padkit/error.h              \
     include/padkit/jsonparser.h         \
     include/padkit/memalloc.h           \
+    include/padkit/size.h               \
     src/padkit/jsonparser.c             \
     ; ${COMPILE} -Iinclude src/padkit/jsonparser.c -c -o obj/padkit/jsonparser.o
 

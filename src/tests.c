@@ -18,6 +18,7 @@
 #include "tests/bitmatrix.c"
 #include "tests/graphmatrix.c"
 #include "tests/hash.c"
+#include "tests/jsonparser.c"
 #include "tests/memalloc.c"
 #include "tests/overlap.c"
 #include "tests/prime.c"
@@ -66,6 +67,7 @@ int main(void) {
     test_bitmatrix();
     test_graphmatrix();
     test_hash();
+    test_jsonparser();
     test_memalloc();
     test_overlap();
     test_prime();

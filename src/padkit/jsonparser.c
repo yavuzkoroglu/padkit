@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include "padkit/jsonparser.h"
 #include "padkit/memalloc.h"
+#include "padkit/size.h"
 #include "padkit/unused.h"
 
 #define PEEK_JP(jp) jp->stack[jp->stack_size - 1]
@@ -12,7 +13,7 @@
 #define PUSH_JP(jp, element)                                                \
     if (jp->stack_size == jp->stack_cap) {                                  \
         jp->stack_cap <<= 1;                                                \
-        if (jp->stack_cap <= jp->stack_size) {                              \
+        if (jp->stack_cap >= SZSZ_MAX) {                                    \
             jp->errorCode = JSON_PARSER_STACK_ERROR;                        \
             return;                                                         \
         }                                                                   \
@@ -335,7 +336,7 @@ static void s07_jp(JSONParser jp[static const 1]) {
 
     if (jp->str_len == jp->str_cap) {
         size_t const new_cap = jp->str_cap << 1;
-        if (new_cap <= jp->str_len) {
+        if (new_cap >= SZSZ_MAX) {
             jp->errorCode = JSON_PARSER_STRING_ERROR;
             return;
         }
@@ -485,7 +486,7 @@ static void s11_jp(JSONParser jp[static const 1]) {
 
     if (jp->str_len == jp->str_cap) {
         size_t const new_cap = jp->str_cap << 1;
-        if (new_cap <= jp->str_len) {
+        if (new_cap >= SZSZ_MAX) {
             jp->errorCode = JSON_PARSER_STRING_ERROR;
             return;
         }
@@ -673,7 +674,7 @@ static void s15_jp(JSONParser jp[static const 1]) {
 
     if (jp->str_len == jp->str_cap) {
         size_t const new_cap = jp->str_cap << 1;
-        if (new_cap <= jp->str_len) {
+        if (new_cap >= SZSZ_MAX) {
             jp->errorCode = JSON_PARSER_STRING_ERROR;
             return;
         }
@@ -931,10 +932,10 @@ bool isValid_jsonp(JSONParser const jsonParser[static const 1]) {
     if (jsonParser->inputStream == NULL)                return 0;
     if (jsonParser->stack == NULL)                      return 0;
     if (jsonParser->stack_cap == 0)                     return 0;
-    if (jsonParser->stack_cap >= SIZE_MAX >> 1)         return 0;
+    if (jsonParser->stack_cap >= SZSZ_MAX)              return 0;
     if (jsonParser->stack_size > jsonParser->stack_cap) return 0;
     if (jsonParser->str_cap == 0)                       return 0;
-    if (jsonParser->str_cap >= SIZE_MAX >> 1)           return 0;
+    if (jsonParser->str_cap >= SZSZ_MAX)                return 0;
     if (jsonParser->str == NULL)                        return 0;
     return 1;
 }

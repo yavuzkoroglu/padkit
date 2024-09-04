@@ -56,7 +56,7 @@ graph G {
     s01 -- s01 [label="[ \\n\\r\\t\\v]"];
     s01 -- s02 [label="'['"];
     s01 -- s03 [label="'{'"];
-    s01 -- s25 [label=" EOF"];
+    s01 -- s24 [label=" EOF"];
     s02 -- s04;
     s03 -- s05;
     s04 -- s02 [label="'['"];
