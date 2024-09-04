@@ -14,6 +14,7 @@ endif
 endif
 
 OBJECTS=obj/padkit/arraylist.o          \
+        obj/padkit/bitmatrix.o          \
         obj/padkit/hash.o               \
         obj/padkit/memalloc.o           \
         obj/padkit/overlap.o            \
@@ -22,6 +23,7 @@ OBJECTS=obj/padkit/arraylist.o          \
         obj/padkit/timestamp.o
 
 SOURCES=src/padkit/arraylist.c          \
+        src/padkit/bitmatrix.c          \
         src/padkit/hash.c               \
         src/padkit/memalloc.c           \
         src/padkit/overlap.c            \
@@ -30,6 +32,8 @@ SOURCES=src/padkit/arraylist.c          \
         src/padkit/timestamp.c
 
 TESTSRC=src/tests/arraylist.c           \
+        src/tests/bitmatrix.c           \
+        src/tests/graphmatrix.c         \
         src/tests/hash.c                \
         src/tests/memalloc.c            \
         src/tests/overlap.c             \
@@ -80,6 +84,7 @@ include/padkit.h: .FORCE;                                                       
     echo '    #define PADKIT_VERSION "'${PADKIT_VERSION}'"' >> include/padkit.h; \
     echo '    #define PADKIT_TARGET  "'${PADKIT_TARGET}'"'  >> include/padkit.h; \
     echo '    #include "padkit/arraylist.h"'                >> include/padkit.h; \
+    echo '    #include "padkit/bitmatrix.h"'                >> include/padkit.h; \
     echo '    #include "padkit/bliterals.h"'                >> include/padkit.h; \
     echo '    #include "padkit/error.h"'                    >> include/padkit.h; \
     echo '    #include "padkit/hash.h"'                     >> include/padkit.h; \
@@ -114,6 +119,15 @@ obj/padkit/arraylist.o: .FORCE          \
     include/padkit/size.h               \
     src/padkit/arraylist.c              \
     ; ${COMPILE} -Iinclude src/padkit/arraylist.c -c -o obj/padkit/arraylist.o
+
+obj/padkit/bitmatrix.o: .FORCE          \
+    obj/padkit                          \
+    include/padkit/bitmatrix.h          \
+    include/padkit/error.h              \
+    include/padkit/memalloc.h           \
+    include/padkit/size.h               \
+    src/padkit/bitmatrix.c              \
+    ; ${COMPILE} -Iinclude src/padkit/bitmatrix.c -c -o obj/padkit/bitmatrix.o
 
 obj/padkit/hash.o: .FORCE               \
     obj/padkit                          \

@@ -15,6 +15,8 @@
     if (condition) { TEST_FAIL(condition) }
 
 #include "tests/arraylist.c"
+#include "tests/bitmatrix.c"
+#include "tests/graphmatrix.c"
 #include "tests/hash.c"
 #include "tests/memalloc.c"
 #include "tests/overlap.c"
@@ -61,6 +63,8 @@ int main(void) {
     puts("src/tests.c");
     puts("-----------");
     test_arraylist();
+    test_bitmatrix();
+    test_graphmatrix();
     test_hash();
     test_memalloc();
     test_overlap();
