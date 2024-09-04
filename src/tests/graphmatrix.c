@@ -101,7 +101,6 @@ static bool test_graphmatrix_disconnect_gmtx(void) {
 
     free_gmtx(gmtx);
     TEST_PASS
-    TEST_PASS
 }
 
 static bool test_graphmatrix_disconnectAll_gmtx(void) {
