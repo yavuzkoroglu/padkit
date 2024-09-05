@@ -8,16 +8,9 @@ static bool test_chunk_constructEmpty_chunk(void);
 static bool test_chunk_delete_chunk(void);
 static bool test_chunk_deleteLast_chunk(void);
 static bool test_chunk_duplicateItem_chunk(void);
-static bool test_chunk_flush_chunk(void);
 static bool test_chunk_free_chunk(void);
 static bool test_chunk_fromStream_chunk(void);
-static bool test_chunk_fromStreamAsWhole_chunk(void);
-static bool test_chunk_get_chunk(void);
-static bool test_chunk_getLast_chunk(void);
 static bool test_chunk_isValid_chunk(void);
-static bool test_chunk_splitLast_chunk(void);
-static bool test_chunk_sz_item_chunk(void);
-static bool test_chunk_sz_itemLast_chunk(void);
 
 static void test_chunk(void) {
     bool allTestsPass = 1;
@@ -31,16 +24,9 @@ static void test_chunk(void) {
     allTestsPass &= test_chunk_delete_chunk();
     allTestsPass &= test_chunk_deleteLast_chunk();
     allTestsPass &= test_chunk_duplicateItem_chunk();
-    allTestsPass &= test_chunk_flush_chunk();
     allTestsPass &= test_chunk_free_chunk();
     allTestsPass &= test_chunk_fromStream_chunk();
-    allTestsPass &= test_chunk_fromStreamAsWhole_chunk();
-    allTestsPass &= test_chunk_get_chunk();
-    allTestsPass &= test_chunk_getLast_chunk();
     allTestsPass &= test_chunk_isValid_chunk();
-    allTestsPass &= test_chunk_splitLast_chunk();
-    allTestsPass &= test_chunk_sz_item_chunk();
-    allTestsPass &= test_chunk_sz_itemLast_chunk();
 
     if (allTestsPass) TESTS_PASS_MESSAGE
 }
@@ -175,62 +161,167 @@ static bool test_chunk_appendDuplicate_chunk(void) {
 }
 
 static bool test_chunk_concat_chunk(void) {
+    Chunk head = NOT_A_CHUNK;
+    Chunk tail = NOT_A_CHUNK;
+
+    constructEmpty_chunk(head, 10, 10);
+    constructEmpty_chunk(tail, 10, 10);
+
+    concat_chunk(head, tail);
+
+    TEST_FAIL_IF(AREA_CHUNK(head) != 0)
+
+    addItem_chunk(head, 3, "abc");
+    addItem_chunk(tail, 3, "def");
+
+    TEST_FAIL_IF(AREA_CHUNK(head) != 3)
+    TEST_FAIL_IF(memcmp(get_chunk(head, 0), "abc", 3) != 0)
+    TEST_FAIL_IF(memcmp(get_chunk(tail, 0), "def", 3) != 0)
+
+    concat_chunk(head, tail);
+
+    TEST_FAIL_IF(AREA_CHUNK(head) != 6)
+    TEST_FAIL_IF(memcmp(get_chunk(head, 0), "abcdef", 6) != 0)
+    TEST_FAIL_IF(memcmp(get_chunk(tail, 0), "def", 3) != 0)
+
+    free_chunk(head);
+    free_chunk(tail);
     TEST_PASS
 }
 
 static bool test_chunk_constructEmpty_chunk(void) {
+    Chunk chunk_A = NOT_A_CHUNK;
+    Chunk chunk_B = NOT_A_CHUNK;
+    constructEmpty_chunk(chunk_A, 1, 1);
+    constructEmpty_chunk(chunk_B, SZ32_MAX - 1, SZ32_MAX - 1);
+    free_chunk(chunk_A);
+    free_chunk(chunk_B);
     TEST_PASS
 }
 
 static bool test_chunk_delete_chunk(void) {
+    int celsius[]       = { 12, 41, 23, -3 };
+    double humidities[] = { 80.5, 62.3, 34.5 };
+    Chunk chunk         = NOT_A_CHUNK;
+    constructEmpty_chunk(chunk, 1024, 2);
+
+    TEST_FAIL_IF(AREA_CHUNK(chunk) != 0)
+    TEST_FAIL_IF(LEN_CHUNK(chunk) != 0)
+
+    addItem_chunk(chunk, sizeof(celsius), celsius);
+
+    TEST_FAIL_IF(AREA_CHUNK(chunk) != sizeof(celsius))
+    TEST_FAIL_IF(LEN_CHUNK(chunk) != 1)
+
+    addItem_chunk(chunk, sizeof(humidities), humidities);
+
+    TEST_FAIL_IF(AREA_CHUNK(chunk) != sizeof(celsius) + sizeof(humidities))
+    TEST_FAIL_IF(LEN_CHUNK(chunk) != 2)
+
+    delete_chunk(chunk, 0, 1);
+
+    TEST_FAIL_IF(AREA_CHUNK(chunk) != sizeof(humidities))
+    TEST_FAIL_IF(LEN_CHUNK(chunk) != 1)
+
+    delete_chunk(chunk, 0, 1);
+
+    TEST_FAIL_IF(AREA_CHUNK(chunk) != 0)
+    TEST_FAIL_IF(LEN_CHUNK(chunk) != 0)
+
+    free_chunk(chunk);
     TEST_PASS
 }
 
 static bool test_chunk_deleteLast_chunk(void) {
+    int celsius[]       = { 12, 41, 23, -3 };
+    double humidities[] = { 80.5, 62.3, 34.5 };
+    Chunk chunk         = NOT_A_CHUNK;
+    constructEmpty_chunk(chunk, 1024, 2);
+
+    TEST_FAIL_IF(AREA_CHUNK(chunk) != 0)
+    TEST_FAIL_IF(LEN_CHUNK(chunk) != 0)
+
+    addItem_chunk(chunk, sizeof(celsius), celsius);
+
+    TEST_FAIL_IF(AREA_CHUNK(chunk) != sizeof(celsius))
+    TEST_FAIL_IF(LEN_CHUNK(chunk) != 1)
+
+    addItem_chunk(chunk, sizeof(humidities), humidities);
+
+    TEST_FAIL_IF(AREA_CHUNK(chunk) != sizeof(celsius) + sizeof(humidities))
+    TEST_FAIL_IF(LEN_CHUNK(chunk) != 2)
+
+    deleteLast_chunk(chunk, 1);
+
+    TEST_FAIL_IF(AREA_CHUNK(chunk) != sizeof(celsius))
+    TEST_FAIL_IF(LEN_CHUNK(chunk) != 1)
+
+    deleteLast_chunk(chunk, 1);
+
+    TEST_FAIL_IF(AREA_CHUNK(chunk) != 0)
+    TEST_FAIL_IF(LEN_CHUNK(chunk) != 0)
+
+    free_chunk(chunk);
     TEST_PASS
 }
 
 static bool test_chunk_duplicateItem_chunk(void) {
-    TEST_PASS
-}
+    Chunk chunk = NOT_A_CHUNK;
+    constructEmpty_chunk(chunk, 1024, 16);
 
-static bool test_chunk_flush_chunk(void) {
+    addItem_chunk(chunk, 3, "abc");
+    addItem_chunk(chunk, 3, "def");
+    addItem_chunk(chunk, 2, "gh");
+
+    duplicateItem_chunk(chunk, 1);
+
+    TEST_FAIL_IF(memcmp(chunk->array, "abcdefghdef", AREA_CHUNK(chunk)) != 0)
+
+    free_chunk(chunk);
     TEST_PASS
 }
 
 static bool test_chunk_free_chunk(void) {
+    Chunk chunk = NOT_A_CHUNK;
+    constructEmpty_chunk(chunk, SZ32_MAX - 1, SZ32_MAX - 1);
+    free_chunk(chunk);
     TEST_PASS
 }
 
 static bool test_chunk_fromStream_chunk(void) {
-    TEST_PASS
-}
+    Chunk chunk         = NOT_A_CHUNK;
+    FILE* const stream  = fopen("test_artifacts/words.txt", "r");
+    TEST_FAIL_IF(stream == NULL)
 
-static bool test_chunk_fromStreamAsWhole_chunk(void) {
-    TEST_PASS
-}
+    constructEmpty_chunk(chunk, 1024, 4);
 
-static bool test_chunk_get_chunk(void) {
-    TEST_PASS
-}
+    TEST_FAIL_IF(AREA_CHUNK(chunk) != 0)
+    TEST_FAIL_IF(LEN_CHUNK(chunk) != 0)
 
-static bool test_chunk_getLast_chunk(void) {
+    fromStream_chunk(chunk, stream, NULL, INVALID_SIZE);
+
+    TEST_FAIL_IF(AREA_CHUNK(chunk) != 25)
+    TEST_FAIL_IF(LEN_CHUNK(chunk) != 4)
+
+    TEST_FAIL_IF(memcmp(chunk->array, "first\nsecond\nthird\nfourth\n", AREA_CHUNK(chunk)) != 0)
+
+    fclose(stream);
+    free_chunk(chunk);
     TEST_PASS
 }
 
 static bool test_chunk_isValid_chunk(void) {
+    Chunk chunk = NOT_A_CHUNK;
+
+    TEST_FAIL_IF(isValid_chunk(chunk))
+
+    constructEmpty_chunk(chunk, SZ32_MAX - 1, SZ32_MAX - 1);
+
+    TEST_FAIL_IF(!isValid_chunk(chunk))
+
+    free_chunk(chunk);
+
+    TEST_FAIL_IF(isValid_chunk(chunk))
+
     TEST_PASS
 }
-
-static bool test_chunk_splitLast_chunk(void) {
-    TEST_PASS
-}
-
-static bool test_chunk_sz_item_chunk(void) {
-    TEST_PASS
-}
-
-static bool test_chunk_sz_itemLast_chunk(void) {
-    TEST_PASS
-}
-

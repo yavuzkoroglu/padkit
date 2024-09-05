@@ -9,6 +9,8 @@
     #define INVALID_INT32       INT32_MAX
     #define INVALID_INT64       INT64_MAX
 
+    #define INVALID_SIZE        SIZE_MAX
+
     #define INVALID_UINT        UINT_MAX
     #define INVALID_UINT8       UINT8_MAX
     #define INVALID_UINT16      UINT16_MAX

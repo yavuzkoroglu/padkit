@@ -9,15 +9,15 @@
 
     typedef ArrayList Chunk[2];
 
-    uint32_t addIndeterminateItem_chunk(ArrayList chunk[static const 2], uint32_t const sz);
+    void* addIndeterminateItem_chunk(ArrayList chunk[static const 2], uint32_t const sz);
 
-    uint32_t addItem_chunk(ArrayList chunk[static const 2], uint32_t const sz, void const* const restrict ptr);
+    void* addItem_chunk(ArrayList chunk[static const 2], uint32_t const sz, void const* const restrict ptr);
 
     void* append_chunk(ArrayList chunk[static const 2], uint32_t const sz, void const* const restrict ptr);
 
     void* appendDuplicate_chunk(ArrayList chunk[static const 2], uint32_t const id);
 
-    void concat_chunk(ArrayList head[static const 2], ArrayList tail[static const 2]);
+    void concat_chunk(ArrayList head[static const restrict 2], ArrayList tail[static const restrict 2]);
 
     void constructEmpty_chunk(
         ArrayList chunk[static const 2],
@@ -29,7 +29,7 @@
 
     void deleteLast_chunk(ArrayList chunk[static const 2], uint32_t const n);
 
-    uint32_t duplicateItem_chunk(ArrayList chunk[static const 2], uint32_t const id);
+    void* duplicateItem_chunk(ArrayList chunk[static const 2], uint32_t const id);
 
     void flush_chunk(ArrayList chunk[static const 2]);
 
