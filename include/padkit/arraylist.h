@@ -37,6 +37,8 @@
         uint32_t const initial_cap
     );
 
+    void delete_alist(ArrayList list[static const 1], uint32_t const startId, uint32_t const n);
+
     void flush_alist(ArrayList list[static const 1]);
 
     void free_alist(ArrayList list[static const 1]);

@@ -136,6 +136,28 @@ void constructEmpty_alist(
     list->array         = mem_alloc(sz);
 }
 
+void delete_alist(ArrayList list[static const 1], uint32_t const startId, uint32_t const n) {
+    assert(isValid_alist(list));
+    assert(startId < list->size);
+    assert(n > 0);
+    assert(n <= list->size);
+    assert(startId + n <= list->size);
+
+    if (startId + n == list->size) {
+        removeLast_alist(list, n);
+    } else {
+        uint32_t const len  = list->size - startId - n;
+        size_t const sz     = list->sz_element * (size_t)(len);
+        void* const dest    = get_alist(list, startId);
+        void* const src     = get_alist(list, startId + n);
+        assert(sz < SZSZ_MAX);
+        assert(sz / list->sz_element == (size_t)(len));
+
+        memmove(dest, src, sz);
+        list->size -= n;
+    }
+}
+
 void flush_alist(ArrayList list[static const 1]) {
     assert(isValid_alist(list));
     list->size = 0;

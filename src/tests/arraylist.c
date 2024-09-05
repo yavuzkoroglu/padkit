@@ -7,6 +7,7 @@ static bool test_arraylist_addZeros_alist(void);
 static bool test_arraylist_bsearch_alist(void);
 static bool test_arraylist_concat_alist(void);
 static bool test_arraylist_constructEmpty_alist(void);
+static bool test_arraylist_delete_alist(void);
 static bool test_arraylist_flush_alist(void);
 static bool test_arraylist_free_alist(void);
 static bool test_arraylist_get_alist(void);
@@ -33,6 +34,7 @@ static void test_arraylist(void) {
     allTestsPass &= test_arraylist_bsearch_alist();
     allTestsPass &= test_arraylist_concat_alist();
     allTestsPass &= test_arraylist_constructEmpty_alist();
+    allTestsPass &= test_arraylist_delete_alist();
     allTestsPass &= test_arraylist_flush_alist();
     allTestsPass &= test_arraylist_free_alist();
     allTestsPass &= test_arraylist_get_alist();
@@ -189,6 +191,27 @@ static bool test_arraylist_constructEmpty_alist(void) {
 
     free_alist(list);
     free_alist(list + 1);
+    TEST_PASS
+}
+
+static bool test_arraylist_delete_alist(void) {
+    ArrayList list[1] = { NOT_AN_ALIST };
+    constructEmpty_alist(list, 1, 7);
+
+    add_alist(list, 7, "abefgcd");
+
+    TEST_FAIL_IF(strncmp(list->array, "abefgcd", list->size) != 0)
+
+    delete_alist(list, 2, 3);
+
+    TEST_FAIL_IF(list->size != 4)
+    TEST_FAIL_IF(strncmp(list->array, "abcd", list->size) != 0)
+
+    delete_alist(list, 1, 3);
+
+    TEST_FAIL_IF(list->size != 1)
+    TEST_FAIL_IF(strncmp(list->array, "a", list->size) != 0)
+
     TEST_PASS
 }
 
