@@ -43,6 +43,8 @@
 
     void* get_alist(ArrayList const list[static const 1], uint32_t const id);
 
+    void* getLast_alist(ArrayList const list[static const 1]);
+
     bool isSorted_alist(ArrayList const list[static const 1], int (*compar)(void const*, void const*));
 
     bool isValid_alist(ArrayList const list[static const 1]);

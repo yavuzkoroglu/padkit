@@ -1,12 +1,89 @@
+/**
+ * @file chunk.h
+ * @brief Defines Chunk and its related functions.
+ *
+ * A Chunk is a chunk of heap memory. You can add several strings to a Chunk.
+ * You can also append strings to the last string of the Chunk.
+ * Freeing the Chunk frees all the allocated strings.
+ *
+ * @author Yavuz Koroglu
+ */
 #ifndef PADKIT_CHUNK_H
     #define PADKIT_CHUNK_H
-    #include "padkit/arraylist.h"
+    #include <stdbool.h>
+    #include <stdio.h>
+    #include <stdint.h>
 
-    #define NOT_A_CHUNK ((Chunk){ NOT_AN_ALIST, NOT_AN_ALIST })
+    /**
+     * @def NOT_A_CHUNK
+     *   A special Chunk that cannot pass the isValid_chunk() test.
+     */
+    #define NOT_A_CHUNK                             ((Chunk){0, 0, 0, NULL, NULL, 0})
 
-    typedef ArrayList Chunk[2];
+    /**
+     * @def CHUNK_RECOMMENDED_INITIAL_CAP
+     *   This initial capacity should work nicely in most situations.
+     */
+    #define CHUNK_RECOMMENDED_INITIAL_CAP           (BUFSIZ)
 
-    uint32_t add_chunk(Chunk chunk[static const 1], uint32_t const sz, void const* const restrict ptr);
+    /**
+     * @def CHUNK_RECOMMENDED_INITIAL_STRINGS_CAP
+     *   This initial capacity should work nicely in most situations.
+     */
+    #define CHUNK_RECOMMENDED_INITIAL_STRINGS_CAP   (BUFSIZ)
+
+    /**
+     * @def CHUNK_RECOMMENDED_PARAMETERS
+     *   Recommended parameters for a typical Chunk.
+     */
+    #define CHUNK_RECOMMENDED_PARAMETERS            \
+        CHUNK_RECOMMENDED_INITIAL_CAP, CHUNK_RECOMMENDED_INITIAL_STRINGS_CAP
+
+    /**
+     * @struct Chunk
+     * @brief A chunk of strings located in heap memory.
+     *
+     * @var Chunk::cap
+     *   The Chunk capacity.
+     * @var Chunk::nStrings
+     *   The number of strings in the Chunk.
+     * @var Chunk::stringsCap
+     *   The maximum number of strings the Chunk can track.
+     * @var Chunk::stringOffsets
+     *   The list of offsets from strings to Chunk::start.
+     * @var Chunk::start
+     *   A pointer to the beginning of the Chunk.
+     * @var Chunk::len
+     *   The length of the Chunk.
+     */
+    typedef struct ChunkBody {
+        uint64_t  cap;
+        uint32_t  nStrings;
+        uint32_t  stringsCap;
+        uint64_t* stringOffsets;
+        char*     start;
+        uint64_t  len;
+    } Chunk;
+
+    /**
+     * @brief Adds a string to a Chunk.
+     *
+     * Copies n characters from str to a
+     * new string located at the end of chunk.
+     * The new string is '\0' separated from the
+     * previous string in the chunk.
+     *
+     * @param[in,out] chunk A constant non-null pointer to at least one Chunk.
+     * @param[in]       str A constant restricted non-null pointer to at least one character.
+     * @param[in]         n A constant 64-bit unsigned integer.
+     *
+     * @return A 32-bit unsigned integer (the chunk index of the added string).
+     */
+    uint32_t add_chunk(
+        Chunk chunk[static const 1],
+        char const str[static const restrict 1],
+        uint64_t const n
+    );
 
     /**
      * @brief Re-inserts one string of a Chunk to the end of that Chunk.

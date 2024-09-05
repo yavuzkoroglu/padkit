@@ -158,6 +158,13 @@ void* get_alist(ArrayList const list[static const 1], uint32_t const id) {
     return list->array + offset;
 }
 
+void* getLast_alist(ArrayList const list[static const 1]) {
+    assert(isValid_alist(list));
+    assert(list->size > 0);
+
+    return get_alist(list, list->size - 1);
+}
+
 bool isSorted_alist(ArrayList const list[static const 1], int (*compar)(void const*, void const*)) {
     assert(isValid_alist(list));
     assert(compar != NULL);

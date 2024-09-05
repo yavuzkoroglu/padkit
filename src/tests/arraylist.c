@@ -10,6 +10,7 @@ static bool test_arraylist_constructEmpty_alist(void);
 static bool test_arraylist_flush_alist(void);
 static bool test_arraylist_free_alist(void);
 static bool test_arraylist_get_alist(void);
+static bool test_arraylist_getLast_alist(void);
 static bool test_arraylist_isSorted_alist(void);
 static bool test_arraylist_isValid_alist(void);
 static bool test_arraylist_lsearch_alist(void);
@@ -35,6 +36,7 @@ static void test_arraylist(void) {
     allTestsPass &= test_arraylist_flush_alist();
     allTestsPass &= test_arraylist_free_alist();
     allTestsPass &= test_arraylist_get_alist();
+    allTestsPass &= test_arraylist_getLast_alist();
     allTestsPass &= test_arraylist_isSorted_alist();
     allTestsPass &= test_arraylist_isValid_alist();
     allTestsPass &= test_arraylist_lsearch_alist();
@@ -241,6 +243,26 @@ static bool test_arraylist_get_alist(void) {
         int const* const grade = get_alist(list, i);
         TEST_FAIL_IF(*grade != grades[i])
     }
+
+    free_alist(list);
+    TEST_PASS
+}
+
+static bool test_arraylist_getLast_alist(void) {
+    int const grades[]      = { 92, 84, 76, 22, 45 };
+    uint32_t const nGrades  = sizeof(grades) / sizeof(uint32_t);
+    ArrayList list[1]       = { NOT_AN_ALIST };
+    constructEmpty_alist(list, sizeof(int), nGrades);
+
+    TEST_FAIL_IF(list->size != 0)
+    TEST_FAIL_IF(list->cap != nGrades)
+
+    add_alist(list, nGrades, grades);
+
+    TEST_FAIL_IF(list->size != nGrades)
+    TEST_FAIL_IF(list->cap != nGrades)
+
+    TEST_FAIL_IF(grades[nGrades - 1] != *(int*)getLast_alist(list))
 
     free_alist(list);
     TEST_PASS
