@@ -162,40 +162,44 @@ uint32_t fromStream_chunk(
     char const delimeters[], size_t nDelimeters
 ) {
     assert(isValid_chunk(chunk));
+
+    if (fromStreamAsWhole_chunk(chunk, stream) == NULL)
+        return INVALID_UINT32;
+
     {
-        uint32_t id = fromStreamAsWhole_chunk(chunk, stream);
-        if (splitLast_chunk(chunk, delimeters, nDelimeters) == 0)
+        uint32_t const nTokens = splitLast_chunk(chunk, delimeters, nDelimeters);
+        if (nTokens == 0)
             return INVALID_UINT32;
         else
-            return id;
+            return LEN_CHUNK(chunk) - nTokens;
     }
 }
 
-uint32_t fromStreamAsWhole_chunk(ArrayList chunk[static const 2], FILE stream[static const 1]) {
+void* fromStreamAsWhole_chunk(ArrayList chunk[static const 2], FILE stream[static const 1]) {
     assert(isValid_chunk(chunk));
 
     if (fseek(stream, 0L, SEEK_END) != 0) {
-        return INVALID_UINT32;
+        return NULL;
     } else {
         long const size = ftell(stream);
         if (size < 0L) {
-            return INVALID_UINT32;
+            return NULL;
         #if ULONG_MAX >= UINT32_MAX
             } else if ((unsigned long)size >= SZ32_MAX) {
-                return INVALID_UINT32;
+                return NULL;
         #endif
         #if ULONG_MAX >= SIZE_MAX
             } else if ((unsigned long)size >= SZSZ_MAX) {
-                return INVALID_UINT32;
+                return NULL;
         #endif
         } else if (fseek(stream, 0L, SEEK_SET) != 0) {
-            return INVALID_UINT32;
+            return NULL;
         } else {
             void* const dest = addIndeterminateItem_chunk(chunk, (uint32_t)size);
             if (fread(dest, (size_t)size, 1, stream) == 1)
-                return LEN_CHUNK(chunk) - 1;
+                return dest;
             else
-                return INVALID_UINT32;
+                return NULL;
         }
     }
 }

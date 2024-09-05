@@ -142,6 +142,7 @@ obj/padkit/chunk.o: .FORCE              \
     include/padkit/arraylist.h          \
     include/padkit/chunk.h              \
     include/padkit/invalid.h            \
+    include/padkit/overlap.h            \
     include/padkit/size.h               \
     src/padkit/chunk.c                  \
     ; ${COMPILE} -Iinclude src/padkit/chunk.c -c -o obj/padkit/chunk.o

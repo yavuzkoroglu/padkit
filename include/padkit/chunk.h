@@ -40,7 +40,7 @@
         char const delimeters[], size_t nDelimeters
     );
 
-    uint32_t fromStreamAsWhole_chunk(ArrayList chunk[static const 2], FILE stream[static const 1]);
+    void* fromStreamAsWhole_chunk(ArrayList chunk[static const 2], FILE stream[static const 1]);
 
     void* get_chunk(ArrayList const chunk[static const 2], uint32_t const id);
 
