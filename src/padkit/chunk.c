@@ -36,7 +36,7 @@ uint32_t addIndex_chunk(ArrayList chunk[static const 2], uint32_t const id) {
     }
 }
 
-void const* append_chunk
+void const* append_chunk(ArrayList chunk[static const 2], )
 
 void const* get_chunk(ArrayList chunk[static const 2], uint32_t const id) {
     assert(isValid_chunk(chunk));
