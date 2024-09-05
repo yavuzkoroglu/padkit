@@ -57,8 +57,12 @@ void* appendDuplicate_chunk(ArrayList chunk[static const 2], uint32_t const id) 
     assert(id < LEN_CHUNK(chunk));
     {
         uint32_t const sz_item = sz_item_chunk(chunk, id);
+        uint32_t const startId = AREA_CHUNK(chunk);
         addIndeterminate_alist(chunk, sz_item);
-        set_alist(chunk, LEN_CHUNK(chunk) - 1, sz_item, get_chunk(chunk, id));
+        {
+            void* const item = get_chunk(chunk, id);
+            set_alist(chunk, startId, sz_item, item);
+        }
     }
 
     return getLast_chunk(chunk);

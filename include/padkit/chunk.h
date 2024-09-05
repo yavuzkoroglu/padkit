@@ -5,13 +5,13 @@
     #define AREA_CHUNK(chunk)   (chunk[0].size)
     #define LEN_CHUNK(chunk)    (chunk[1].size)
 
-    #define NOT_A_CHUNK         ((Chunk){ NOT_AN_ALIST, NOT_AN_ALIST })
+    #define NOT_A_CHUNK         { NOT_AN_ALIST, NOT_AN_ALIST }
 
     typedef ArrayList Chunk[2];
 
-    uint32_t addItem_chunk(ArrayList chunk[static const 2], uint32_t const sz, void const* const restrict ptr);
-
     uint32_t addIndeterminateItem_chunk(ArrayList chunk[static const 2], uint32_t const sz);
+
+    uint32_t addItem_chunk(ArrayList chunk[static const 2], uint32_t const sz, void const* const restrict ptr);
 
     void* append_chunk(ArrayList chunk[static const 2], uint32_t const sz, void const* const restrict ptr);
 
