@@ -163,10 +163,9 @@ uint32_t fromStream_chunk(
 ) {
     assert(isValid_chunk(chunk));
 
-    if (fromStreamAsWhole_chunk(chunk, stream) == NULL)
+    if (fromStreamAsWhole_chunk(chunk, stream) == NULL) {
         return INVALID_UINT32;
-
-    {
+    } else {
         uint32_t const nTokens = splitLast_chunk(chunk, delimeters, nDelimeters);
         if (nTokens == 0)
             return INVALID_UINT32;
