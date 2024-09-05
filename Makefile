@@ -17,6 +17,7 @@ OBJECTS=obj/padkit/arraylist.o          \
         obj/padkit/bitmatrix.o          \
         obj/padkit/chunk.o              \
         obj/padkit/hash.o               \
+        obj/padkit/indextable.o         \
         obj/padkit/jsonparser.o         \
         obj/padkit/memalloc.o           \
         obj/padkit/overlap.o            \
@@ -28,6 +29,7 @@ SOURCES=src/padkit/arraylist.c          \
         src/padkit/bitmatrix.c          \
         src/padkit/chunk.c              \
         src/padkit/hash.c               \
+        src/padkit/indextable.c         \
         src/padkit/jsonparser.c         \
         src/padkit/memalloc.c           \
         src/padkit/overlap.c            \
@@ -40,6 +42,7 @@ TESTSRC=src/tests/arraylist.c           \
         src/tests/chunk.c               \
         src/tests/graphmatrix.c         \
         src/tests/hash.c                \
+        src/tests/indextable.c          \
         src/tests/jsonparser.c          \
         src/tests/memalloc.c            \
         src/tests/overlap.c             \
@@ -153,6 +156,17 @@ obj/padkit/hash.o: .FORCE               \
     src/padkit/hash.c                   \
     ; ${COMPILE} -Iinclude src/padkit/hash.c -c -o obj/padkit/hash.o
 
+obj/padkit/indextable.o: .FORCE         \
+    obj/padkit                          \
+    include/padkit/error.h              \
+    include/padkit/hash.h               \
+    include/padkit/indextable.h         \
+    include/padkit/memalloc.h           \
+    include/padkit/prime.h              \
+    include/padkit/size.h               \
+    src/padkit/indextable.c             \
+    ; ${COMPILE} -Iinclude src/padkit/indextable.c -c -o obj/padkit/indextable.o
+
 obj/padkit/jsonparser.o: .FORCE         \
     obj/padkit                          \
     include/padkit/error.h              \
@@ -195,7 +209,6 @@ obj/padkit/stack.o: .FORCE              \
 
 obj/padkit/timestamp.o: .FORCE          \
     obj/padkit                          \
-    include/padkit/error.h              \
     include/padkit/timestamp.h          \
     src/padkit/timestamp.c              \
     ; ${COMPILE} -Iinclude src/padkit/timestamp.c -c -o obj/padkit/timestamp.o

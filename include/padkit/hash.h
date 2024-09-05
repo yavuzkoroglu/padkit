@@ -15,5 +15,5 @@
      *
      * @return An unsigned integer capable of holding 64-bit values.
      */
-    uint_fast64_t hash_str(char const str[static 1], uint64_t n);
+    uint_fast64_t hash_str(char const str[static 1], size_t n);
 #endif

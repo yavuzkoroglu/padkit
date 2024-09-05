@@ -19,6 +19,7 @@
 #include "tests/chunk.c"
 #include "tests/graphmatrix.c"
 #include "tests/hash.c"
+#include "tests/indextable.c"
 #include "tests/jsonparser.c"
 #include "tests/memalloc.c"
 #include "tests/overlap.c"
@@ -69,6 +70,7 @@ int main(void) {
     test_chunk();
     test_graphmatrix();
     test_hash();
+    test_indextable();
     test_jsonparser();
     test_memalloc();
     test_overlap();
