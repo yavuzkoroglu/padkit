@@ -21,7 +21,6 @@
 #include "tests/hash.c"
 #include "tests/indextable.c"
 #include "tests/jsonparser.c"
-#include "tests/mapping.c"
 #include "tests/memalloc.c"
 #include "tests/overlap.c"
 #include "tests/prime.c"
@@ -79,7 +78,6 @@ int main(void) {
     test_hash();
     test_indextable();
     test_jsonparser();
-    test_mapping();
     test_memalloc();
     test_overlap();
     test_prime();

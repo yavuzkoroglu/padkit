@@ -18,10 +18,10 @@ void constructEmpty_itbl(
     assert(initial_cap > 0);
     assert(initial_cap < SZ32_MAX);
 
-    constructEmpty_alist(table->mappings, sizeof(Mapping), initial_cap);
+    constructEmpty_alist(table->mappings, sizeof(IndexMapping), initial_cap);
 
     if (min_height > 100)
-        if (isPrime(min_height))
+        if (min_height % 2 == 1 && isPrime(min_height))
             table->height = min_height;
         else
             table->height = nextPrime(min_height);
@@ -63,7 +63,7 @@ void free_itbl(IndexTable table[static const 1]) {
     table[0] = NOT_AN_ITBL;
 }
 
-Mapping* getFirstMapping_itbl(IndexTable const table[static const 1], uint_fast64_t const index) {
+IndexMapping* getFirstMapping_itbl(IndexTable const table[static const 1], uint_fast64_t const index) {
     assert(isValid_itbl(table));
     {
         uint32_t const row_id       = index % table->height;
@@ -71,7 +71,7 @@ Mapping* getFirstMapping_itbl(IndexTable const table[static const 1], uint_fast6
         if (mapping_id >= table->mappings->size) {
             return NULL;
         } else {
-            Mapping* mapping = get_alist(table->mappings, mapping_id);
+            IndexMapping* mapping = get_alist(table->mappings, mapping_id);
             while (mapping->index != index) {
                 if (mapping->next_id >= table->mappings->size)
                     return NULL;
@@ -94,7 +94,7 @@ void grow_itbl(IndexTable table[static const 1]) {
     }
 
     for (uint32_t mapping_id = 0; mapping_id < table->mappings->size; mapping_id++) {
-        Mapping const* const mapping = get_alist(table->mappings, mapping_id);
+        IndexMapping const* const mapping = get_alist(table->mappings, mapping_id);
         #ifndef NDEBUG
             int const insert_result =
         #endif
@@ -125,11 +125,11 @@ bool insert_itbl(
         uint32_t const first_mapping_id = table->rows[row_id];
 
         if (first_mapping_id >= table->mappings->size) {
-            Mapping* const mapping  = addIndeterminate_alist(table->mappings, 1);
-            table->rows[row_id]     = table->mappings->size - 1;
-            mapping->index          = index;
-            mapping->value          = value;
-            mapping->next_id        = INVALID_UINT32;
+            IndexMapping* const mapping = addIndeterminate_alist(table->mappings, 1);
+            table->rows[row_id]         = table->mappings->size - 1;
+            mapping->index              = index;
+            mapping->value              = value;
+            mapping->next_id            = INVALID_UINT32;
 
             if (table->load >= table->max_load)
                 grow_itbl(table);
@@ -138,7 +138,7 @@ bool insert_itbl(
 
             return ITBL_INSERT_UNIQUE;
         } else {
-            Mapping* mapping = get_alist(table->mappings, first_mapping_id);
+            IndexMapping* mapping = get_alist(table->mappings, first_mapping_id);
             while (
                 mapping->index != index || (
                     relationType == ITBL_RELATION_ONE_TO_MANY && mapping->value != value
@@ -165,32 +165,31 @@ bool insert_itbl(
 }
 
 bool isValid_itbl(IndexTable const table[static const 1]) {
-    if (!isValid_alist(table->mappings))                return 0;
-    if (table->mappings->sz_element != sizeof(Mapping)) return 0;
-    if (table->height <= 100)                           return 0;
-    if (table->height >= SZ32_MAX)                      return 0;
-    if (!isPrime(table->height))                        return 0;
-    if (table->load >= table->max_load)                 return 0;
-    if (table->max_percent_load == 0)                   return 0;
-    if (table->max_percent_load > 100)                  return 0;
-    if (table->max_load == 0)                           return 0;
-    if (table->max_load > table->height)                return 0;
-    if (table->rows == NULL)                            return 0;
+    if (!isValid_alist(table->mappings))                        return 0;
+    if (table->mappings->sz_element != sizeof(IndexMapping))    return 0;
+    if (table->height <= 100)                                   return 0;
+    if (table->height >= SZ32_MAX)                              return 0;
+    if (!isPrime(table->height))                                return 0;
+    if (table->load >= table->max_load)                         return 0;
+    if (table->max_percent_load == 0)                           return 0;
+    if (table->max_percent_load > 100)                          return 0;
+    if (table->max_load == 0)                                   return 0;
+    if (table->max_load > table->height)                        return 0;
+    if (table->rows == NULL)                                    return 0;
 
     return 1;
 }
 
-Mapping* nextMapping_itbl(
+IndexMapping* nextMapping_itbl(
     IndexTable const table[static const 1],
-    Mapping const mapping[static const 1]
+    IndexMapping const mapping[static const 1]
 ) {
     assert(isValid_itbl(table));
-    assert(isValid_mppng(mapping));
 
     if (mapping->next_id >= table->mappings->size) {
         return NULL;
     } else {
-        Mapping* next = get_alist(table->mappings, mapping->next_id);
+        IndexMapping* next = get_alist(table->mappings, mapping->next_id);
         while (next->index != mapping->index) {
             if (next->next_id >= table->mappings->size)
                 return NULL;

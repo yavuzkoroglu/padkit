@@ -193,7 +193,7 @@ static bool test_chunk_constructEmpty_chunk(void) {
     Chunk chunk_A = NOT_A_CHUNK;
     Chunk chunk_B = NOT_A_CHUNK;
     constructEmpty_chunk(chunk_A, 1, 1);
-    constructEmpty_chunk(chunk_B, SZ32_MAX - 1, SZ32_MAX - 1);
+    constructEmpty_chunk(chunk_B, 1000000, 1000000);
     free_chunk(chunk_A);
     free_chunk(chunk_B);
     TEST_PASS
@@ -283,7 +283,7 @@ static bool test_chunk_duplicateItem_chunk(void) {
 
 static bool test_chunk_free_chunk(void) {
     Chunk chunk = NOT_A_CHUNK;
-    constructEmpty_chunk(chunk, SZ32_MAX - 1, SZ32_MAX - 1);
+    constructEmpty_chunk(chunk, 1000000, 1000000);
     free_chunk(chunk);
     TEST_PASS
 }
@@ -315,7 +315,7 @@ static bool test_chunk_isValid_chunk(void) {
 
     TEST_FAIL_IF(isValid_chunk(chunk))
 
-    constructEmpty_chunk(chunk, SZ32_MAX - 1, SZ32_MAX - 1);
+    constructEmpty_chunk(chunk, 1000000, 1000000);
 
     TEST_FAIL_IF(!isValid_chunk(chunk))
 

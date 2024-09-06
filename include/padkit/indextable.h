@@ -1,8 +1,9 @@
 #ifndef PADKIT_INDEXTABLE_H
     #define PADKIT_INDEXTABLE_H
     #include "padkit/arraylist.h"
-    #include "padkit/mapping.h"
+    #include "padkit/invalid.h"
 
+    #define NOT_AN_IMAPPING                         ((IndexMapping){ 0, 0, INVALID_UINT32 })
     #define NOT_AN_ITBL                             ((IndexTable){ { NOT_AN_ALIST }, 0, 0, 0, 0, NULL })
 
     #ifndef ITBL_RECOMMENDED_MAX_PERCENT_LOAD
@@ -17,6 +18,12 @@
         ITBL_RECOMMENDED_MIN_HEIGHT,            \
         ITBL_RECOMMENDED_MAX_PERCENT_LOAD,      \
         ALIST_RECOMMENDED_INITIAL_CAP
+
+    typedef struct IndexMappingBody {
+        uint_fast64_t   index;
+        uint32_t        value;
+        uint32_t        next_id;
+    } IndexMapping;
 
     typedef struct IndexTableBody {
         ArrayList   mappings[1];
@@ -38,7 +45,7 @@
 
     void free_itbl(IndexTable table[static const 1]);
 
-    Mapping* getFirstMapping_itbl(IndexTable const table[static const 1], uint_fast64_t const index);
+    IndexMapping* getFirstMapping_itbl(IndexTable const table[static const 1], uint_fast64_t const index);
 
     void grow_itbl(IndexTable table[static const 1]);
 
@@ -58,8 +65,8 @@
 
     bool isValid_itbl(IndexTable const table[static const 1]);
 
-    Mapping* nextMapping_itbl(
+    IndexMapping* nextMapping_itbl(
         IndexTable const table[static const 1],
-        Mapping const mapping[static const 1]
+        IndexMapping const mapping[static const 1]
     );
 #endif

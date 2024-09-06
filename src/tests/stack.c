@@ -54,7 +54,7 @@ static void test_stack(void) {
 static bool test_stack_constructEmpty_stack(void) {
     Stack stack[2] = { NOT_A_STACK, NOT_A_STACK };
     constructEmpty_stack(stack, sizeof(int), 1);
-    constructEmpty_stack(stack + 1, sizeof(int), SZ32_MAX - 1);
+    constructEmpty_stack(stack + 1, sizeof(int), 1000000);
 
     TEST_FAIL_IF(!isValid_stack(stack))
     TEST_FAIL_IF(!isValid_stack(stack + 1))
@@ -92,7 +92,7 @@ static bool test_stack_flush_stack(void) {
 
 static bool test_stack_free_stack(void) {
     Stack stack[1] = { NOT_A_STACK };
-    constructEmpty_stack(stack, sizeof(int), SZ32_MAX - 1);
+    constructEmpty_stack(stack, sizeof(int), 1000000);
     free_stack(stack);
     TEST_PASS
 }

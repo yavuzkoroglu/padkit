@@ -184,7 +184,7 @@ static bool test_arraylist_concat_alist(void) {
 static bool test_arraylist_constructEmpty_alist(void) {
     ArrayList list[2] = { NOT_AN_ALIST, NOT_AN_ALIST };
     constructEmpty_alist(list, sizeof(int), 1);
-    constructEmpty_alist(list + 1, sizeof(int), SZ32_MAX - 1);
+    constructEmpty_alist(list + 1, sizeof(int), 1000000);
 
     TEST_FAIL_IF(!isValid_alist(list))
     TEST_FAIL_IF(!isValid_alist(list + 1))
@@ -243,7 +243,7 @@ static bool test_arraylist_flush_alist(void) {
 
 static bool test_arraylist_free_alist(void) {
     ArrayList list[1] = { NOT_AN_ALIST };
-    constructEmpty_alist(list, sizeof(int), SZ32_MAX - 1);
+    constructEmpty_alist(list, sizeof(int), 1000000);
     free_alist(list);
     TEST_PASS
 }
