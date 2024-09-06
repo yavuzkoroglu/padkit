@@ -19,9 +19,9 @@
 #include "tests/chunk.c"
 #include "tests/graphmatrix.c"
 #include "tests/hash.c"
-#include "tests/hashmapping.c"
-#include "tests/hashtable.c"
+#include "tests/indextable.c"
 #include "tests/jsonparser.c"
+#include "tests/mapping.c"
 #include "tests/memalloc.c"
 #include "tests/overlap.c"
 #include "tests/prime.c"
@@ -65,8 +65,8 @@ int main(void) {
     puts("");
 
     printf(" ALIST_RECOMMENDED_INITIAL_CAP = %"PRIuMAX"\n", (uintmax_t)ALIST_RECOMMENDED_INITIAL_CAP);
-    printf(" HTBL_RECOMMENDED_MAX_PERCENT_LOAD = %"PRIuMAX"\n", (uintmax_t)HTBL_RECOMMENDED_MAX_PERCENT_LOAD);
-    printf(" HTBL_RECOMMENDED_MIN_HEIGHT = %"PRIuMAX"\n", (uintmax_t)HTBL_RECOMMENDED_MIN_HEIGHT);
+    printf(" ITBL_RECOMMENDED_MAX_PERCENT_LOAD = %"PRIuMAX"\n", (uintmax_t)ITBL_RECOMMENDED_MAX_PERCENT_LOAD);
+    printf(" ITBL_RECOMMENDED_MIN_HEIGHT = %"PRIuMAX"\n", (uintmax_t)ITBL_RECOMMENDED_MIN_HEIGHT);
 
     puts("");
 
@@ -77,9 +77,9 @@ int main(void) {
     test_chunk();
     test_graphmatrix();
     test_hash();
-    test_hashmapping();
-    test_hashtable();
+    test_indextable();
     test_jsonparser();
+    test_mapping();
     test_memalloc();
     test_overlap();
     test_prime();

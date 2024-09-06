@@ -17,9 +17,9 @@ OBJECTS=obj/padkit/arraylist.o          \
         obj/padkit/bitmatrix.o          \
         obj/padkit/chunk.o              \
         obj/padkit/hash.o               \
-        obj/padkit/hashmapping.o        \
-        obj/padkit/hashtable.o          \
+        obj/padkit/indextable.o         \
         obj/padkit/jsonparser.o         \
+        obj/padkit/mapping.o            \
         obj/padkit/memalloc.o           \
         obj/padkit/overlap.o            \
         obj/padkit/prime.o              \
@@ -30,9 +30,9 @@ SOURCES=src/padkit/arraylist.c          \
         src/padkit/bitmatrix.c          \
         src/padkit/chunk.c              \
         src/padkit/hash.c               \
-        src/padkit/hashmapping.c        \
-        src/padkit/hashtable.c          \
+        src/padkit/indextable.c         \
         src/padkit/jsonparser.c         \
+        src/padkit/mapping.c            \
         src/padkit/memalloc.c           \
         src/padkit/overlap.c            \
         src/padkit/prime.c              \
@@ -44,9 +44,9 @@ TESTSRC=src/tests/arraylist.c           \
         src/tests/chunk.c               \
         src/tests/graphmatrix.c         \
         src/tests/hash.c                \
-        src/tests/hashmapping.c         \
-        src/tests/hashtable.c           \
+        src/tests/indextable.c          \
         src/tests/jsonparser.c          \
+        src/tests/mapping.c             \
         src/tests/memalloc.c            \
         src/tests/overlap.c             \
         src/tests/prime.c               \
@@ -101,10 +101,10 @@ include/padkit.h: .FORCE;                                                       
     echo '    #include "padkit/chunk.h"'                    >> include/padkit.h; \
     echo '    #include "padkit/error.h"'                    >> include/padkit.h; \
     echo '    #include "padkit/hash.h"'                     >> include/padkit.h; \
-    echo '    #include "padkit/hashmapping.h"'              >> include/padkit.h; \
-    echo '    #include "padkit/hashtable.h"'                >> include/padkit.h; \
+    echo '    #include "padkit/indextable.h"'               >> include/padkit.h; \
     echo '    #include "padkit/invalid.h"'                  >> include/padkit.h; \
     echo '    #include "padkit/jsonparser.h"'               >> include/padkit.h; \
+    echo '    #include "padkit/mapping.h"'                  >> include/padkit.h; \
     echo '    #include "padkit/memalloc.h"'                 >> include/padkit.h; \
     echo '    #include "padkit/overlap.h"'                  >> include/padkit.h; \
     echo '    #include "padkit/preprocessor.h"'             >> include/padkit.h; \
@@ -161,26 +161,18 @@ obj/padkit/hash.o: .FORCE               \
     src/padkit/hash.c                   \
     ; ${COMPILE} -Iinclude src/padkit/hash.c -c -o obj/padkit/hash.o
 
-obj/padkit/hashmapping.o: .FORCE        \
-    obj/padkit                          \
-    include/padkit/hashmapping.h        \
-    include/padkit/invalid.h            \
-    include/padkit/size.h               \
-    src/padkit/hashmapping.c            \
-    ; ${COMPILE} -Iinclude src/padkit/hashmapping.c -c -o obj/padkit/hashmapping.o
-
-obj/padkit/hashtable.o: .FORCE          \
+obj/padkit/indextable.o: .FORCE         \
     obj/padkit                          \
     include/padkit/arraylist.h          \
     include/padkit/error.h              \
-    include/padkit/hashmapping.h        \
-    include/padkit/hashtable.h          \
+    include/padkit/indextable.h         \
     include/padkit/invalid.h            \
+    include/padkit/mapping.h            \
     include/padkit/memalloc.h           \
     include/padkit/prime.h              \
     include/padkit/size.h               \
-    src/padkit/hashtable.c              \
-    ; ${COMPILE} -Iinclude src/padkit/hashtable.c -c -o obj/padkit/hashtable.o
+    src/padkit/indextable.c             \
+    ; ${COMPILE} -Iinclude src/padkit/indextable.c -c -o obj/padkit/indextable.o
 
 obj/padkit/jsonparser.o: .FORCE         \
     obj/padkit                          \
@@ -191,6 +183,14 @@ obj/padkit/jsonparser.o: .FORCE         \
     include/padkit/unused.h             \
     src/padkit/jsonparser.c             \
     ; ${COMPILE} -Iinclude src/padkit/jsonparser.c -c -o obj/padkit/jsonparser.o
+
+obj/padkit/mapping.o: .FORCE            \
+    obj/padkit                          \
+    include/padkit/invalid.h            \
+    include/padkit/mapping.h            \
+    include/padkit/size.h               \
+    src/padkit/mapping.c                \
+    ; ${COMPILE} -Iinclude src/padkit/mapping.c -c -o obj/padkit/mapping.o
 
 obj/padkit/memalloc.o: .FORCE           \
     obj/padkit                          \
