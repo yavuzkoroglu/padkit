@@ -37,5 +37,28 @@
 
     void free_htbl(HashTable table[static const 1]);
 
+    HashMapping* getFirstMapping_htbl(HashTable const table[static const 1], uint_fast64_t const hashValue);
+
+    void grow_htbl(HashTable table[static const 1]);
+
+    #define HTBL_BEHAVIOR_REPLACE       0
+    #define HTBL_BEHAVIOR_RESPECT       1
+    #define HTBL_RELATION_ONE_TO_ONE    0
+    #define HTBL_RELATION_ONE_TO_MANY   1
+    #define HTBL_INSERT_UNIQUE          0
+    #define HTBL_INSERT_NOT_UNIQUE      1
+    bool insert_htbl(
+        HashTable table[static const 1],
+        uint_fast64_t const hashValue,
+        uint32_t const mappedValue,
+        bool const relationType,
+        bool const behavior
+    );
+
     bool isValid_htbl(HashTable const table[static const 1]);
+
+    HashMapping* nextMapping_htbl(
+        HashTable const table[static const 1],
+        HashMapping const mapping[static const 1]
+    );
 #endif

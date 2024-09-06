@@ -8,7 +8,7 @@
     typedef struct HashMappingBody {
         uint_fast64_t   hashValue;
         uint32_t        mappedValue;
-        uint32_t        nextId;
+        uint32_t        next_id;
     } HashMapping;
 
     bool isValid_hmpng(HashMapping const mapping[static const 1]);
