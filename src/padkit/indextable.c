@@ -140,8 +140,14 @@ bool insert_itbl(
         } else {
             IndexMapping* mapping = get_alist(table->mappings, first_mapping_id);
             while (
-                mapping->index != index || (
-                    relationType == ITBL_RELATION_ONE_TO_MANY && mapping->value != value
+                (
+                    relationType == ITBL_RELATION_ONE_TO_MANY &&
+                    behavior == ITBL_BEHAVIOR_RESPECT
+                ) || (
+                    mapping->index != index
+                ) || (
+                    relationType == ITBL_RELATION_ONE_TO_MANY &&
+                    mapping->value != value
                 )
             ) {
                 if (mapping->next_id >= table->mappings->size) {

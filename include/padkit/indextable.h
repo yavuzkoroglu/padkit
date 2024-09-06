@@ -1,9 +1,8 @@
 #ifndef PADKIT_INDEXTABLE_H
     #define PADKIT_INDEXTABLE_H
     #include "padkit/arraylist.h"
-    #include "padkit/invalid.h"
 
-    #define NOT_AN_IMAPPING                         ((IndexMapping){ 0, 0, INVALID_UINT32 })
+    #define NOT_AN_IMAPPING                         ((IndexMapping){ 0, 0, 0 })
     #define NOT_AN_ITBL                             ((IndexTable){ { NOT_AN_ALIST }, 0, 0, 0, 0, NULL })
 
     #ifndef ITBL_RECOMMENDED_MAX_PERCENT_LOAD
