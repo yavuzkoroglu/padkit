@@ -140,12 +140,7 @@ bool insert_itbl(
         } else {
             IndexMapping* mapping = get_alist(table->mappings, first_mapping_id);
             while (
-                (
-                    relationType == ITBL_RELATION_ONE_TO_MANY &&
-                    behavior == ITBL_BEHAVIOR_RESPECT
-                ) || (
-                    mapping->index != index
-                ) || (
+                mapping->index != index || (
                     relationType == ITBL_RELATION_ONE_TO_MANY &&
                     mapping->value != value
                 )
@@ -162,8 +157,19 @@ bool insert_itbl(
                 mapping = get_alist(table->mappings, mapping->next_id);
             }
 
-            if (behavior == ITBL_BEHAVIOR_REPLACE)
+            if (behavior == ITBL_BEHAVIOR_REPLACE) {
                 mapping->value = value;
+            } else if (relationType == ITBL_RELATION_ONE_TO_MANY) { /* Also ITBL_BEHAVIOR_RESPECT */
+                while (mapping->next_id < table->mappings->size)
+                    mapping = get_alist(table->mappings, mapping->next_id);
+
+                mapping->next_id    = table->mappings->size;
+                mapping             = addIndeterminate_alist(table->mappings, 1);
+                mapping->index      = index;
+                mapping->value      = value;
+                mapping->next_id    = INVALID_UINT32;
+                return ITBL_INSERT_NOT_UNIQUE;
+            }
 
             return ITBL_INSERT_NOT_UNIQUE;
         }

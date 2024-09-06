@@ -117,7 +117,11 @@ static bool test_indextable_insert_itbl(void) {
             ITBL_RELATION_ONE_TO_MANY,
             ITBL_BEHAVIOR_RESPECT
         );
-        TEST_FAIL_IF(scoreInsert == ITBL_INSERT_UNIQUE)
+        if (person == WENDY) {
+            TEST_FAIL_IF(scoreInsert == ITBL_INSERT_UNIQUE)
+        } else {
+            TEST_FAIL_IF(scoreInsert == ITBL_INSERT_NOT_UNIQUE)
+        }
     }
 
     for (uint_fast64_t person = ALICE; person < PEOPLE_COUNT; person++) {
