@@ -5,9 +5,11 @@
     #include <stdint.h>
     #include <stdio.h>
 
-    #define NOT_AN_ALIST                    ((ArrayList){ 0, 0, 0, NULL })
+    #define NOT_AN_ALIST                        ((ArrayList){ 0, 0, 0, NULL })
 
-    #define ALIST_RECOMMENDED_INITIAL_CAP   (BUFSIZ)
+    #ifndef ALIST_RECOMMENDED_INITIAL_CAP
+        #define ALIST_RECOMMENDED_INITIAL_CAP   (BUFSIZ)
+    #endif
 
     typedef struct ArrayListBody {
         size_t      sz_element;

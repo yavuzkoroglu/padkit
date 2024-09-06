@@ -19,7 +19,8 @@
 #include "tests/chunk.c"
 #include "tests/graphmatrix.c"
 #include "tests/hash.c"
-#include "tests/indextable.c"
+#include "tests/hashmapping.c"
+#include "tests/hashtable.c"
 #include "tests/jsonparser.c"
 #include "tests/memalloc.c"
 #include "tests/overlap.c"
@@ -39,11 +40,11 @@ int main(void) {
     puts("");
 
     puts(" PADKIT_VERSION = "PADKIT_VERSION);
-    puts("  PADKIT_TARGET = "PADKIT_TARGET);
+    puts(" PADKIT_TARGET = "PADKIT_TARGET);
 
     puts("");
 
-    printf("%15"PRId16" = (int16_t)B2(B_11111111, B_11110110)\n", (int16_t)B2(B_11111111, B_11110110));
+    printf(" (int16_t)B2(B(11111111), B(11110110)) = %"PRIi16"\n", (int16_t)B2(B(11111111), B(11110110)));
 
     puts("");
 
@@ -51,15 +52,21 @@ int main(void) {
 
     puts("");
 
-    printf("       SZSZ_MAX = 0x%0*"PRIXMAX"\n", (2 * (int)sizeof(uintmax_t)), (uintmax_t)SZSZ_MAX);
-    printf("       SZ32_MAX = 0x%0*"PRIXMAX"\n", (2 * (int)sizeof(uintmax_t)), (uintmax_t)SZ32_MAX);
-    printf("       SZ64_MAX = 0x%0*"PRIXMAX"\n", (2 * (int)sizeof(uintmax_t)), (uintmax_t)SZ64_MAX);
-    printf("  SZPTRDIFF_MAX = 0x%0*"PRIXMAX"\n", (2 * (int)sizeof(uintmax_t)), (uintmax_t)SZPTRDIFF_MAX);
+    printf(" SZSZ_MAX = 0x%0*"PRIXMAX"\n", (2 * (int)sizeof(uintmax_t)), (uintmax_t)SZSZ_MAX);
+    printf(" SZ32_MAX = 0x%0*"PRIXMAX"\n", (2 * (int)sizeof(uintmax_t)), (uintmax_t)SZ32_MAX);
+    printf(" SZ64_MAX = 0x%0*"PRIXMAX"\n", (2 * (int)sizeof(uintmax_t)), (uintmax_t)SZ64_MAX);
+    printf(" SZPTRDIFF_MAX = 0x%0*"PRIXMAX"\n", (2 * (int)sizeof(uintmax_t)), (uintmax_t)SZPTRDIFF_MAX);
 
     puts("");
 
-    printf("         TS_FMT = \"%s\"\n", TS_FMT);
-    printf("         TS_LEN = %"PRIuMAX"\n", (uintmax_t)TS_LEN);
+    printf(" TS_FMT = \"%s\"\n", TS_FMT);
+    printf(" TS_LEN = %"PRIuMAX"\n", (uintmax_t)TS_LEN);
+
+    puts("");
+
+    printf(" ALIST_RECOMMENDED_INITIAL_CAP = %"PRIuMAX"\n", (uintmax_t)ALIST_RECOMMENDED_INITIAL_CAP);
+    printf(" HTBL_RECOMMENDED_MAX_PERCENT_LOAD = %"PRIuMAX"\n", (uintmax_t)HTBL_RECOMMENDED_MAX_PERCENT_LOAD);
+    printf(" HTBL_RECOMMENDED_MIN_HEIGHT = %"PRIuMAX"\n", (uintmax_t)HTBL_RECOMMENDED_MIN_HEIGHT);
 
     puts("");
 
@@ -70,7 +77,8 @@ int main(void) {
     test_chunk();
     test_graphmatrix();
     test_hash();
-    test_indextable();
+    test_hashmapping();
+    test_hashtable();
     test_jsonparser();
     test_memalloc();
     test_overlap();
