@@ -76,7 +76,7 @@ all: include/padkit.h libs tests
 
 bin: ; mkdir bin
 
-clean: cleancoverage; rm -rf include/padkit.h obj/* bin/* lib/* html latex
+clean: cleancoverage; rm -rf include/padkit.h obj bin lib html latex
 
 cleancoverage: ; rm -rf *.gcno *.gcda *.gcov bin/*.gcno bin/*.gcda bin/*.gcov
 
