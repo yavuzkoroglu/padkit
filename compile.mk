@@ -15,8 +15,6 @@ STD=c99
 
 ifeq (${OS},Darwin)
 DYNAMIC_LIB_FLAGS=-dynamiclib -fvisibility="default"
-ARCH=$(shell uname -m)
-ARCH_ARGS=-arch ${ARCH}
 else
 ifeq (${OS},Linux)
 DYNAMIC_LIB_FLAGS=-shared -fPIC
@@ -34,17 +32,9 @@ endif
 CCNAME=$(findstring clang,${CC})
 
 ifeq (${CCNAME},clang)
-ifeq (${OS},Darwin)
-ARGS=${ARCH_ARGS} ${FLAGS} -Weverything -Werror -Wno-unsafe-buffer-usage
-else
 ARGS=${FLAGS} -Weverything -Werror -Wno-unsafe-buffer-usage
-endif
-else
-ifeq (${OS},Darwin)
-ARGS=${ARCH_ARGS} ${FLAGS} -Wall -Wextra -Werror
 else
 ARGS=${FLAGS} -Wall -Wextra -Werror
-endif
 endif
 
 COMPILE=${CC} ${ARGS}
