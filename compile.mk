@@ -41,7 +41,7 @@ SILENCED=-Wno-unsafe-buffer-usage
 ARGS=${ARCH_ARGS} ${FLAGS} -Weverything -Werror ${SILENCED} ${STDLIBS}
 else
 SILENCED=
-ARGS=${ARCH_ARGS} ${FLAGS} -Wall -Wextra -Werror ${SILENCED} ${STDLIBS}
+ARGS=${ARCH_ARGS} ${FLAGS} -Wall -Wextra -Werror ${STDLIBS}
 endif
 
 COMPILE=${CC} ${ARGS}
