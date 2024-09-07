@@ -56,7 +56,7 @@ default: all
 
 .FORCE:
 
-.PHONY: .FORCE all clean default documentation libs objects target tests version
+.PHONY: .FORCE all clean cleancoverage default libs objects target tests version
 
 ${DYNAMIC_LIB}: .FORCE      \
     lib                     \
@@ -79,8 +79,6 @@ bin: ; mkdir bin
 clean: cleancoverage; rm -rf include/padkit.h obj bin lib html latex
 
 cleancoverage: ; rm -rf *.gcno *.gcda *.gcov bin/*.gcno bin/*.gcda bin/*.gcov
-
-documentation: ; doxygen
 
 include/padkit.h: .FORCE;                                                       @\
     echo '/**'                                               > include/padkit.h; \
