@@ -37,7 +37,7 @@ endif
 CCNAME=$(findstring clang,${CC})
 
 ifeq (${CCNAME},clang)
-SILENCED=-Wno-unsafe-buffer-usage -Wtautological-compare
+SILENCED=-Wno-unsafe-buffer-usage
 ARGS=${ARCH_ARGS} ${FLAGS} -Weverything -Werror ${SILENCED} ${STDLIBS}
 else
 SILENCED=
