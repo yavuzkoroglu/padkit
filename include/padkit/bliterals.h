@@ -2,6 +2,7 @@
     #define PADKIT_BLITERALS_H
     #include <stdint.h>
 
+    /* https://stackoverflow.com/questions/2611764/can-i-use-a-binary-literal-in-c-or-c/78961030#78961030 */
     #define B(b) (                                                                                      \
         sizeof(#b) <= 1                                                                                 \
         ? BIT(0,0)                                                                                      \
