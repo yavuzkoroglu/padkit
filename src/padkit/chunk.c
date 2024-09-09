@@ -143,6 +143,51 @@ void* duplicateItem_chunk(ArrayList chunk[static const 2], uint32_t const id) {
     }
 }
 
+void* duplicateItemLast_chunk(ArrayList chunk[static const 2]) {
+    assert(isValid_chunk(chunk));
+    {
+        uint32_t const sz_item  = sz_itemLast_chunk(chunk);
+        void* const new_item    = addIndeterminateItem_chunk(chunk, sz_item);
+        void const* const item  = getLast_chunk(chunk);
+
+        return memcpy(new_item, item, sz_item);
+    }
+}
+
+void* enlargeItem_chunk(ArrayList chunk[static const 2], uint32_t const id, uint32_t const by) {
+    assert(isValid_chunk(chunk));
+    assert(id < LEN_CHUNK(chunk));
+    assert(by > 0);
+    assert(by < SZ32_MAX);
+
+    if (id == LEN_CHUNK(chunk) - 1)
+        return enlargeItemLast_chunk(chunk, by);
+
+    addIndeterminate_alist(chunk, by);
+    {
+        uint32_t const* const offset    = get_alist(chunk + 1, id + 1);
+        char* const p                   = get_alist(chunk, *offset);
+        uint32_t const sz_move          = AREA_CHUNK(chunk) - *offset;
+        assert(AREA_CHUNK(chunk) > *offset);
+        memmove(p + by, p, sz_move);
+    }
+    for (uint32_t i = id + 1; i < LEN_CHUNK(chunk); i++) {
+        uint32_t const* const old_offset    = get_alist(chunk + 1, i);
+        uint32_t const new_offset           = *old_offset + by;
+        set_alist(chunk + 1, i, 1, &new_offset);
+    }
+
+    return get_chunk(chunk, id);
+}
+
+void* enlargeItemLast_chunk(ArrayList chunk[static const 2], uint32_t const by) {
+    assert(isValid_chunk(chunk));
+    assert(by > 0);
+    assert(by < SZ32_MAX);
+    addIndeterminate_alist(chunk, by);
+    return getLast_chunk(chunk);
+}
+
 void flush_chunk(ArrayList chunk[static const 2]) {
     assert(isValid_chunk(chunk));
 
@@ -225,6 +270,97 @@ bool isValid_chunk(ArrayList const chunk[static const 2]) {
     if (LEN_CHUNK(chunk) > AREA_CHUNK(chunk))       return 0;
 
     return 1;
+}
+
+void* resizeItem_chunk(ArrayList chunk[static const 2], uint32_t const id, uint32_t const sz_new) {
+    assert(isValid_chunk(chunk));
+    assert(id < LEN_CHUNK(chunk));
+    assert(sz_new > 0);
+    assert(sz_new < SZ32_MAX);
+    {
+        uint32_t const sz_old = sz_item_chunk(chunk, id);
+        assert(sz_new != sz_old);
+
+        if (sz_old > sz_new)
+            return shrinkItem_chunk(chunk, id, sz_old - sz_new);
+        else
+            return enlargeItem_chunk(chunk, id, sz_new - sz_old);
+    }
+}
+
+void* resizeItemLast_chunk(ArrayList chunk[static const 2], uint32_t const sz_new) {
+    assert(isValid_chunk(chunk));
+    assert(sz_new > 0);
+    assert(sz_new < SZ32_MAX);
+    {
+        uint32_t const sz_old = sz_itemLast_chunk(chunk);
+        assert(sz_new != sz_old);
+
+        if (sz_old > sz_new)
+            return shrinkItemLast_chunk(chunk, sz_old - sz_new);
+        else
+            return enlargeItemLast_chunk(chunk, sz_new - sz_old);
+    }
+}
+
+void* setItem_chunk(
+    ArrayList chunk[static const 2], uint32_t const id,
+    uint32_t const sz, void const* const restrict ptr
+) {
+    assert(isValid_chunk(chunk));
+    assert(id < LEN_CHUNK(chunk));
+    assert(sz > 0);
+    assert(sz < SZ32_MAX);
+    assert(ptr != NULL);
+    {
+        uint32_t const sz_old   = sz_item_chunk(chunk, id);
+        void* const dest        = (sz_old == sz) ? get_chunk(chunk, id) : resizeItem_chunk(chunk, id, sz);
+        return memcpy(dest, ptr, sz);
+    }
+}
+
+void* setItemLast_chunk(ArrayList chunk[static const 2], uint32_t const sz, void const* const restrict ptr) {
+    assert(isValid_chunk(chunk));
+    assert(sz > 0);
+    assert(sz < SZ32_MAX);
+    assert(ptr != NULL);
+    {
+        uint32_t const sz_old   = sz_itemLast_chunk(chunk);
+        void* const dest        = (sz_old == sz) ? getLast_chunk(chunk) : resizeItemLast_chunk(chunk, sz);
+        return memcpy(dest, ptr, sz);
+    }
+}
+
+void* shrinkItem_chunk(ArrayList chunk[static const 2], uint32_t const id, uint32_t const by) {
+    assert(isValid_chunk(chunk));
+    assert(id < LEN_CHUNK(chunk));
+    assert(by > 0);
+    assert(by < SZ32_MAX);
+
+    if (id == LEN_CHUNK(chunk) - 1) {
+        return shrinkItemLast_chunk(chunk, by);
+    } else {
+        uint32_t const* const offset = get_alist(chunk + 1, id + 1);
+        assert(AREA_CHUNK(chunk) > *offset);
+        delete_alist(chunk, *offset - by, by);
+    }
+
+    for (uint32_t i = id + 1; i < LEN_CHUNK(chunk); i++) {
+        uint32_t const* const old_offset    = get_alist(chunk + 1, i);
+        uint32_t const new_offset           = *old_offset - by;
+        assert(*old_offset > by);
+        set_alist(chunk + 1, i, 1, &new_offset);
+    }
+
+    return get_chunk(chunk, id);
+}
+
+void* shrinkItemLast_chunk(ArrayList chunk[static const 2], uint32_t const by) {
+    assert(isValid_chunk(chunk));
+    assert(by > 0);
+    assert(by < SZ32_MAX);
+    removeLast_alist(chunk, by);
+    return getLast_chunk(chunk);
 }
 
 uint32_t splitLast_chunk(ArrayList chunk[static const 2], char const delimeters[], size_t nDelimeters) {

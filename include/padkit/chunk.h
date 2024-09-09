@@ -31,6 +31,12 @@
 
     void* duplicateItem_chunk(ArrayList chunk[static const 2], uint32_t const id);
 
+    void* duplicateItemLast_chunk(ArrayList chunk[static const 2]);
+
+    void* enlargeItem_chunk(ArrayList chunk[static const 2], uint32_t const id, uint32_t const by);
+
+    void* enlargeItemLast_chunk(ArrayList chunk[static const 2], uint32_t const by);
+
     void flush_chunk(ArrayList chunk[static const 2]);
 
     void free_chunk(ArrayList chunk[static const 2]);
@@ -47,6 +53,21 @@
     void* getLast_chunk(ArrayList const chunk[static const 2]);
 
     bool isValid_chunk(ArrayList const chunk[static const 2]);
+
+    void* resizeItem_chunk(ArrayList chunk[static const 2], uint32_t const id, uint32_t const sz_new);
+
+    void* resizeItemLast_chunk(ArrayList chunk[static const 2], uint32_t const sz_new);
+
+    void* setItem_chunk(
+        ArrayList chunk[static const 2], uint32_t const id,
+        uint32_t const sz, void const* const restrict ptr
+    );
+
+    void* setItemLast_chunk(ArrayList chunk[static const 2], uint32_t const sz, void const* const restrict ptr);
+
+    void* shrinkItem_chunk(ArrayList chunk[static const 2], uint32_t const id, uint32_t const by);
+
+    void* shrinkItemLast_chunk(ArrayList chunk[static const 2], uint32_t const by);
 
     uint32_t splitLast_chunk(ArrayList chunk[static const 2], char const delimeters[], size_t nDelimeters);
 
