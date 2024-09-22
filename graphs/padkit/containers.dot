@@ -1,0 +1,28 @@
+digraph Containers {
+    node [shape="record",fontname="Courier"];
+    edge [fontname="Helvetica"];
+    Stack [label="<Stack>A Stack"];
+    ArrayList [label="<ArrayList>An ArrayList|{size_t\ \ \ sz_elem\l|uint32_t cap\l|uint32_t len\l|char*\ \ \ \ arr\l}"];
+    ObjectStack [label="<ObjectStack>An ObjectStack"];
+    ObjectList [label="<ObjectList>An ObjectList|{size_t\ \ \ \ \ \ \ \ \ \ sz_obj\l|uint32_t\ \ \ \ \ \ \ \ cap\l|uint32_t\ \ \ \ \ \ \ \ len\l|char*\ \ \ \ \ \ \ \ \ \ \ arr\l|uint32_t\ \ \ \ \ \ \ \ max_len\l|uint32_t\ \ \ \ \ \ \ \ flags\l|ObjectInterface fns[1]\l}"];
+    Chunk [label="<Chunk>A Chunk|{ArrayList data[1]\l|ArrayList offsets[1]\l}"];
+    ChunkTable [label="<ChunkTable>A ChunkTable|{Chunk\ \ \ \ \ indexedItems\l|uint32_t\ \ height\l|uint32_t\ \ load\l|uint32_t\ \ max_percent_load\l|uint32_t\ \ max_load\l|uint32_t* rows\l}"];
+    Element [label="<Element>Elements|{void* p\l}"];
+    Object [label="<Object>Objects|{void* p\l}"]
+    Item [label="<Item>Items|{void*\ \ \ \ p\l|uint32_t sz\l|uint32_t offset\l}"];
+    IndexedItem [label="<IndexedItem>IndexedItems|{void*\ \ \ \ p\l|uint32_t sz\l|uint32_t offset\l|uint32_t index\l|uint32_t next_id\l}"];
+    Size [label="<Size>Size|size_t sz"];
+    ObjectInterface [label="<ObjectInterface>ObjectInterface|{void construct(void* const p_obj, ...)\l|void destruct(void* const p_obj)\l|bool isAllocated(void const* const p_obj)\l|bool isValid(void const* const p_obj)\l|void vconstruct(void* const p_obj, va_list args)\l}"];
+    Stack:Stack -> ArrayList:ArrayList [label=" is"];
+    ArrayList:ArrayList -> Element:Element [label=" contains"];
+    Element:Element -> Size:Size [label=" have the same"];
+    ObjectStack:ObjectStack -> ObjectList:ObjectList [label=" is"];
+    ObjectList:ObjectList -> Object:Object [label=" contains"];
+    Object:Object -> ObjectInterface:ObjectInterface [label=" implement the same"];
+    Object:Object -> Size:Size [label=" have the same"];
+    Chunk:Chunk -> Item:Item [label=" contains"];
+    ChunkTable:ChunkTable -> IndexedItem:IndexedItem [label=" contains"];
+    {rank=same Stack ObjectStack}
+    {rank=same ArrayList ObjectList Chunk ChunkTable}
+    {rank=same Element Object Item IndexedItem}
+}

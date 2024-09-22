@@ -1,7 +1,7 @@
 #ifndef PADKIT_ARRAYLIST_H
     #define PADKIT_ARRAYLIST_H
+    #include <stdarg.h>
     #include <stdbool.h>
-    #include <stddef.h>
     #include <stdint.h>
     #include <stdio.h>
 
@@ -12,61 +12,152 @@
     #endif
 
     typedef struct ArrayListBody {
-        size_t      sz_element;
+        size_t      sz_elem;
         uint32_t    cap;
-        uint32_t    size;
-        char*       array;
+        uint32_t    len;
+        char*       arr;
     } ArrayList;
 
-    void* add_alist(ArrayList list[static const 1], uint32_t const n, void const* const restrict ptr);
+    void* addDuplicate_alist(
+        ArrayList list[static const 1],
+        uint32_t const id
+    );
 
-    void* addIndeterminate_alist(ArrayList list[static const 1], uint32_t const n);
+    void* addDuplicates_alist(
+        ArrayList list[static const 1],
+        uint32_t const id,
+        uint32_t const n
+    );
 
-    void* addZeros_alist(ArrayList list[static const 1], uint32_t const n);
+    void* addElement_alist(
+        ArrayList list[static const 1],
+        void const* const p
+    );
+
+    void* addElements_alist(
+        ArrayList list[static const 1],
+        void const* const p,
+        uint32_t const n
+    );
+
+    void* addIndeterminate_alist(ArrayList list[static const 1]);
+
+    void* addIndeterminates_alist(
+        ArrayList list[static const 1],
+        uint32_t const n
+    );
+
+    void* addZero_alist(ArrayList list[static const 1]);
+
+    void* addZeros_alist(
+        ArrayList list[static const 1],
+        uint32_t const n
+    );
 
     uint32_t bsearch_alist(
         void* key[static const 1],
         ArrayList const list[static const 1],
-        void const* const ptr,
-        int (*compar)(void const*, void const*)
+        void const* const p,
+        int (*cmp)(void const*, void const*)
     );
 
-    void concat_alist(ArrayList head[static const restrict 1], ArrayList const tail[static const restrict 1]);
+    void concat_alist(
+        ArrayList head[static const 1],
+        ArrayList const tail[static const 1]
+    );
+
+    void construct_alist(void* const p_list, ...);
 
     void constructEmpty_alist(
         ArrayList list[static const 1],
-        size_t const sz_element,
-        uint32_t const initial_cap
+        size_t const sz_elem,
+        uint32_t const init_cap
     );
 
-    void delete_alist(ArrayList list[static const 1], uint32_t const startId, uint32_t const n);
+    void deleteElement_alist(
+        ArrayList list[static const 1],
+        uint32_t const id
+    );
+
+    void deleteElements_alist(
+        ArrayList list[static const 1],
+        uint32_t const id,
+        uint32_t const n
+    );
+
+    void destruct_alist(void* const p_list);
 
     void flush_alist(ArrayList list[static const 1]);
 
-    void free_alist(ArrayList list[static const 1]);
+    void* get_alist(
+        ArrayList const list[static const 1],
+        uint32_t const id
+    );
 
-    void* get_alist(ArrayList const list[static const 1], uint32_t const id);
+    void* getFirst_alist(ArrayList const list[static const 1]);
 
     void* getLast_alist(ArrayList const list[static const 1]);
 
-    bool isSorted_alist(ArrayList const list[static const 1], int (*compar)(void const*, void const*));
+    bool isAllocated_alist(void const* const p_list);
 
-    bool isValid_alist(ArrayList const list[static const 1]);
+    bool isSorted_alist(
+        ArrayList const list[static const 1],
+        int (*cmp)(void const*, void const*)
+    );
 
-    uint32_t lsearch_alist(void* key[static const 1], ArrayList const list[static const 1], void const* const ptr);
+    bool isValid_alist(void const* const p_list);
 
-    void qsort_alist(ArrayList const list[static const 1], int (*compar)(void const*, void const*));
+    uint32_t lsearch_alist(
+        void* key[static const 1],
+        ArrayList const list[static const 1],
+        void const* const p
+    );
+
+    void qsort_alist(
+        ArrayList const list[static const 1],
+        int (*cmp)(void const*, void const*)
+    );
 
     void* removeLast_alist(ArrayList list[static const 1], uint32_t const n);
 
     void reverse_alist(ArrayList list[static const 1]);
 
-    void* set_alist(
+    void* setDuplicate_alist(
         ArrayList list[static const 1],
-        uint32_t const startId,
-        uint32_t const n,
-        void const* const restrict ptr
+        uint32_t const orig_id,
+        uint32_t const dup_id
     );
 
-    void* setZeros_alist(ArrayList list[static const 1], uint32_t const startId, uint32_t const n);
+    void* setDuplicates_alist(
+        ArrayList list[static const 1],
+        uint32_t const orig_id,
+        uint32_t const dup_id,
+        uint32_t const n
+    );
+
+    void* setElement_alist(
+        ArrayList list[static const 1],
+        uint32_t const id,
+        void const* const p
+    );
+
+    void* setElements_alist(
+        ArrayList list[static const 1],
+        uint32_t const id,
+        void const* const p,
+        uint32_t const n
+    );
+
+    void* setZero_alist(
+        ArrayList list[static const 1],
+        uint32_t const id
+    );
+
+    void* setZeros_alist(
+        ArrayList list[static const 1],
+        uint32_t const id,
+        uint32_t const n
+    );
+
+    void vconstruct_alist(void* const p_list, va_list args);
 #endif

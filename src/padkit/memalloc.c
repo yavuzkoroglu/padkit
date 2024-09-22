@@ -4,78 +4,80 @@
 #include "padkit/memalloc.h"
 #include "padkit/size.h"
 
-void* mem_alloc(size_t const size) {
-    assert(size > 0);
+void* mem_alloc(size_t const sz) {
+    assert(sz > 0);
 
-    if (size >= SZSZ_MAX) MALLOC_ERROR
-
-    {
-        void* const ptr = malloc(size);
+    if (sz >= SZSZ_MAX) {
+        MALLOC_ERROR
+    } else {
+        void* const ptr = malloc(sz);
         if (ptr == NULL) MALLOC_ERROR
 
         return ptr;
     }
 }
 
-void* mem_calloc(size_t const nmemb, size_t const sz_memb) {
-    size_t const sz = sz_memb * nmemb;
+void* mem_calloc(size_t const n, size_t const sz_elem) {
+    size_t const sz = sz_elem * n;
 
-    assert(nmemb > 0);
-    assert(sz_memb > 0);
+    assert(n > 0);
+    assert(sz_elem > 0);
+    assert(sz / sz_elem == n);
 
-    if (nmemb >= SZSZ_MAX) CALLOC_ERROR
-    if (sz_memb >= SZSZ_MAX) CALLOC_ERROR
-    if (sz >= SZSZ_MAX) CALLOC_ERROR
-
-    assert(sz / sz_memb == nmemb);
-
-    {
-        void* const ptr = calloc(nmemb, sz_memb);
+    if (n >= SZSZ_MAX) {
+        CALLOC_ERROR
+    } else if (sz_elem >= SZSZ_MAX) {
+        CALLOC_ERROR
+    } else if (sz >= SZSZ_MAX) {
+        CALLOC_ERROR
+    } else {
+        void* const ptr = calloc(n, sz_elem);
         if (ptr == NULL) CALLOC_ERROR
 
         return ptr;
     }
 }
 
-void mem_realloc(void* ptrptr[static const 1], size_t const new_sz) {
-    assert(*ptrptr != NULL);
+void mem_realloc(void* p_p[static const 1], size_t const new_sz) {
+    assert(*p_p != NULL);
     assert(new_sz > 0);
 
-    if (new_sz >= SZSZ_MAX) REALLOC_ERROR
+    if (new_sz >= SZSZ_MAX) {
+        REALLOC_ERROR
+    } else {
+        void* const p = realloc(*p_p, new_sz);
+        if (p == NULL) REALLOC_ERROR
 
-    {
-        void* const ptr = realloc(*ptrptr, new_sz);
-        if (ptr == NULL) REALLOC_ERROR
-
-        *ptrptr = ptr;
+        *p_p = p;
     }
 }
 
 void mem_recalloc(
-    void* ptrptr[static const 1],
-    size_t const old_nmemb,
-    size_t const new_nmemb,
-    size_t const sz_memb
+    void* p_p[static const 1],
+    size_t const old_n,
+    size_t const new_n,
+    size_t const sz_elem
 ) {
-    size_t const old_sz = old_nmemb * sz_memb;
-    size_t const new_sz = new_nmemb * sz_memb;
+    size_t const old_sz = old_n * sz_elem;
+    size_t const new_sz = new_n * sz_elem;
 
-    assert(*ptrptr != NULL);
-    assert(old_nmemb > 0);
-    assert(old_nmemb < new_nmemb);
-    assert(sz_memb > 0);
+    assert(*p_p != NULL);
+    assert(old_n > 0);
+    assert(old_n < new_n);
+    assert(sz_elem > 0);
+    assert(new_sz / new_n == sz_elem);
 
-    if (new_nmemb >= SZSZ_MAX) RECALLOC_ERROR
-    if (sz_memb >= SZSZ_MAX) RECALLOC_ERROR
-    if (new_sz >= SZSZ_MAX) RECALLOC_ERROR
+    if (new_n >= SZSZ_MAX) {
+        RECALLOC_ERROR
+    } else if (sz_elem >= SZSZ_MAX) {
+        RECALLOC_ERROR
+    } else if (new_sz >= SZSZ_MAX) {
+        RECALLOC_ERROR
+    } else {
+        void* const p = calloc(new_n, sz_elem);
+        if (p == NULL) RECALLOC_ERROR
 
-    assert(new_sz / new_nmemb == sz_memb);
-
-    {
-        void* const ptr = calloc(new_nmemb, sz_memb);
-        if (ptr == NULL) RECALLOC_ERROR
-
-        memcpy(ptr, *ptrptr, old_sz);
-        *ptrptr = ptr;
+        memcpy(p, *p_p, old_sz);
+        *p_p = p;
     }
 }

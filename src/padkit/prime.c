@@ -3,7 +3,7 @@
 
 bool isPrime(uint32_t const odd_x) {
     /* UINT16_MAX is the largest integer whose square fits into 32 bits */
-    register uint32_t n = odd_x > UINT16_MAX ? UINT16_MAX : odd_x;
+    uint32_t n = odd_x > UINT16_MAX ? UINT16_MAX : odd_x;
 
     assert(odd_x % 2 == 1);
     assert(odd_x > 1);

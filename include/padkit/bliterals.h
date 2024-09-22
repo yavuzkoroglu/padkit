@@ -3,7 +3,7 @@
     #include <stdint.h>
 
     /* https://stackoverflow.com/questions/2611764/can-i-use-a-binary-literal-in-c-or-c/78961030#78961030 */
-    #define B(b) (                                                                                      \
+    #define MKB(b) (                                                                                    \
         sizeof(#b) <= 1                                                                                 \
         ? BIT(0,0)                                                                                      \
         : sizeof(#b) == 2                                                                               \
@@ -23,8 +23,9 @@
         : BIT(b,0)<<7|BIT(b,1)<<6|BIT(b,2)<<5|BIT(b,3)<<4|BIT(b,4)<<3|BIT(b,5)<<2|BIT(b,6)<<1|BIT(b,7)  \
     )
 
-    #define BIT(b, i)                   (uint_fast8_t)!!(#b[i]-'0')
-    #define B2(b1,b0)                   (((uint_fast16_t)B(b1)<<8)|(uint_fast16_t)B(b0))
-    #define B4(b3,b2,b1,b0)             (((uint_fast32_t)B2(b3,b2)<<16)|(uint_fast32_t)B2(b1,b0))
-    #define B8(b7,b6,b5,b4,b3,b2,b1,b0) (((uint_fast64_t)B4(b7,b6,b5,b4)<<32)|(uint_fast64_t)B4(b3,b2,b1,b0))
+    #define BIT(b, i)                   (uint8_t)!!(#b[i]-'0')
+    #define B(b)                        MKB(b)
+    #define B2(b1,b0)                   (((uint16_t)B(b1)<<8)|(uint16_t)B(b0))
+    #define B4(b3,b2,b1,b0)             (((uint32_t)B2(b3,b2)<<16)|(uint32_t)B2(b1,b0))
+    #define B8(b7,b6,b5,b4,b3,b2,b1,b0) (((uint64_t)B4(b7,b6,b5,b4)<<32)|(uint64_t)B4(b3,b2,b1,b0))
 #endif

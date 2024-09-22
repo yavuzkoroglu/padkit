@@ -1,23 +1,43 @@
 #ifndef PADKIT_CHUNK_H
     #define PADKIT_CHUNK_H
     #include "padkit/arraylist.h"
+    #include "padkit/item.h"
 
-    #define AREA_CHUNK(chunk)   (chunk[0].size)
-    #define LEN_CHUNK(chunk)    (chunk[1].size)
+    #define CHUNK_RECOMMENDED_PARAMETERS    ALIST_RECOMMENDED_INITIAL_CAP, ALIST_RECOMMENDED_INITIAL_CAP
 
-    #define NOT_A_CHUNK         { NOT_AN_ALIST, NOT_AN_ALIST }
+    #define AREA_CHUNK(chunk)               (chunk[0].len)
+    #define LEN_CHUNK(chunk)                (chunk[1].len)
+
+    #define NOT_A_CHUNK                     { NOT_AN_ALIST, NOT_AN_ALIST }
 
     typedef ArrayList Chunk[2];
 
-    void* addIndeterminateItem_chunk(ArrayList chunk[static const 2], uint32_t const sz);
+    void* addIndeterminate_chunk(
+        ArrayList chunk[static const 2],
+        uint32_t const sz
+    );
 
-    void* addItem_chunk(ArrayList chunk[static const 2], uint32_t const sz, void const* const restrict ptr);
+    void* addItem_chunk(
+        ArrayList chunk[static const 2],
+        void const* const p,
+        uint32_t const sz
+    );
 
-    void* append_chunk(ArrayList chunk[static const 2], uint32_t const sz, void const* const restrict ptr);
+    void* append_chunk(
+        ArrayList chunk[static const 2],
+        void const* const p,
+        uint32_t const sz
+    );
 
-    void* appendDuplicate_chunk(ArrayList chunk[static const 2], uint32_t const id);
+    Item appendDuplicate_chunk(
+        ArrayList chunk[static const 2],
+        uint32_t const i
+    );
 
-    void concat_chunk(ArrayList head[static const restrict 2], ArrayList tail[static const restrict 2]);
+    void concat_chunk(
+        ArrayList head[static const 2],
+        ArrayList tail[static const 2]
+    );
 
     void constructEmpty_chunk(
         ArrayList chunk[static const 2],
@@ -25,7 +45,9 @@
         uint32_t const initial_cap_len
     );
 
-    void delete_chunk(ArrayList chunk[static const 2], uint32_t const startId, uint32_t const n);
+    void deleteFirst_chunk(ArrayList chunk[static const 2], uint32_t const n);
+
+    void deleteItem_chunk(ArrayList chunk[static const 2], uint32_t const id, uint32_t const n);
 
     void deleteLast_chunk(ArrayList chunk[static const 2], uint32_t const n);
 
@@ -60,10 +82,10 @@
 
     void* setItem_chunk(
         ArrayList chunk[static const 2], uint32_t const id,
-        uint32_t const sz, void const* const restrict ptr
+        uint32_t const sz, void const* const ptr
     );
 
-    void* setItemLast_chunk(ArrayList chunk[static const 2], uint32_t const sz, void const* const restrict ptr);
+    void* setItemLast_chunk(ArrayList chunk[static const 2], uint32_t const sz, void const* const ptr);
 
     void* shrinkItem_chunk(ArrayList chunk[static const 2], uint32_t const id, uint32_t const by);
 
