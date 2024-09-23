@@ -643,10 +643,43 @@ static bool test_arraylist_reverse_alist(void) {
 }
 
 static bool test_arraylist_setDuplicate_alist(void) {
+    ArrayList list[1] = { NOT_AN_ALIST };
+    construct_alist(list, 1, 1024);
+
+    TEST_FAIL_IF(list->len != 0)
+    TEST_FAIL_IF(list->cap != 1024)
+
+    addElements_alist(list, "abc", 3);
+
+    TEST_FAIL_IF(list->len != 3)
+    TEST_FAIL_IF(list->cap != 1024)
+
+    for (uint32_t i = 2; i >= 1; i--)
+        setDuplicate_alist(list, i - 1, i);
+
+    TEST_FAIL_IF(strncmp(list->arr, "aab", 3) != 0)
+
+    destruct_alist(list);
     TEST_PASS
 }
 
 static bool test_arraylist_setDuplicates_alist(void) {
+    ArrayList list[1] = { NOT_AN_ALIST };
+    construct_alist(list, 1, 1024);
+
+    TEST_FAIL_IF(list->len != 0)
+    TEST_FAIL_IF(list->cap != 1024)
+
+    addElements_alist(list, "abc", 3);
+
+    TEST_FAIL_IF(list->len != 3)
+    TEST_FAIL_IF(list->cap != 1024)
+
+    setDuplicates_alist(list, 0, 1, 2);
+
+    TEST_FAIL_IF(strncmp(list->arr, "aab", 3) != 0)
+
+    destruct_alist(list);
     TEST_PASS
 }
 
