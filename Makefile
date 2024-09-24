@@ -120,6 +120,7 @@ obj/padkit/arraylist.o: .FORCE          \
     include/padkit/memalloc.h           \
     include/padkit/overlap.h            \
     include/padkit/size.h               \
+    include/padkit/unused.h             \
     src/padkit/arraylist.c              \
     ; ${COMPILE} -Iinclude src/padkit/arraylist.c -c -o obj/padkit/arraylist.o
 

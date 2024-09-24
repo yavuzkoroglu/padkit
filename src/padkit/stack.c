@@ -49,18 +49,17 @@ bool isValid_stack(void const* const p_stack) {
     return isValid_alist(p_stack);
 }
 
-void* peek_stack(
-    Stack const stack[static const 1],
-    uint32_t const n
-) {
+void* peek_stack(Stack const stack[static const 1]) {
     assert(isValid_stack(stack));
-    assert(n > 0);
-    assert(n <= stack->len);
-
-    return peekTop_stack(stack, n);
+    return getLast_alist(stack);
 }
 
-void* peekBottom_stack(
+void* peekBottom_stack(Stack const stack[static const 1]) {
+    assert(isValid_stack(stack));
+    return getFirst_alist(stack);
+}
+
+void* peekBottomN_stack(
     Stack const stack[static const 1],
     uint32_t const n
 ) {
@@ -72,7 +71,7 @@ void* peekBottom_stack(
     return getFirst_alist(stack);
 }
 
-void* peekTop_stack(
+void* peekN_stack(
     Stack const stack[static const 1],
     uint32_t const n
 ) {
@@ -83,7 +82,39 @@ void* peekTop_stack(
     return get_alist(stack, stack->len - n);
 }
 
-void* pop_stack(
+void* peekTop_stack(Stack const stack[static const 1]) {
+    assert(isValid_stack(stack));
+    return getLast_alist(stack);
+}
+
+void* peekTopN_stack(
+    Stack const stack[static const 1],
+    uint32_t const n
+) {
+    assert(isValid_stack(stack));
+    assert(n > 0);
+    assert(n <= stack->len);
+
+    return get_alist(stack, stack->len - n);
+}
+
+void* pop_stack(Stack stack[static const 1]) {
+    assert(isValid_stack(stack));
+    assert(n > 0);
+    assert(n <= stack->len);
+
+    return removeLast_alist(stack, 1);
+}
+
+void* popBottom_stack(Stack stack[static const 1]) {
+    assert(isValid_stack(stack));
+
+    rotateDown_stack(stack);
+
+    return removeLast_alist(stack, 1);
+}
+
+void* popBottomN_stack(
     Stack stack[static const 1],
     uint32_t const n
 ) {
@@ -91,10 +122,12 @@ void* pop_stack(
     assert(n > 0);
     assert(n <= stack->len);
 
-    return popTop_stack(stack, n);
+    rotateDownN_stack(stack, n);
+
+    return removeLast_alist(stack, n);
 }
 
-void* popBottom_stack(
+void* popN_stack(
     Stack stack[static const 1],
     uint32_t const n
 ) {
@@ -102,12 +135,15 @@ void* popBottom_stack(
     assert(n > 0);
     assert(n <= stack->len);
 
-    rotateDown_stack(stack, n);
-
-    return popTop_stack(stack, n);
+    return removeLast_alist(stack, n);
 }
 
-void* popTop_stack(
+void* popTop_stack(Stack stack[static const 1]) {
+    assert(isValid_stack(stack));
+    return removeLast_alist(stack, 1);
+}
+
+void* popTopN_stack(
     Stack stack[static const 1],
     uint32_t const n
 ) {
@@ -120,17 +156,25 @@ void* popTop_stack(
 
 void* push_stack(
     Stack stack[static const 1],
-    void const* const p,
-    uint32_t const n
+    void const* const p
 ) {
     assert(isValid_stack(stack));
-    assert(n > 0);
-    assert(n < SZ32_MAX);
-
-    return pushTop_stack(stack, p, n);
+    return addElement_alist(stack, p);
 }
 
 void* pushBottom_stack(
+    Stack stack[static const 1],
+    void const* const p
+) {
+    assert(isValid_stack(stack));
+
+    addElement_alist(stack, p);
+    rotateUp_stack(stack);
+
+    return getFirst_alist(stack);
+}
+
+void* pushBottomN_stack(
     Stack stack[static const 1],
     void const* const p,
     uint32_t const n
@@ -139,10 +183,23 @@ void* pushBottom_stack(
     assert(n > 0);
     assert(n < SZ32_MAX);
 
-    pushTop_stack(stack, p, n);
-    rotateUp_stack(stack, n);
+    addElements_alist(stack, p, n);
+    rotateUpN_stack(stack, n);
 
-    return get_alist(stack, n - 1);
+    return getFirst_alist(stack);
+}
+
+void* pushIndeterminate_stack(Stack stack[static const 1]) {
+    assert(isValid_stack(stack));
+    return addElement_alist(stack, NULL);
+}
+
+void* pushIndeterminateBottom_stack(Stack stack[static const 1]) {
+    assert(isValid_stack(stack));
+
+    rotateUp_stack(stack);
+
+    return getFirst_alist(stack);
 }
 
 void* pushIndeterminates_stack(
@@ -153,7 +210,7 @@ void* pushIndeterminates_stack(
     assert(n > 0);
     assert(n < SZ32_MAX);
 
-    return pushIndeterminatesTop_stack(stack, n);
+    return addElements_alist(stack, NULL, n);
 }
 
 void* pushIndeterminatesBottom_stack(
@@ -164,7 +221,9 @@ void* pushIndeterminatesBottom_stack(
     assert(n > 0);
     assert(n < SZ32_MAX);
 
-    return pushBottom_stack(stack, NULL, n);
+    rotateUpN_stack(stack, n);
+
+    return addElements_alist(stack, NULL, n);
 }
 
 void* pushIndeterminatesTop_stack(
@@ -175,10 +234,15 @@ void* pushIndeterminatesTop_stack(
     assert(n > 0);
     assert(n < SZ32_MAX);
 
-    return pushTop_stack(stack, NULL, n);
+    return addElements_alist(stack, NULL, n);
 }
 
-void* pushTop_stack(
+void* pushIndeterminateTop_stack(Stack stack[static const 1]) {
+    assert(isValid_stack(stack));
+    return addElement_alist(stack, NULL);
+}
+
+void* pushN_stack(
     Stack stack[static const 1],
     void const* const p,
     uint32_t const n
@@ -187,8 +251,32 @@ void* pushTop_stack(
     assert(n > 0);
     assert(n < SZ32_MAX);
 
-    /* UB if stack->arr has to reallocated and stack->arr overlaps with p. */
     return addElements_alist(stack, p, n);
+}
+
+void* pushTop_stack(
+    Stack stack[static const 1],
+    void const* const p
+) {
+    assert(isValid_stack(stack));
+    return addElement_alist(stack, p);
+}
+
+void* pushTopN_stack(
+    Stack stack[static const 1],
+    void const* const p,
+    uint32_t const n
+) {
+    assert(isValid_stack(stack));
+    assert(n > 0);
+    assert(n < SZ32_MAX);
+
+    return addElements_alist(stack, p, n);
+}
+
+void* pushZero_stack(Stack stack[static const 1]) {
+    assert(isValid_stack(stack));
+    return addZero_alist(stack);
 }
 
 void* pushZeros_stack(
@@ -199,7 +287,7 @@ void* pushZeros_stack(
     assert(n > 0);
     assert(n < SZ32_MAX);
 
-    return pushZerosTop_stack(stack, n);
+    return addZeros_alist(stack, n);
 }
 
 void* pushZerosBottom_stack(
@@ -221,8 +309,12 @@ void* pushZerosTop_stack(
     assert(isValid_stack(stack));
     assert(n > 0);
     assert(n < SZ32_MAX);
-
     return addZeros_alist(stack, n);
+}
+
+void* pushZeroTop_stack(Stack stack[static const 1]) {
+    assert(isValid_stack(stack));
+    return addZero_alist(stack);
 }
 
 void rotate_stack(

@@ -4,22 +4,13 @@
 #include "padkit/invalid.h"
 #include "padkit/memalloc.h"
 #include "padkit/size.h"
+#include "padkit/unused.h"
 
 #ifndef NDEBUG
     #include "padkit/overlap.h"
 #endif
 
-void* addDuplicate_alist(
-    ArrayList list[static const 1],
-    uint32_t const id
-) {
-    assert(isValid_alist(list));
-    assert(list->len > id);
-
-    return addDuplicates_alist(list, id, 1);
-}
-
-void* addDuplicates_alist(
+void* addDupN_alist(
     ArrayList list [static const 1],
     uint32_t const id,
     uint32_t const n
@@ -29,21 +20,13 @@ void* addDuplicates_alist(
     assert(n > 0);
     assert(n < SZ32_MAX);
 
-    addIndeterminates_alist(list, n);
+    addIndeterminateN_alist(list, n);
     assert(list->len >= n);
 
-    return setDuplicates_alist(list, id, list->len - n, n);
+    return setDupN_alist(list, id, list->len - n, n);
 }
 
-void* addElement_alist(
-    ArrayList list[static const 1],
-    void const* const p
-) {
-    assert(isValid_alist(list));
-    return addElements_alist(list, p, 1);
-}
-
-void* addElements_alist(
+void* addN_alist(
     ArrayList list[static const 1],
     void const* const p,
     uint32_t const n
@@ -81,38 +64,20 @@ void* addElements_alist(
     assert(list->len >= n);
 
     if (p == NULL)
-        return get_alist(list, list->len - n);
+        return getN_alist(list, list->len - n, n);
     else
-        return setElements_alist(list, list->len - n, p, n);
+        return setN_alist(list, list->len - n, p, n);
 }
 
-void* addIndeterminate_alist(ArrayList list[static const 1]) {
-    assert(isValid_alist(list));
-    return addIndeterminates_alist(list, 1);
-}
-
-void* addIndeterminates_alist(ArrayList list[static const 1], uint32_t const n) {
+void* addZerosN_alist(ArrayList list[static const 1], uint32_t const n) {
     assert(isValid_alist(list));
     assert(n > 0);
     assert(n < SZ32_MAX);
 
-    return addElements_alist(list, NULL, n);
-}
-
-void* addZero_alist(ArrayList list[static const 1]) {
-    assert(isValid_alist(list));
-    return addZeros_alist(list, 1);
-}
-
-void* addZeros_alist(ArrayList list[static const 1], uint32_t const n) {
-    assert(isValid_alist(list));
-    assert(n > 0);
-    assert(n < SZ32_MAX);
-
-    addIndeterminates_alist(list, n);
+    addIndeterminateN_alist(list, n);
     assert(list->len >= n);
 
-    return setZeros_alist(list, list->len - n, n);
+    return setZerosN_alist(list, list->len - n, n);
 }
 
 uint32_t bsearch_alist(
@@ -174,7 +139,7 @@ void concat_alist(
     /* Invalidates head->arr if
        head->arr must be relocated
        and head->arr overlaps with tail->arr. */
-    addElements_alist(head, tail->arr, tail->len);
+    addN_alist(head, tail->arr, tail->len);
 }
 
 void construct_alist(void* const p_list, ...) {
@@ -203,41 +168,6 @@ void constructEmpty_alist(
     list->arr       = mem_alloc(sz);
 }
 
-void deleteElement_alist(
-    ArrayList list[static const 1],
-    uint32_t const id
-) {
-    assert(isValid_alist(list));
-    assert(list->len > id);
-
-    deleteElements_alist(list, id, 1);
-}
-
-void deleteElements_alist(
-    ArrayList list[static const 1],
-    uint32_t const id,
-    uint32_t const n
-) {
-    assert(isValid_alist(list));
-    assert(list->len > id);
-    assert(list->len - id >= n);
-    assert(n > 0);
-
-    if (id + n == list->len) {
-        removeLast_alist(list, n);
-    } else {
-        uint32_t const len  = (list->len - id) - n;
-        size_t const sz     = list->sz_elem * (size_t)(len);
-        void* const dest    = get_alist(list, id);
-        void* const src     = get_alist(list, id + n);
-        assert(sz < SZSZ_MAX);
-        assert(sz / list->sz_elem == (size_t)(len));
-
-        memmove(dest, src, sz);
-        list->len -= n;
-    }
-}
-
 void destruct_alist(void* const p_list) {
     ArrayList* const list = (ArrayList*)p_list;
     assert(isValid_alist(list));
@@ -250,32 +180,37 @@ void flush_alist(ArrayList list[static const 1]) {
     list->len = 0;
 }
 
-void* get_alist(
+void* getLastN_alist(
     ArrayList const list[static const 1],
-    uint32_t const id
+    uint32_t const n
 ) {
-    size_t const offset = list->sz_elem * (size_t)id;
+    size_t const offset = list->sz_elem * (size_t)(list->len - n);
 
     assert(isValid_alist(list));
-    assert(list->len > id);
+    assert(list->len >= n);
+    assert(n > 0);
     assert(offset < SZSZ_MAX);
-    assert(offset / list->sz_elem == (size_t)id);
+    assert(offset / list->sz_elem == (size_t)list->len - n);
 
     return list->arr + offset;
 }
 
-void* getFirst_alist(ArrayList const list[static const 1]) {
+void* getN_alist(
+    ArrayList const list[static const 1],
+    uint32_t const id,
+    uint32_t const n
+) {
+    size_t const offset = list->sz_elem * (size_t)id;
+    MAYBE_UNUSED(n)
+
     assert(isValid_alist(list));
-    assert(list->len > 0);
+    assert(list->len > id);
+    assert(list->len - id >= n);
+    assert(n > 0);
+    assert(offset < SZSZ_MAX);
+    assert(offset / list->sz_elem == (size_t)id);
 
-    return get_alist(list, 0);
-}
-
-void* getLast_alist(ArrayList const list[static const 1]) {
-    assert(isValid_alist(list));
-    assert(list->len > 0);
-
-    return get_alist(list, list->len - 1);
+    return list->arr + offset;
 }
 
 bool isAllocated_alist(void const* const p_list) {
@@ -356,12 +291,90 @@ void qsort_alist(
     qsort(list->arr, list->len, list->sz_elem, cmp);
 }
 
-void* removeLast_alist(ArrayList list[static const 1], uint32_t const n) {
+void* pushBottomN_alist(
+    ArrayList list[static const 1],
+    void const* const p,
+    uint32_t const n
+) {
+    assert(isValid_alist(list));
+    assert(n > 0);
+    assert(n < SZ32_MAX);
+
+    addN_alist(list, p, n);
+    rotateUpN_alist(list, n);
+
+    return getFirstN_alist(list, n);
+}
+
+void* pushZerosBottomN_alist(
+    ArrayList list[static const 1],
+    uint32_t const n
+) {
+    assert(isValid_alist(list));
+    assert(n > 0);
+    assert(n < SZ32_MAX);
+
+    addZerosN_alist(list, n);
+    rotateUpN_alist(list, n);
+
+    return getFirstN_alist(list, n);
+}
+
+void* removeN_alist(
+    ArrayList list[static const 1],
+    uint32_t const id,
+    uint32_t const n
+) {
+    assert(isValid_alist(list));
+    assert(list->len > id);
+    assert(list->len - id >= n);
+    assert(n > 0);
+
+    if (list->len - id == n) {
+        return removeLastN_alist(list, n);
+    } else {
+        size_t const sz[2] = {
+            list->sz_elem * (size_t)n,
+            list->sz_elem * (size_t)(list->len - id - n)
+        };
+        assert(sz[0] < SZSZ_MAX);
+        assert(sz[1] < SZSZ_MAX);
+        assert(sz[0] / list->sz_elem == (size_t)n);
+        assert(sz[1] / list->sz_elem == (size_t)(list->len - id - n));
+        {
+            void* const p[] = {
+                getN_alist(list, id, n),
+                getN_alist(list, id + n, list->len - id - n),
+                getN_alist(list, list->len - n, n)
+            };
+            if (sz[0] < sz[1]) {
+                char* const buf = mem_alloc(sz[0]);
+                memcpy(buf, p[0], sz[0]);
+                memmove(p[0], p[1], sz[1]);
+                memcpy(p[2], buf, sz[0]);
+                free(buf);
+            } else {
+                char* const buf = mem_alloc(sz[1]);
+                memcpy(buf, p[1], sz[1]);
+                memmove(p[2], p[0], sz[0]);
+                memcpy(p[0], buf, sz[1]);
+                free(buf);
+            }
+            list->len -= n;
+            return p[2];
+        }
+    }
+}
+
+void* removeLastN_alist(
+    ArrayList list[static const 1],
+    uint32_t const n
+) {
     assert(isValid_alist(list));
     assert(n > 0);
     assert(list->len >= n);
     {
-        void* const p = get_alist(list, list->len - n);
+        void* const p = getN_alist(list, list->len - n, n);
         list->len -= n;
         return p;
     }
@@ -390,19 +403,7 @@ void reverse_alist(ArrayList list[static const 1]) {
     }
 }
 
-void* setDuplicate_alist(
-    ArrayList list[static const 1],
-    uint32_t const orig_id,
-    uint32_t const dup_id
-) {
-    assert(isValid_alist(list));
-    assert(list->len > orig_id);
-    assert(list->len > dup_id);
-
-    return setDuplicates_alist(list, orig_id, dup_id, 1);
-}
-
-void* setDuplicates_alist(
+void* setDupN_alist(
     ArrayList list[static const 1],
     uint32_t const orig_id,
     uint32_t const dup_id,
@@ -427,18 +428,7 @@ void* setDuplicates_alist(
     }
 }
 
-void* setElement_alist(
-    ArrayList list[static const 1],
-    uint32_t const id,
-    void const* const p
-) {
-    assert(isValid_alist(list));
-    assert(list->len > id);
-
-    return setElements_alist(list, id, p, 1);
-}
-
-void* setElements_alist(
+void* setN_alist(
     ArrayList list[static const 1],
     uint32_t const id,
     void const* const p,
@@ -471,29 +461,6 @@ void* setElements_alist(
 
         return dest;
     }
-}
-
-void* setZero_alist(
-    ArrayList list[static const 1],
-    uint32_t const id
-) {
-    assert(isValid_alist(list));
-    assert(list->len > id);
-
-    return setZeros_alist(list, id, 1);
-}
-
-void* setZeros_alist(
-    ArrayList list[static const 1],
-    uint32_t const id,
-    uint32_t const n
-) {
-    assert(isValid_alist(list));
-    assert(list->len > id);
-    assert(n <= list->len - id);
-    assert(n > 0);
-
-    return setElements_alist(list, id, NULL, n);
 }
 
 void vconstruct_alist(void* const p_list, va_list args) {
