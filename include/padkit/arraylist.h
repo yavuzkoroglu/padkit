@@ -88,6 +88,36 @@
         uint32_t const n
     );
 
+    #define insert_alist(list, id, p)               insertN_alist(list, id, p, 1)
+
+    #define insertDup_alist(list, dup_id, orig_id)  insertDupN_alist(list, dup_id, orig_id, 1)
+
+    void* insertDupN_alist(
+        ArrayList list[static const 1],
+        uint32_t const dup_id,
+        uint32_t const orig_id,
+        uint32_t const n
+    );
+
+    #define insertIndeterminate_alist(list, id)     insertN_alist(list, id, NULL, 1)
+
+    #define insertIndeterminateN_alist(list, id, n) insertN_alist(list, id, NULL, n)
+
+    void* insertN_alist(
+        ArrayList list[static const 1],
+        uint32_t const id,
+        void const* const p,
+        uint32_t const n
+    );
+
+    #define insertZeros_alist(list, id)             insertZeros_alist(list, id, 1)
+
+    void* insertZerosN_alist(
+        ArrayList list[static const 1],
+        uint32_t const id,
+        uint32_t const n
+    );
+
     bool isAllocated_alist(void const* const p_list);
 
     bool isSorted_alist(
@@ -101,11 +131,6 @@
         void* key[static const 1],
         ArrayList const list[static const 1],
         void const* const p
-    );
-
-    void qsort_alist(
-        ArrayList const list[static const 1],
-        int (*cmp)(void const*, void const*)
     );
 
     #define peek_alist(list)                        peekTop_alist(list)
@@ -136,11 +161,7 @@
 
     #define pushBottom_alist(list, p)               pushBottomN_alist(list, p, 1)
 
-    void* pushBottomN_alist(
-        ArrayList list[static const 1],
-        void const* const p,
-        uint32_t const n
-    );
+    #define pushBottomN_alist(list, p, n)           insertN_alist(list, 0, p, n)
 
     #define pushIndeterminate_alist(list)           push_alist(list, NULL)
 
@@ -164,16 +185,18 @@
 
     #define pushZerosBottom_alist(list)             pushZerosBottomN_alist(list, 1)
 
-    void* pushZerosBottomN_alist(
-        ArrayList list[static const 1],
-        uint32_t const n
-    );
+    #define pushZerosBottomN_alist(list, n)         insertZerosN_alist(list, 0, n)
 
     #define pushZerosN_alist(list, n)               addZerosN_alist(list, n)
 
     #define pushZerosTop_alist(list)                addZeros_alist(list)
 
     #define pushZerosTopN_alist(list, n)            addZerosN_alist(list, n)
+
+    void qsort_alist(
+        ArrayList const list[static const 1],
+        int (*cmp)(void const*, void const*)
+    );
 
     #define remove_alist(list, id)                  removeN_alist(list, id, 1)
 
@@ -187,7 +210,7 @@
 
     #define removeFirstN_alist(list, n)             removeN_alist(list, 0, n)
 
-    #define removeLast_alist(list)                  removeLast_alist(list, 1)
+    #define removeLast_alist(list)                  removeLastN_alist(list, 1)
 
     void* removeLastN_alist(
         ArrayList list[static const 1],
@@ -209,16 +232,19 @@
 
     #define rotateUp_alist(list)                    rotateUpN_alist(list, 1)
 
-    #define rotateUpN_alist(list, n)                rotateDownN_alist(list, list->len - (n % list->len))
+    void rotateUpN_alist(
+        ArrayList alist[static const 1],
+        uint32_t n
+    );
 
     #define set_alist(list, id, p)                  setN_alist(list, id, p, 1)
 
-    #define setDup_alist(list, orig_id, dup_id)     setDupN_alist(list, orig_id, dup_id, 1)
+    #define setDup_alist(list, dup_id, orig_id)     setDupN_alist(list, dup_id, orig_id, 1)
 
     void* setDupN_alist(
         ArrayList list[static const 1],
-        uint32_t const orig_id,
         uint32_t const dup_id,
+        uint32_t const orig_id,
         uint32_t const n
     );
 
@@ -232,6 +258,15 @@
     #define setZeros_alist(list, id)                setZerosN_alist(list, id, 1)
 
     #define setZerosN_alist(list, id, n)            setN_alist(list, id, NULL, n)
+
+    #define swap_alist(list, id1, id0)              swapN_alist(list, id1, id0, 1)
+
+    void swapN_alist(
+        ArrayList list[static const 1],
+        uint32_t const id1,
+        uint32_t const id0,
+        uint32_t const n
+    );
 
     void vconstruct_alist(void* const p_list, va_list args);
 #endif

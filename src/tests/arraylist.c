@@ -3,37 +3,88 @@ static int cmp_char(void const* a, void const* b);
 static void test_arraylist(void);
 static bool test_arraylist_add_alist(void);
 static bool test_arraylist_addDup_alist(void);
+static bool test_arraylist_addDupN_alist(void);
 static bool test_arraylist_addIndeterminate_alist(void);
-static bool test_arraylist_addn_alist(void);
-static bool test_arraylist_addnDup_alist(void);
-static bool test_arraylist_addnIndeterminate_alist(void);
-static bool test_arraylist_addnZeros_alist(void);
+static bool test_arraylist_addIndeterminateN_alist(void);
+static bool test_arraylist_addN_alist(void);
 static bool test_arraylist_addZeros_alist(void);
+static bool test_arraylist_addZerosN_alist(void);
 static bool test_arraylist_bsearch_alist(void);
 static bool test_arraylist_concat_alist(void);
 static bool test_arraylist_construct_alist(void);
 static bool test_arraylist_constructEmpty_alist(void);
-static bool test_arraylist_deleteElement_alist(void);
-static bool test_arraylist_deleteElements_alist(void);
 static bool test_arraylist_destruct_alist(void);
 static bool test_arraylist_flush_alist(void);
 static bool test_arraylist_get_alist(void);
 static bool test_arraylist_getFirst_alist(void);
+static bool test_arraylist_getFirstN_alist(void);
 static bool test_arraylist_getLast_alist(void);
+static bool test_arraylist_getLastN_alist(void);
+static bool test_arraylist_getN_alist(void);
+static bool test_arraylist_insert_alist(void);
+static bool test_arraylist_insertDup_alist(void);
+static bool test_arraylist_insertDupN_alist(void);
+static bool test_arraylist_insertIndeterminate_alist(void);
+static bool test_arraylist_insertIndeterminateN_alist(void);
+static bool test_arraylist_insertN_alist(void);
+static bool test_arraylist_insertZeros_alist(void);
+static bool test_arraylist_insertZerosN_alist(void);
 static bool test_arraylist_isAllocated_alist(void);
 static bool test_arraylist_isSorted_alist(void);
 static bool test_arraylist_isValid_alist(void);
 static bool test_arraylist_lsearch_alist(void);
+static bool test_arraylist_peek_alist(void);
+static bool test_arraylist_peekBottom_alist(void);
+static bool test_arraylist_peekBottomN_alist(void);
+static bool test_arraylist_peekN_alist(void);
+static bool test_arraylist_peekTop_alist(void);
+static bool test_arraylist_peekTopN_alist(void);
+static bool test_arraylist_pop_alist(void);
+static bool test_arraylist_popBottom_alist(void);
+static bool test_arraylist_popBottomN_alist(void);
+static bool test_arraylist_popN_alist(void);
+static bool test_arraylist_popTop_alist(void);
+static bool test_arraylist_popTopN_alist(void);
+static bool test_arraylist_push_alist(void);
+static bool test_arraylist_pushBottom_alist(void);
+static bool test_arraylist_pushBottomN_alist(void);
+static bool test_arraylist_pushIndeterminate_alist(void);
+static bool test_arraylist_pushIndeterminateBottom_alist(void);
+static bool test_arraylist_pushIndeterminateBottomN_alist(void);
+static bool test_arraylist_pushIndeterminateN_alist(void);
+static bool test_arraylist_pushIndeterminateTop_alist(void);
+static bool test_arraylist_pushIndeterminateTopN_alist(void);
+static bool test_arraylist_pushN_alist(void);
+static bool test_arraylist_pushTop_alist(void);
+static bool test_arraylist_pushTopN_alist(void);
+static bool test_arraylist_pushZeros_alist(void);
+static bool test_arraylist_pushZerosBottom_alist(void);
+static bool test_arraylist_pushZerosBottomN_alist(void);
+static bool test_arraylist_pushZerosN_alist(void);
+static bool test_arraylist_pushZerosTop_alist(void);
+static bool test_arraylist_pushZerosTopN_alist(void);
 static bool test_arraylist_qsort_alist(void);
+static bool test_arraylist_remove_alist(void);
+static bool test_arraylist_removeN_alist(void);
+static bool test_arraylist_removeFirst_alist(void);
+static bool test_arraylist_removeFirstN_alist(void);
 static bool test_arraylist_removeLast_alist(void);
-static bool test_arraylist_removenLast_alist(void);
+static bool test_arraylist_removeLastN_alist(void);
 static bool test_arraylist_reverse_alist(void);
+static bool test_arraylist_rotate_alist(void);
+static bool test_arraylist_rotateDown_alist(void);
+static bool test_arraylist_rotateDownN_alist(void);
+static bool test_arraylist_rotateN_alist(void);
+static bool test_arraylist_rotateUp_alist(void);
+static bool test_arraylist_rotateUpN_alist(void);
 static bool test_arraylist_set_alist(void);
 static bool test_arraylist_setDup_alist(void);
-static bool test_arraylist_setn_alist(void);
-static bool test_arraylist_setnDup_alist(void);
-static bool test_arraylist_setnZeros_alist(void);
+static bool test_arraylist_setDupN_alist(void);
+static bool test_arraylist_setN_alist(void);
 static bool test_arraylist_setZeros_alist(void);
+static bool test_arraylist_setZerosN_alist(void);
+static bool test_arraylist_swap_alist(void);
+static bool test_arraylist_swapN_alist(void);
 static bool test_arraylist_vconstruct_alist(size_t const nParameters, ...);
 
 static int cmp_char(void const* a, void const* b) {
@@ -43,88 +94,85 @@ static int cmp_char(void const* a, void const* b) {
 static void test_arraylist(void) {
     bool allTestsPass = 1;
 
-    allTestsPass &= test_arraylist_addDup_alist();
-    allTestsPass &= test_arraylist_addnDup_alist();
     allTestsPass &= test_arraylist_add_alist();
-    allTestsPass &= test_arraylist_addn_alist();
+    allTestsPass &= test_arraylist_addDup_alist();
+    allTestsPass &= test_arraylist_addDupN_alist();
     allTestsPass &= test_arraylist_addIndeterminate_alist();
-    allTestsPass &= test_arraylist_addnIndeterminate_alist();
+    allTestsPass &= test_arraylist_addIndeterminateN_alist();
+    allTestsPass &= test_arraylist_addN_alist();
     allTestsPass &= test_arraylist_addZeros_alist();
-    allTestsPass &= test_arraylist_addnZeros_alist();
+    allTestsPass &= test_arraylist_addZerosN_alist();
     allTestsPass &= test_arraylist_bsearch_alist();
     allTestsPass &= test_arraylist_concat_alist();
     allTestsPass &= test_arraylist_construct_alist();
     allTestsPass &= test_arraylist_constructEmpty_alist();
-    allTestsPass &= test_arraylist_deleteElement_alist();
-    allTestsPass &= test_arraylist_deleteElements_alist();
     allTestsPass &= test_arraylist_destruct_alist();
     allTestsPass &= test_arraylist_flush_alist();
     allTestsPass &= test_arraylist_get_alist();
     allTestsPass &= test_arraylist_getFirst_alist();
+    allTestsPass &= test_arraylist_getFirstN_alist();
     allTestsPass &= test_arraylist_getLast_alist();
+    allTestsPass &= test_arraylist_getLastN_alist();
+    allTestsPass &= test_arraylist_getN_alist();
     allTestsPass &= test_arraylist_isAllocated_alist();
     allTestsPass &= test_arraylist_isSorted_alist();
     allTestsPass &= test_arraylist_isValid_alist();
     allTestsPass &= test_arraylist_lsearch_alist();
+    allTestsPass &= test_arraylist_peek_alist();
+    allTestsPass &= test_arraylist_peekBottom_alist();
+    allTestsPass &= test_arraylist_peekBottomN_alist();
+    allTestsPass &= test_arraylist_peekN_alist();
+    allTestsPass &= test_arraylist_peekTop_alist();
+    allTestsPass &= test_arraylist_peekTopN_alist();
+    allTestsPass &= test_arraylist_pop_alist();
+    allTestsPass &= test_arraylist_popBottom_alist();
+    allTestsPass &= test_arraylist_popBottomN_alist();
+    allTestsPass &= test_arraylist_popN_alist();
+    allTestsPass &= test_arraylist_popTop_alist();
+    allTestsPass &= test_arraylist_popTopN_alist();
+    allTestsPass &= test_arraylist_push_alist();
+    allTestsPass &= test_arraylist_pushBottom_alist();
+    allTestsPass &= test_arraylist_pushBottomN_alist();
+    allTestsPass &= test_arraylist_pushIndeterminate_alist();
+    allTestsPass &= test_arraylist_pushIndeterminateBottom_alist();
+    allTestsPass &= test_arraylist_pushIndeterminateBottomN_alist();
+    allTestsPass &= test_arraylist_pushIndeterminateN_alist();
+    allTestsPass &= test_arraylist_pushIndeterminateTop_alist();
+    allTestsPass &= test_arraylist_pushIndeterminateTopN_alist();
+    allTestsPass &= test_arraylist_pushN_alist();
+    allTestsPass &= test_arraylist_pushTop_alist();
+    allTestsPass &= test_arraylist_pushTopN_alist();
+    allTestsPass &= test_arraylist_pushZeros_alist();
+    allTestsPass &= test_arraylist_pushZerosBottom_alist();
+    allTestsPass &= test_arraylist_pushZerosBottomN_alist();
+    allTestsPass &= test_arraylist_pushZerosN_alist();
+    allTestsPass &= test_arraylist_pushZerosTop_alist();
+    allTestsPass &= test_arraylist_pushZerosTopN_alist();
     allTestsPass &= test_arraylist_qsort_alist();
+    allTestsPass &= test_arraylist_remove_alist();
+    allTestsPass &= test_arraylist_removeN_alist();
+    allTestsPass &= test_arraylist_removeFirst_alist();
+    allTestsPass &= test_arraylist_removeFirstN_alist();
     allTestsPass &= test_arraylist_removeLast_alist();
-    allTestsPass &= test_arraylist_removenLast_alist();
+    allTestsPass &= test_arraylist_removeLastN_alist();
     allTestsPass &= test_arraylist_reverse_alist();
-    allTestsPass &= test_arraylist_setDup_alist();
-    allTestsPass &= test_arraylist_setnDup_alist();
+    allTestsPass &= test_arraylist_rotate_alist();
+    allTestsPass &= test_arraylist_rotateDown_alist();
+    allTestsPass &= test_arraylist_rotateDownN_alist();
+    allTestsPass &= test_arraylist_rotateN_alist();
+    allTestsPass &= test_arraylist_rotateUp_alist();
+    allTestsPass &= test_arraylist_rotateUpN_alist();
     allTestsPass &= test_arraylist_set_alist();
-    allTestsPass &= test_arraylist_setn_alist();
+    allTestsPass &= test_arraylist_setDup_alist();
+    allTestsPass &= test_arraylist_setDupN_alist();
+    allTestsPass &= test_arraylist_setN_alist();
     allTestsPass &= test_arraylist_setZeros_alist();
-    allTestsPass &= test_arraylist_setnZeros_alist();
+    allTestsPass &= test_arraylist_setZerosN_alist();
+    allTestsPass &= test_arraylist_swap_alist();
+    allTestsPass &= test_arraylist_swapN_alist();
     allTestsPass &= test_arraylist_vconstruct_alist(2, sizeof(int), 1000000);
 
     if (allTestsPass) TESTS_PASS_MESSAGE
-}
-
-static bool test_arraylist_addDup_alist(void) {
-    ArrayList list[1] = { NOT_AN_ALIST };
-    construct_alist(list, 1, 3);
-
-    TEST_FAIL_IF(list->len != 0)
-    TEST_FAIL_IF(list->cap != 3)
-
-    addn_alist(list, "abc", 3);
-
-    TEST_FAIL_IF(list->len != 3)
-    TEST_FAIL_IF(list->cap != 3)
-
-    addDup_alist(list, 0);
-    addDup_alist(list, 3);
-    addDup_alist(list, 4);
-
-    TEST_FAIL_IF(list->len != 6)
-    TEST_FAIL_IF(list->cap != 6)
-    TEST_FAIL_IF(strncmp(list->arr, "abcaaa", 6) != 0)
-
-    destruct_alist(list);
-    TEST_PASS
-}
-
-static bool test_arraylist_addnDup_alist(void) {
-    ArrayList list[1] = { NOT_AN_ALIST };
-    construct_alist(list, 1, 3);
-
-    TEST_FAIL_IF(list->len != 0)
-    TEST_FAIL_IF(list->cap != 3)
-
-    addn_alist(list, "abc", 3);
-
-    TEST_FAIL_IF(list->len != 3)
-    TEST_FAIL_IF(list->cap != 3)
-
-    addnDup_alist(list, 1, 2);
-
-    TEST_FAIL_IF(list->len != 5)
-    TEST_FAIL_IF(list->cap != 6)
-    TEST_FAIL_IF(strncmp(list->arr, "abcbc", 5) != 0)
-
-    destruct_alist(list);
-    TEST_PASS
 }
 
 static bool test_arraylist_add_alist(void) {
@@ -146,14 +194,60 @@ static bool test_arraylist_add_alist(void) {
     TEST_PASS
 }
 
-static bool test_arraylist_addn_alist(void) {
+static bool test_arraylist_addDup_alist(void) {
+    ArrayList list[1] = { NOT_AN_ALIST };
+    construct_alist(list, 1, 3);
+
+    TEST_FAIL_IF(list->len != 0)
+    TEST_FAIL_IF(list->cap != 3)
+
+    addN_alist(list, "abc", 3);
+
+    TEST_FAIL_IF(list->len != 3)
+    TEST_FAIL_IF(list->cap != 3)
+
+    addDup_alist(list, 0);
+    addDup_alist(list, 3);
+    addDup_alist(list, 4);
+
+    TEST_FAIL_IF(list->len != 6)
+    TEST_FAIL_IF(list->cap != 6)
+    TEST_FAIL_IF(strncmp(list->arr, "abcaaa", 6) != 0)
+
+    destruct_alist(list);
+    TEST_PASS
+}
+
+static bool test_arraylist_addDupN_alist(void) {
+    ArrayList list[1] = { NOT_AN_ALIST };
+    construct_alist(list, 1, 3);
+
+    TEST_FAIL_IF(list->len != 0)
+    TEST_FAIL_IF(list->cap != 3)
+
+    addN_alist(list, "abc", 3);
+
+    TEST_FAIL_IF(list->len != 3)
+    TEST_FAIL_IF(list->cap != 3)
+
+    addDupN_alist(list, 1, 2);
+
+    TEST_FAIL_IF(list->len != 5)
+    TEST_FAIL_IF(list->cap != 6)
+    TEST_FAIL_IF(strncmp(list->arr, "abcbc", 5) != 0)
+
+    destruct_alist(list);
+    TEST_PASS
+}
+
+static bool test_arraylist_addN_alist(void) {
     ArrayList list[1] = { NOT_AN_ALIST };
     construct_alist(list, 5, 1);
 
     TEST_FAIL_IF(list->len != 0)
     TEST_FAIL_IF(list->cap != 1)
 
-    addn_alist(list, "AliceHenryWendy", 3);
+    addN_alist(list, "AliceHenryWendy", 3);
 
     TEST_FAIL_IF(list->len != 3)
     TEST_FAIL_IF(list->cap != 4)
@@ -180,14 +274,14 @@ static bool test_arraylist_addIndeterminate_alist(void) {
     TEST_PASS
 }
 
-static bool test_arraylist_addnIndeterminate_alist(void) {
+static bool test_arraylist_addIndeterminateN_alist(void) {
     ArrayList list[1] = { NOT_AN_ALIST };
     construct_alist(list, sizeof(int), 1);
 
     TEST_FAIL_IF(list->len != 0)
     TEST_FAIL_IF(list->cap != 1)
 
-    addnIndeterminate_alist(list, 5);
+    addIndeterminateN_alist(list, 5);
 
     TEST_FAIL_IF(list->len != 5)
     TEST_FAIL_IF(list->cap != 8)
@@ -209,30 +303,38 @@ static bool test_arraylist_addZeros_alist(void) {
     TEST_FAIL_IF(list->len != 8)
     TEST_FAIL_IF(list->cap != 8)
 
-    for (uint32_t i = 0; i < list->len; i++) {
-        int const* const value = get_alist(list, i);
-        TEST_FAIL_IF(*value != 0)
+    {
+        int const* const p_lastValue    = getLast_alist(list);
+        int const* p_value              = getFirst_alist(list);
+        while (p_value <= p_lastValue) {
+            TEST_FAIL_IF(*p_value != 0)
+            p_value += sizeof(int);
+        }
     }
 
     destruct_alist(list);
     TEST_PASS
 }
 
-static bool test_arraylist_addnZeros_alist(void) {
+static bool test_arraylist_addZerosN_alist(void) {
     ArrayList list[1] = { NOT_AN_ALIST };
     construct_alist(list, sizeof(int), 8);
 
     TEST_FAIL_IF(list->len != 0)
     TEST_FAIL_IF(list->cap != 8)
 
-    addnZeros_alist(list, 8);
+    addZerosN_alist(list, 8);
 
     TEST_FAIL_IF(list->len != 8)
     TEST_FAIL_IF(list->cap != 8)
 
-    for (uint32_t i = 0; i < list->len; i++) {
-        int const* const value = get_alist(list, i);
-        TEST_FAIL_IF(*value != 0)
+    {
+        int const* const p_lastValue    = getLast_alist(list);
+        int const* p_value              = getFirst_alist(list);
+        while (p_value <= p_lastValue) {
+            TEST_FAIL_IF(*p_value != 0)
+            p_value += sizeof(int);
+        }
     }
 
     destruct_alist(list);
@@ -827,7 +929,7 @@ static bool test_arraylist_vconstruct_alist(size_t const nParameters, ...) {
     ArrayList list[1] = { NOT_AN_ALIST };
     va_list args;
 
-    TEST_FAIL_IF(nParameters != 2)
+    assert(nParameters == 2);
 
     va_start(args, nParameters);
     vconstruct_alist(list, args);
