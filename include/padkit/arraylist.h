@@ -161,7 +161,11 @@
 
     #define pushBottom_alist(list, p)               pushBottomN_alist(list, p, 1)
 
-    #define pushBottomN_alist(list, p, n)           insertN_alist(list, 0, p, n)
+    #define pushBottomN_alist(list, p, n) (         \
+            list->len == 0                          \
+                ? addN_alist(list, p, n)            \
+                : insertN_alist(list, 0, p, n)      \
+        )
 
     #define pushIndeterminate_alist(list)           push_alist(list, NULL)
 
@@ -185,7 +189,11 @@
 
     #define pushZerosBottom_alist(list)             pushZerosBottomN_alist(list, 1)
 
-    #define pushZerosBottomN_alist(list, n)         insertZerosN_alist(list, 0, n)
+    #define pushZerosBottomN_alist(list, n) (       \
+            list->len == 0                          \
+                ? addZerosN_alist(list, n)          \
+                : insertZerosN_alist(list, 0, n)    \
+        )
 
     #define pushZerosN_alist(list, n)               addZerosN_alist(list, n)
 

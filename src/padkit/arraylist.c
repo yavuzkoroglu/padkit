@@ -218,9 +218,8 @@ void* insertDupN_alist(
     assert(isValid_alist(list));
     assert(len > dup_id);
     assert(len > orig_id);
-    assert(len - dup_id >= n);
-    assert(len - orig_id >= n);
     assert(dup_id != orig_id);
+    assert(len - orig_id >= n);
     assert(n > 0);
 
     addIndeterminateN_alist(list, n);
@@ -418,12 +417,15 @@ void rotateDownN_alist(
 
     assert(isValid_alist(list));
 
-    if ((n %= len) == 0)    return;
-    if (n >= len >> 1)      rotateUpN_alist(list, len - n);
-
-    addDupN_alist(list, 0, n);
-    setDupN_alist(list, 0, n, len);
-    removeLastN_alist(list, n);
+    if ((n %= len) == 0) {
+        /* Do nothing */
+    } else if (n >= len >> 1) {
+        rotateUpN_alist(list, len - n);
+    } else {
+        addDupN_alist(list, 0, n);
+        setDupN_alist(list, 0, n, len);
+        removeLastN_alist(list, n);
+    }
 }
 
 void rotateUpN_alist(
@@ -434,13 +436,16 @@ void rotateUpN_alist(
 
     assert(isValid_alist(list));
 
-    if ((n %= len) == 0)    return;
-    if (n >= len >> 1)      rotateDownN_alist(list, len - n);
-
-    addIndeterminateN_alist(list, n);
-    setDupN_alist(list, n, 0, len);
-    setDupN_alist(list, 0, len, n);
-    removeLastN_alist(list, n);
+    if ((n %= len) == 0) {
+        /* Do nothing */
+    } else if (n >= len >> 1) {
+        rotateDownN_alist(list, len - n);
+    } else {
+        addIndeterminateN_alist(list, n);
+        setDupN_alist(list, n, 0, len);
+        setDupN_alist(list, 0, len, n);
+        removeLastN_alist(list, n);
+    }
 }
 
 void* setDupN_alist(
