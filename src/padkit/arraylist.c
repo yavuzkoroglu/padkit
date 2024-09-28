@@ -354,6 +354,20 @@ void qsort_alist(
     qsort(list->arr, list->len, list->sz_elem, cmp);
 }
 
+void* removeLastN_alist(
+    ArrayList list[static const 1],
+    uint32_t const n
+) {
+    assert(isValid_alist(list));
+    assert(n > 0);
+    assert(list->len >= n);
+    {
+        void* const p = getN_alist(list, list->len - n, n);
+        list->len -= n;
+        return p;
+    }
+}
+
 void* removeN_alist(
     ArrayList list[static const 1],
     uint32_t const id,
@@ -382,20 +396,6 @@ void* removeN_alist(
     }
 
     return removeLastN_alist(list, n);
-}
-
-void* removeLastN_alist(
-    ArrayList list[static const 1],
-    uint32_t const n
-) {
-    assert(isValid_alist(list));
-    assert(n > 0);
-    assert(list->len >= n);
-    {
-        void* const p = getN_alist(list, list->len - n, n);
-        list->len -= n;
-        return p;
-    }
 }
 
 void reverse_alist(ArrayList list[static const 1]) {
@@ -510,9 +510,15 @@ void swapN_alist(
     assert(isValid_alist(list));
     assert(id1 < len);
     assert(id0 < len);
+    assert(id1 != id0);
     assert(n <= len - id1);
     assert(n <= len - id0);
     assert(n > 0);
+
+    if (id1 < id0)
+        assert(id1 + n <= id0);
+    else
+        assert(id0 + n <= id1);
 
     addDupN_alist(list, id0, n);
     setDupN_alist(list, id0, id1, n);

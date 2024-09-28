@@ -200,12 +200,6 @@
 
     #define remove_alist(list, id)                  removeN_alist(list, id, 1)
 
-    void* removeN_alist(
-        ArrayList list[static const 1],
-        uint32_t const id,
-        uint32_t const n
-    );
-
     #define removeFirst_alist(list)                 removeN_alist(list, 0, 1)
 
     #define removeFirstN_alist(list, n)             removeN_alist(list, 0, n)
@@ -214,6 +208,12 @@
 
     void* removeLastN_alist(
         ArrayList list[static const 1],
+        uint32_t const n
+    );
+
+    void* removeN_alist(
+        ArrayList list[static const 1],
+        uint32_t const id,
         uint32_t const n
     );
 
