@@ -46,7 +46,7 @@
     );
 
     uint32_t bsearch_alist(
-        void* key[static const 1],
+        void* p_key[static const 1],
         ArrayList const list[static const 1],
         void const* const p,
         int (*cmp)(void const*, void const*)
@@ -128,7 +128,7 @@
     bool isValid_alist(void const* const p_list);
 
     uint32_t lsearch_alist(
-        void* key[static const 1],
+        void* p_key[static const 1],
         ArrayList const list[static const 1],
         void const* const p
     );

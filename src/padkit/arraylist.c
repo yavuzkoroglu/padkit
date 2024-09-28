@@ -220,6 +220,7 @@ void* insertDupN_alist(
     assert(len > orig_id);
     assert(len - dup_id >= n);
     assert(len - orig_id >= n);
+    assert(dup_id != orig_id);
     assert(n > 0);
 
     addIndeterminateN_alist(list, n);
