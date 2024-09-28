@@ -110,7 +110,7 @@
         uint32_t const n
     );
 
-    #define insertZeros_alist(list, id)             insertZeros_alist(list, id, 1)
+    #define insertZeros_alist(list, id)             insertZerosN_alist(list, id, 1)
 
     void* insertZerosN_alist(
         ArrayList list[static const 1],
@@ -155,7 +155,7 @@
 
     #define popTop_alist(list)                      removeLast_alist(list)
 
-    #define popTopN_alist(list)                     removeLastN_alist(list, n)
+    #define popTopN_alist(list, n)                  removeLastN_alist(list, n)
 
     #define push_alist(list, p)                     pushTop_alist(list, p)
 
