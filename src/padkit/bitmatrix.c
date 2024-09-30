@@ -73,97 +73,44 @@ static uint64_t const remainders[64] = {
     B8(11111111,11111111,11111111,11111111,11111111,11111111,11111111,11111110) /* 63 */
 };
 
-void connect_gmtx(GraphMatrix gmtx[static const 1], uint32_t const source, uint32_t const sink) {
-    uint32_t const new_height   = (gmtx->height > source) ? gmtx->height : source + 1;
-    uint32_t const new_width    = (gmtx->width > sink) ? gmtx->width : sink + 1;
-    uint64_t const edge_id      = (uint64_t)new_width * (uint64_t)source + (uint64_t)sink;
-    uint64_t const block_id     = edge_id >> 6;
-    uint64_t const remainder_id = edge_id % (1U << 6);
+void (* const connect_gmtx)(
+    GraphMatrix* const gmtx,
+    uint32_t const source,
+    uint32_t const sink
+) = &set_bmtx;
 
-    assert(isValid_gmtx(gmtx));
-    assert(source < SZ32_MAX);
-    assert(sink < SZ32_MAX);
+void (* const connectAll_gmtx)(GraphMatrix* const gmtx) = &setAll_bmtx;
 
-    resizeIfNecessary_gmtx(gmtx, new_height, new_width);
-    gmtx->array[block_id] |= (uint64_t)(remainders[1] >> remainder_id);
+void construct_bmtx(BitMatrix* const bmtx, ...) {
+    va_list args;
+    assert(bmtx != NULL);
+    va_start(args, bmtx);
+    vconstruct_bmtx(bmtx, args);
 }
 
-void connectAll_gmtx(GraphMatrix gmtx[static const 1]) {
-    uint64_t const size             = (uint64_t)gmtx->height * (uint64_t)gmtx->width;
-    uint64_t const nFullBlocks      = size >> 6;
-    uint64_t const nRemainders      = size % (1U << 6);
-    uint64_t const lastBlock_id     = nFullBlocks;
-    uint64_t const sz_fullBlocks    = nFullBlocks << 3;
+void (* const construct_gmtx)(GraphMatrix* const gmtx, ...) = &construct_bmtx;
 
-    assert(isValid_gmtx(gmtx));
-    assert(sz_fullBlocks < SZ64_MAX);
-
-    memset(gmtx->array, B(11111111), (size_t)sz_fullBlocks);
-    gmtx->array[lastBlock_id] = (uint64_t)remainders[nRemainders];
+void destruct_bmtx(BitMatrix* const bmtx) {
+    assert(isValid_bmtx(bmtx));
+    free(bmtx->array);
+    *bmtx = NOT_A_BIT_MATRIX;
 }
 
-void construct_bmtx(
-    BitMatrix bmtx[static const 1],
-    uint32_t const initial_height, uint32_t const initial_width
-) {
-    uint64_t const size = (((uint64_t)initial_height * (uint64_t)initial_width) >> 6) + 1;
+void (* const destruct_gmtx)(GraphMatrix* const gmtx) = &destruct_bmtx;
 
-    assert(initial_height > 0);
-    assert(initial_height < SZ32_MAX);
-    assert(initial_width > 0);
-    assert(initial_width < SZ32_MAX);
-    assert(size < SZ64_MAX);
+void (* const disconnect_gmtx)(
+    GraphMatrix* const gmtx,
+    uint32_t const source,
+    uint32_t const sink
+) = &unset_bmtx;
 
-    bmtx[0] = (GraphMatrix){ initial_height, initial_width, mem_calloc((size_t)size, sizeof(uint64_t)) };
-}
-
-void construct_gmtx(
-    GraphMatrix gmtx[static const 1],
-    uint32_t const initial_height, uint32_t const initial_width
-) {
-    uint64_t const size = (((uint64_t)initial_height * (uint64_t)initial_width) >> 6) + 1;
-
-    assert(initial_height > 0);
-    assert(initial_height < SZ32_MAX);
-    assert(initial_width > 0);
-    assert(initial_width < SZ32_MAX);
-    assert(size < SZ64_MAX);
-
-    gmtx[0] = (GraphMatrix){ initial_height, initial_width, mem_calloc((size_t)size, sizeof(uint64_t)) };
-}
-
-void disconnect_gmtx(GraphMatrix gmtx[static const 1], uint32_t const source, uint32_t const sink) {
-    uint32_t const new_height   = (gmtx->height > source) ? gmtx->height : source + 1;
-    uint32_t const new_width    = (gmtx->width > sink) ? gmtx->width : sink + 1;
-    uint64_t const edge_id      = (uint64_t)new_width * (uint64_t)source + (uint64_t)sink;
-    uint64_t const block_id     = edge_id >> 6;
-    uint64_t const remainder_id = edge_id % (1U << 6);
-
-    assert(isValid_gmtx(gmtx));
-    assert(source < SZ32_MAX);
-    assert(sink < SZ32_MAX);
-
-    resizeIfNecessary_gmtx(gmtx, new_height, new_width);
-
-    gmtx->array[block_id] &= ~(uint64_t)(remainders[1] >> remainder_id);
-}
-
-void disconnectAll_gmtx(GraphMatrix gmtx[static const 1]) {
-    uint64_t const size         = (uint64_t)gmtx->height * (uint64_t)gmtx->width;
-    uint64_t const nFullBlocks  = size >> 6;
-    uint64_t const nRemainders  = size % (1U << 6);
-    uint64_t const nTotalBlocks = nFullBlocks + !!(nRemainders);
-    uint64_t const sz_total     = nTotalBlocks << 3;
-
-    assert(isValid_gmtx(gmtx));
-    assert(sz_total < SZ64_MAX);
-
-    memset(gmtx->array, B(00000000), sz_total);
-}
+void (* const disconnectAll_gmtx)(GraphMatrix* const gmtx) = &unsetAll_bmtx;
 
 uint32_t findInCol_bmtx(
-    BitMatrix bmtx[static const 1], uint32_t const col,
-    uint32_t const highest_possible_row, bool const value
+    BitMatrix const* const bmtx,
+    uint32_t const col,
+    uint32_t const highest_possible_row,
+    bool const value
 ) {
     uint32_t row = highest_possible_row;
 
@@ -178,8 +125,10 @@ uint32_t findInCol_bmtx(
 }
 
 uint32_t findInRow_bmtx(
-    BitMatrix bmtx[static const 1], uint32_t const row,
-    uint32_t const highest_possible_col, bool const value
+    BitMatrix const* const bmtx,
+    uint32_t const row,
+    uint32_t const highest_possible_col,
+    bool const value
 ) {
     uint32_t col = highest_possible_col;
 
@@ -193,97 +142,54 @@ uint32_t findInRow_bmtx(
     return col;
 }
 
-uint32_t findSink_gmtx(
-    GraphMatrix const gmtx[static const 1], uint32_t const source,
-    uint32_t const highest_possible_sink
+bool get_bmtx(
+    BitMatrix const* const bmtx,
+    uint32_t const row,
+    uint32_t const col
 ) {
-    uint32_t sink = highest_possible_sink;
-
-    assert(isValid_gmtx(gmtx));
-    assert(source < gmtx->height);
-    assert(sink < gmtx->width);
-
-    while (sink != UINT32_MAX && !isConnected_gmtx(gmtx, source, sink))
-        sink--;
-
-    return sink;
-}
-
-uint32_t findSource_gmtx(
-    GraphMatrix const gmtx[static const 1], uint32_t const sink,
-    uint32_t const highest_possible_source
-) {
-    uint32_t source = highest_possible_source;
-
-    assert(isValid_gmtx(gmtx));
-    assert(source < gmtx->height);
-    assert(sink < gmtx->width);
-
-    while (source != UINT32_MAX && !isConnected_gmtx(gmtx, source, sink))
-        source--;
-
-    return source;
-}
-
-void free_bmtx(BitMatrix bmtx[static const 1]) {
-    assert(isValid_bmtx(bmtx));
-    free(bmtx->array);
-    bmtx[0] = NOT_A_BIT_MATRIX;
-}
-
-void free_gmtx(GraphMatrix gmtx[static const 1]) {
-    assert(isValid_gmtx(gmtx));
-    free(gmtx->array);
-    gmtx[0] = NOT_A_GRAPH_MATRIX;
-}
-
-bool get_bmtx(BitMatrix const bmtx[static const 1], uint32_t const row, uint32_t const col) {
-    uint64_t const bit_id       = (uint64_t)bmtx->width * (uint64_t)row + (uint64_t)col;
-    uint64_t const block_id     = bit_id >> 6;
-    uint64_t const remainder_id = bit_id % (1U << 6);
-
     assert(isValid_bmtx(bmtx));
     assert(row < bmtx->height);
     assert(col < bmtx->width);
+    {
+        uint64_t const bit_id       = (uint64_t)bmtx->width * (uint64_t)row + (uint64_t)col;
+        uint64_t const block_id     = bit_id >> 6;
+        uint64_t const remainder_id = bit_id % (1U << 6);
 
-    return bmtx->array[block_id] & (uint64_t)(remainders[1] >> remainder_id);
+        return bmtx->array[block_id] & (uint64_t)(remainders[1] >> remainder_id);
+    }
 }
 
-bool isConnected_gmtx(GraphMatrix const gmtx[static const 1], uint32_t const source, uint32_t const sink) {
-    uint64_t const edge_id      = (uint64_t)gmtx->width * (uint64_t)source + (uint64_t)sink;
-    uint64_t const block_id     = edge_id >> 6;
-    uint64_t const remainder_id = edge_id % (1U << 6);
+bool isAllocated_bmtx(BitMatrix const* const bmtx) {
+    if (bmtx == NULL)           return 0;
+    if (bmtx->array == NULL)    return 0;
 
-    assert(isValid_gmtx(gmtx));
-    assert(source < gmtx->height);
-    assert(sink < gmtx->width);
-
-    return gmtx->array[block_id] & (uint64_t)(remainders[1] >> remainder_id);
+    return 1;
 }
 
-bool isValid_bmtx(BitMatrix const bmtx[static const 1]) {
+bool (* const isAllocated_gmtx)(GraphMatrix const* const gmtx) = &isAllocated_bmtx;
+
+bool (* const isConnected_gmtx)(
+    GraphMatrix const* const gmtx,
+    uint32_t const source,
+    uint32_t const sink
+) = &get_bmtx;
+
+bool isValid_bmtx(BitMatrix const* const bmtx) {
+    if (!isAllocated_bmtx(bmtx))    return 0;
     if (bmtx->height == 0)          return 0;
     if (bmtx->height >= SZ32_MAX)   return 0;
     if (bmtx->width == 0)           return 0;
     if (bmtx->width >= SZ32_MAX)    return 0;
-    if (bmtx->array == NULL)        return 0;
 
     return 1;
 }
 
-bool isValid_gmtx(GraphMatrix const gmtx[static const 1]) {
-    if (gmtx->height == 0)          return 0;
-    if (gmtx->height >= SZ32_MAX)   return 0;
-    if (gmtx->width == 0)           return 0;
-    if (gmtx->width >= SZ32_MAX)    return 0;
-    if (gmtx->array == NULL)        return 0;
-
-    return 1;
-}
+bool (* const isValid_gmtx)(GraphMatrix const* const gmtx) = &isValid_bmtx;
 
 void resizeIfNecessary_bmtx(
-    BitMatrix bmtx[static const 1],
-    uint32_t const new_height, uint32_t const new_width
+    BitMatrix* const bmtx,
+    uint32_t const new_height,
+    uint32_t const new_width
 ) {
     BitMatrix new_bmtx[1] = { NOT_A_BIT_MATRIX };
 
@@ -303,91 +209,102 @@ void resizeIfNecessary_bmtx(
                 set_bmtx(new_bmtx, row, col);
 
     /* Replace the old BitMatrix. */
-    free_bmtx(bmtx);
-    bmtx[0] = new_bmtx[0];
+    destruct_bmtx(bmtx);
+    *bmtx = new_bmtx[0];
 }
 
-void resizeIfNecessary_gmtx(
-    GraphMatrix gmtx[static const 1],
-    uint32_t const new_height, uint32_t const new_width
+void (* const resizeIfNecessary_gmtx)(
+    GraphMatrix* const gmtx,
+    uint32_t const new_height,
+    uint32_t const new_width
+) = &resizeIfNecessary_bmtx;
+
+void set_bmtx(
+    BitMatrix* const bmtx,
+    uint32_t const row,
+    uint32_t const col
 ) {
-    GraphMatrix new_gmtx[1] = { NOT_A_GRAPH_MATRIX };
-
-    assert(isValid_gmtx(gmtx));
-    assert(new_height >= gmtx->height);
-    assert(new_width >= gmtx->width);
-
-    if (new_height == gmtx->height && new_width == gmtx->width)
-        return;
-
-    construct_gmtx(new_gmtx, new_height, new_width);
-
-    /* Remake all the previous connections. */
-    for (uint32_t source = 0; source < gmtx->height; source++)
-        for (uint32_t sink = 0; sink < gmtx->width; sink++)
-            if (isConnected_gmtx(gmtx, source, sink))
-                connect_gmtx(new_gmtx, source, sink);
-
-    /* Replace the old GraphMatrix. */
-    free_gmtx(gmtx);
-    gmtx[0] = new_gmtx[0];
-}
-
-void set_bmtx(BitMatrix bmtx[static const 1], uint32_t const row, uint32_t const col) {
-    uint32_t const new_height   = (bmtx->height > row) ? bmtx->height : row + 1;
-    uint32_t const new_width    = (bmtx->width > col) ? bmtx->width : col + 1;
-    uint64_t const bit_id       = (uint64_t)new_width * (uint64_t)row + (uint64_t)col;
-    uint64_t const block_id     = bit_id >> 6;
-    uint64_t const remainder_id = bit_id % (1U << 6);
-
     assert(isValid_bmtx(bmtx));
     assert(row < SZ32_MAX);
     assert(col < SZ32_MAX);
+    {
+        uint32_t const new_height   = (bmtx->height > row) ? bmtx->height : row + 1;
+        uint32_t const new_width    = (bmtx->width > col) ? bmtx->width : col + 1;
+        uint64_t const bit_id       = (uint64_t)new_width * (uint64_t)row + (uint64_t)col;
+        uint64_t const block_id     = bit_id >> 6;
+        uint64_t const remainder_id = bit_id % (1U << 6);
 
-    resizeIfNecessary_bmtx(bmtx, new_height, new_width);
+        resizeIfNecessary_bmtx(bmtx, new_height, new_width);
 
-    bmtx->array[block_id] |= (uint64_t)(remainders[1] >> remainder_id);
+        bmtx->array[block_id] |= (uint64_t)(remainders[1] >> remainder_id);
+    }
 }
 
-void setAll_bmtx(BitMatrix bmtx[static const 1]) {
-    uint64_t const size             = (uint64_t)bmtx->height * (uint64_t)bmtx->width;
-    uint64_t const nFullBlocks      = size >> 6;
-    uint64_t const nRemainders      = size % (1U << 6);
-    uint64_t const lastBlock_id     = nFullBlocks;
-    uint64_t const sz_fullBlocks    = nFullBlocks << 3;
-
+void setAll_bmtx(BitMatrix* const bmtx) {
     assert(isValid_bmtx(bmtx));
-    assert(sz_fullBlocks < SZ64_MAX);
+    {
+        uint64_t const area             = (uint64_t)bmtx->height * (uint64_t)bmtx->width;
+        uint64_t const nFullBlocks      = area >> 6;
+        uint64_t const nRemainders      = area % (1U << 6);
+        uint64_t const lastBlock_id     = nFullBlocks;
+        uint64_t const sz_fullBlocks    = nFullBlocks << 3;
 
-    memset(bmtx->array, B(11111111), (size_t)sz_fullBlocks);
-    bmtx->array[lastBlock_id] = (uint64_t)remainders[nRemainders];
+        assert(sz_fullBlocks < SZ64_MAX);
+
+        memset(bmtx->array, B(11111111), (size_t)sz_fullBlocks);
+        bmtx->array[lastBlock_id] = (uint64_t)remainders[nRemainders];
+    }
 }
 
-void unset_bmtx(BitMatrix bmtx[static const 1], uint32_t const row, uint32_t const col) {
-    uint32_t const new_height   = (bmtx->height > row) ? bmtx->height : row + 1;
-    uint32_t const new_width    = (bmtx->width > col) ? bmtx->width : col + 1;
-    uint64_t const bit_id       = (uint64_t)new_width * (uint64_t)row + (uint64_t)col;
-    uint64_t const block_id     = bit_id >> 6;
-    uint64_t const remainder_id = bit_id % (1U << 6);
-
+void unset_bmtx(
+    BitMatrix* const bmtx,
+    uint32_t const row,
+    uint32_t const col
+) {
     assert(isValid_bmtx(bmtx));
     assert(row < SZ32_MAX);
     assert(col < SZ32_MAX);
+    {
+        uint32_t const new_height   = (bmtx->height > row) ? bmtx->height : row + 1;
+        uint32_t const new_width    = (bmtx->width > col) ? bmtx->width : col + 1;
+        uint64_t const bit_id       = (uint64_t)new_width * (uint64_t)row + (uint64_t)col;
+        uint64_t const block_id     = bit_id >> 6;
+        uint64_t const remainder_id = bit_id % (1U << 6);
 
-    resizeIfNecessary_bmtx(bmtx, new_height, new_width);
+        resizeIfNecessary_bmtx(bmtx, new_height, new_width);
 
-    bmtx->array[block_id] &= ~(uint64_t)(remainders[1] >> remainder_id);
+        bmtx->array[block_id] &= ~(uint64_t)(remainders[1] >> remainder_id);
+    }
 }
 
-void unsetAll_bmtx(BitMatrix bmtx[static const 1]) {
-    uint64_t const size         = (uint64_t)bmtx->height * (uint64_t)bmtx->width;
-    uint64_t const nFullBlocks  = size >> 6;
-    uint64_t const nRemainders  = size % (1U << 6);
-    uint64_t const nTotalBlocks = nFullBlocks + !!(nRemainders);
-    uint64_t const sz_total     = nTotalBlocks << 3;
-
+void unsetAll_bmtx(BitMatrix* const bmtx) {
     assert(isValid_bmtx(bmtx));
-    assert(sz_total < SZ64_MAX);
+    {
+        uint64_t const area         = (uint64_t)bmtx->height * (uint64_t)bmtx->width;
+        uint64_t const nFullBlocks  = area >> 6;
+        uint64_t const nRemainders  = area % (1U << 6);
+        uint64_t const nTotalBlocks = nFullBlocks + !!(nRemainders);
+        uint64_t const sz_total     = nTotalBlocks << 3;
 
-    memset(bmtx->array, B(00000000), (size_t)sz_total);
+        assert(sz_total < SZ64_MAX);
+
+        memset(bmtx->array, B(00000000), (size_t)sz_total);
+    }
 }
+
+void vconstruct_bmtx(BitMatrix* const bmtx, va_list args) {
+    uint32_t const initial_height   = va_arg(args, uint32_t);
+    uint32_t const initial_width    = va_arg(args, uint32_t);
+    uint64_t const area             = (((uint64_t)initial_height * (uint64_t)initial_width) >> 6) + 1;
+    va_end(args);
+
+    assert(initial_height > 0);
+    assert(initial_height < SZ32_MAX);
+    assert(initial_width > 0);
+    assert(initial_width < SZ32_MAX);
+    assert(area < SZ64_MAX);
+
+    *bmtx = (GraphMatrix){ initial_height, initial_width, mem_calloc((size_t)area, sizeof(uint64_t)) };
+}
+
+void (* const vconstruct_gmtx)(GraphMatrix* const gmtx, va_list args) = &vconstruct_bmtx;

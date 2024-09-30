@@ -4,12 +4,13 @@
     #endif
     #define PADKIT_BITMATRIX_H
     #define PADKIT_GRAPHMATRIX_H
+    #include <stdarg.h>
     #include <stdbool.h>
     #include <stdint.h>
 
-    #define NOT_A_BIT_MATRIX    ((BitMatrix){ 0, 0, NULL })
+    #define NOT_A_BIT_MATRIX                                        ((BitMatrix){ 0, 0, NULL })
 
-    #define NOT_A_GRAPH_MATRIX  ((GraphMatrix){ 0, 0, NULL })
+    #define NOT_A_GRAPH_MATRIX                                      NOT_A_BIT_MATRIX
 
     typedef struct BitMatrixBody {
         uint32_t    height;
@@ -17,71 +18,105 @@
         uint64_t*   array;
     } BitMatrix, GraphMatrix;
 
-    void connect_gmtx(GraphMatrix gmtx[static const 1], uint32_t const source, uint32_t const sink);
-
-    void connectAll_gmtx(GraphMatrix gmtx[static const 1]);
-
-    void construct_bmtx(
-        BitMatrix bmtx[static const 1],
-        uint32_t const initial_height, uint32_t const initial_width
+    extern void (* const connect_gmtx)(
+        GraphMatrix* const gmtx,
+        uint32_t const source,
+        uint32_t const sink
     );
 
-    void construct_gmtx(
-        GraphMatrix gmtx[static const 1],
-        uint32_t const initial_height, uint32_t const initial_width
+    extern void (* const connectAll_gmtx)(GraphMatrix* const gmtx);
+
+    void construct_bmtx(BitMatrix* const bmtx, ...);
+
+    extern void (* const construct_gmtx)(GraphMatrix* const gmtx, ...);
+
+    void destruct_bmtx(BitMatrix* const bmtx);
+
+    extern void (* const destruct_gmtx)(GraphMatrix* const gmtx);
+
+    extern void (* const disconnect_gmtx)(
+        GraphMatrix* const gmtx,
+        uint32_t const source,
+        uint32_t const sink
     );
 
-    void disconnect_gmtx(GraphMatrix gmtx[static const 1], uint32_t const source, uint32_t const sink);
-
-    void disconnectAll_gmtx(GraphMatrix gmtx[static const 1]);
+    extern void (* const disconnectAll_gmtx)(GraphMatrix* const gmtx);
 
     uint32_t findInCol_bmtx(
-        BitMatrix bmtx[static const 1], uint32_t const col,
-        uint32_t const highest_possible_row, bool const value
+        BitMatrix const* const bmtx,
+        uint32_t const col,
+        uint32_t const highest_possible_row,
+        bool const value
     );
 
     uint32_t findInRow_bmtx(
-        BitMatrix bmtx[static const 1], uint32_t const row,
-        uint32_t const highest_possible_col, bool const value
+        BitMatrix const* const bmtx,
+        uint32_t const row,
+        uint32_t const highest_possible_col,
+        bool const value
     );
 
-    uint32_t findSink_gmtx(
-        GraphMatrix const gmtx[static const 1], uint32_t const source,
-        uint32_t const highest_possible_sink
+    #define findSink_gmtx(gmtx, source, highest_possible_sink)      \
+        findInRow_bmtx(gmtx, source, highest_possible_sink, 1)
+
+    #define findSource_gmtx(gmtx, source, highest_possible_source)  \
+        findInCol_bmtx(gmtx, sink, highest_possible_source, 1)
+
+    bool get_bmtx(
+        BitMatrix const* const bmtx,
+        uint32_t const row,
+        uint32_t const col
     );
 
-    uint32_t findSource_gmtx(
-        GraphMatrix const gmtx[static const 1], uint32_t const sink,
-        uint32_t const highest_possible_source
+    bool isAllocated_bmtx(BitMatrix const* const bmtx);
+
+    extern bool (* const isAllocated_gmtx)(GraphMatrix const* const gmtx);
+
+    extern bool (* const isConnected_gmtx)(
+        GraphMatrix const* const gmtx,
+        uint32_t const source,
+        uint32_t const sink
     );
 
-    void free_bmtx(BitMatrix bmtx[static const 1]);
+    bool isValid_bmtx(BitMatrix const* const bmtx);
 
-    void free_gmtx(GraphMatrix gmtx[static const 1]);
-
-    bool get_bmtx(BitMatrix const bmtx[static const 1], uint32_t const row, uint32_t const col);
-
-    bool isConnected_gmtx(GraphMatrix const gmtx[static const 1], uint32_t const source, uint32_t const sink);
-
-    bool isValid_bmtx(BitMatrix const bmtx[static const 1]);
-
-    bool isValid_gmtx(GraphMatrix const gmtx[static const 1]);
+    extern bool (* const isValid_gmtx)(GraphMatrix const* const gmtx);
 
     void resizeIfNecessary_bmtx(
-        BitMatrix bmtx[static const 1],
-        uint32_t const new_height, uint32_t const new_width
+        BitMatrix* const bmtx,
+        uint32_t const new_height,
+        uint32_t const new_width
     );
 
-    void resizeIfNecessary_gmtx(
-        GraphMatrix gmtx[static const 1],
-        uint32_t const new_height, uint32_t const new_width
+    extern void (* const resizeIfNecessary_gmtx)(
+        GraphMatrix* const gmtx,
+        uint32_t const new_height,
+        uint32_t const new_width
     );
 
-    void set_bmtx(BitMatrix bmtx[static const 1], uint32_t const row, uint32_t const col);
+    void set_bmtx(
+        BitMatrix* const bmtx,
+        uint32_t const row,
+        uint32_t const col
+    );
 
-    void setAll_bmtx(BitMatrix bmtx[static const 1]);
+    void setAll_bmtx(BitMatrix* const bmtx);
 
-    void unset_bmtx(BitMatrix bmtx[static const 1], uint32_t const row, uint32_t const col);
+    void unset_bmtx(
+        BitMatrix* const bmtx,
+        uint32_t const row,
+        uint32_t const col
+    );
 
-    void unsetAll_bmtx(BitMatrix bmtx[static const 1]);
+    void unsetAll_bmtx(BitMatrix* const bmtx);
+
+    void vconstruct_bmtx(
+        BitMatrix* const bmtx,
+        va_list args
+    );
+
+    extern void (* const vconstruct_gmtx)(
+        GraphMatrix* const gmtx,
+        va_list args
+    );
 #endif

@@ -23,7 +23,7 @@
     #define addDup_alist(list, id)                  addDupN_alist(list, id, 1)
 
     void* addDupN_alist(
-        ArrayList list[static const 1],
+        ArrayList* const list,
         uint32_t const id,
         uint32_t const n
     );
@@ -33,7 +33,7 @@
     #define addIndeterminateN_alist(list, n)        addN_alist(list, NULL, n)
 
     void* addN_alist(
-        ArrayList list[static const 1],
+        ArrayList* const list,
         void const* const p,
         uint32_t const n
     );
@@ -41,33 +41,33 @@
     #define addZeros_alist(list)                    addZerosN_alist(list, 1)
 
     void* addZerosN_alist(
-        ArrayList list[static const 1],
+        ArrayList* const list,
         uint32_t const n
     );
 
     uint32_t bsearch_alist(
-        void* p_key[static const 1],
-        ArrayList const list[static const 1],
+        void** const p_key,
+        ArrayList const* const list,
         void const* const p,
         int (*cmp)(void const*, void const*)
     );
 
     void concat_alist(
-        ArrayList head[static const 1],
-        ArrayList const tail[static const 1]
+        ArrayList* const head,
+        ArrayList const* const tail
     );
 
     void construct_alist(void* const p_list, ...);
 
     void constructEmpty_alist(
-        ArrayList list[static const 1],
+        ArrayList* const list,
         size_t const sz_elem,
         uint32_t const init_cap
     );
 
     void destruct_alist(void* const p_list);
 
-    void flush_alist(ArrayList list[static const 1]);
+    void flush_alist(ArrayList* const list);
 
     #define get_alist(list, id)                     getN_alist(list, id, 1)
 
@@ -78,12 +78,12 @@
     #define getLast_alist(list)                     getLastN_alist(list, 1)
 
     void* getLastN_alist(
-        ArrayList const list[static const 1],
+        ArrayList const* const list,
         uint32_t const n
     );
 
     void* getN_alist(
-        ArrayList const list[static const 1],
+        ArrayList const* const list,
         uint32_t const id,
         uint32_t const n
     );
@@ -93,7 +93,7 @@
     #define insertDup_alist(list, dup_id, orig_id)  insertDupN_alist(list, dup_id, orig_id, 1)
 
     void* insertDupN_alist(
-        ArrayList list[static const 1],
+        ArrayList* const list,
         uint32_t const dup_id,
         uint32_t const orig_id,
         uint32_t const n
@@ -104,7 +104,7 @@
     #define insertIndeterminateN_alist(list, id, n) insertN_alist(list, id, NULL, n)
 
     void* insertN_alist(
-        ArrayList list[static const 1],
+        ArrayList* list,
         uint32_t const id,
         void const* const p,
         uint32_t const n
@@ -113,7 +113,7 @@
     #define insertZeros_alist(list, id)             insertZerosN_alist(list, id, 1)
 
     void* insertZerosN_alist(
-        ArrayList list[static const 1],
+        ArrayList* list,
         uint32_t const id,
         uint32_t const n
     );
@@ -121,15 +121,15 @@
     bool isAllocated_alist(void const* const p_list);
 
     bool isSorted_alist(
-        ArrayList const list[static const 1],
+        ArrayList const* const list,
         int (*cmp)(void const*, void const*)
     );
 
     bool isValid_alist(void const* const p_list);
 
     uint32_t lsearch_alist(
-        void* p_key[static const 1],
-        ArrayList const list[static const 1],
+        void** const p_key,
+        ArrayList const* const list,
         void const* const p
     );
 
@@ -202,7 +202,7 @@
     #define pushZerosTopN_alist(list, n)            addZerosN_alist(list, n)
 
     void qsort_alist(
-        ArrayList const list[static const 1],
+        ArrayList* const list,
         int (*cmp)(void const*, void const*)
     );
 
@@ -215,24 +215,24 @@
     #define removeLast_alist(list)                  removeLastN_alist(list, 1)
 
     void* removeLastN_alist(
-        ArrayList list[static const 1],
+        ArrayList* const list,
         uint32_t const n
     );
 
     void* removeN_alist(
-        ArrayList list[static const 1],
+        ArrayList* const list,
         uint32_t const id,
         uint32_t const n
     );
 
-    void reverse_alist(ArrayList list[static const 1]);
+    void reverse_alist(ArrayList* const list);
 
     #define rotate_alist(list)                      rotateDown_alist(list)
 
     #define rotateDown_alist(list)                  rotateDownN_alist(list, 1)
 
     void rotateDownN_alist(
-        ArrayList alist[static const 1],
+        ArrayList* const alist,
         uint32_t n
     );
 
@@ -241,7 +241,7 @@
     #define rotateUp_alist(list)                    rotateUpN_alist(list, 1)
 
     void rotateUpN_alist(
-        ArrayList alist[static const 1],
+        ArrayList* const alist,
         uint32_t n
     );
 
@@ -250,14 +250,14 @@
     #define setDup_alist(list, dup_id, orig_id)     setDupN_alist(list, dup_id, orig_id, 1)
 
     void* setDupN_alist(
-        ArrayList list[static const 1],
+        ArrayList* const list,
         uint32_t const dup_id,
         uint32_t const orig_id,
         uint32_t const n
     );
 
     void* setN_alist(
-        ArrayList list[static const 1],
+        ArrayList* const list,
         uint32_t const id,
         void const* const p,
         uint32_t const n
@@ -270,7 +270,7 @@
     #define swap_alist(list, id1, id0)              swapN_alist(list, id1, id0, 1)
 
     void swapN_alist(
-        ArrayList list[static const 1],
+        ArrayList* const list,
         uint32_t const id1,
         uint32_t const id0,
         uint32_t const n

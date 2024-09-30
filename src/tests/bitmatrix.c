@@ -2,7 +2,7 @@ static void test_bitmatrix(void);
 static bool test_bitmatrix_construct_bmtx(void);
 static bool test_bitmatrix_findInCol_bmtx(void);
 static bool test_bitmatrix_findInRow_bmtx(void);
-static bool test_bitmatrix_free_bmtx(void);
+static bool test_bitmatrix_destruct_bmtx(void);
 static bool test_bitmatrix_get_bmtx(void);
 static bool test_bitmatrix_isValid_bmtx(void);
 static bool test_bitmatrix_resizeIfNecessary_bmtx(void);
@@ -15,9 +15,9 @@ static void test_bitmatrix(void) {
     bool allTestsPass = 1;
 
     allTestsPass &= test_bitmatrix_construct_bmtx();
+    allTestsPass &= test_bitmatrix_destruct_bmtx();
     allTestsPass &= test_bitmatrix_findInCol_bmtx();
     allTestsPass &= test_bitmatrix_findInRow_bmtx();
-    allTestsPass &= test_bitmatrix_free_bmtx();
     allTestsPass &= test_bitmatrix_get_bmtx();
     allTestsPass &= test_bitmatrix_isValid_bmtx();
     allTestsPass &= test_bitmatrix_resizeIfNecessary_bmtx();
@@ -33,8 +33,15 @@ static bool test_bitmatrix_construct_bmtx(void) {
     BitMatrix bmtx[2] = { NOT_A_BIT_MATRIX, NOT_A_BIT_MATRIX };
     construct_bmtx(bmtx, 1, 1);
     construct_bmtx(bmtx + 1, 131072, 131072);
-    free_bmtx(bmtx);
-    free_bmtx(bmtx + 1);
+    destruct_bmtx(bmtx);
+    destruct_bmtx(bmtx + 1);
+    TEST_PASS
+}
+
+static bool test_bitmatrix_destruct_bmtx(void) {
+    BitMatrix bmtx[1] = { NOT_A_BIT_MATRIX };
+    construct_bmtx(bmtx, 131072, 131072);
+    destruct_bmtx(bmtx);
     TEST_PASS
 }
 
@@ -49,7 +56,7 @@ static bool test_bitmatrix_findInCol_bmtx(void) {
         for (uint32_t col = 0; col < 3; col++)
             TEST_FAIL_IF(findInCol_bmtx(bmtx, col, row, 0) != row)
 
-    free_bmtx(bmtx);
+    destruct_bmtx(bmtx);
     TEST_PASS
 }
 
@@ -64,14 +71,7 @@ static bool test_bitmatrix_findInRow_bmtx(void) {
         for (uint32_t col = 0; col < 4; col++)
             TEST_FAIL_IF(findInRow_bmtx(bmtx, row, col, 0) != col)
 
-    free_bmtx(bmtx);
-    TEST_PASS
-}
-
-static bool test_bitmatrix_free_bmtx(void) {
-    BitMatrix bmtx[1] = { NOT_A_BIT_MATRIX };
-    construct_bmtx(bmtx, 131072, 131072);
-    free_bmtx(bmtx);
+    destruct_bmtx(bmtx);
     TEST_PASS
 }
 
@@ -97,6 +97,7 @@ static bool test_bitmatrix_get_bmtx(void) {
             TEST_FAIL_IF(get_bmtx(bmtx, row, col) == 0)
     }
 
+    destruct_bmtx(bmtx);
     TEST_PASS
 }
 
@@ -112,8 +113,8 @@ static bool test_bitmatrix_isValid_bmtx(void) {
     TEST_FAIL_IF(!isValid_bmtx(bmtx))
     TEST_FAIL_IF(!isValid_bmtx(bmtx + 1))
 
-    free_bmtx(bmtx);
-    free_bmtx(bmtx + 1);
+    destruct_bmtx(bmtx);
+    destruct_bmtx(bmtx + 1);
 
     TEST_FAIL_IF(isValid_bmtx(bmtx))
     TEST_FAIL_IF(isValid_bmtx(bmtx + 1))
@@ -143,6 +144,7 @@ static bool test_bitmatrix_resizeIfNecessary_bmtx(void) {
     TEST_FAIL_IF(bmtx->height != 5)
     TEST_FAIL_IF(bmtx->width != 4)
 
+    destruct_bmtx(bmtx);
     TEST_PASS
 }
 
@@ -164,7 +166,7 @@ static bool test_bitmatrix_set_bmtx(void) {
 
     TEST_FAIL_IF(get_bmtx(bmtx, 0, 0) == 1)
 
-    free_bmtx(bmtx);
+    destruct_bmtx(bmtx);
     TEST_PASS
 }
 
@@ -182,6 +184,7 @@ static bool test_bitmatrix_setAll_bmtx(void) {
         for (uint32_t col = 0; col < bmtx->width; col++)
             TEST_FAIL_IF(get_bmtx(bmtx, row, col) == 0)
 
+    destruct_bmtx(bmtx);
     TEST_PASS
 }
 
@@ -209,7 +212,7 @@ static bool test_bitmatrix_unset_bmtx(void) {
     TEST_FAIL_IF(get_bmtx(bmtx, 32, 53) == 0)
     TEST_FAIL_IF(get_bmtx(bmtx, 53, 0) == 0)
 
-    free_bmtx(bmtx);
+    destruct_bmtx(bmtx);
     TEST_PASS
 }
 
@@ -233,5 +236,6 @@ static bool test_bitmatrix_unsetAll_bmtx(void) {
         for (uint32_t col = 0; col < 122; col++)
             TEST_FAIL_IF(get_bmtx(bmtx, row, col) == 1)
 
+    destruct_bmtx(bmtx);
     TEST_PASS
 }
