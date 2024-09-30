@@ -28,7 +28,7 @@
         uint32_t const n
     );
 
-    #define addIndeterminate_alist(list)            add_alist(list, NULL)
+    #define addIndeterminate_alist(list)            addN_alist(list, NULL, 1)
 
     #define addIndeterminateN_alist(list, n)        addN_alist(list, NULL, n)
 
@@ -104,7 +104,7 @@
     #define insertIndeterminateN_alist(list, id, n) insertN_alist(list, id, NULL, n)
 
     void* insertN_alist(
-        ArrayList* list,
+        ArrayList* const list,
         uint32_t const id,
         void const* const p,
         uint32_t const n
@@ -113,7 +113,7 @@
     #define insertZeros_alist(list, id)             insertZerosN_alist(list, id, 1)
 
     void* insertZerosN_alist(
-        ArrayList* list,
+        ArrayList* const list,
         uint32_t const id,
         uint32_t const n
     );
@@ -133,73 +133,92 @@
         void const* const p
     );
 
-    #define peek_alist(list)                        peekTop_alist(list)
+    #define peek_alist(list)                        getLastN_alist(list, 1)
 
-    #define peekBottom_alist(list)                  getFirst_alist(list)
+    #define peekBottom_alist(list)                  getN_alist(list, 0, 1)
 
-    #define peekBottomN_alist(list, n)              getFirstN_alist(list, n)
+    #define peekBottomN_alist(list, n)              getN_alist(list, 0, n)
 
-    #define peekN_alist(list, n)                    peekTopN_alist(list, n)
+    extern void* (* const peekN_alist)(
+        ArrayList const* const list,
+        uint32_t const n
+    );
 
-    #define peekTop_alist(list)                     getLast_alist(list)
+    #define peekTop_alist(list)                     getLastN_alist(list, 1)
 
-    #define peekTopN_alist(list, n)                 getLastN_alist(list, n)
+    extern void* (* const peekTopN_alist)(
+        ArrayList const* const list,
+        uint32_t const n
+    );
 
-    #define pop_alist(list)                         popTop_alist(list)
+    #define pop_alist(list)                         removeLastN_alist(list, 1)
 
-    #define popBottom_alist(list)                   removeFirst_alist(list)
+    #define popBottom_alist(list)                   removeN_alist(list, 0, 1)
 
-    #define popBottomN_alist(list, n)               removeFirstN_alist(list, n)
+    #define popBottomN_alist(list, n)               removeN_alist(list, 0, n)
 
-    #define popN_alist(list, n)                     popTopN_alist(list, n)
+    #define popN_alist(list, n)                     removeLastN_alist(list, n)
 
-    #define popTop_alist(list)                      removeLast_alist(list)
+    #define popTop_alist(list)                      removeLastN_alist(list, 1)
 
     #define popTopN_alist(list, n)                  removeLastN_alist(list, n)
 
-    #define push_alist(list, p)                     pushTop_alist(list, p)
+    #define push_alist(list, p)                     addN_alist(list, p, 1)
 
     #define pushBottom_alist(list, p)               pushBottomN_alist(list, p, 1)
 
-    #define pushBottomN_alist(list, p, n) (         \
-            list->len == 0                          \
-                ? addN_alist(list, p, n)            \
-                : insertN_alist(list, 0, p, n)      \
-        )
+    void* pushBottomN_alist(
+        ArrayList* const list,
+        void const* const p,
+        uint32_t const n
+    );
 
-    #define pushIndeterminate_alist(list)           push_alist(list, NULL)
+    #define pushIndeterminate_alist(list)           addN_alist(list, NULL, 1)
 
-    #define pushIndeterminateBottom_alist(list)     pushBottom_alist(list, NULL)
+    #define pushIndeterminateBottom_alist(list)     pushBottomN_alist(list, NULL, 1)
 
     #define pushIndeterminateBottomN_alist(list, n) pushBottomN_alist(list, NULL, n)
 
-    #define pushIndeterminateN_alist(list, n)       pushN_alist(list, NULL, n)
+    #define pushIndeterminateN_alist(list, n)       addN_alist(list, NULL, n)
 
-    #define pushIndeterminateTop_alist(list)        pushTop_alist(list, NULL)
+    #define pushIndeterminateTop_alist(list)        addN_alist(list, NULL, 1)
 
-    #define pushIndeterminateTopN_alist(list, n)    pushTopN_alist(list, NULL, n)
+    #define pushIndeterminateTopN_alist(list, n)    addN_alist(list, NULL, n)
 
-    #define pushN_alist(list, p, n)                 pushTopN_alist(list, p, n)
+    extern void* (* const pushN_alist)(
+        ArrayList* const list,
+        void const* const p,
+        uint32_t const n
+    );
 
     #define pushTop_alist(list, p)                  add_alist(list, p)
 
-    #define pushTopN_alist(list, p, n)              addN_alist(list, p, n)
+    extern void* (* const pushTopN_alist)(
+        ArrayList* const list,
+        void const* const p,
+        uint32_t const n
+    );
 
-    #define pushZeros_alist(list)                   addZeros_alist(list)
+    #define pushZeros_alist(list)                   addZerosN_alist(list, 1)
 
     #define pushZerosBottom_alist(list)             pushZerosBottomN_alist(list, 1)
 
-    #define pushZerosBottomN_alist(list, n) (       \
-            list->len == 0                          \
-                ? addZerosN_alist(list, n)          \
-                : insertZerosN_alist(list, 0, n)    \
-        )
+    void* pushZerosBottomN_alist(
+        ArrayList* const list,
+        uint32_t const n
+    );
 
-    #define pushZerosN_alist(list, n)               addZerosN_alist(list, n)
+    extern void* (* const pushZerosN_alist)(
+        ArrayList* const list,
+        uint32_t const n
+    );
 
-    #define pushZerosTop_alist(list)                addZeros_alist(list)
+    #define pushZerosTop_alist(list)                addZerosN_alist(list, 1)
 
-    #define pushZerosTopN_alist(list, n)            addZerosN_alist(list, n)
+    extern void* (* const pushZerosTopN_alist)(
+        ArrayList* const list,
+        uint32_t const n
+    );
 
     void qsort_alist(
         ArrayList* const list,
@@ -227,7 +246,7 @@
 
     void reverse_alist(ArrayList* const list);
 
-    #define rotate_alist(list)                      rotateDown_alist(list)
+    #define rotate_alist(list)                      rotateDownN_alist(list, 1)
 
     #define rotateDown_alist(list)                  rotateDownN_alist(list, 1)
 
@@ -236,7 +255,10 @@
         uint32_t n
     );
 
-    #define rotateN_alist(list, n)                  rotateDownN_alist(list, n)
+    extern void (* const rotateN_alist)(
+        ArrayList* const alist,
+        uint32_t n
+    );
 
     #define rotateUp_alist(list)                    rotateUpN_alist(list, 1)
 
@@ -276,5 +298,8 @@
         uint32_t const n
     );
 
-    void vconstruct_alist(void* const p_list, va_list args);
+    void vconstruct_alist(
+        void* const p_list,
+        va_list args
+    );
 #endif

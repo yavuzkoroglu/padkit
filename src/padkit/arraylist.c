@@ -347,6 +347,61 @@ uint32_t lsearch_alist(
     return INVALID_UINT32;
 }
 
+void* (* const peekN_alist)(
+    ArrayList const* const list,
+    uint32_t const n
+) = &getLastN_alist;
+
+void* (* const peekTopN_alist)(
+    ArrayList const* const list,
+    uint32_t const n
+) = &getLastN_alist;
+
+void* pushBottomN_alist(
+    ArrayList* const list,
+    void const* const p,
+    uint32_t const n
+) {
+    assert(isValid_alist(list));
+    if (list->len == 0)
+        return addN_alist(list, p, n);
+    else
+        return insertN_alist(list, 0, p, n);
+}
+
+void* (* const pushN_alist)(
+    ArrayList* const list,
+    void const* const p,
+    uint32_t const n
+) = &addN_alist;
+
+void* (* const pushTopN_alist)(
+    ArrayList* const list,
+    void const* const p,
+    uint32_t const n
+) = &addN_alist;
+
+void* pushZerosBottomN_alist(
+    ArrayList* const list,
+    uint32_t const n
+) {
+    assert(isValid_alist(list));
+    if (list->len == 0)
+        return addZerosN_alist(list, n);
+    else
+        return insertZerosN_alist(list, 0, n);
+}
+
+void* (* const pushZerosN_alist)(
+    ArrayList* const list,
+    uint32_t const n
+) = &addZerosN_alist;
+
+void* (* const pushZerosTopN_alist)(
+    ArrayList* const list,
+    uint32_t const n
+) = &addZerosN_alist;
+
 void qsort_alist(
     ArrayList* const list,
     int (*cmp)(void const*, void const*)
@@ -431,6 +486,11 @@ void rotateDownN_alist(
         }
     }
 }
+
+void (* const rotateN_alist)(
+    ArrayList* const alist,
+    uint32_t n
+) = &rotateDownN_alist;
 
 void rotateUpN_alist(
     ArrayList* const list,
@@ -535,7 +595,10 @@ void swapN_alist(
     removeLastN_alist(list, n);
 }
 
-void vconstruct_alist(void* const p_list, va_list args) {
+void vconstruct_alist(
+    void* const p_list,
+    va_list args
+) {
     ArrayList* const list   = (ArrayList*)p_list;
     size_t const sz_elem    = va_arg(args, size_t);
     uint32_t const init_cap = va_arg(args, uint32_t);
