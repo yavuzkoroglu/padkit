@@ -38,7 +38,8 @@ void* mem_calloc(size_t const n, size_t const sz_elem) {
     }
 }
 
-void mem_realloc(void* p_p[static const 1], size_t const new_sz) {
+void mem_realloc(void** const p_p, size_t const new_sz) {
+    assert(p_p != NULL);
     assert(*p_p != NULL);
     assert(new_sz > 0);
 
@@ -53,7 +54,7 @@ void mem_realloc(void* p_p[static const 1], size_t const new_sz) {
 }
 
 void mem_recalloc(
-    void* p_p[static const 1],
+    void** const p_p,
     size_t const old_n,
     size_t const new_n,
     size_t const sz_elem
@@ -61,6 +62,7 @@ void mem_recalloc(
     size_t const old_sz = old_n * sz_elem;
     size_t const new_sz = new_n * sz_elem;
 
+    assert(p_p != NULL);
     assert(*p_p != NULL);
     assert(old_n > 0);
     assert(old_n < new_n);

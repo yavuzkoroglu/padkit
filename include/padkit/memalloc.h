@@ -12,10 +12,10 @@
 
     void* mem_calloc(size_t const n, size_t const sz_elem);
 
-    void mem_realloc(void* p_p[static const 1], size_t const new_sz);
+    void mem_realloc(void** const p_p, size_t const new_sz);
 
     void mem_recalloc(
-        void* p_p[static const 1],
+        void** const p_p,
         size_t const old_n,
         size_t const new_n,
         size_t const sz_elem
