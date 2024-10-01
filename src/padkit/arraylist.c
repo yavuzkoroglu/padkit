@@ -140,7 +140,6 @@ void concat_alist(
 
 void construct_alist(void* const p_list, ...) {
     va_list args;
-    assert(p_list != NULL);
     va_start(args, p_list);
     vconstruct_alist(p_list, args);
 }
@@ -153,6 +152,7 @@ void constructEmpty_alist(
     size_t const sz = sz_elem * (size_t)init_cap;
 
     assert(list != NULL);
+    assert(!isAllocated_alist(list));
     assert(sz_elem > 0);
     assert(sz_elem < SZSZ_MAX);
     assert(init_cap > 0);
@@ -603,8 +603,6 @@ void vconstruct_alist(
     size_t const sz_elem    = va_arg(args, size_t);
     uint32_t const init_cap = va_arg(args, uint32_t);
     va_end(args);
-
-    assert(list != NULL);
 
     constructEmpty_alist(list, sz_elem, init_cap);
 }

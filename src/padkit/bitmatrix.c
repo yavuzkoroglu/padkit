@@ -81,22 +81,22 @@ void (* const connect_gmtx)(
 
 void (* const connectAll_gmtx)(GraphMatrix* const gmtx) = &setAll_bmtx;
 
-void construct_bmtx(BitMatrix* const bmtx, ...) {
+void construct_bmtx(void* const p_bmtx, ...) {
     va_list args;
-    assert(bmtx != NULL);
-    va_start(args, bmtx);
-    vconstruct_bmtx(bmtx, args);
+    va_start(args, p_bmtx);
+    vconstruct_bmtx(p_bmtx, args);
 }
 
-void (* const construct_gmtx)(GraphMatrix* const gmtx, ...) = &construct_bmtx;
+void (* const construct_gmtx)(void* const p_gmtx, ...) = &construct_bmtx;
 
-void destruct_bmtx(BitMatrix* const bmtx) {
+void destruct_bmtx(void* const p_bmtx) {
+    BitMatrix* const bmtx = (BitMatrix*)p_bmtx;
     assert(isValid_bmtx(bmtx));
     free(bmtx->array);
     *bmtx = NOT_A_BIT_MATRIX;
 }
 
-void (* const destruct_gmtx)(GraphMatrix* const gmtx) = &destruct_bmtx;
+void (* const destruct_gmtx)(void* const p_gmtx) = &destruct_bmtx;
 
 void (* const disconnect_gmtx)(
     GraphMatrix* const gmtx,
@@ -159,14 +159,16 @@ bool get_bmtx(
     }
 }
 
-bool isAllocated_bmtx(BitMatrix const* const bmtx) {
+bool isAllocated_bmtx(void const* const p_bmtx) {
+    BitMatrix const* const bmtx = (BitMatrix const*)p_bmtx;
+
     if (bmtx == NULL)           return 0;
     if (bmtx->array == NULL)    return 0;
 
     return 1;
 }
 
-bool (* const isAllocated_gmtx)(GraphMatrix const* const gmtx) = &isAllocated_bmtx;
+bool (* const isAllocated_gmtx)(void const* const p_gmtx) = &isAllocated_bmtx;
 
 bool (* const isConnected_gmtx)(
     GraphMatrix const* const gmtx,
@@ -174,7 +176,9 @@ bool (* const isConnected_gmtx)(
     uint32_t const sink
 ) = &get_bmtx;
 
-bool isValid_bmtx(BitMatrix const* const bmtx) {
+bool isValid_bmtx(void const* const p_bmtx) {
+    BitMatrix const* const bmtx = (BitMatrix const*)p_bmtx;
+
     if (!isAllocated_bmtx(bmtx))    return 0;
     if (bmtx->height == 0)          return 0;
     if (bmtx->height >= SZ32_MAX)   return 0;
@@ -184,7 +188,7 @@ bool isValid_bmtx(BitMatrix const* const bmtx) {
     return 1;
 }
 
-bool (* const isValid_gmtx)(GraphMatrix const* const gmtx) = &isValid_bmtx;
+bool (* const isValid_gmtx)(void const* const p_gmtx) = &isValid_bmtx;
 
 void resizeIfNecessary_bmtx(
     BitMatrix* const bmtx,
@@ -292,19 +296,26 @@ void unsetAll_bmtx(BitMatrix* const bmtx) {
     }
 }
 
-void vconstruct_bmtx(BitMatrix* const bmtx, va_list args) {
+void vconstruct_bmtx(void* const p_bmtx, va_list args) {
+    BitMatrix* const bmtx           = (BitMatrix*)p_bmtx;
     uint32_t const initial_height   = va_arg(args, uint32_t);
     uint32_t const initial_width    = va_arg(args, uint32_t);
-    uint64_t const area             = (((uint64_t)initial_height * (uint64_t)initial_width) >> 6) + 1;
+    uint64_t const nBlocks          = (((uint64_t)initial_height * (uint64_t)initial_width) >> 6) + 1;
     va_end(args);
 
+    assert(bmtx != NULL);
+    assert(!isAllocated_bmtx(bmtx));
     assert(initial_height > 0);
     assert(initial_height < SZ32_MAX);
     assert(initial_width > 0);
     assert(initial_width < SZ32_MAX);
-    assert(area < SZ64_MAX);
+    assert(nBlocks < SZ64_MAX);
 
-    *bmtx = (GraphMatrix){ initial_height, initial_width, mem_calloc((size_t)area, sizeof(uint64_t)) };
+    *bmtx = (GraphMatrix){
+        initial_height,
+        initial_width,
+        mem_calloc((size_t)nBlocks, sizeof(uint64_t))
+    };
 }
 
-void (* const vconstruct_gmtx)(GraphMatrix* const gmtx, va_list args) = &vconstruct_bmtx;
+void (* const vconstruct_gmtx)(void* const p_gmtx, va_list args) = &vconstruct_bmtx;

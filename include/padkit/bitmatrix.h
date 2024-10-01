@@ -26,13 +26,13 @@
 
     extern void (* const connectAll_gmtx)(GraphMatrix* const gmtx);
 
-    void construct_bmtx(BitMatrix* const bmtx, ...);
+    void construct_bmtx(void* const p_bmtx, ...);
 
-    extern void (* const construct_gmtx)(GraphMatrix* const gmtx, ...);
+    extern void (* const construct_gmtx)(void* const p_gmtx, ...);
 
-    void destruct_bmtx(BitMatrix* const bmtx);
+    void destruct_bmtx(void* const p_bmtx);
 
-    extern void (* const destruct_gmtx)(GraphMatrix* const gmtx);
+    extern void (* const destruct_gmtx)(void* const p_gmtx);
 
     extern void (* const disconnect_gmtx)(
         GraphMatrix* const gmtx,
@@ -68,9 +68,9 @@
         uint32_t const col
     );
 
-    bool isAllocated_bmtx(BitMatrix const* const bmtx);
+    bool isAllocated_bmtx(void const* const p_bmtx);
 
-    extern bool (* const isAllocated_gmtx)(GraphMatrix const* const gmtx);
+    extern bool (* const isAllocated_gmtx)(void const* const p_gmtx);
 
     extern bool (* const isConnected_gmtx)(
         GraphMatrix const* const gmtx,
@@ -78,9 +78,9 @@
         uint32_t const sink
     );
 
-    bool isValid_bmtx(BitMatrix const* const bmtx);
+    bool isValid_bmtx(void const* const p_bmtx);
 
-    extern bool (* const isValid_gmtx)(GraphMatrix const* const gmtx);
+    extern bool (* const isValid_gmtx)(void const* const p_gmtx);
 
     void resizeIfNecessary_bmtx(
         BitMatrix* const bmtx,
@@ -111,12 +111,12 @@
     void unsetAll_bmtx(BitMatrix* const bmtx);
 
     void vconstruct_bmtx(
-        BitMatrix* const bmtx,
+        void* const p_bmtx,
         va_list args
     );
 
     extern void (* const vconstruct_gmtx)(
-        GraphMatrix* const gmtx,
+        void* const p_gmtx,
         va_list args
     );
 #endif

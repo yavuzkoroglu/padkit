@@ -1,5 +1,6 @@
 #ifndef PADKIT_JSONPARSER_H
     #define PADKIT_JSONPARSER_H
+    #include <stdarg.h>
     #include <stdbool.h>
     #include <stdio.h>
 
@@ -42,27 +43,35 @@
         void            (*atObjectStart)(struct JSONParserBody* const);
         void            (*atRootEnd)    (struct JSONParserBody* const);
         void            (*atRootStart)  (struct JSONParserBody* const);
-        void            (*atString)     (struct JSONParserBody* const, char const[static const 1], size_t const);
+        void            (*atString)     (struct JSONParserBody* const, char const* const, size_t const);
         void            (*atTrue)       (struct JSONParserBody* const);
         void            (*atValueEnd)   (struct JSONParserBody* const);
         void            (*atValueStart) (struct JSONParserBody* const);
     } JSONParser;
 
-    void emptyNumberEvent_jsonp(JSONParser jsonParser[static const 1], double const number);
+    void emptyNumberEvent_jsonp(
+        JSONParser* const jsonParser,
+        double const number
+    );
 
     void emptyStringEvent_jsonp(
-        JSONParser jsonParser[static const 1],
-        char const string[static const 1], size_t const len
+        JSONParser* const jsonParser,
+        char const* const string,
+        size_t const len
     );
 
-    void emptyVoidEvent_jsonp(JSONParser jsonParser[static const 1]);
+    void emptyVoidEvent_jsonp(JSONParser* const jsonParser);
 
-    typedef void(*JSONParserNumberEvent)(JSONParser jsonParser[static const 1], double const number);
+    typedef void(*JSONParserNumberEvent)(
+        JSONParser* const jsonParser,
+        double const number
+    );
     typedef void(*JSONParserStringEvent)(
-        JSONParser jsonParser[static const 1],
-        char const string[static const 1], size_t const len
+        JSONParser* const jsonParser,
+        char const* const string,
+        size_t const len
     );
-    typedef void(*JSONParserVoidEvent)(JSONParser jsonParser[static const 1]);
+    typedef void(*JSONParserVoidEvent)(JSONParser* const jsonParser);
 
     #define JSON_PARSER_DEFAULT_EVENTS  \
         emptyVoidEvent_jsonp,           \
@@ -81,29 +90,15 @@
         emptyVoidEvent_jsonp,           \
         emptyVoidEvent_jsonp
 
-    void construct_jsonp(
-        JSONParser              jsonParser[static const 1],
-        FILE                    inputStream[static const 1],
-        JSONParserVoidEvent     atArrayEnd,
-        JSONParserVoidEvent     atArrayStart,
-        JSONParserVoidEvent     atFalse,
-        JSONParserVoidEvent     atNameEnd,
-        JSONParserVoidEvent     atNameStart,
-        JSONParserVoidEvent     atNull,
-        JSONParserNumberEvent   atNumber,
-        JSONParserVoidEvent     atObjectEnd,
-        JSONParserVoidEvent     atObjectStart,
-        JSONParserVoidEvent     atRootEnd,
-        JSONParserVoidEvent     atRootStart,
-        JSONParserStringEvent   atString,
-        JSONParserVoidEvent     atTrue,
-        JSONParserVoidEvent     atValueEnd,
-        JSONParserVoidEvent     atValueStart
-    );
+    void construct_jsonp(void* const p_jsonParser, ...);
 
-    void free_jsonp(JSONParser jsonParser[static const 1]);
+    void destruct_jsonp(void* const p_jsonParser);
 
-    bool isValid_jsonp(JSONParser const jsonParser[static const 1]);
+    bool isAllocated_jsonp(void const* const p_jsonParser);
 
-    long parseStream_jsonp(JSONParser jsonParser[static const 1]);
+    bool isValid_jsonp(void const* const p_jsonParser);
+
+    long parseStream_jsonp(JSONParser* const jsonParser);
+
+    void vconstruct_jsonp(void* const p_jsonParser, va_list args);
 #endif

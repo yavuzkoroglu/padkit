@@ -4,12 +4,12 @@
 #include "padkit/item.h"
 #include "padkit/size.h"
 
-uint32_t hash32_item(Item const item[static const 1]) {
+uint32_t hash32_item(Item const* const item) {
     assert(isValid_item(item));
     return hash32_str((char const*)item->p, item->sz);
 }
 
-uint64_t hash64_item(Item const item[static const 1]) {
+uint64_t hash64_item(Item const* const item) {
     assert(isValid_item(item));
     return hash64_str((char const*)item->p, item->sz);
 }

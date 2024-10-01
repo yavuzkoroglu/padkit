@@ -34,69 +34,70 @@
         return;                                                             \
     }
 
-typedef void(*ParseFunction)(JSONParser[static const 1]);
+typedef void(*ParseFunction)(JSONParser* const);
 
-void emptyNumberEvent_jsonp(JSONParser jp[static const 1], double const number) {
+void emptyNumberEvent_jsonp(JSONParser* const jp, double const number) {
     MAYBE_UNUSED(jp)
     MAYBE_UNUSED(number)
 }
 void emptyStringEvent_jsonp(
-    JSONParser jp[static const 1],
-    char const string[static const 1], size_t const len
+    JSONParser* const jp,
+    char const* const string,
+    size_t const len
 ) {
     MAYBE_UNUSED(jp)
     MAYBE_UNUSED(string)
     MAYBE_UNUSED(len)
 }
-void emptyVoidEvent_jsonp(JSONParser jp[static const 1]) {
+void emptyVoidEvent_jsonp(JSONParser* const jp) {
     MAYBE_UNUSED(jp)
 }
 
-static void err_jp(JSONParser jp[static const 1]);
-static void s00_jp(JSONParser jp[static const 1]);
-static void s01_jp(JSONParser jp[static const 1]);
-static void s02_jp(JSONParser jp[static const 1]);
-static void s03_jp(JSONParser jp[static const 1]);
-static void s04_jp(JSONParser jp[static const 1]);
-static void s05_jp(JSONParser jp[static const 1]);
-static void s06_jp(JSONParser jp[static const 1]);
-static void s07a_jp(JSONParser jp[static const 1]);
-static void s07b_jp(JSONParser jp[static const 1]);
-static void s07c_jp(JSONParser jp[static const 1]);
-static void s07d_jp(JSONParser jp[static const 1]);
-static void s07_jp(JSONParser jp[static const 1]);
-static void s08_jp(JSONParser jp[static const 1]);
-static void s09_jp(JSONParser jp[static const 1]);
-static void s10_jp(JSONParser jp[static const 1]);
-static void s11a_jp(JSONParser jp[static const 1]);
-static void s11b_jp(JSONParser jp[static const 1]);
-static void s11c_jp(JSONParser jp[static const 1]);
-static void s11d_jp(JSONParser jp[static const 1]);
-static void s11_jp(JSONParser jp[static const 1]);
-static void s12_jp(JSONParser jp[static const 1]);
-static void s13_jp(JSONParser jp[static const 1]);
-static void s14_jp(JSONParser jp[static const 1]);
-static void s15a_jp(JSONParser jp[static const 1]);
-static void s15b_jp(JSONParser jp[static const 1]);
-static void s15c_jp(JSONParser jp[static const 1]);
-static void s15d_jp(JSONParser jp[static const 1]);
-static void s15_jp(JSONParser jp[static const 1]);
-static void s16_jp(JSONParser jp[static const 1]);
-static void s17_jp(JSONParser jp[static const 1]);
-static void s18_jp(JSONParser jp[static const 1]);
-static void s18_jp(JSONParser jp[static const 1]);
-static void s19_jp(JSONParser jp[static const 1]);
-static void s20_jp(JSONParser jp[static const 1]);
-static void s21_jp(JSONParser jp[static const 1]);
-static void s22_jp(JSONParser jp[static const 1]);
-static void s23_jp(JSONParser jp[static const 1]);
-static void s24_jp(JSONParser jp[static const 1]);
+static void err_jp(JSONParser* const jp);
+static void s00_jp(JSONParser* const jp);
+static void s01_jp(JSONParser* const jp);
+static void s02_jp(JSONParser* const jp);
+static void s03_jp(JSONParser* const jp);
+static void s04_jp(JSONParser* const jp);
+static void s05_jp(JSONParser* const jp);
+static void s06_jp(JSONParser* const jp);
+static void s07a_jp(JSONParser* const jp);
+static void s07b_jp(JSONParser* const jp);
+static void s07c_jp(JSONParser* const jp);
+static void s07d_jp(JSONParser* const jp);
+static void s07_jp(JSONParser* const jp);
+static void s08_jp(JSONParser* const jp);
+static void s09_jp(JSONParser* const jp);
+static void s10_jp(JSONParser* const jp);
+static void s11a_jp(JSONParser* const jp);
+static void s11b_jp(JSONParser* const jp);
+static void s11c_jp(JSONParser* const jp);
+static void s11d_jp(JSONParser* const jp);
+static void s11_jp(JSONParser* const jp);
+static void s12_jp(JSONParser* const jp);
+static void s13_jp(JSONParser* const jp);
+static void s14_jp(JSONParser* const jp);
+static void s15a_jp(JSONParser* const jp);
+static void s15b_jp(JSONParser* const jp);
+static void s15c_jp(JSONParser* const jp);
+static void s15d_jp(JSONParser* const jp);
+static void s15_jp(JSONParser* const jp);
+static void s16_jp(JSONParser* const jp);
+static void s17_jp(JSONParser* const jp);
+static void s18_jp(JSONParser* const jp);
+static void s18_jp(JSONParser* const jp);
+static void s19_jp(JSONParser* const jp);
+static void s20_jp(JSONParser* const jp);
+static void s21_jp(JSONParser* const jp);
+static void s22_jp(JSONParser* const jp);
+static void s23_jp(JSONParser* const jp);
+static void s24_jp(JSONParser* const jp);
 
-static void err_jp(JSONParser jp[static const 1]) {
+static void err_jp(JSONParser* const jp) {
     jp->errorCode = JSON_PARSER_SYNTAX_ERROR;
 }
 
-static void s00_jp(JSONParser jp[static const 1]) {
+static void s00_jp(JSONParser* const jp) {
     /* atRootStart() */
     (*jp->atRootStart)(jp);
 
@@ -106,7 +107,7 @@ static void s00_jp(JSONParser jp[static const 1]) {
     s01_jp(jp);
 }
 
-static void s01_jp(JSONParser jp[static const 1]) {
+static void s01_jp(JSONParser* const jp) {
     static ParseFunction nextState[256] = {
       /*-------*-------*-------*-------*-------*-------*-------*-------*-------*-------*
        |   0   |   1   |   2   |   3   |   4   |   5   |   6   |   7   |   8   |   9   |
@@ -146,7 +147,7 @@ static void s01_jp(JSONParser jp[static const 1]) {
     }
 }
 
-static void s02_jp(JSONParser jp[static const 1]) {
+static void s02_jp(JSONParser* const jp) {
     /* atArrayStart() */
     (*jp->atArrayStart)(jp);
 
@@ -156,7 +157,7 @@ static void s02_jp(JSONParser jp[static const 1]) {
     s04_jp(jp);
 }
 
-static void s03_jp(JSONParser jp[static const 1]) {
+static void s03_jp(JSONParser* const jp) {
     /* atObjectStart() */
     (*jp->atObjectStart)(jp);
 
@@ -166,7 +167,7 @@ static void s03_jp(JSONParser jp[static const 1]) {
     s05_jp(jp);
 }
 
-static void s04_jp(JSONParser jp[static const 1]) {
+static void s04_jp(JSONParser* const jp) {
     static ParseFunction nextState[256] = {
       /*-------*-------*-------*-------*-------*-------*-------*-------*-------*-------*
        |   0   |   1   |   2   |   3   |   4   |   5   |   6   |   7   |   8   |   9   |
@@ -207,7 +208,7 @@ static void s04_jp(JSONParser jp[static const 1]) {
     }
 }
 
-static void s05_jp(JSONParser jp[static const 1]) {
+static void s05_jp(JSONParser* const jp) {
     static ParseFunction nextState[256] = {
       /*-------*-------*-------*-------*-------*-------*-------*-------*-------*-------*
        |   0   |   1   |   2   |   3   |   4   |   5   |   6   |   7   |   8   |   9   |
@@ -247,7 +248,7 @@ static void s05_jp(JSONParser jp[static const 1]) {
     }
 }
 
-static void s06_jp(JSONParser jp[static const 1]) {
+static void s06_jp(JSONParser* const jp) {
     static ParseFunction nextState[2] = { err_jp, s19_jp };
 
     char ull[3];
@@ -264,7 +265,7 @@ static void s06_jp(JSONParser jp[static const 1]) {
     nextState[(fread(ull, 1, 3, jp->inputStream) == 3 && ull[0] == 'u' && ull[1] == 'l' && ull[2] == 'l')](jp);
 }
 
-static void s07a_jp(JSONParser jp[static const 1]) {
+static void s07a_jp(JSONParser* const jp) {
     /* atValueStart() */
     (*jp->atValueStart)(jp);
 
@@ -273,7 +274,7 @@ static void s07a_jp(JSONParser jp[static const 1]) {
 
     s07b_jp(jp);
 }
-static void s07b_jp(JSONParser jp[static const 1]) {
+static void s07b_jp(JSONParser* const jp) {
     static ParseFunction nextState[256] = {
       /*-------*-------*-------*-------*-------*-------*-------*-------*-------*-------*
        |   0   |   1   |   2   |   3   |   4   |   5   |   6   |   7   |   8   |   9   |
@@ -312,13 +313,13 @@ static void s07b_jp(JSONParser jp[static const 1]) {
         nextState[i](jp);
     }
 }
-static void s07c_jp(JSONParser jp[static const 1]) {
+static void s07c_jp(JSONParser* const jp) {
     /* read() */
     fgetc(jp->inputStream);
 
     s07b_jp(jp);
 }
-static void s07d_jp(JSONParser jp[static const 1]) {
+static void s07d_jp(JSONParser* const jp) {
     /* str[len] = '\0' */
     jp->str[jp->str_len] = '\0';
 
@@ -330,7 +331,7 @@ static void s07d_jp(JSONParser jp[static const 1]) {
 
     s19_jp(jp);
 }
-static void s07_jp(JSONParser jp[static const 1]) {
+static void s07_jp(JSONParser* const jp) {
     /* len++ */
     jp->str_len++;
 
@@ -354,7 +355,7 @@ static void s07_jp(JSONParser jp[static const 1]) {
     s07b_jp(jp);
 }
 
-static void s08_jp(JSONParser jp[static const 1]) {
+static void s08_jp(JSONParser* const jp) {
     double num;
 
     /* atValueStart() */
@@ -376,7 +377,7 @@ static void s08_jp(JSONParser jp[static const 1]) {
     s19_jp(jp);
 }
 
-static void s09_jp(JSONParser jp[static const 1]) {
+static void s09_jp(JSONParser* const jp) {
     static ParseFunction nextState[2] = { err_jp, s19_jp };
 
     char rue[3];
@@ -393,7 +394,7 @@ static void s09_jp(JSONParser jp[static const 1]) {
     nextState[(fread(rue, 1, 3, jp->inputStream) == 3 && rue[0] == 'r' && rue[1] == 'u' && rue[2] == 'e')](jp);
 }
 
-static void s10_jp(JSONParser jp[static const 1]) {
+static void s10_jp(JSONParser* const jp) {
     static ParseFunction nextState[2] = { err_jp, s19_jp };
 
     char alse[4];
@@ -414,7 +415,7 @@ static void s10_jp(JSONParser jp[static const 1]) {
     )](jp);
 }
 
-static void s11a_jp(JSONParser jp[static const 1]) {
+static void s11a_jp(JSONParser* const jp) {
     /* atNameStart() */
     (*jp->atNameStart)(jp);
 
@@ -423,7 +424,7 @@ static void s11a_jp(JSONParser jp[static const 1]) {
 
     s11b_jp(jp);
 }
-static void s11b_jp(JSONParser jp[static const 1]) {
+static void s11b_jp(JSONParser* const jp) {
     static ParseFunction nextState[256] = {
       /*-------*-------*-------*-------*-------*-------*-------*-------*-------*-------*
        |   0   |   1   |   2   |   3   |   4   |   5   |   6   |   7   |   8   |   9   |
@@ -462,13 +463,13 @@ static void s11b_jp(JSONParser jp[static const 1]) {
         nextState[i](jp);
     }
 }
-static void s11c_jp(JSONParser jp[static const 1]) {
+static void s11c_jp(JSONParser* const jp) {
     /* read() */
     fgetc(jp->inputStream);
 
     s11b_jp(jp);
 }
-static void s11d_jp(JSONParser jp[static const 1]) {
+static void s11d_jp(JSONParser* const jp) {
     /* str[len] = '\0' */
     jp->str[jp->str_len] = '\0';
 
@@ -480,7 +481,7 @@ static void s11d_jp(JSONParser jp[static const 1]) {
 
     s12_jp(jp);
 }
-static void s11_jp(JSONParser jp[static const 1]) {
+static void s11_jp(JSONParser* const jp) {
     /* len++ */
     jp->str_len++;
 
@@ -504,7 +505,7 @@ static void s11_jp(JSONParser jp[static const 1]) {
     s11b_jp(jp);
 }
 
-static void s12_jp(JSONParser jp[static const 1]) {
+static void s12_jp(JSONParser* const jp) {
     static ParseFunction nextState[256] = {
       /*-------*-------*-------*-------*-------*-------*-------*-------*-------*-------*
        |   0   |   1   |   2   |   3   |   4   |   5   |   6   |   7   |   8   |   9   |
@@ -544,7 +545,7 @@ static void s12_jp(JSONParser jp[static const 1]) {
     }
 }
 
-static void s13_jp(JSONParser jp[static const 1]) {
+static void s13_jp(JSONParser* const jp) {
     static ParseFunction nextState[256] = {
       /*-------*-------*-------*-------*-------*-------*-------*-------*-------*-------*
        |   0   |   1   |   2   |   3   |   4   |   5   |   6   |   7   |   8   |   9   |
@@ -585,7 +586,7 @@ static void s13_jp(JSONParser jp[static const 1]) {
     }
 }
 
-static void s14_jp(JSONParser jp[static const 1]) {
+static void s14_jp(JSONParser* const jp) {
     static ParseFunction nextState[2] = { err_jp, s20_jp };
 
     char ull[3];
@@ -602,7 +603,7 @@ static void s14_jp(JSONParser jp[static const 1]) {
     nextState[(fread(ull, 1, 3, jp->inputStream) == 3 && ull[0] == 'u' && ull[1] == 'l' && ull[2] == 'l')](jp);
 }
 
-static void s15a_jp(JSONParser jp[static const 1]) {
+static void s15a_jp(JSONParser* const jp) {
     /* atValueStart() */
     (*jp->atValueStart)(jp);
 
@@ -611,7 +612,7 @@ static void s15a_jp(JSONParser jp[static const 1]) {
 
     s15b_jp(jp);
 }
-static void s15b_jp(JSONParser jp[static const 1]) {
+static void s15b_jp(JSONParser* const jp) {
     static ParseFunction nextState[256] = {
       /*-------*-------*-------*-------*-------*-------*-------*-------*-------*-------*
        |   0   |   1   |   2   |   3   |   4   |   5   |   6   |   7   |   8   |   9   |
@@ -650,13 +651,13 @@ static void s15b_jp(JSONParser jp[static const 1]) {
         nextState[i](jp);
     }
 }
-static void s15c_jp(JSONParser jp[static const 1]) {
+static void s15c_jp(JSONParser* const jp) {
     /* read() */
     fgetc(jp->inputStream);
 
     s15b_jp(jp);
 }
-static void s15d_jp(JSONParser jp[static const 1]) {
+static void s15d_jp(JSONParser* const jp) {
     /* str[len] = '\0' */
     jp->str[jp->str_len] = '\0';
 
@@ -668,7 +669,7 @@ static void s15d_jp(JSONParser jp[static const 1]) {
 
     s20_jp(jp);
 }
-static void s15_jp(JSONParser jp[static const 1]) {
+static void s15_jp(JSONParser* const jp) {
     /* len++ */
     jp->str_len++;
 
@@ -692,7 +693,7 @@ static void s15_jp(JSONParser jp[static const 1]) {
     s15b_jp(jp);
 }
 
-static void s16_jp(JSONParser jp[static const 1]) {
+static void s16_jp(JSONParser* const jp) {
     double num;
 
     /* atValueStart() */
@@ -714,7 +715,7 @@ static void s16_jp(JSONParser jp[static const 1]) {
     s20_jp(jp);
 }
 
-static void s17_jp(JSONParser jp[static const 1]) {
+static void s17_jp(JSONParser* const jp) {
     static ParseFunction nextState[2] = { err_jp, s20_jp };
 
     char rue[3];
@@ -731,7 +732,7 @@ static void s17_jp(JSONParser jp[static const 1]) {
     nextState[(fread(rue, 1, 3, jp->inputStream) == 3 && rue[0] == 'r' && rue[1] == 'u' && rue[2] == 'e')](jp);
 }
 
-static void s18_jp(JSONParser jp[static const 1]) {
+static void s18_jp(JSONParser* const jp) {
     static ParseFunction nextState[2] = { err_jp, s20_jp };
 
     char alse[4];
@@ -752,7 +753,7 @@ static void s18_jp(JSONParser jp[static const 1]) {
     )](jp);
 }
 
-static void s19_jp(JSONParser jp[static const 1]) {
+static void s19_jp(JSONParser* const jp) {
     static ParseFunction nextState[256] = {
       /*-------*-------*-------*-------*-------*-------*-------*-------*-------*-------*
        |   0   |   1   |   2   |   3   |   4   |   5   |   6   |   7   |   8   |   9   |
@@ -792,7 +793,7 @@ static void s19_jp(JSONParser jp[static const 1]) {
     }
 }
 
-static void s20_jp(JSONParser jp[static const 1]) {
+static void s20_jp(JSONParser* const jp) {
     static ParseFunction nextState[256] = {
       /*-------*-------*-------*-------*-------*-------*-------*-------*-------*-------*
        |   0   |   1   |   2   |   3   |   4   |   5   |   6   |   7   |   8   |   9   |
@@ -832,7 +833,7 @@ static void s20_jp(JSONParser jp[static const 1]) {
     }
 }
 
-static void s21_jp(JSONParser jp[static const 1]) {
+static void s21_jp(JSONParser* const jp) {
     /* pop() */
     POP_JP(jp);
 
@@ -842,7 +843,7 @@ static void s21_jp(JSONParser jp[static const 1]) {
     s23_jp(jp);
 }
 
-static void s22_jp(JSONParser jp[static const 1]) {
+static void s22_jp(JSONParser* const jp) {
     /* pop() */
     POP_JP(jp);
 
@@ -852,7 +853,7 @@ static void s22_jp(JSONParser jp[static const 1]) {
     s23_jp(jp);
 }
 
-static void s23_jp(JSONParser jp[static const 1]) {
+static void s23_jp(JSONParser* const jp) {
     static ParseFunction nextState[] = {
         [JSON_STACK_ARRAY]  = s19_jp,
         [JSON_STACK_OBJECT] = s20_jp,
@@ -866,7 +867,7 @@ static void s23_jp(JSONParser jp[static const 1]) {
     }
 }
 
-static void s24_jp(JSONParser jp[static const 1]) {
+static void s24_jp(JSONParser* const jp) {
     /* pop() */
     POP_JP(jp);
 
@@ -877,74 +878,103 @@ static void s24_jp(JSONParser jp[static const 1]) {
 }
 
 
-void construct_jsonp(
-    JSONParser              jsonParser[static const 1],
-    FILE                    inputStream[static const 1],
-    JSONParserVoidEvent     eventAtArrayEnd,
-    JSONParserVoidEvent     eventAtArrayStart,
-    JSONParserVoidEvent     eventAtFalse,
-    JSONParserVoidEvent     eventAtNameEnd,
-    JSONParserVoidEvent     eventAtNameStart,
-    JSONParserVoidEvent     eventAtNull,
-    JSONParserNumberEvent   eventAtNumber,
-    JSONParserVoidEvent     eventAtObjectEnd,
-    JSONParserVoidEvent     eventAtObjectStart,
-    JSONParserVoidEvent     eventAtRootEnd,
-    JSONParserVoidEvent     eventAtRootStart,
-    JSONParserStringEvent   eventAtString,
-    JSONParserVoidEvent     eventAtTrue,
-    JSONParserVoidEvent     eventAtValueEnd,
-    JSONParserVoidEvent     eventAtValueStart
-) {
-    jsonParser->inputStream   = inputStream;
-    jsonParser->stack_cap     = JSON_PARSER_INITIAL_STACK_CAP;
-    jsonParser->stack_size    = 0;
-    jsonParser->stack         = mem_alloc(jsonParser->stack_cap);
-    jsonParser->str_cap       = JSON_PARSER_INITIAL_STR_CAP;
-    jsonParser->str           = mem_alloc(jsonParser->str_cap);
-    jsonParser->errorCode     = JSON_PARSER_OK;
-    jsonParser->atArrayEnd    = eventAtArrayEnd;
-    jsonParser->atArrayStart  = eventAtArrayStart;
-    jsonParser->atFalse       = eventAtFalse;
-    jsonParser->atNameEnd     = eventAtNameEnd;
-    jsonParser->atNameStart   = eventAtNameStart;
-    jsonParser->atNull        = eventAtNull;
-    jsonParser->atNumber      = eventAtNumber;
-    jsonParser->atObjectEnd   = eventAtObjectEnd;
-    jsonParser->atObjectStart = eventAtObjectStart;
-    jsonParser->atRootEnd     = eventAtRootEnd;
-    jsonParser->atRootStart   = eventAtRootStart;
-    jsonParser->atString      = eventAtString;
-    jsonParser->atTrue        = eventAtTrue;
-    jsonParser->atValueEnd    = eventAtValueEnd;
-    jsonParser->atValueStart  = eventAtValueStart;
+void construct_jsonp(void* const p_jsonParser, ...) {
+    va_list args;
+    va_start(args, p_jsonParser);
+    vconstruct_jsonp(p_jsonParser, args);
 }
 
-void free_jsonp(JSONParser jsonParser[static const 1]) {
+void destruct_jsonp(void* const p_jsonParser) {
+    JSONParser* const jsonParser = (JSONParser*)p_jsonParser;
+
     assert(isValid_jsonp(jsonParser));
 
     free(jsonParser->stack);
     free(jsonParser->str);
-    jsonParser[0] = NOT_A_JSON_PARSER;
+    *jsonParser = NOT_A_JSON_PARSER;
 }
 
-bool isValid_jsonp(JSONParser const jsonParser[static const 1]) {
-    if (jsonParser->inputStream == NULL)                return 0;
-    if (jsonParser->stack == NULL)                      return 0;
+bool isAllocated_jsonp(void const* const p_jsonParser) {
+    JSONParser const* const jsonParser = (JSONParser const*)p_jsonParser;
+
+    if (jsonParser == NULL) {
+        return 0;
+    } else if (jsonParser->inputStream == NULL) {
+        assert(jsonParser->stack == NULL);
+        assert(jsonParser->str == NULL);
+        return 0;
+    } else {
+        assert(jsonParser->stack != NULL);
+        assert(jsonParser->str != NULL);
+        return 1;
+    }
+}
+
+bool isValid_jsonp(void const* const p_jsonParser) {
+    JSONParser const* const jsonParser = (JSONParser const*)p_jsonParser;
+
+    if (!isAllocated_jsonp(jsonParser))                 return 0;
     if (jsonParser->stack_cap == 0)                     return 0;
     if (jsonParser->stack_cap >= SZSZ_MAX)              return 0;
     if (jsonParser->stack_size > jsonParser->stack_cap) return 0;
     if (jsonParser->str_cap == 0)                       return 0;
     if (jsonParser->str_cap >= SZSZ_MAX)                return 0;
-    if (jsonParser->str == NULL)                        return 0;
     return 1;
 }
 
-long parseStream_jsonp(JSONParser jsonParser[static const 1]) {
+long parseStream_jsonp(JSONParser* const jsonParser) {
     if (!isValid_jsonp(jsonParser)) return JSON_PARSER_INVALID;
 
     jsonParser->errorCode = JSON_PARSER_OK;
     s00_jp(jsonParser);
 
     return jsonParser->errorCode;
+}
+
+void vconstruct_jsonp(void* const p_jsonParser, va_list args) {
+    JSONParser* const jsonParser                    = (JSONParser*)p_jsonParser;
+    FILE* const inputStream                         = va_arg(args, FILE*);
+    JSONParserVoidEvent const eventAtArrayEnd       = va_arg(args, JSONParserVoidEvent);
+    JSONParserVoidEvent const eventAtArrayStart     = va_arg(args, JSONParserVoidEvent);
+    JSONParserVoidEvent const eventAtFalse          = va_arg(args, JSONParserVoidEvent);
+    JSONParserVoidEvent const eventAtNameEnd        = va_arg(args, JSONParserVoidEvent);
+    JSONParserVoidEvent const eventAtNameStart      = va_arg(args, JSONParserVoidEvent);
+    JSONParserVoidEvent const eventAtNull           = va_arg(args, JSONParserVoidEvent);
+    JSONParserNumberEvent const eventAtNumber       = va_arg(args, JSONParserNumberEvent);
+    JSONParserVoidEvent const eventAtObjectEnd      = va_arg(args, JSONParserVoidEvent);
+    JSONParserVoidEvent const eventAtObjectStart    = va_arg(args, JSONParserVoidEvent);
+    JSONParserVoidEvent const eventAtRootEnd        = va_arg(args, JSONParserVoidEvent);
+    JSONParserVoidEvent const eventAtRootStart      = va_arg(args, JSONParserVoidEvent);
+    JSONParserStringEvent const eventAtString       = va_arg(args, JSONParserStringEvent);
+    JSONParserVoidEvent const eventAtTrue           = va_arg(args, JSONParserVoidEvent);
+    JSONParserVoidEvent const eventAtValueEnd       = va_arg(args, JSONParserVoidEvent);
+    JSONParserVoidEvent const eventAtValueStart     = va_arg(args, JSONParserVoidEvent);
+    va_end(args);
+
+    assert(jsonParser != NULL);
+    assert(inputStream != NULL);
+    assert(!isAllocated_jsonp(p_jsonParser));
+
+    jsonParser->inputStream     = inputStream;
+    jsonParser->stack_cap       = JSON_PARSER_INITIAL_STACK_CAP;
+    jsonParser->stack_size      = 0;
+    jsonParser->stack           = mem_alloc(jsonParser->stack_cap);
+    jsonParser->str_cap         = JSON_PARSER_INITIAL_STR_CAP;
+    jsonParser->str             = mem_alloc(jsonParser->str_cap);
+    jsonParser->errorCode       = JSON_PARSER_OK;
+    jsonParser->atArrayEnd      =    eventAtArrayEnd == NULL ?   emptyVoidEvent_jsonp : eventAtArrayEnd;
+    jsonParser->atArrayStart    =  eventAtArrayStart == NULL ?   emptyVoidEvent_jsonp : eventAtArrayStart;
+    jsonParser->atFalse         =       eventAtFalse == NULL ?   emptyVoidEvent_jsonp : eventAtFalse;
+    jsonParser->atNameEnd       =     eventAtNameEnd == NULL ?   emptyVoidEvent_jsonp : eventAtNameEnd;
+    jsonParser->atNameStart     =   eventAtNameStart == NULL ?   emptyVoidEvent_jsonp : eventAtNameStart;
+    jsonParser->atNull          =        eventAtNull == NULL ?   emptyVoidEvent_jsonp : eventAtNull;
+    jsonParser->atNumber        =      eventAtNumber == NULL ? emptyNumberEvent_jsonp : eventAtNumber;
+    jsonParser->atObjectEnd     =   eventAtObjectEnd == NULL ?   emptyVoidEvent_jsonp : eventAtObjectEnd;
+    jsonParser->atObjectStart   = eventAtObjectStart == NULL ?   emptyVoidEvent_jsonp : eventAtObjectStart;
+    jsonParser->atRootEnd       =     eventAtRootEnd == NULL ?   emptyVoidEvent_jsonp : eventAtRootEnd;
+    jsonParser->atRootStart     =   eventAtRootStart == NULL ?   emptyVoidEvent_jsonp : eventAtRootStart;
+    jsonParser->atString        =      eventAtString == NULL ? emptyStringEvent_jsonp : eventAtString;
+    jsonParser->atTrue          =        eventAtTrue == NULL ?   emptyVoidEvent_jsonp : eventAtTrue;
+    jsonParser->atValueEnd      =    eventAtValueEnd == NULL ?   emptyVoidEvent_jsonp : eventAtValueEnd;
+    jsonParser->atValueStart    =  eventAtValueStart == NULL ?   emptyVoidEvent_jsonp : eventAtValueStart;
 }

@@ -34,7 +34,7 @@ static bool test_jsonparser_parseStream_jsonp(void) {
 
     fclose(fp);
 
-    free_jsonp(jp);
+    destruct_jsonp(jp);
 
     TEST_PASS
 }

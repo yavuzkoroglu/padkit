@@ -13,9 +13,9 @@
         uint32_t    offset;
     } Item;
 
-    uint32_t hash32_item(Item const item[static const 1]);
+    uint32_t hash32_item(Item const* const item);
 
-    uint64_t hash64_item(Item const item[static const 1]);
+    uint64_t hash64_item(Item const* const item);
 
     bool isValid_item(void const* const p_item);
 #endif
