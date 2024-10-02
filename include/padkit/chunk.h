@@ -5,8 +5,8 @@
 
     #define CHUNK_RECOMMENDED_PARAMETERS    ALIST_RECOMMENDED_INITIAL_CAP, ALIST_RECOMMENDED_INITIAL_CAP
 
-    #define AREA_CHUNK(chunk)               (chunk[0].len)
-    #define LEN_CHUNK(chunk)                (chunk[1].len)
+    #define LEN_CHUNK(chunk)                (chunk[0].len)
+    #define AREA_CHUNK(chunk)               (chunk[1].len)
 
     #define ITR_NEXT_CHUNK(chunk)           chunk += sizeof(Chunk) / sizeof(ArrayList))
     #define ITR_PREV_CHUNK(chunk)           chunk -= sizeof(Chunk) / sizeof(ArrayList))
@@ -17,7 +17,14 @@
     typedef ArrayList*          ChunkItr;
     typedef ArrayList const*    ChunkConstItr;
 
-    Item addIndeterminate_chunk(
+    Item addDupItem_chunk(
+        Chunk chunk,
+        uint32_t const id
+    );
+
+    Item addDupItemLast_chunk(Chunk chunk);
+
+    Item addIndeterminateItem_chunk(
         Chunk chunk,
         uint32_t const sz_item
     );
@@ -28,14 +35,13 @@
         uint32_t const sz_item
     );
 
-    Item append_chunk(
+    Item appendItem_chunk(
         Chunk chunk,
         void const* const p_item,
         uint32_t const sz_item
-
     );
 
-    Item appendDuplicate_chunk(
+    Item appendDupItem_chunk(
         Chunk chunk,
         uint32_t const id
     );
@@ -53,25 +59,26 @@
         uint32_t const initial_cap_len
     );
 
-    #define deleteFirst_chunk(chunk, n)     deleteItem_chunk(chunk, 0, n)
+    #define removeFirstItem_chunk(chunk, n)     removeItemN_chunk(chunk, 0, 1)
 
-    void deleteItem_chunk(
+    #define removeFirstItemN_chunk(chunk, n)    removeItemN_chunk(chunk, 0, n)
+
+    #define removeItem_chunk(chunk, id)         removeItemN_chunk(chunk, id, 1)
+
+    Item removeItemN_chunk(
         Chunk chunk,
         uint32_t const id,
         uint32_t const n
     );
 
-    void deleteLast_chunk(
+    #define removeLastItem_chunk(chunk)         removeLastItemN_chunk(chunk, 1)
+
+    Item removeLastItemN_chunk(
         Chunk chunk,
         uint32_t const n
     );
 
     void destruct_chunk(void* const p_chunk);
-
-    void* duplicateItem_chunk(
-        Chunk chunk,
-        uint32_t const id
-    );
 
     void* duplicateItemLast_chunk(Chunk chunk);
 
