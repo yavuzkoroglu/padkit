@@ -6,12 +6,12 @@
 #include "padkit/size.h"
 #include "padkit/unused.h"
 
-#define PEEK_JP(jp) jp->stack[jp->stack_size - 1]
+#define PEEK_JP(jp) jp->stack[jp->stack_len - 1]
 
-#define POP_JP(jp) jp->stack_size--
+#define POP_JP(jp) jp->stack_len--
 
 #define PUSH_JP(jp, element)                                                \
-    if (jp->stack_size == jp->stack_cap) {                                  \
+    if (jp->stack_len == jp->stack_cap) {                                  \
         jp->stack_cap <<= 1;                                                \
         if (jp->stack_cap >= SZSZ_MAX) {                                    \
             jp->errorCode = JSON_PARSER_STACK_ERROR;                        \
@@ -26,7 +26,7 @@
             jp->stack = new_stack;                                          \
         }                                                                   \
     }                                                                       \
-    jp->stack[jp->stack_size++] = element
+    jp->stack[jp->stack_len++] = element
 
 #define UNREAD_JP(jp)                                                       \
     if (ungetc(jp->str[0], jp->inputStream) == EOF) {                       \
@@ -874,7 +874,7 @@ static void s24_jp(JSONParser* const jp) {
     /* atRootEnd() */
     (*jp->atRootEnd)(jp);
 
-    if (jp->stack_size != 0) jp->errorCode = JSON_PARSER_STACK_ERROR;
+    if (jp->stack_len != 0) jp->errorCode = JSON_PARSER_STACK_ERROR;
 }
 
 
@@ -916,7 +916,7 @@ bool isValid_jsonp(void const* const p_jsonParser) {
     if (!isAllocated_jsonp(jsonParser))                 return 0;
     if (jsonParser->stack_cap == 0)                     return 0;
     if (jsonParser->stack_cap >= SZSZ_MAX)              return 0;
-    if (jsonParser->stack_size > jsonParser->stack_cap) return 0;
+    if (jsonParser->stack_len > jsonParser->stack_cap) return 0;
     if (jsonParser->str_cap == 0)                       return 0;
     if (jsonParser->str_cap >= SZSZ_MAX)                return 0;
     return 1;
@@ -957,7 +957,7 @@ void vconstruct_jsonp(void* const p_jsonParser, va_list args) {
 
     jsonParser->inputStream     = inputStream;
     jsonParser->stack_cap       = JSON_PARSER_INITIAL_STACK_CAP;
-    jsonParser->stack_size      = 0;
+    jsonParser->stack_len      = 0;
     jsonParser->stack           = mem_alloc(jsonParser->stack_cap);
     jsonParser->str_cap         = JSON_PARSER_INITIAL_STR_CAP;
     jsonParser->str             = mem_alloc(jsonParser->str_cap);

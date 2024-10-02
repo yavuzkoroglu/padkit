@@ -26,7 +26,7 @@
     typedef struct JSONParserBody {
         FILE*           inputStream;
         size_t          stack_cap;
-        size_t          stack_size;
+        size_t          stack_len;
         unsigned char*  stack;
         size_t          str_cap;
         size_t          str_len;
@@ -100,5 +100,8 @@
 
     long parseStream_jsonp(JSONParser* const jsonParser);
 
-    void vconstruct_jsonp(void* const p_jsonParser, va_list args);
+    void vconstruct_jsonp(
+        void* const p_jsonParser,
+        va_list args
+    );
 #endif

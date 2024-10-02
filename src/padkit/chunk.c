@@ -2,6 +2,7 @@
 #include <string.h>
 #include "padkit/chunk.h"
 #include "padkit/invalid.h"
+#include "padkit/repeat.h"
 #include "padkit/size.h"
 
 #ifndef NDEBUG
@@ -10,77 +11,90 @@
 
 static char const defaultDelimeters[] = {' ', '\t', '\n', '\v', '\f', '\r', '\0'};
 
-void* addIndeterminate_chunk(
-    ArrayList chunk[static const 2],
-    uint32_t const sz
+Item addIndeterminate_chunk(
+    Chunk chunk,
+    uint32_t const sz_item
 ) {
     assert(isValid_chunk(chunk));
-    assert(sz > 0);
-    assert(sz < SZ32_MAX);
+    assert(sz_item > 0);
+    assert(sz_item < SZ32_MAX - AREA_CHUNK(chunk));
 
-    return addItem_chunk(chunk, sz, NULL);
+    return addItem_chunk(chunk, sz_item, NULL);
 }
 
-void* addItem_chunk(
-    ArrayList chunk[static const 2],
-    void const* const p,
-    uint32_t const sz
+Item addItem_chunk(
+    Chunk chunk,
+    void const* const p_item,
+    uint32_t const sz_item
 ) {
+    Item item;
+
     assert(isValid_chunk(chunk));
-    assert(sz > 0);
-    assert(sz < SZ32_MAX);
+    assert(sz_item > 0);
+    assert(sz_item < SZ32_MAX - AREA_CHUNK(chunk));
 
     #ifndef NDEBUG
-        if (sz > chunk->cap - chunk->size)
-            assert(!overlaps_ptr(chunk->array, ptr, chunk->cap, sz));
+        if (sz_item > chunk[0].cap - chunk[0].len)
+            assert(!overlaps_ptr(chunk[0].arr, p_item, chunk[0].cap, sz_item));
     #endif
 
-    addElement_alist(chunk + 1, &AREA_CHUNK(chunk));
+    item.sz     = sz_item;
+    item.offset = AREA_CHUNK;
 
-    /* May invalidate ptr if sz > chunk->cap - chunk->array and chunk->array overlaps with ptr */
-    return addElements_alist(chunk, p, sz);
+    /* Invalidates p_item if sz_item > chunk->cap - chunk->len and chunk->arr overlaps with p_item */
+    item.p      = addN_alist(&chunk[0], p_item, sz_item);
+
+    add_alist(&chunk[1], &item.offset);
+
+    return item;
 }
 
-void* append_chunk(
-    ArrayList chunk[static const 2],
-    void const* const p,
-    uint32_t const sz
+Item append_chunk(
+    Chunk chunk,
+    void const* const p_item,
+    uint32_t const sz_item
 ) {
     assert(isValid_chunk(chunk));
-    assert(sz > 0);
-    assert(sz < SZ32_MAX);
+    assert(sz_item > 0);
+    assert(sz_item < SZ32_MAX - AREA_CHUNK(chunk));
 
     if (LEN_CHUNK(chunk) == 0) {
-        return addItem_chunk(chunk, sz, p);
+        return addItem_chunk(chunk, sz_item, p_item);
     } else {
-        addElements_alist(chunk, p, sz);
-        return getLast_chunk(chunk).p;
+        addN_alist(&chunk[0], p_item, sz_item);
+        return getLast_chunk(chunk);
     }
 }
 
 Item appendDuplicate_chunk(
-    ArrayList chunk[static const 2],
+    Chunk chunk,
     uint32_t const id
 ) {
+    Item last_item = getLast_chunk(chunk);
+
     assert(isValid_chunk(chunk));
-    assert(id < LEN_CHUNK(chunk));
-    if (id == LEN_CHUNK(chunk) - 1) {
-        uint32_t const offset[2] = {
-            offsetOfLast_chunk(chunk),
-            AREA_CHUNK(chunk)
-        };
-        uint32_t const sz_item = 
+    assert(LEN_CHUNK(chunk) > id);
+    assert(AREA_CHUNK(chunk) > last_item.offset);
+
+    if (1 == LEN_CHUNK(chunk) - id) {
+        uint32_t const area = AREA_CHUNK(chunk) - last_item.offset;
+        addDupN_alist(&chunk[0], last_item.offset, area);
+        last_item.sz += last_item.sz;
     } else {
-        uint32_t const offset   = offsetOf_chunk(chunk, id);
-        Item const orig         = get_chunk(chunk, id);
-        addDuplicates_alist(chunk, *offset, orig.sz);
+        uint32_t const* const offsets[2] = {
+            get_alist(&chunk[1], id),
+            get_alist(&chunk[1], id + 1)
+        };
+        uint32_t const area = *offsets[1] - *offsets[0];
+        addDupN_alist(&chunk[0], *offsets[0], area);
+        last_item.sz += last_item.sz;
     }
-    return getLast(chunk);
+    return last_item;
 }
 
 void concat_chunk(
-    ArrayList head[static const 2],
-    ArrayList tail[static const 2]
+    Chunk head,
+    Chunk const tail
 ) {
     uint32_t const head_area = AREA_CHUNK(head);
     #ifndef NDEBUG
@@ -89,19 +103,28 @@ void concat_chunk(
 
     assert(isValid_chunk(head));
     assert(isValid_chunk(tail));
-    assert(!overlaps_ptr(head->arr, tail->arr, head_area, tail_area));
+    assert(!overlaps_ptr(head[0].arr, tail[0].arr, head_area, tail_area));
 
-    concat_alist(head, tail);
+    concat_alist(&head[0], &tail[0]);
 
-    for (uint32_t i = 0; i < LEN_CHUNK(tail); i++) {
-        uint32_t const* const old_offset    = get_alist(tail + 1, i);
-        uint32_t const new_offset           = *old_offset + head_area;
-        addElement_alist(head + 1, &new_offset);
+    {
+        uint32_t const* old_offset = getFirst_alist(&tail[1]);
+        REPEAT(LEN_CHUNK(tail)) {
+            uint32_t const new_offset = *old_offset + head_area;
+            add_alist(&head[1], &new_offset);
+            old_offset++;
+        }
     }
 }
 
+void construct_chunk(void* const p_chunk, ...) {
+    va_list args;
+    va_start(args, p_chunk);
+    vconstruct_chunk(p_chunk);
+}
+
 void constructEmpty_chunk(
-    ArrayList chunk[static const 2],
+    Chunk chunk,
     uint32_t const initial_cap_area,
     uint32_t const initial_cap_len
 ) {
@@ -110,38 +133,48 @@ void constructEmpty_chunk(
     assert(initial_cap_len > 0);
     assert(initial_cap_len < SZ32_MAX);
 
-    constructEmpty_alist(chunk, 1, initial_cap_area);
-    constructEmpty_alist(chunk + 1, sizeof(uint32_t), initial_cap_len);
+    constructEmpty_alist(&chunk[0], 1, initial_cap_area);
+    constructEmpty_alist(&chunk[1], sizeof(uint32_t), initial_cap_len);
 }
 
-void delete_chunk(ArrayList chunk[static const 2], uint32_t const startId, uint32_t const n) {
+void deleteItem_chunk(
+    Chunk chunk,
+    uint32_t const id,
+    uint32_t const n
+) {
     assert(isValid_chunk(chunk));
-    assert(startId < LEN_CHUNK(chunk));
+    assert(LEN_CHUNK(chunk) > id);
     assert(n > 0);
-    assert(n <= LEN_CHUNK(chunk));
-    assert(startId + n <= LEN_CHUNK(chunk));
+    assert(n <= LEN_CHUNK(chunk) - id);
 
-    if (startId + n == LEN_CHUNK(chunk)) {
+    if (n == LEN_CHUNK(chunk) - id) {
         deleteLast_chunk(chunk, n);
     } else {
         uint32_t const* const offsets[2] = {
-            get_alist(chunk + 1, startId),
-            get_alist(chunk + 1, startId + n)
+            get_alist(&chunk[1], id),
+            get_alist(&chunk[1], id + n)
         };
-        uint32_t const len = offsets[1][0] - offsets[0][0];
-        assert(len < AREA_CHUNK(chunk));
+        uint32_t const area = *offsets[1] - *offsets[0];
+        assert(area < AREA_CHUNK(chunk));
 
-        delete_alist(chunk, offsets[0][0], len);
-        delete_alist(chunk + 1, startId, n);
-        for (uint32_t i = startId; i < LEN_CHUNK(chunk); i++) {
-            uint32_t* const offset = get_alist(chunk + 1, i);
-            assert(*offset >= len);
-            *offset -= len;
+        delete_alist(&chunk[0], *offsets[0], area);
+        delete_alist(&chunk[1], id, n);
+
+        {
+            uint32_t* offset = get_alist(&chunk[1], id);
+            REPEAT(LEN_CHUNK(chunk) - i) {
+                assert(*offset >= area);
+                *offset -= area;
+                offset++;
+            }
         }
     }
 }
 
-void deleteLast_chunk(ArrayList chunk[static const 2], uint32_t const n) {
+void deleteLast_chunk(
+    Chunk chunk,
+    uint32_t const n
+) {
     assert(isValid_chunk(chunk));
     assert(n > 0);
     assert(n <= LEN_CHUNK(chunk));
@@ -149,15 +182,15 @@ void deleteLast_chunk(ArrayList chunk[static const 2], uint32_t const n) {
     if (n == LEN_CHUNK(chunk)) {
         flush_chunk(chunk);
     } else {
-        uint32_t const* const offset = get_alist(chunk + 1, LEN_CHUNK(chunk) - n);
+        uint32_t const* const offset = getLastN_alist(&chunk[1], n);
         assert(AREA_CHUNK(chunk) >= *offset);
 
-        removeLast_alist(chunk, AREA_CHUNK(chunk) - *offset);
-        removeLast_alist(chunk + 1, n);
+        removeLastN_alist(&chunk[0], AREA_CHUNK(chunk) - *offset);
+        removeLastN_alist(&chunk[1], n);
     }
 }
 
-void* duplicateItem_chunk(ArrayList chunk[static const 2], uint32_t const id) {
+void* duplicateItem_chunk(Chunk chunk, uint32_t const id) {
     assert(isValid_chunk(chunk));
     assert(id < LEN_CHUNK(chunk));
     {
@@ -169,7 +202,7 @@ void* duplicateItem_chunk(ArrayList chunk[static const 2], uint32_t const id) {
     }
 }
 
-void* duplicateItemLast_chunk(ArrayList chunk[static const 2]) {
+void* duplicateItemLast_chunk(Chunk chunk) {
     assert(isValid_chunk(chunk));
     {
         uint32_t const sz_item  = sz_itemLast_chunk(chunk);
@@ -180,7 +213,7 @@ void* duplicateItemLast_chunk(ArrayList chunk[static const 2]) {
     }
 }
 
-void* enlargeItem_chunk(ArrayList chunk[static const 2], uint32_t const id, uint32_t const by) {
+void* enlargeItem_chunk(Chunk chunk, uint32_t const id, uint32_t const by) {
     assert(isValid_chunk(chunk));
     assert(id < LEN_CHUNK(chunk));
     assert(by > 0);
@@ -206,7 +239,7 @@ void* enlargeItem_chunk(ArrayList chunk[static const 2], uint32_t const id, uint
     return get_chunk(chunk, id);
 }
 
-void* enlargeItemLast_chunk(ArrayList chunk[static const 2], uint32_t const by) {
+void* enlargeItemLast_chunk(Chunk chunk, uint32_t const by) {
     assert(isValid_chunk(chunk));
     assert(by > 0);
     assert(by < SZ32_MAX);
@@ -214,14 +247,14 @@ void* enlargeItemLast_chunk(ArrayList chunk[static const 2], uint32_t const by) 
     return getLast_chunk(chunk);
 }
 
-void flush_chunk(ArrayList chunk[static const 2]) {
+void flush_chunk(Chunk chunk) {
     assert(isValid_chunk(chunk));
 
     flush_alist(chunk);
     flush_alist(chunk + 1);
 }
 
-void free_chunk(ArrayList chunk[static const 2]) {
+void free_chunk(Chunk chunk) {
     assert(isValid_chunk(chunk));
 
     free_alist(chunk);
@@ -229,7 +262,7 @@ void free_chunk(ArrayList chunk[static const 2]) {
 }
 
 uint32_t fromStream_chunk(
-    ArrayList chunk[static const 2], FILE stream[static const 1],
+    Chunk chunk, FILE stream[static const 1],
     char const delimeters[], size_t nDelimeters
 ) {
     assert(isValid_chunk(chunk));
@@ -245,7 +278,7 @@ uint32_t fromStream_chunk(
     }
 }
 
-void* fromStreamAsWhole_chunk(ArrayList chunk[static const 2], FILE stream[static const 1]) {
+void* fromStreamAsWhole_chunk(Chunk chunk, FILE stream[static const 1]) {
     assert(isValid_chunk(chunk));
 
     if (fseek(stream, 0L, SEEK_END) != 0) {
@@ -274,21 +307,21 @@ void* fromStreamAsWhole_chunk(ArrayList chunk[static const 2], FILE stream[stati
     }
 }
 
-void* get_chunk(ArrayList const chunk[static const 2], uint32_t const id) {
+void* get_chunk(Chunk const chunk, uint32_t const id) {
     assert(isValid_chunk(chunk));
     assert(id < LEN_CHUNK(chunk));
 
     return get_alist(chunk, *(uint32_t*)get_alist(chunk + 1, id));
 }
 
-void* getLast_chunk(ArrayList const chunk[static const 2]) {
+void* getLast_chunk(Chunk const chunk) {
     assert(isValid_chunk(chunk));
     assert(LEN_CHUNK(chunk) > 0);
 
     return get_chunk(chunk, LEN_CHUNK(chunk) - 1);
 }
 
-bool isValid_chunk(ArrayList const chunk[static const 2]) {
+bool isValid_chunk(Chunk const chunk) {
     if (!isValid_alist(chunk))                      return 0;
     if (!isValid_alist(chunk + 1))                  return 0;
     if (chunk[0].sz_element != 1)                   return 0;
@@ -298,7 +331,7 @@ bool isValid_chunk(ArrayList const chunk[static const 2]) {
     return 1;
 }
 
-void* resizeItem_chunk(ArrayList chunk[static const 2], uint32_t const id, uint32_t const sz_new) {
+void* resizeItem_chunk(Chunk chunk, uint32_t const id, uint32_t const sz_new) {
     assert(isValid_chunk(chunk));
     assert(id < LEN_CHUNK(chunk));
     assert(sz_new > 0);
@@ -314,7 +347,7 @@ void* resizeItem_chunk(ArrayList chunk[static const 2], uint32_t const id, uint3
     }
 }
 
-void* resizeItemLast_chunk(ArrayList chunk[static const 2], uint32_t const sz_new) {
+void* resizeItemLast_chunk(Chunk chunk, uint32_t const sz_new) {
     assert(isValid_chunk(chunk));
     assert(sz_new > 0);
     assert(sz_new < SZ32_MAX);
@@ -330,7 +363,7 @@ void* resizeItemLast_chunk(ArrayList chunk[static const 2], uint32_t const sz_ne
 }
 
 void* setItem_chunk(
-    ArrayList chunk[static const 2], uint32_t const id,
+    Chunk chunk, uint32_t const id,
     uint32_t const sz, void const* const ptr
 ) {
     assert(isValid_chunk(chunk));
@@ -345,7 +378,7 @@ void* setItem_chunk(
     }
 }
 
-void* setItemLast_chunk(ArrayList chunk[static const 2], uint32_t const sz, void const* const ptr) {
+void* setItemLast_chunk(Chunk chunk, uint32_t const sz, void const* const ptr) {
     assert(isValid_chunk(chunk));
     assert(sz > 0);
     assert(sz < SZ32_MAX);
@@ -357,7 +390,7 @@ void* setItemLast_chunk(ArrayList chunk[static const 2], uint32_t const sz, void
     }
 }
 
-void* shrinkItem_chunk(ArrayList chunk[static const 2], uint32_t const id, uint32_t const by) {
+void* shrinkItem_chunk(Chunk chunk, uint32_t const id, uint32_t const by) {
     assert(isValid_chunk(chunk));
     assert(id < LEN_CHUNK(chunk));
     assert(by > 0);
@@ -381,7 +414,7 @@ void* shrinkItem_chunk(ArrayList chunk[static const 2], uint32_t const id, uint3
     return get_chunk(chunk, id);
 }
 
-void* shrinkItemLast_chunk(ArrayList chunk[static const 2], uint32_t const by) {
+void* shrinkItemLast_chunk(Chunk chunk, uint32_t const by) {
     assert(isValid_chunk(chunk));
     assert(by > 0);
     assert(by < SZ32_MAX);
@@ -389,7 +422,7 @@ void* shrinkItemLast_chunk(ArrayList chunk[static const 2], uint32_t const by) {
     return getLast_chunk(chunk);
 }
 
-uint32_t splitLast_chunk(ArrayList chunk[static const 2], char const delimeters[], size_t nDelimeters) {
+uint32_t splitLast_chunk(Chunk chunk, char const delimeters[], size_t nDelimeters) {
     assert(isValid_chunk(chunk));
     assert(LEN_CHUNK(chunk) > 0);
 
@@ -453,7 +486,7 @@ uint32_t splitLast_chunk(ArrayList chunk[static const 2], char const delimeters[
     }
 }
 
-uint32_t sz_item_chunk(ArrayList const chunk[static const 2], uint32_t const id) {
+uint32_t sz_item_chunk(Chunk const chunk, uint32_t const id) {
     assert(isValid_chunk(chunk));
     assert(id < LEN_CHUNK(chunk));
 
@@ -470,7 +503,7 @@ uint32_t sz_item_chunk(ArrayList const chunk[static const 2], uint32_t const id)
     }
 }
 
-uint32_t sz_itemLast_chunk(ArrayList const chunk[static const 2]) {
+uint32_t sz_itemLast_chunk(Chunk const chunk) {
     assert(isValid_chunk(chunk));
     {
         uint32_t const* const offset = getLast_alist(chunk + 1);
@@ -478,4 +511,16 @@ uint32_t sz_itemLast_chunk(ArrayList const chunk[static const 2]) {
 
         return AREA_CHUNK(chunk) - *offset;
     }
+}
+
+void vconstruct_chunk(
+    void* const p_chunk,
+    va_list args
+) {
+    ChunkItr const chunk            = (ChunkItr)p_chunk;
+    uint32_t const initial_cap_area = va_arg(args, uint32_t);
+    uint32_t const initial_cap_len  = va_arg(args, uint32_t);
+    va_end(args);
+
+    constructEmpty_chunk(chunk, initial_cap_area, initial_cap_len);
 }
