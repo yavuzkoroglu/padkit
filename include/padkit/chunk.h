@@ -10,8 +10,8 @@
     #define LEN_CHUNK(chunk)                    (chunk[0].len)
     #define AREA_CHUNK(chunk)                   (chunk[1].len)
 
-    #define ITR_NEXT_CHUNK(chunk)               chunk += sizeof(Chunk) / sizeof(ArrayList))
-    #define ITR_PREV_CHUNK(chunk)               chunk -= sizeof(Chunk) / sizeof(ArrayList))
+    #define ITR_NEXT_CHUNK(chunk)               (chunk += sizeof(Chunk) / sizeof(ArrayList)))
+    #define ITR_PREV_CHUNK(chunk)               (chunk -= sizeof(Chunk) / sizeof(ArrayList)))
 
     #define NOT_A_CHUNK                         { NOT_AN_ALIST, NOT_AN_ALIST }
 
@@ -41,21 +41,24 @@
         uint32_t const n
     );
 
-    #define addIndeterminateItem_chunk(chunk, sz_item)          addItem_chunk(chunk, NULL, sz_item)
+    #define addIndeterminateItem_chunk(chunk, sz_item)          addIndeterminateItemN_chunk(chunk, 1, sz_item)
 
-    #define addIndeterminateItemN_chunk(chunk, n, ...)          addItemN_chunk(chunk, NULL, n, __VA_ARGS__)
+    void* addIndeterminateItemN_chunk(
+        Chunk chunk,
+        uint32_t const n,
+        ...
+    );
+
+    void* addIndeterminateItemNSameSz_chunk(
+        Chunk chunk,
+        uint32_t const n,
+        uint32_t const sz_item
+    );
 
     Item addItem_chunk(
         Chunk chunk,
         void const* const p_item,
         uint32_t const sz_item
-    );
-
-    void* addItemN_chunk(
-        Chunk chunk,
-        void const* const p_items,
-        uint32_t const n,
-        ...
     );
 
     #define addStrFromMem_chunk(chunk, str, term, max_len)      \
@@ -211,9 +214,8 @@
 
     uint32_t sz_itemLast_chunk(Chunk const chunk);
 
-    void* vaddItemN_chunk(
+    void* vaddIndeterminateItemN_chunk(
         Chunk chunk,
-        void const* const p_items,
         uint32_t const n,
         va_list args
     );

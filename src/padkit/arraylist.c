@@ -26,6 +26,17 @@ void* addDupN_alist(
     }
 }
 
+void* addDupLastN_alist(
+    ArrayList* const list,
+    uint32_t const n
+) {
+    assert(isValid_alist(list));
+    assert(n <= list->len);
+    assert(n > 0);
+
+    return addDupN_alist(list, list->len - n, n);
+}
+
 void* addN_alist(
     ArrayList* const list,
     void const* const p,

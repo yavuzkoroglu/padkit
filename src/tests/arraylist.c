@@ -3,6 +3,10 @@ static int cmp_char(void const* a, void const* b);
 static void test_arraylist(void);
 static bool test_arraylist_add_alist(void);
 static bool test_arraylist_addDup_alist(void);
+static bool test_arraylist_addDupFirst_alist(void);
+static bool test_arraylist_addDupFirstN_alist(void);
+static bool test_arraylist_addDupLast_alist(void);
+static bool test_arraylist_addDupLastN_alist(void);
 static bool test_arraylist_addDupN_alist(void);
 static bool test_arraylist_addIndeterminate_alist(void);
 static bool test_arraylist_addIndeterminateN_alist(void);
@@ -97,6 +101,10 @@ static void test_arraylist(void) {
     allTestsPass &= test_arraylist_add_alist();
     allTestsPass &= test_arraylist_addDup_alist();
     allTestsPass &= test_arraylist_addDupN_alist();
+    allTestsPass &= test_arraylist_addDupFirst_alist();
+    allTestsPass &= test_arraylist_addDupFirstN_alist();
+    allTestsPass &= test_arraylist_addDupLast_alist();
+    allTestsPass &= test_arraylist_addDupLastN_alist();
     allTestsPass &= test_arraylist_addIndeterminate_alist();
     allTestsPass &= test_arraylist_addIndeterminateN_alist();
     allTestsPass &= test_arraylist_addN_alist();
@@ -221,6 +229,96 @@ static bool test_arraylist_addDup_alist(void) {
     TEST_FAIL_IF(list->len != 6)
     TEST_FAIL_IF(list->cap != 6)
     TEST_FAIL_IF(strncmp(list->arr, "abcaaa", 6) != 0)
+
+    destruct_alist(list);
+    TEST_PASS
+}
+
+static bool test_arraylist_addDupFirst_alist(void) {
+    ArrayList list[1] = { NOT_AN_ALIST };
+    construct_alist(list, 1, 3);
+
+    TEST_FAIL_IF(list->len != 0)
+    TEST_FAIL_IF(list->cap != 3)
+
+    addN_alist(list, "abc", 3);
+
+    TEST_FAIL_IF(list->len != 3)
+    TEST_FAIL_IF(list->cap != 3)
+
+    REPEAT(3)
+        addDupFirst_alist(list);
+
+    TEST_FAIL_IF(list->len != 6)
+    TEST_FAIL_IF(list->cap != 6)
+    TEST_FAIL_IF(strncmp(list->arr, "abcaaa", 6) != 0)
+
+    destruct_alist(list);
+    TEST_PASS
+}
+
+static bool test_arraylist_addDupFirstN_alist(void) {
+    ArrayList list[1] = { NOT_AN_ALIST };
+    construct_alist(list, 1, 3);
+
+    TEST_FAIL_IF(list->len != 0)
+    TEST_FAIL_IF(list->cap != 3)
+
+    addN_alist(list, "abc", 3);
+
+    TEST_FAIL_IF(list->len != 3)
+    TEST_FAIL_IF(list->cap != 3)
+
+    addDupFirstN_alist(list, 3);
+
+    TEST_FAIL_IF(list->len != 6)
+    TEST_FAIL_IF(list->cap != 6)
+    TEST_FAIL_IF(strncmp(list->arr, "abcabc", 6) != 0)
+
+    destruct_alist(list);
+    TEST_PASS
+}
+
+static bool test_arraylist_addDupLast_alist(void) {
+    ArrayList list[1] = { NOT_AN_ALIST };
+    construct_alist(list, 1, 3);
+
+    TEST_FAIL_IF(list->len != 0)
+    TEST_FAIL_IF(list->cap != 3)
+
+    addN_alist(list, "abc", 3);
+
+    TEST_FAIL_IF(list->len != 3)
+    TEST_FAIL_IF(list->cap != 3)
+
+    REPEAT(3)
+        addDupLast_alist(list);
+
+    TEST_FAIL_IF(list->len != 6)
+    TEST_FAIL_IF(list->cap != 6)
+    TEST_FAIL_IF(strncmp(list->arr, "abcccc", 6) != 0)
+
+    destruct_alist(list);
+    TEST_PASS
+}
+
+static bool test_arraylist_addDupLastN_alist(void) {
+    ArrayList list[1] = { NOT_AN_ALIST };
+    construct_alist(list, 1, 3);
+
+    TEST_FAIL_IF(list->len != 0)
+    TEST_FAIL_IF(list->cap != 3)
+
+    addN_alist(list, "abc", 3);
+
+    TEST_FAIL_IF(list->len != 3)
+    TEST_FAIL_IF(list->cap != 3)
+
+    addDupLastN_alist(list, 3);
+
+    TEST_FAIL_IF(list->len != 6)
+    TEST_FAIL_IF(list->cap != 6)
+    TEST_FAIL_IF(strncmp(list->arr, "abcabc", 6) != 0)
 
     destruct_alist(list);
     TEST_PASS

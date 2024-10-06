@@ -12,7 +12,6 @@
 static char const defaultDelimeters[] = {' ', '\t', '\n', '\v', '\f', '\r', '\0'};
 
 Item addDupItem_chunk(
-        uint32_t sz                 = 0;
     Chunk chunk,
     uint32_t const id
 ) {
@@ -47,7 +46,6 @@ void* addDupItemN_chunk(
         uint32_t const* const first_offset  = get_alist(&chunk[0], id);
         uint32_t const* const last_offset   = first_offset + n;
         uint32_t const sz_total             = *last_offset - *first_offset;
-
         uint32_t const* itr0                = first_offset;
         uint32_t const offset_diff          = (*itr1 = AREA_CHUNK(chunk)) - *itr0;
         for (uint32_t i = id + 1; i < id + n; i++, itr0++, itr1++)
@@ -64,16 +62,52 @@ Item addDupItemLast_chunk(Chunk chunk) {
     return addDupItem_chunk(chunk, LEN_CHUNK(chunk) - 1);
 }
 
-
-Item addIndeterminateItem_chunk(
+void* addDupItemLastN_chunk(
     Chunk chunk,
-    uint32_t const sz_item
+    uint32_t const n
 ) {
     assert(isValid_chunk(chunk));
+    assert(n <= LEN_CHUNK(chunk));
+    assert(n > 0);
+    assert(LEN_CHUNK(chunk) < SZ32_MAX - n);
+
+    return addDupItemN_chunk(chunk, LEN_CHUNK(chunk) - n, n);
+}
+
+void* addIndeterminateItemN_chunk(
+    Chunk chunk,
+    uint32_t const n,
+    ...
+) {
+    va_list args;
+    va_start(args, n);
+    return vaddIndeterminateItemN_chunk(chunk, n, args);
+}
+
+void* addIndeterminateItemNSameSz_chunk(
+    Chunk chunk,
+    uint32_t const n,
+    uint32_t const sz_item
+) {
+    uint32_t const sz_total = n * sz_item;
+
+    assert(isValid_chunk(chunk));
+    assert(n > 0);
+    assert(n < SZ32_MAX - LEN_CHUNK(chunk));
     assert(sz_item > 0);
     assert(sz_item < SZ32_MAX - AREA_CHUNK(chunk));
-
-    return addItem_chunk(chunk, sz_item, NULL);
+    assert(sz_total < SZ32_MAX - AREA_CHUNK(chunk));
+    assert(sz_total / n == sz_item);
+    {
+        uint32_t const len  = LEN_CHUNK(chunk);
+        uint32_t offset     = AREA_CHUNK(chunk);
+        uint32_t* itr       = addIndeterminateN_alist(&chunk[0], n);
+        REPEAT(n) {
+            *itr++ = offset;
+            offset += sz_item;
+        }
+        return addIndeterminateN_alist(&chunk[1], sz_total);
+    }
 }
 
 Item addItem_chunk(
@@ -93,14 +127,14 @@ Item addItem_chunk(
     #endif
 
     item.sz     = sz_item;
-    item.offset = AREA_CHUNK;
+    item.offset = AREA_CHUNK(chunk);
+
+    add_alist(&chunk[0], &item.offset);
 
     /* Invalidates p_item if
      * sz_item > chunk[1].cap - chunk[1].len and
      * chunk[1].arr overlaps with p_item */
-    item.p      = addN_alist(&chunk[1], p_item, sz_item);
-
-    add_alist(&chunk[0], &item.offset);
+    item.p = addN_alist(&chunk[1], p_item, sz_item);
 
     return item;
 }
@@ -552,6 +586,38 @@ uint32_t sz_itemLast_chunk(Chunk const chunk) {
         assert(AREA_CHUNK(chunk) >= *offset);
 
         return AREA_CHUNK(chunk) - *offset;
+    }
+}
+
+void* vaddIndeterminateItemN_chunk(
+    Chunk chunk,
+    uint32_t const n,
+    va_list args
+) {
+    assert(isValid_chunk(chunk));
+    assert(n > 0);
+    assert(SZ32_MAX > n);
+    assert(LEN_CHUNK(chunk) < SZ32_MAX - n);
+    {
+        uint32_t const len  = LEN_CHUNK(chunk);
+        uint32_t offset     = AREA_CHUNK(chunk);
+        uint32_t* itr       = addIndeterminateN_alist(&chunk[0], n);
+        REPEAT(n) {
+            uint32_t const sz_item = va_arg(args, uint32_t);
+            assert(sz_item > 0);
+            assert(sz_item < SZ32_MAX - offset);
+
+            *itr++ = offset;
+            offset += sz;
+        }
+
+        va_end(args);
+
+        assert(offset > AREA_CHUNK(chunk));
+        {
+            uint32_t const sz_total = offset - AREA_CHUNK(chunk);
+            return addIndeterminateN_alist(&chunk[1], sz_total);
+        }
     }
 }
 
