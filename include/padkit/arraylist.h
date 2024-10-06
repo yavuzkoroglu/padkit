@@ -65,6 +65,25 @@
         uint32_t const init_cap
     );
 
+    #define delete_alist(list, id)                  deleteN_alist(list, id, 1)
+
+    #define deleteFirst_alist(list)                 deleteN_alist(list, 0, 1)
+
+    #define deleteFirstN_alist(list, n)             deleteN_alist(list, 0, n)
+
+    #define deleteLast_alist(list)                  deleteLastN_alist(list, 1)
+
+    void deleteLastN_alist(
+        ArrayList* const list,
+        uint32_t const n
+    );
+
+    void deleteN_alist(
+        ArrayList* const list,
+        uint32_t const id,
+        uint32_t const n
+    );
+
     void destruct_alist(void* const p_list);
 
     void flush_alist(ArrayList* const list);

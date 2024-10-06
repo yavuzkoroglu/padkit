@@ -12,17 +12,48 @@
 static char const defaultDelimeters[] = {' ', '\t', '\n', '\v', '\f', '\r', '\0'};
 
 Item addDupItem_chunk(
+        uint32_t sz                 = 0;
     Chunk chunk,
     uint32_t const id
 ) {
+    Item dup_item = NOT_AN_ITEM;
+
     assert(isValid_chunk(chunk));
     assert(id < LEN_CHUNK(chunk));
+    assert(LEN_CHUNK(chunk) < SZ32_MAX - 1);
+
+    dup_item.offset = AREA_CHUNK(chunk);
+    add_alist(&chunk[0], &dup_item.offset);
     {
         Item const orig_item = getItem_chunk(chunk, id);
+        dup_item.sz = orig_item.sz;
+        dup_item.p  = addDupN_alist(&chunk[1], orig_item.offset, orig_item.sz);
+    }
+    return dup_item;
+}
 
-        addIndeterminateItem_chunk(chunk, orig_item.sz);
+void* addDupItemN_chunk(
+    Chunk chunk,
+    uint32_t const id,
+    uint32_t const n
+) {
+    assert(isValid_chunk(chunk));
+    assert(LEN_CHUNK(chunk) > id));
+    assert(n <= LEN_CHUNK(chunk) - id));
+    assert(n > 0);
+    assert(LEN_CHUNK(chunk) < SZ32_MAX - n);
+    {
+        uint32_t* itr1                      = addIndeterminateN_alist(&chunk[0], n);
+        uint32_t const* const first_offset  = get_alist(&chunk[0], id);
+        uint32_t const* const last_offset   = first_offset + n;
+        uint32_t const sz_total             = *last_offset - *first_offset;
 
-        return setDupItemLast_chunk(chunk, id);
+        uint32_t const* itr0                = first_offset;
+        uint32_t const offset_diff          = (*itr1 = AREA_CHUNK(chunk)) - *itr0;
+        for (uint32_t i = id + 1; i < id + n; i++, itr0++, itr1++)
+            *itr1 = *itr0 + offset_diff;
+
+        return addDupN_alist(&chunk[1], *first_offset, sz_total);
     }
 }
 
@@ -159,57 +190,6 @@ void constructEmpty_chunk(
     constructEmpty_alist(&chunk[1], 1, initial_cap_area);
 }
 
-Item removeItemN_chunk(
-    Chunk chunk,
-    uint32_t const id,
-    uint32_t const n
-) {
-    assert(isValid_chunk(chunk));
-    assert(LEN_CHUNK(chunk) > id);
-    assert(n > 0);
-    assert(n <= LEN_CHUNK(chunk) - id);
-
-    if (n == LEN_CHUNK(chunk) - id) {
-        return removeLastN_chunk(chunk, n);
-    } else {
-        uint32_t const* const offsets[2] = {
-            get_alist(&chunk[0], id),
-            get_alist(&chunk[0], id + n)
-        };
-        uint32_t const area = *offsets[1] - *offsets[0];
-        assert(area < AREA_CHUNK(chunk));
-
-        removeN_alist(&chunk[0], id, n);
-        removeN_alist(&chunk[1], *offsets[0], area);
-
-        {
-            uint32_t* offset = get_alist(&chunk[1], id);
-            REPEAT(LEN_CHUNK(chunk) - id) {
-                assert(*offset >= area);
-                *(offset++) -= area;
-            }
-        }
-    }
-}
-
-Item removeLastN_chunk(
-    Chunk chunk,
-    uint32_t const n
-) {
-    assert(isValid_chunk(chunk));
-    assert(n > 0);
-    assert(n <= LEN_CHUNK(chunk));
-
-    if (n == LEN_CHUNK(chunk)) {
-        flush_chunk(chunk);
-    } else {
-        uint32_t const* const offset = removeLastN_alist(&chunk[0], n);
-        assert(AREA_CHUNK(chunk) >= *offset);
-
-        removeLastN_alist(&chunk[1], AREA_CHUNK(chunk) - *offset);
-    }
-}
-
 void destruct_chunk(Chunk chunk) {
     assert(isValid_chunk(chunk));
 
@@ -337,6 +317,60 @@ bool isValid_chunk(Chunk const chunk) {
     if (LEN_CHUNK(chunk) > AREA_CHUNK(chunk))       return 0;
 
     return 1;
+}
+
+Item removeItemN_chunk(
+    Chunk chunk,
+    uint32_t const id,
+    uint32_t const n
+) {
+    assert(isValid_chunk(chunk));
+    assert(LEN_CHUNK(chunk) > id);
+    assert(n > 0);
+    assert(n <= LEN_CHUNK(chunk) - id);
+
+    if (n == LEN_CHUNK(chunk) - id) {
+        return removeLastN_chunk(chunk, n);
+    } else {
+        uint32_t const* const offsets[2] = {
+            getN_alist(&chunk[0], id, n),
+            get_alist(&chunk[0], id + n)
+        };
+        Item removed_item   = NOT_AN_ITEM;
+        removed_item.sz     = *offsets[1] - *offsets[0];
+        removed_item.p      = removeN_alist(&chunk[1], *offsets[0], removed_item.sz);
+        removed_item.offset = AREA_CHUNK(chunk);
+
+        removeN_alist(&chunk[0], id, n);
+
+        {
+            uint32_t* offset = get_alist(&chunk[0], id);
+            REPEAT(LEN_CHUNK(chunk) - id - n) {
+                assert(*offset >= removed_item.sz);
+                *(offset++) -= removed_item.sz;
+            }
+        }
+
+        return removed_item;
+    }
+}
+
+Item removeLastN_chunk(
+    Chunk chunk,
+    uint32_t const n
+) {
+    assert(isValid_chunk(chunk));
+    assert(n > 0);
+    assert(n <= LEN_CHUNK(chunk));
+
+    if (n == LEN_CHUNK(chunk)) {
+        flush_chunk(chunk);
+    } else {
+        uint32_t const* const offset = removeLastN_alist(&chunk[0], n);
+        assert(AREA_CHUNK(chunk) >= *offset);
+
+        removeLastN_alist(&chunk[1], AREA_CHUNK(chunk) - *offset);
+    }
 }
 
 void* resizeItem_chunk(Chunk chunk, uint32_t const id, uint32_t const sz_new) {
