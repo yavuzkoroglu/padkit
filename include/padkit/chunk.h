@@ -3,25 +3,25 @@
     #include "padkit/arraylist.h"
     #include "padkit/item.h"
 
-    #define CHUNK_RECOMMENDED_PARAMETERS        \
-        ALIST_RECOMMENDED_INITIAL_CAP,          \
+    #define CHUNK_RECOMMENDED_PARAMETERS                        \
+        ALIST_RECOMMENDED_INITIAL_CAP,                          \
         ALIST_RECOMMENDED_INITIAL_CAP
 
-    #define LEN_CHUNK(chunk)                    (chunk[0].len)
-    #define AREA_CHUNK(chunk)                   (chunk[1].len)
+    #define LEN_CHUNK(chunk)                                    (chunk[0].len)
+    #define AREA_CHUNK(chunk)                                   (chunk[1].len)
 
-    #define ITR_NEXT_CHUNK(chunk)               (chunk += sizeof(Chunk) / sizeof(ArrayList)))
-    #define ITR_PREV_CHUNK(chunk)               (chunk -= sizeof(Chunk) / sizeof(ArrayList)))
+    #define ITR_NEXT_CHUNK(chunk)                               (chunk += sizeof(Chunk) / sizeof(ArrayList)))
+    #define ITR_PREV_CHUNK(chunk)                               (chunk -= sizeof(Chunk) / sizeof(ArrayList)))
 
-    #define NOT_A_CHUNK                         { NOT_AN_ALIST, NOT_AN_ALIST }
+    #define NOT_A_CHUNK                                         { NOT_AN_ALIST, NOT_AN_ALIST }
 
     typedef ArrayList           Chunk[2];
     typedef ArrayList*          ChunkItr;
     typedef ArrayList const*    ChunkConstItr;
 
-    #define addDupItemFirst_chunk(chunk)        addDupItem_chunk(chunk, 0)
+    #define addDupItemFirst_chunk(chunk)                        addDupItem_chunk(chunk, 0)
 
-    #define addDupItemFirstN_chunk(chunk, n)    addDupItemN_chunk(chunk, 0, n)
+    #define addDupItemFirstN_chunk(chunk, n)                    addDupItemN_chunk(chunk, 0, n)
 
     Item addDupItem_chunk(
         Chunk chunk,
@@ -61,28 +61,12 @@
         uint32_t const sz_item
     );
 
-    #define addStrFromMem_chunk(chunk, str, term, max_len)      \
-        addStrFromMem_chunk(chunk, str, NULL, term, max_len, 1)
-
-    uint32_t addStrFromMemN_chunk(
-        Chunk chunk,
-        char const* const str,
-        char const delimeters[],
-        char const terminals[],
-        uint32_t const max_str_len,
-        uint32_t const max_n
-    );
-
-    #define addStrFromStream_chunk(chunk, fp, term, max_len)    \
-        addStrFromStreamN_chunk(chunk, fp, NULL, term, max_len, 1)
-
-    uint32_t addStrFromStreamN_chunk(
+    Item addItemFromStream_chunk(
         Chunk chunk,
         FILE* const stream,
-        char const delimeters[],
-        char const terminals[],
-        uint32_t const max_str_len,
-        uint32_t const max_n
+        uint32_t const max_sz_buf,
+        uint32_t const max_sz_item,
+        bool const null_terminated
     );
 
     Item appendItem_chunk(

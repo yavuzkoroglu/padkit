@@ -139,6 +139,69 @@ Item addItem_chunk(
     return item;
 }
 
+Item appendFromStream_chunk(
+    Chunk chunk,
+    FILE* const stream,
+    uint32_t const max_sz_buf,
+    uint32_t const max_sz_item,
+    bool const null_terminated
+) {
+    Item item   = NOT_AN_ITEM;
+    char* p_buf = NULL;
+
+    assert(isValid_chunk(chunk));
+    assert(stream != NULL);
+    assert(max_sz_buf > 0);
+    assert(max_sz_buf < SZ32_MAX - AREA_CHUNK(chunk));
+    assert(max_sz_item > 0 || null_terminated);
+    assert(max_sz_item < SZ32_MAX - AREA_CHUNK(chunk));
+
+    if (LEN_CHUNK(chunk) == 0) {
+        item.p      = chunk[0].arr;
+        item.sz     = 0;
+        item.offset = 0;
+        add_alist(&chunk[0], &item.offset);
+    } else {
+        item = getItemLast_chunk(chunk);
+    }
+
+    p_buf = addIndeterminateN_alist(&chunk[1], max_sz_buf);
+    for (
+        bool doContinue = !feof(stream) && item.sz <= max_sz_item;
+        doContinue;
+        doContinue &= !feof(stream) && item.sz <= max_sz_item
+    ) {
+        size_t sz_buf = fread(stream, 1, max_sz_buf, stream);
+        assert(sz_buf > 0);
+        assert(sz_buf < SZ32_MAX);
+        assert((uint32_t)sz_buf <= max_sz_buf);
+
+        if (null_terminated) {
+            char const* p_buf_end = memchr(p_buf, '\0', sz_buf);
+            doContinue &= p_buf_end == NULL;
+            if (!doContinue)
+                sz_buf = (size_t)(p_buf_end - p_buf);
+        }
+
+        item.sz += (uint32_t)sz_buf;
+
+        doContinue &= (max_sz_buf == (uint32_t)sz_buf);
+        if (doContinue) {
+            p_buf = addIndeterminateN_alist(&chunk[1], max_sz_buf);
+        } else if (max_sz_buf > (uint32_t)sz_buf) {
+            uint32_t const sz_diff = max_sz_buf - (uint32_t)sz_buf;
+            deleteLastN_alist(&chunk[1], sz_diff);
+        }
+    }
+
+    if (item.sz > max_sz_item && max_sz_item > 0) {
+        deleteLastN_alist(&chunk[1], item.sz - max_sz_item);
+        item.sz = max_sz_item;
+    }
+
+    return item;
+}
+
 Item appendItem_chunk(
     Chunk chunk,
     void const* const p_item,
