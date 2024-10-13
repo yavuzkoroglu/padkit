@@ -7,12 +7,22 @@
 
 #ifndef NDEBUG
     #define TERMINATE_ABORT {                                                       \
-        fprintf(stderr, "Abort in "__FILE__"::"__func__"():%d\n", __LINE__);        \
+        fprintf(                                                                    \
+            stderr, "Abort in %.*s::%.*s():%d\n",                                   \
+            (int)sizeof(__FILE__), __FILE__,                                        \
+            (int)sizeof(__func__), __func__,                                        \
+            __LINE__                                                                \
+        );                                                                          \
         abort();                                                                    \
     }
 
     #define TERMINATE_ERROR {                                                       \
-        fprintf(stderr, "Error in "__FILE__"::"__func__"():%d\n", __LINE__);        \
+        fprintf(                                                                    \
+            stderr, "Error in %.*s::%.*s():%d\n",                                   \
+            (int)sizeof(__FILE__), __FILE__,                                        \
+            (int)sizeof(__func__), __func__,                                        \
+            __LINE__                                                                \
+        );                                                                          \
         exit(EXIT_FAILURE);                                                         \
     }
 #else

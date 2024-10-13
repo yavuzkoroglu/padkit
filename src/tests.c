@@ -28,6 +28,7 @@
 #include "tests/prime.c"
 // #include "tests/stack.c"
 #include "tests/timestamp.c"
+#include "tests/verbose.c"
 
 int main(void) {
     puts("");
@@ -73,6 +74,13 @@ int main(void) {
 
     puts("");
 
+    if (verbose)
+        printf(" VERBOSE ENABLED\n");
+    else
+        printf(" VERBOSE DISABLED\n");
+
+    puts("");
+
     puts("src/tests.c");
     puts("-----------");
     test_arraylist();
@@ -88,6 +96,10 @@ int main(void) {
     test_prime();
     // test_stack();
     test_timestamp();
+
+    puts("");
+
+    test_verbose();
 
     puts("");
 

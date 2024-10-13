@@ -44,7 +44,8 @@ TESTSRC=src/tests/arraylist.c           \
         src/tests/memalloc.c            \
         src/tests/overlap.c             \
         src/tests/prime.c               \
-        src/tests/timestamp.c
+        src/tests/timestamp.c           \
+        src/tests/verbose.c
 
 TEST_PARAM=-Isrc --coverage -fprofile-arcs -ftest-coverage src/tests.c lib/libpadkit.a
 
@@ -102,6 +103,7 @@ include/padkit.h: .FORCE;                                                       
     echo '    #include "padkit/size.h"'                     >> include/padkit.h; \
     echo '    #include "padkit/timestamp.h"'                >> include/padkit.h; \
     echo '    #include "padkit/unused.h"'                   >> include/padkit.h; \
+    echo '    #include "padkit/verbose.h"'                  >> include/padkit.h; \
     echo '#endif'                                           >> include/padkit.h;
 
 lib: ; mkdir lib
