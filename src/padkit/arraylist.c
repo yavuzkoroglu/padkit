@@ -154,6 +154,7 @@ void construct_alist(void* const p_list, ...) {
     va_list args;
     va_start(args, p_list);
     vconstruct_alist(p_list, args);
+    va_end(args);
 }
 
 void constructEmpty_alist(
@@ -646,7 +647,6 @@ void vconstruct_alist(
     ArrayList* const list   = (ArrayList*)p_list;
     size_t const sz_elem    = va_arg(args, size_t);
     uint32_t const init_cap = va_arg(args, uint32_t);
-    va_end(args);
 
     constructEmpty_alist(list, sz_elem, init_cap);
 }

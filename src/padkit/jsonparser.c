@@ -882,6 +882,7 @@ void construct_jsonp(void* const p_jsonParser, ...) {
     va_list args;
     va_start(args, p_jsonParser);
     vconstruct_jsonp(p_jsonParser, args);
+    va_end(args);
 }
 
 void destruct_jsonp(void* const p_jsonParser) {
@@ -949,7 +950,6 @@ void vconstruct_jsonp(void* const p_jsonParser, va_list args) {
     JSONParserVoidEvent const eventAtTrue           = va_arg(args, JSONParserVoidEvent);
     JSONParserVoidEvent const eventAtValueEnd       = va_arg(args, JSONParserVoidEvent);
     JSONParserVoidEvent const eventAtValueStart     = va_arg(args, JSONParserVoidEvent);
-    va_end(args);
 
     assert(jsonParser != NULL);
     assert(inputStream != NULL);

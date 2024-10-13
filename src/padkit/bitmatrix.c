@@ -85,6 +85,7 @@ void construct_bmtx(void* const p_bmtx, ...) {
     va_list args;
     va_start(args, p_bmtx);
     vconstruct_bmtx(p_bmtx, args);
+    va_end(args);
 }
 
 void (* const construct_gmtx)(void* const p_gmtx, ...) = &construct_bmtx;
@@ -301,7 +302,6 @@ void vconstruct_bmtx(void* const p_bmtx, va_list args) {
     uint32_t const initial_height   = va_arg(args, uint32_t);
     uint32_t const initial_width    = va_arg(args, uint32_t);
     uint64_t const nBlocks          = (((uint64_t)initial_height * (uint64_t)initial_width) >> 6) + 1;
-    va_end(args);
 
     assert(bmtx != NULL);
     assert(!isAllocated_bmtx(bmtx));

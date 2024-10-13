@@ -21,7 +21,8 @@ OBJECTS=obj/padkit/arraylist.o          \
         obj/padkit/memalloc.o           \
         obj/padkit/overlap.o            \
         obj/padkit/prime.o              \
-        obj/padkit/timestamp.o
+        obj/padkit/timestamp.o          \
+        obj/padkit/verbose.o
 
 SOURCES=src/padkit/arraylist.c          \
         src/padkit/bitmatrix.c          \
@@ -31,7 +32,8 @@ SOURCES=src/padkit/arraylist.c          \
         src/padkit/memalloc.c           \
         src/padkit/overlap.c            \
         src/padkit/prime.c              \
-        src/padkit/timestamp.c
+        src/padkit/timestamp.c          \
+        src/padkit/verbose.c
 
 TESTSRC=src/tests/arraylist.c           \
         src/tests/bitmatrix.c           \
@@ -183,6 +185,13 @@ obj/padkit/timestamp.o: .FORCE          \
     include/padkit/timestamp.h          \
     src/padkit/timestamp.c              \
     ; ${COMPILE} -Iinclude src/padkit/timestamp.c -c -o obj/padkit/timestamp.o
+
+obj/padkit/verbose.o: .FORCE            \
+    obj/padkit                          \
+    include/padkit/timestamp.h          \
+    include/padkit/verbose.h            \
+    src/padkit/verbose.c                \
+    ; ${COMPILE} -Iinclude src/padkit/verbose.c -c -o obj/padkit/verbose.o
 
 objects: ${OBJECTS}
 
