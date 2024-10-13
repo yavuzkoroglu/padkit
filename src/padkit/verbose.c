@@ -1,3 +1,4 @@
+#include <stdarg.h>
 #include <stdio.h>
 #include "padkit/timestamp.h"
 #include "padkit/verbose.h"
@@ -15,21 +16,6 @@ int printf_verbose(char const* const restrict format, ...) {
         {
             int const n = vprintf(format, args);
             va_end(args);
-            puts("");
-            return n;
-        }
-    } else {
-        return 0;
-    }
-}
-
-__attribute__((__format__ (__printf__, 1, 0)))
-int vprintf_verbose(char const* const restrict format, va_list args) {
-    if (verbose) {
-        char const* const p_timestamp = get_timestamp();
-        printf("[%s] - ", p_timestamp);
-        {
-            int const n = vprintf(format, args);
             puts("");
             return n;
         }
