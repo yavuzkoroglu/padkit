@@ -3,10 +3,10 @@
     #include <stddef.h>
     #include "padkit/error.h"
 
-    #define MALLOC_ERROR    TERMINATE_ERROR_MSG("%s", "Cause => MALLOC_ERROR")
-    #define CALLOC_ERROR    TERMINATE_ERROR_MSG("%s", "Cause => CALLOC_ERROR")
-    #define REALLOC_ERROR   TERMINATE_ERROR_MSG("%s", "Cause => REALLOC_ERROR")
-    #define RECALLOC_ERROR  TERMINATE_ERROR_MSG("%s", "Cause => RECALLOC_ERROR")
+    #define MALLOC_ERROR    TERMINATE_ERROR_MSG("Cause => MALLOC_ERROR")
+    #define CALLOC_ERROR    TERMINATE_ERROR_MSG("Cause => CALLOC_ERROR")
+    #define REALLOC_ERROR   TERMINATE_ERROR_MSG("Cause => REALLOC_ERROR")
+    #define RECALLOC_ERROR  TERMINATE_ERROR_MSG("Cause => RECALLOC_ERROR")
 
     void* mem_alloc(size_t const sz);
 

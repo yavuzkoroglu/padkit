@@ -9,7 +9,7 @@ char const* get_timestamp(void) {
 
     #ifndef NDEBUG
         size_t const ts_len = strftime(ts, sizeof(ts), TS_FMT, ltm);
-        assert(ts_len == sizeof(ts) - 1);
+        assert(ts_len == TS_LEN);
     #else
         strftime(ts, sizeof(ts), TS_FMT, ltm);
     #endif

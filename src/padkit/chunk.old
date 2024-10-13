@@ -178,7 +178,7 @@ Item appendFromStream_chunk(
 
         if (null_terminated) {
             char const* p_buf_end = memchr(p_buf, '\0', sz_buf);
-            doContinue &= p_buf_end == NULL;
+            doContinue &= (p_buf_end == NULL);
             if (!doContinue)
                 sz_buf = (size_t)(p_buf_end - p_buf);
         }
@@ -202,10 +202,10 @@ Item appendFromStream_chunk(
     return item;
 }
 
-Item appendItem_chunk(
+Item append_chunk(
     Chunk chunk,
-    void const* const p_item,
-    uint32_t const sz_item
+    void const* const p,
+    uint32_t const sz
 ) {
     assert(isValid_chunk(chunk));
     assert(sz_item > 0);

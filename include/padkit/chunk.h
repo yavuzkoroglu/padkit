@@ -19,49 +19,35 @@
     typedef ArrayList*          ChunkItr;
     typedef ArrayList const*    ChunkConstItr;
 
-    #define addDupItemFirst_chunk(chunk)                        addDupItem_chunk(chunk, 0)
-
-    #define addDupItemFirstN_chunk(chunk, n)                    addDupItemN_chunk(chunk, 0, n)
-
-    Item addDupItem_chunk(
-        Chunk chunk,
-        uint32_t const n
-    );
-
-    void* addDupItemN_chunk(
-        Chunk chunk,
-        uint32_t const id,
-        uint32_t const n
-    );
-
-    Item addDupItemLast_chunk(Chunk chunk);
-
-    void* addDupItemLastN_chunk(
-        Chunk chunk,
-        uint32_t const n
-    );
-
-    #define addIndeterminateItem_chunk(chunk, sz_item)          addIndeterminateItemN_chunk(chunk, 1, sz_item)
-
-    void* addIndeterminateItemN_chunk(
-        Chunk chunk,
-        uint32_t const n,
-        ...
-    );
-
-    void* addIndeterminateItemNSameSz_chunk(
-        Chunk chunk,
-        uint32_t const n,
-        uint32_t const sz_item
-    );
-
-    Item addItem_chunk(
+    Item add_chunk(
         Chunk chunk,
         void const* const p_item,
         uint32_t const sz_item
     );
 
-    Item addItemFromStream_chunk(
+    Item addDup_chunk(
+        Chunk chunk,
+        uint32_t const id
+    );
+
+    #define addDupFirst_chunk(chunk)                addDup_chunk(chunk, 0)
+
+    #define addDupFirstN_chunk(chunk, n)            addDupN_chunk(chunk, 0, n)
+
+    Item addDupLast_chunk(Chunk chunk);
+
+    void* addDupLastN_chunk(
+        Chunk chunk,
+        uint32_t const n
+    );
+
+    void* addDupN_chunk(
+        Chunk chunk,
+        uint32_t const id,
+        uint32_t const n
+    );
+
+    Item addFromStream_chunk(
         Chunk chunk,
         FILE* const stream,
         uint32_t const max_sz_buf,
@@ -69,15 +55,35 @@
         bool const null_terminated
     );
 
-    Item appendItem_chunk(
+    #define addIndeterminate_chunk(chunk, sz_item)  addIndeterminateN_chunk(chunk, 1, sz_item)
+
+    void* addIndeterminateN_chunk(
         Chunk chunk,
-        void const* const p_item,
+        uint32_t const n,
+        ...
+    );
+
+    void* addIndeterminateNSameSz_chunk(
+        Chunk chunk,
+        uint32_t const n,
         uint32_t const sz_item
     );
 
-    Item appendDupItem_chunk(
+    Item addZeros_chunk(
         Chunk chunk,
-        uint32_t const id
+        uint32_t const sz_item
+    );
+
+    void* addZerosN_chunk(
+        Chunk chunk,
+        uint32_t const n,
+        ...
+    );
+
+    void* addZerosNSameSz_chunk(
+        Chunk chunk,
+        uint32_t const n,
+        uint32_t const sz_item
     );
 
     void concat_chunk(
@@ -95,15 +101,20 @@
 
     void destruct_chunk(void* const p_chunk);
 
-    void* duplicateItemLast_chunk(Chunk chunk);
-
-    void* enlargeItem_chunk(
+    void* enlarge_chunk(
         Chunk chunk,
         uint32_t const id,
         uint32_t const by
     );
 
-    void* enlargeItemLast_chunk(
+    void* enlargeAll_chunk(
+        Chunk chunk,
+        uint32_t const by
+    );
+
+    #define enlargeFirst_chunk(chunk, by)           enlarge_chunk(chunk, 0, by)
+
+    void* enlargeLast_chunk(
         Chunk chunk,
         uint32_t const by
     );

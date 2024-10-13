@@ -10,6 +10,17 @@
     #include "padkit/overlap.h"
 #endif
 
+void* addDupLastN_alist(
+    ArrayList* const list,
+    uint32_t const n
+) {
+    assert(isValid_alist(list));
+    assert(n <= list->len);
+    assert(n > 0);
+
+    return addDupN_alist(list, list->len - n, n);
+}
+
 void* addDupN_alist(
     ArrayList* const list,
     uint32_t const id,
@@ -24,17 +35,6 @@ void* addDupN_alist(
         addIndeterminateN_alist(list, n);
         return setDupN_alist(list, len, id, n);
     }
-}
-
-void* addDupLastN_alist(
-    ArrayList* const list,
-    uint32_t const n
-) {
-    assert(isValid_alist(list));
-    assert(n <= list->len);
-    assert(n > 0);
-
-    return addDupN_alist(list, list->len - n, n);
 }
 
 void* addN_alist(

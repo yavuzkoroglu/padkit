@@ -26,16 +26,16 @@
 
     #define addDupFirstN_alist(list, n)             addDupN_alist(list, 0, n)
 
-    void* addDupN_alist(
-        ArrayList* const list,
-        uint32_t const id,
-        uint32_t const n
-    );
-
     #define addDupLast_alist(list)                  addDupLastN_alist(list, 1)
 
     void* addDupLastN_alist(
         ArrayList* const list,
+        uint32_t const n
+    );
+
+    void* addDupN_alist(
+        ArrayList* const list,
+        uint32_t const id,
         uint32_t const n
     );
 
