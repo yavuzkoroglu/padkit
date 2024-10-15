@@ -30,7 +30,7 @@ static void test_graphmatrix(void) {
 }
 
 static bool test_graphmatrix_connect_gmtx(void) {
-    GraphMatrix gmtx[1] = { NOT_A_GRAPH_MATRIX };
+    GraphMatrix gmtx[1] = { NOT_A_GMATRIX };
     construct_gmtx(gmtx, 122, 115);
 
     connect_gmtx(gmtx, 0, 92);
@@ -50,7 +50,7 @@ static bool test_graphmatrix_connect_gmtx(void) {
 }
 
 static bool test_graphmatrix_connectAll_gmtx(void) {
-    GraphMatrix gmtx[1] = { NOT_A_GRAPH_MATRIX };
+    GraphMatrix gmtx[1] = { NOT_A_GMATRIX };
     construct_gmtx(gmtx, 115, 122);
 
     for (uint32_t source = 0; source < 115; source++)
@@ -68,7 +68,7 @@ static bool test_graphmatrix_connectAll_gmtx(void) {
 }
 
 static bool test_graphmatrix_construct_gmtx(void) {
-    GraphMatrix gmtx[2] = { NOT_A_GRAPH_MATRIX, NOT_A_GRAPH_MATRIX };
+    GraphMatrix gmtx[2] = { NOT_A_GMATRIX, NOT_A_GMATRIX };
     construct_gmtx(gmtx, 1, 1);
     construct_gmtx(gmtx + 1, 131072, 131072);
     destruct_gmtx(gmtx);
@@ -77,14 +77,14 @@ static bool test_graphmatrix_construct_gmtx(void) {
 }
 
 static bool test_graphmatrix_destruct_gmtx(void) {
-    GraphMatrix gmtx[1] = { NOT_A_GRAPH_MATRIX };
+    GraphMatrix gmtx[1] = { NOT_A_GMATRIX };
     construct_gmtx(gmtx, 131072, 131072);
     destruct_gmtx(gmtx);
     TEST_PASS
 }
 
 static bool test_graphmatrix_disconnect_gmtx(void) {
-    GraphMatrix gmtx[1] = { NOT_A_GRAPH_MATRIX };
+    GraphMatrix gmtx[1] = { NOT_A_GMATRIX };
     construct_gmtx(gmtx, 115, 115);
 
     connectAll_gmtx(gmtx);
@@ -112,7 +112,7 @@ static bool test_graphmatrix_disconnect_gmtx(void) {
 }
 
 static bool test_graphmatrix_disconnectAll_gmtx(void) {
-    GraphMatrix gmtx[1] = { NOT_A_GRAPH_MATRIX };
+    GraphMatrix gmtx[1] = { NOT_A_GMATRIX };
     construct_gmtx(gmtx, 115, 122);
 
     for (uint32_t source = 0; source < 115; source++)
@@ -136,7 +136,7 @@ static bool test_graphmatrix_disconnectAll_gmtx(void) {
 }
 
 static bool test_graphmatrix_findSink_gmtx(void) {
-    GraphMatrix gmtx[1] = { NOT_A_GRAPH_MATRIX };
+    GraphMatrix gmtx[1] = { NOT_A_GMATRIX };
     construct_gmtx(gmtx, 3, 4);
 
     for (uint32_t source = 0; source < 3; source++)
@@ -153,7 +153,7 @@ static bool test_graphmatrix_findSink_gmtx(void) {
 }
 
 static bool test_graphmatrix_findSource_gmtx(void) {
-    GraphMatrix gmtx[1] = { NOT_A_GRAPH_MATRIX };
+    GraphMatrix gmtx[1] = { NOT_A_GMATRIX };
     construct_gmtx(gmtx, 4, 3);
 
     for (uint32_t sink = 0; sink < 3; sink++)
@@ -170,7 +170,7 @@ static bool test_graphmatrix_findSource_gmtx(void) {
 }
 
 static bool test_graphmatrix_isConnected_gmtx(void) {
-    GraphMatrix gmtx[1] = { NOT_A_GRAPH_MATRIX };
+    GraphMatrix gmtx[1] = { NOT_A_GMATRIX };
     construct_gmtx(gmtx, 4, 3);
 
     for (uint32_t source = 0; source < 4; source++)
@@ -196,7 +196,7 @@ static bool test_graphmatrix_isConnected_gmtx(void) {
 }
 
 static bool test_graphmatrix_isValid_gmtx(void) {
-    GraphMatrix gmtx[2] = { NOT_A_GRAPH_MATRIX, NOT_A_GRAPH_MATRIX };
+    GraphMatrix gmtx[2] = { NOT_A_GMATRIX, NOT_A_GMATRIX };
 
     TEST_FAIL_IF(isValid_gmtx(gmtx))
     TEST_FAIL_IF(isValid_gmtx(gmtx + 1))
@@ -217,7 +217,7 @@ static bool test_graphmatrix_isValid_gmtx(void) {
 }
 
 static bool test_graphmatrix_resizeIfNecessary_gmtx(void) {
-    GraphMatrix gmtx[1] = { NOT_A_GRAPH_MATRIX };
+    GraphMatrix gmtx[1] = { NOT_A_GMATRIX };
     construct_gmtx(gmtx, 4, 3);
 
     TEST_FAIL_IF(gmtx->height != 4)

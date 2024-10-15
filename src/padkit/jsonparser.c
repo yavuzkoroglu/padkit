@@ -887,9 +887,7 @@ void construct_jsonp(void* const p_jsonParser, ...) {
 
 void destruct_jsonp(void* const p_jsonParser) {
     JSONParser* const jsonParser = (JSONParser*)p_jsonParser;
-
-    assert(isValid_jsonp(jsonParser));
-
+    assert(isAllocated_jsonp(jsonParser));
     free(jsonParser->stack);
     free(jsonParser->str);
     *jsonParser = NOT_A_JSON_PARSER;

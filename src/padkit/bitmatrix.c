@@ -92,9 +92,9 @@ void (* const construct_gmtx)(void* const p_gmtx, ...) = &construct_bmtx;
 
 void destruct_bmtx(void* const p_bmtx) {
     BitMatrix* const bmtx = (BitMatrix*)p_bmtx;
-    assert(isValid_bmtx(bmtx));
+    assert(isAllocated_bmtx(bmtx));
     free(bmtx->array);
-    *bmtx = NOT_A_BIT_MATRIX;
+    *bmtx = NOT_A_BMATRIX;
 }
 
 void (* const destruct_gmtx)(void* const p_gmtx) = &destruct_bmtx;
@@ -196,7 +196,7 @@ void resizeIfNecessary_bmtx(
     uint32_t const new_height,
     uint32_t const new_width
 ) {
-    BitMatrix new_bmtx[1] = { NOT_A_BIT_MATRIX };
+    BitMatrix new_bmtx[1] = { NOT_A_BMATRIX };
 
     assert(isValid_bmtx(bmtx));
     assert(new_height >= bmtx->height);

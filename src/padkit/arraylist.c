@@ -212,7 +212,7 @@ void deleteN_alist(
 
 void destruct_alist(void* const p_list) {
     ArrayList* const list = (ArrayList*)p_list;
-    assert(isValid_alist(list));
+    assert(isAllocated_alist(list));
     free(list->arr);
     *list = NOT_AN_ALIST;
 }
@@ -647,7 +647,6 @@ void vconstruct_alist(
     ArrayList* const list   = (ArrayList*)p_list;
     size_t const sz_elem    = va_arg(args, size_t);
     uint32_t const init_cap = va_arg(args, uint32_t);
-
     constructEmpty_alist(list, sz_elem, init_cap);
 }
 

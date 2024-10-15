@@ -25,3 +25,15 @@ bool isValid_item(void const* const p_item) {
 
     return 1;
 }
+
+Item* iterateNext_item(Item* const item) {
+    assert(isValid_item(item));
+    item->p = (char*)item->p + item->sz;
+    return item;
+}
+
+Item* iteratePrev_item(Item* const item) {
+    assert(isValid_item(item));
+    item->p = (char*)item->p - item->sz;
+    return item;
+}

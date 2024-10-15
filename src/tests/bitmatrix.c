@@ -30,7 +30,7 @@ static void test_bitmatrix(void) {
 }
 
 static bool test_bitmatrix_construct_bmtx(void) {
-    BitMatrix bmtx[2] = { NOT_A_BIT_MATRIX, NOT_A_BIT_MATRIX };
+    BitMatrix bmtx[2] = { NOT_A_BMATRIX, NOT_A_BMATRIX };
     construct_bmtx(bmtx, 1, 1);
     construct_bmtx(bmtx + 1, 131072, 131072);
     destruct_bmtx(bmtx);
@@ -39,14 +39,14 @@ static bool test_bitmatrix_construct_bmtx(void) {
 }
 
 static bool test_bitmatrix_destruct_bmtx(void) {
-    BitMatrix bmtx[1] = { NOT_A_BIT_MATRIX };
+    BitMatrix bmtx[1] = { NOT_A_BMATRIX };
     construct_bmtx(bmtx, 131072, 131072);
     destruct_bmtx(bmtx);
     TEST_PASS
 }
 
 static bool test_bitmatrix_findInCol_bmtx(void) {
-    BitMatrix bmtx[1] = { NOT_A_BIT_MATRIX };
+    BitMatrix bmtx[1] = { NOT_A_BMATRIX };
     construct_bmtx(bmtx, 4, 3);
 
     for (uint32_t col = 0; col < 3; col++)
@@ -61,7 +61,7 @@ static bool test_bitmatrix_findInCol_bmtx(void) {
 }
 
 static bool test_bitmatrix_findInRow_bmtx(void) {
-    BitMatrix bmtx[1] = { NOT_A_BIT_MATRIX };
+    BitMatrix bmtx[1] = { NOT_A_BMATRIX };
     construct_bmtx(bmtx, 3, 4);
 
     for (uint32_t row = 0; row < 3; row++)
@@ -76,7 +76,7 @@ static bool test_bitmatrix_findInRow_bmtx(void) {
 }
 
 static bool test_bitmatrix_get_bmtx(void) {
-    BitMatrix bmtx[1] = { NOT_A_BIT_MATRIX };
+    BitMatrix bmtx[1] = { NOT_A_BMATRIX };
     construct_bmtx(bmtx, 4, 3);
 
     for (uint32_t row = 0; row < bmtx->height; row++)
@@ -102,7 +102,7 @@ static bool test_bitmatrix_get_bmtx(void) {
 }
 
 static bool test_bitmatrix_isValid_bmtx(void) {
-    BitMatrix bmtx[2] = { NOT_A_BIT_MATRIX, NOT_A_BIT_MATRIX };
+    BitMatrix bmtx[2] = { NOT_A_BMATRIX, NOT_A_BMATRIX };
 
     TEST_FAIL_IF(isValid_bmtx(bmtx))
     TEST_FAIL_IF(isValid_bmtx(bmtx + 1))
@@ -123,7 +123,7 @@ static bool test_bitmatrix_isValid_bmtx(void) {
 }
 
 static bool test_bitmatrix_resizeIfNecessary_bmtx(void) {
-    BitMatrix bmtx[1] = { NOT_A_BIT_MATRIX };
+    BitMatrix bmtx[1] = { NOT_A_BMATRIX };
     construct_bmtx(bmtx, 4, 3);
 
     TEST_FAIL_IF(bmtx->height != 4)
@@ -149,7 +149,7 @@ static bool test_bitmatrix_resizeIfNecessary_bmtx(void) {
 }
 
 static bool test_bitmatrix_set_bmtx(void) {
-    BitMatrix bmtx[1] = { NOT_A_BIT_MATRIX };
+    BitMatrix bmtx[1] = { NOT_A_BMATRIX };
     construct_bmtx(bmtx, 122, 115);
 
     set_bmtx(bmtx, 0, 92);
@@ -171,7 +171,7 @@ static bool test_bitmatrix_set_bmtx(void) {
 }
 
 static bool test_bitmatrix_setAll_bmtx(void) {
-    BitMatrix bmtx[1] = { NOT_A_BIT_MATRIX };
+    BitMatrix bmtx[1] = { NOT_A_BMATRIX };
     construct_bmtx(bmtx, 115, 122);
 
     for (uint32_t row = 0; row < bmtx->height; row++)
@@ -189,7 +189,7 @@ static bool test_bitmatrix_setAll_bmtx(void) {
 }
 
 static bool test_bitmatrix_unset_bmtx(void) {
-    BitMatrix bmtx[1] = { NOT_A_BIT_MATRIX };
+    BitMatrix bmtx[1] = { NOT_A_BMATRIX };
     construct_bmtx(bmtx, 121, 115);
 
     setAll_bmtx(bmtx);
@@ -217,7 +217,7 @@ static bool test_bitmatrix_unset_bmtx(void) {
 }
 
 static bool test_bitmatrix_unsetAll_bmtx(void) {
-    BitMatrix bmtx[1] = { NOT_A_BIT_MATRIX };
+    BitMatrix bmtx[1] = { NOT_A_BMATRIX };
     construct_bmtx(bmtx, 115, 122);
 
     for (uint32_t row = 0; row < 115; row++)

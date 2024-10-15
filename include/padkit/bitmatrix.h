@@ -8,9 +8,9 @@
     #include <stdbool.h>
     #include <stdint.h>
 
-    #define NOT_A_BIT_MATRIX                                        ((BitMatrix){ 0, 0, NULL })
+    #define NOT_A_BMATRIX                                           ((BitMatrix){ 0, 0, NULL })
 
-    #define NOT_A_GRAPH_MATRIX                                      NOT_A_BIT_MATRIX
+    #define NOT_A_GMATRIX                                           NOT_A_BMATRIX
 
     typedef struct BitMatrixBody {
         uint32_t    height;
