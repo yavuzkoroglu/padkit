@@ -1,6 +1,5 @@
 #ifndef PADKIT_CHUNK_H
     #define PADKIT_CHUNK_H
-    #include <stdarg.h>
     #include "padkit/arraylist.h"
     #include "padkit/item.h"
 
@@ -32,6 +31,14 @@
         uint32_t const n
     );
 
+    Item addFromStream_chunk(
+        Chunk* const chunk,
+        FILE* const stream,
+        char const terminals[const],
+        uint32_t const nTerminals,
+        uint32_t const max_sz_item
+    );
+
     #define addIndeterminate_chunk(chunk, sz_item)          addIndeterminateN_chunk(chunk, 1, sz_item)
 
     Item addIndeterminateN_chunk(
@@ -54,6 +61,15 @@
     Item appendDupLast_chunk(
         Chunk* const chunk,
         uint32_t const id
+    );
+
+    Item appendFromStreamLast_chunk(
+        Chunk* const chunk,
+        FILE* const stream,
+        char const terminals[const],
+        uint32_t const nTerminals,
+        uint32_t const max_sz_item,
+        uint32_t const max_sz_buf
     );
 
     #define appendIndeterminateLast_chunk(chunk, sz_item)   appendLast_chunk(chunk, NULL, sz_item)
@@ -83,6 +99,14 @@
         Chunk* const chunk,
         uint32_t const n
     );
+
+    uint32_t divideLast_chunk(
+        Chunk* const chunk,
+        char const delimeters[],
+        uint32_t const nDelimeters
+    );
+
+    #define enlargeLast_chunk(chunk, by)                    appendLast_chunk(chunk, NULL, by)
 
     Item get_chunk(
         Chunk const* const chunk,

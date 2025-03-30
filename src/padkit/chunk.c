@@ -56,6 +56,27 @@ Item addDupN_chunk(
     }
 }
 
+Item addFromStream_chunk(
+    Chunk* const chunk,
+    FILE* const stream,
+    char const terminals[const],
+    uint32_t const nTerminals,
+    uint32_t const max_sz_item
+) {
+    Item item = NOT_AN_ITEM;
+
+    assert(isValid_chunk(chunk));
+    assert(stream != NULL);
+    assert(terminals == NULL || (0 < nTerminals && nTerminals < SZ32_MAX));
+    assert(terminals != NULL || max_sz_item > 0);
+    assert(max_sz_item < SZ32_MAX - AREA_CHUNK(chunk));
+    assert(max_sz_buf > 0);
+    assert(max_sz_buf < SZ32_MAX - AREA_CHUNK(chunk));
+
+    item.offset = *(uint32_t*)add_alist(item->offsets, &AREA_CHUNK(chunk));
+    appendFromStreamLast_chunk
+}
+
 Item addZeros_chunk(
     Chunk* const chunk,
     uint32_t const sz_item
@@ -107,6 +128,58 @@ Item appendDupLast_chunk(
         dup_item.sz += orig_item.sz;
 
         return dup_item;
+    }
+}
+
+Item appendFromStreamLast_chunk(
+    Chunk* const chunk,
+    FILE* const stream,
+    char const terminals[const],
+    uint32_t const nTerminals,
+    uint32_t const max_sz_item,
+    uint32_t const max_sz_buf
+) {
+    assert(isValid_chunk(chunk));
+    assert(LEN_CHUNK(chunk) > 0);
+    assert(stream != NULL);
+    assert(terminals == NULL || (0 < nTerminals && nTerminals < SZ32_MAX));
+    assert(terminals != NULL || max_sz_item > 0);
+    assert(max_sz_item < SZ32_MAX - AREA_CHUNK(chunk));
+    assert(max_sz_buf > 0);
+    assert(max_sz_buf < SZ32_MAX - AREA_CHUNK(chunk));
+    {
+        uint32_t sz_total   = 0;
+        Item item           = getLast_chunk(chunk);
+        bool doContinue     = !feof(stream);
+        while (doContinue) {
+            uint32_t const sz_remaining = max_sz_item - sz_total;
+            uint32_t const sz_read      = (sz_remaining > max_sz_buf) ? max_sz_buf : sz_remaining;
+            void* const p_buf           = addIndeterminateN_alist(chunk->items, sz_read);
+            size_t const sz_buf         = fread(p_buf, 1, sz_read, stream);
+            assert(sz_buf > 0);
+            assert(sz_buf < SZ32_MAX);
+            assert(sz_read >= (uint32_t)sz_buf);
+
+            sz_total += sz_buf;
+            item.sz += sz_buf;
+
+            doContinue &= ((uint32_t)sz_buf == sz_read);
+            if (!doContinue)
+                deleteLast_alist(chunk->items, sz_read - (uint32_t)sz_buf);
+
+            if (terminals != NULL) {
+                char const* itr = terminals;
+                REPEAT(nTerminals) {
+                    char const* const p_terminal = memchr(p_buf, *itr++, sz_buf);
+                    if (p_terminal != NULL) {
+                        uint32_t const sz
+                    }
+                }
+            }
+
+            doContinue &= !feof(stream);
+        }
+        return item;
     }
 }
 
@@ -174,6 +247,39 @@ void destruct_chunk(void* const p_chunk) {
     *chunk = NOT_A_CHUNK;
 }
 
+Item divideEquallyLast_chunk(
+    Chunk* const chunk,
+    uint32_t const n
+) {
+    assert(isValid_chunk(chunk));
+    assert(LEN_CHUNK(chunk) > 0);
+    assert(n > 1);
+    {
+        Item first_item         = getLast_chunk(chunk);
+        uint32_t const sz_item  = first_item.sz / n;
+        uint32_t offset_item    = first_item.offset;
+
+        assert(first_item.sz > n);
+        assert(first_item.sz % n == 0);
+
+        first_item.sz = sz_item;
+        REPEAT(n - 1) {
+            offset_item += sz_item;
+            add_alist(chunk->offsets, &offset_item);
+        }
+    }
+}
+
+uint32_t divideLast_chunk(
+    Chunk* const chunk,
+    char const delimeters[],
+    uint32_t const nDelimeters
+) {
+    uint32_t n = 0;
+
+    assert
+}
+
 Item get_chunk(
     Chunk const* const chunk,
     uint32_t const id
@@ -200,7 +306,9 @@ Item getLast_chunk(Chunk const* const chunk) {
 
     item.offset = *(uint32_t)getLast_alist(chunk->offsets);
     item.sz     = AREA_CHUNK(chunk) - item.offset;
-    item.p      = getLastN_alist(chunk->items, item.sz);
+    item.p      = (item.sz == 0)
+        ? getLast_alist(chunk->items)
+        : getLastN_alist(chunk->items, item.sz);
 
     return item;
 }
