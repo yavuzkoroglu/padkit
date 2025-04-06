@@ -27,6 +27,7 @@
 #include "tests/overlap.c"
 #include "tests/prime.c"
 // #include "tests/stack.c"
+#include "tests/swap.c"
 #include "tests/timestamp.c"
 #include "tests/verbose.c"
 
@@ -95,6 +96,7 @@ int main(void) {
     test_overlap();
     test_prime();
     // test_stack();
+    test_swap();
     test_timestamp();
 
     puts("");

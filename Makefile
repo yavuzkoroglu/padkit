@@ -21,6 +21,7 @@ OBJECTS=obj/padkit/arraylist.o          \
         obj/padkit/memalloc.o           \
         obj/padkit/overlap.o            \
         obj/padkit/prime.o              \
+        obj/padkit/swap.o              	\
         obj/padkit/timestamp.o          \
         obj/padkit/verbose.o
 
@@ -32,6 +33,7 @@ SOURCES=src/padkit/arraylist.c          \
         src/padkit/memalloc.c           \
         src/padkit/overlap.c            \
         src/padkit/prime.c              \
+        src/padkit/swap.c              	\
         src/padkit/timestamp.c          \
         src/padkit/verbose.c
 
@@ -44,6 +46,7 @@ TESTSRC=src/tests/arraylist.c           \
         src/tests/memalloc.c            \
         src/tests/overlap.c             \
         src/tests/prime.c               \
+        src/tests/swap.c               	\
         src/tests/timestamp.c           \
         src/tests/verbose.c
 
@@ -101,6 +104,7 @@ include/padkit.h: .FORCE;                                                       
     echo '    #include "padkit/prime.h"'                    >> include/padkit.h; \
     echo '    #include "padkit/repeat.h"'                   >> include/padkit.h; \
     echo '    #include "padkit/size.h"'                     >> include/padkit.h; \
+    echo '    #include "padkit/swap.h"'                     >> include/padkit.h; \
     echo '    #include "padkit/timestamp.h"'                >> include/padkit.h; \
     echo '    #include "padkit/unused.h"'                   >> include/padkit.h; \
     echo '    #include "padkit/verbose.h"'                  >> include/padkit.h; \
@@ -181,6 +185,15 @@ obj/padkit/prime.o: .FORCE              \
     include/padkit/prime.h              \
     src/padkit/prime.c                  \
     ; ${COMPILE} -Iinclude src/padkit/prime.c -c -o obj/padkit/prime.o
+
+obj/padkit/swap.o: .FORCE              	\
+    obj/padkit                          \
+    include/padkit/error.h              \
+    include/padkit/memalloc.h           \
+    include/padkit/size.h               \
+    include/padkit/swap.h              	\
+    src/padkit/swap.c                  	\
+    ; ${COMPILE} -Iinclude src/padkit/swap.c -c -o obj/padkit/swap.o
 
 obj/padkit/timestamp.o: .FORCE          \
     obj/padkit                          \
