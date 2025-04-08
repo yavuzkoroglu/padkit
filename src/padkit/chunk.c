@@ -56,6 +56,7 @@ Item addDupN_chunk(
     }
 }
 
+/*
 Item addFromStream_chunk(
     Chunk* const chunk,
     FILE* const stream,
@@ -75,6 +76,29 @@ Item addFromStream_chunk(
 
     item.offset = *(uint32_t*)add_alist(item->offsets, &AREA_CHUNK(chunk));
     appendFromStreamLast_chunk
+}
+*/
+
+Item addIndeterminateN_chunk(
+    Chunk* const chunk,
+    uint32_t const n,
+    uint32_t const sz_item
+) {
+    assert(isValid_chunk(chunk));
+    assert(LEN_CHUNK(chunk) > n);
+    assert(n > 0);
+    assert(sz_item > 0);
+    assert(sz_item < SZ32_MAX - AREA_CHUNK(chunk));
+    {
+        uint32_t const area = AREA_CHUNK(chunk);
+        uint32_t const sz_total = n * sz_item;
+        assert(sz_total < SZ32_MAX - area);
+        assert(sz_total / n == sz_item);
+
+        addIndeterminateN_alist(chunk->items, sz_total);
+        add_alist(chunk->offsets, &area);
+        return divideEquallyLast_chunk(chunk, n);
+    }
 }
 
 Item addZeros_chunk(
