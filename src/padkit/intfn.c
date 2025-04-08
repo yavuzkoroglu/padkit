@@ -46,7 +46,6 @@ uint32_t nextPrime(uint32_t const x) {
     if (candidate == 1) return 2;
 
     /* Check all odd numbers and search for a prime number. */
-    /* If candidate is UINT32_MAX, the next candidate is 1, which will raise an assertion failure. */
     while (!isPrime(candidate)) candidate += 2;
 
     return candidate;
