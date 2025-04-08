@@ -16,11 +16,11 @@ endif
 OBJECTS=obj/padkit/arraylist.o          \
         obj/padkit/bitmatrix.o          \
         obj/padkit/hash.o               \
+        obj/padkit/intfn.o              \
         obj/padkit/item.o               \
         obj/padkit/jsonparser.o         \
         obj/padkit/memalloc.o           \
         obj/padkit/overlap.o            \
-        obj/padkit/prime.o              \
         obj/padkit/swap.o              	\
         obj/padkit/timestamp.o          \
         obj/padkit/verbose.o
@@ -28,11 +28,11 @@ OBJECTS=obj/padkit/arraylist.o          \
 SOURCES=src/padkit/arraylist.c          \
         src/padkit/bitmatrix.c          \
         src/padkit/hash.c               \
+        src/padkit/intfn.c              \
         src/padkit/item.c               \
         src/padkit/jsonparser.c         \
         src/padkit/memalloc.c           \
         src/padkit/overlap.c            \
-        src/padkit/prime.c              \
         src/padkit/swap.c              	\
         src/padkit/timestamp.c          \
         src/padkit/verbose.c
@@ -41,11 +41,11 @@ TESTSRC=src/tests/arraylist.c           \
         src/tests/bitmatrix.c           \
         src/tests/graphmatrix.c         \
         src/tests/hash.c                \
+        src/tests/intfn.c               \
         src/tests/item.c                \
         src/tests/jsonparser.c          \
         src/tests/memalloc.c            \
         src/tests/overlap.c             \
-        src/tests/prime.c               \
         src/tests/swap.c               	\
         src/tests/timestamp.c           \
         src/tests/verbose.c
@@ -95,13 +95,13 @@ include/padkit.h: .FORCE;                                                       
     echo '    #include "padkit/bliterals.h"'                >> include/padkit.h; \
     echo '    #include "padkit/error.h"'                    >> include/padkit.h; \
     echo '    #include "padkit/hash.h"'                     >> include/padkit.h; \
+    echo '    #include "padkit/intfn.h"'                    >> include/padkit.h; \
     echo '    #include "padkit/invalid.h"'                  >> include/padkit.h; \
     echo '    #include "padkit/item.h"'                     >> include/padkit.h; \
     echo '    #include "padkit/jsonparser.h"'               >> include/padkit.h; \
     echo '    #include "padkit/memalloc.h"'                 >> include/padkit.h; \
     echo '    #include "padkit/overlap.h"'                  >> include/padkit.h; \
     echo '    #include "padkit/preprocessor.h"'             >> include/padkit.h; \
-    echo '    #include "padkit/prime.h"'                    >> include/padkit.h; \
     echo '    #include "padkit/repeat.h"'                   >> include/padkit.h; \
     echo '    #include "padkit/size.h"'                     >> include/padkit.h; \
     echo '    #include "padkit/swap.h"'                     >> include/padkit.h; \
@@ -141,6 +141,19 @@ obj/padkit/bitmatrix.o: .FORCE          \
     src/padkit/bitmatrix.c              \
     ; ${COMPILE} -Iinclude src/padkit/bitmatrix.c -c -o obj/padkit/bitmatrix.o
 
+obj/padkit/hash.o: .FORCE               \
+    obj/padkit                          \
+    include/padkit/hash.h               \
+    src/padkit/hash.c                   \
+    ; ${COMPILE} -Iinclude src/padkit/hash.c -c -o obj/padkit/hash.o
+
+obj/padkit/intfn.o: .FORCE              \
+    obj/padkit                          \
+    include/padkit/intfn.h              \
+    include/padkit/swap.h              	\
+    src/padkit/intfn.c                  \
+    ; ${COMPILE} -Iinclude src/padkit/intfn.c -c -o obj/padkit/intfn.o
+
 obj/padkit/item.o: .FORCE               \
     obj/padkit                          \
     include/padkit/hash.h               \
@@ -148,12 +161,6 @@ obj/padkit/item.o: .FORCE               \
     include/padkit/size.h               \
     src/padkit/item.c                   \
     ; ${COMPILE} -Iinclude src/padkit/item.c -c -o obj/padkit/item.o
-
-obj/padkit/hash.o: .FORCE               \
-    obj/padkit                          \
-    include/padkit/hash.h               \
-    src/padkit/hash.c                   \
-    ; ${COMPILE} -Iinclude src/padkit/hash.c -c -o obj/padkit/hash.o
 
 obj/padkit/jsonparser.o: .FORCE         \
     obj/padkit                          \
@@ -179,12 +186,6 @@ obj/padkit/overlap.o: .FORCE            \
     include/padkit/size.h               \
     src/padkit/overlap.c                \
     ; ${COMPILE} -Iinclude src/padkit/overlap.c -c -o obj/padkit/overlap.o
-
-obj/padkit/prime.o: .FORCE              \
-    obj/padkit                          \
-    include/padkit/prime.h              \
-    src/padkit/prime.c                  \
-    ; ${COMPILE} -Iinclude src/padkit/prime.c -c -o obj/padkit/prime.o
 
 obj/padkit/swap.o: .FORCE              	\
     obj/padkit                          \

@@ -21,11 +21,12 @@
 #include "tests/graphmatrix.c"
 #include "tests/hash.c"
 // #include "tests/indextable.c"
+#include "tests/intfn.c"
 #include "tests/item.c"
 #include "tests/jsonparser.c"
 #include "tests/memalloc.c"
 #include "tests/overlap.c"
-#include "tests/prime.c"
+// #include "tests/prime.c"
 // #include "tests/stack.c"
 #include "tests/swap.c"
 #include "tests/timestamp.c"
@@ -90,11 +91,12 @@ int main(void) {
     test_graphmatrix();
     test_hash();
     // test_indextable();
+    test_intfn();
     test_item();
     test_jsonparser();
     test_memalloc();
     test_overlap();
-    test_prime();
+    // test_prime();
     // test_stack();
     test_swap();
     test_timestamp();
