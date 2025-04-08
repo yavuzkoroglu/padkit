@@ -3,20 +3,21 @@
 
 uint32_t gcd(uint32_t a, uint32_t b) {
     if (a == 0 || b == 0) {
-        return a | b;
+        return a | b;                                   /* gcd(a, 0) = a AND gcd(0, b) = b */
     } else {
         uint32_t k = 0;
-        while (IS_EVEN_I(a) && IS_EVEN_I(b)) {
+        while (IS_EVEN_I(a) && IS_EVEN_I(b)) {          /* gcd(2^k * a, 2^k * b) = 2^k * gcd(a, b) */
             a >>= 1;
             b >>= 1;
             k++;
         }
-        while (IS_EVEN_I(a)) a >>= 1;
+        while (IS_EVEN_I(a)) a >>= 1;                   /* gcd(2^l * a, b) = gcd(a, b) */
         do {
-            while (IS_EVEN_I(b)) b >>= 1;
-            if (a > b) swap(&a, &b, sizeof(uint32_t));
-        } while ((b = (b - a) >> 1));
-        return a << k;
+            while (IS_EVEN_I(b)) b >>= 1;               /* gcd(a, 2^l * b) = gcd(a, b) */
+            if (a > b) swap(&a, &b, sizeof(uint32_t));  /* gcd(a, b) = gcd(b, a) */
+        } while ((b -= a));                             /* gcd(a, b) = gcd(a, |b - a|) */
+
+        return a << k;                                  /* gcd(2^k * a, 2^k * l * a) = 2^k * a */
     }
 }
 
