@@ -20,11 +20,11 @@ void swap(void* const p1, void* const p2, size_t const sz) {
         uint16_t tmp    = *(uint16_t*)p1;
         *(uint16_t*)p1  = *(uint16_t*)p2;
         *(uint16_t*)p2  = tmp;
-    } else if (sz == 3) {
+    } else if (sz == 4) {
         uint32_t tmp    = *(uint32_t*)p1;
         *(uint32_t*)p1  = *(uint32_t*)p2;
         *(uint32_t*)p2  = tmp;
-    } else if (sz == 4) {
+    } else if (sz == 8) {
         uint64_t tmp    = *(uint64_t*)p1;
         *(uint64_t*)p1  = *(uint64_t*)p2;
         *(uint64_t*)p2  = tmp;

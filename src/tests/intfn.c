@@ -1,14 +1,31 @@
 static void test_intfn(void);
+static bool test_intfn_gcd(void);
 static bool test_intfn_isPrime(void);
 static bool test_intfn_nextPrime(void);
 
 static void test_intfn(void) {
     bool allTestsPass = 1;
 
+    allTestsPass &= test_intfn_gcd();
     allTestsPass &= test_intfn_isPrime();
     allTestsPass &= test_intfn_nextPrime();
 
     if (allTestsPass) TESTS_PASS_MESSAGE
+}
+
+static bool test_intfn_gcd(void) {
+    TEST_FAIL_IF(gcd(0, 0) != 0)
+    TEST_FAIL_IF(gcd(0, 12) != 12)
+    TEST_FAIL_IF(gcd(12, 0) != 12)
+    TEST_FAIL_IF(gcd(12, 12) != 12)
+    TEST_FAIL_IF(gcd(1, 12) != 1)
+    TEST_FAIL_IF(gcd(12, 1) != 1)
+    TEST_FAIL_IF(gcd(12, 18) != 6)
+    TEST_FAIL_IF(gcd(18, 12) != 6)
+    TEST_FAIL_IF(gcd(121, 33) != 11)
+    TEST_FAIL_IF(gcd(19, 23) != 1)
+
+    TEST_PASS
 }
 
 static bool test_intfn_isPrime(void) {
