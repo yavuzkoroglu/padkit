@@ -12,6 +12,7 @@
     #define MAX_I(a,b)      (((a) > (b)) ? (a) : (b))
     #define MIN_I(a,b)      (((a) < (b)) ? (a) : (b))
 
+    uint32_t floor_sqrt(uint32_t const x_sq);
     uint32_t gcd(uint32_t a, uint32_t b);
     bool isPrime(uint32_t const odd_x);
     uint32_t nextPrime(uint32_t const x);

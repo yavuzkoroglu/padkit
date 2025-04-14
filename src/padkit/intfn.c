@@ -1,6 +1,37 @@
 #include "padkit/intfn.h"
 #include "padkit/swap.h"
 
+uint32_t floor_sqrt(uint32_t const x_sq) {
+    uint32_t k = 0;
+    uint32_t p = x_sq;
+    uint32_t u, l, x, x_h_sq;
+
+    if (x_sq == 0)
+        return 0;
+
+    while (p > 1) {
+        k++;
+        p >>= 1;
+    }
+
+    k >>= 1;
+    l = (1 << k);
+    u = l < (UINT32_MAX >> 1) ? (l << 1) : UINT32_MAX;
+
+    while ((u - l) > 1) {
+        x = (u + l) >> 1;
+        x_h_sq = x * x;
+        if (x_h_sq > x_sq)
+            u = x;
+        else if (x_h_sq < x_sq)
+            l = x;
+        else
+            return x;
+    }
+
+    return l;
+}
+
 uint32_t gcd(uint32_t a, uint32_t b) {
     if (a == 0 || b == 0) {
         return a | b;                                   /* gcd(a, 0) = a AND gcd(0, b) = b */
@@ -22,26 +53,19 @@ uint32_t gcd(uint32_t a, uint32_t b) {
 }
 
 bool isPrime(uint32_t const x) {
-    /* UINT16_MAX is the largest integer whose square fits into 32 bits */
-    uint32_t n = x > UINT16_MAX ? UINT16_MAX : x;
+    uint32_t n = floor_sqrt(x) + 1;
 
     if (x == 1) return 0;
     if (IS_EVEN_I(x)) return (x == 2);
 
-    /* Find the largest n <= sqrt(x). */
-    while (n > x / n) n >>= 1;
-    while (n < UINT16_MAX && n * n < x) n++;
-
-    /* Try all numbers n s.t. 2 < n <= sqrt(x). */
     for (n -= IS_EVEN_I(n); n > 2; n -= 2)
         if (x % n == 0) return 0;
 
-    /* At this point, x has to be prime. */
     return 1;
 }
 
 uint32_t nextPrime(uint32_t const x) {
-    /* Ensure the candidate being an odd number larger than 1. */
+    /* Ensure the candidate is an odd number larger than 1. */
     uint32_t candidate = x + IS_EVEN_I(x) + 2*(isPrime(x) && IS_ODD_I(x));
     if (candidate == 1) return 2;
 
