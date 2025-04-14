@@ -1,4 +1,5 @@
 static void test_intfn(void);
+static bool test_intfn_floor_sqrt(void);
 static bool test_intfn_gcd(void);
 static bool test_intfn_isPrime(void);
 static bool test_intfn_nextPrime(void);
@@ -6,11 +7,40 @@ static bool test_intfn_nextPrime(void);
 static void test_intfn(void) {
     bool allTestsPass = 1;
 
+    allTestsPass &= test_intfn_floor_sqrt();
     allTestsPass &= test_intfn_gcd();
     allTestsPass &= test_intfn_isPrime();
     allTestsPass &= test_intfn_nextPrime();
 
     if (allTestsPass) TESTS_PASS_MESSAGE
+}
+
+static bool test_intfn_floor_sqrt(void) {
+    uint32_t positiveTests[8][2] = {
+        { 0, 0 },
+        { 1, 1 },
+        { 2, 1 },
+        { 3, 1 },
+        { 4, 2 },
+        { 8, 2 },
+        { 9, 3 },
+        { UINT32_MAX, 65535 }
+    };
+    uint32_t negativeTests[4][2] = {
+        { 122, 10 },
+        { 99, 10 },
+        { UINT32_MAX + 1, 65536 },
+        { 32, 4 }
+    };
+
+    for (uint32_t i = 0; i < 8; i++) {
+        TEST_FAIL_IF(floor_sqrt(positiveTests[i][0]) != positiveTests[i][1])
+    }
+    for (uint32_t i = 0; i < 4; i++) {
+        TEST_FAIL_IF(floor_sqrt(negativeTests[i][0]) == negativeTests[i][1])
+    }
+
+    TEST_PASS
 }
 
 static bool test_intfn_gcd(void) {
