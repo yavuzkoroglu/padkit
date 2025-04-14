@@ -16,7 +16,7 @@ static void test_intfn(void) {
 }
 
 static bool test_intfn_floor_sqrt(void) {
-    uint32_t positiveTests[8][2] = {
+    uint32_t const positiveTests[8][2] = {
         { 0, 0 },
         { 1, 1 },
         { 2, 1 },
@@ -26,7 +26,7 @@ static bool test_intfn_floor_sqrt(void) {
         { 9, 3 },
         { UINT32_MAX, 65535 }
     };
-    uint32_t negativeTests[4][2] = {
+    uint32_t const negativeTests[4][2] = {
         { 122, 10 },
         { 99, 10 },
         { UINT32_MAX + 1, 65536 },
