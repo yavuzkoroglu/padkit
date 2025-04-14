@@ -4,7 +4,7 @@
 uint32_t floor_sqrt(uint32_t const x_sq) {
     uint32_t k = 0;
     uint32_t p = x_sq;
-    uint32_t u, l, x, x_h_sq;
+    uint32_t u, l, xh, xh_sq;
 
     if (x_sq == 0)
         return 0;
@@ -15,18 +15,18 @@ uint32_t floor_sqrt(uint32_t const x_sq) {
     }
 
     k >>= 1;
-    l = (1 << k);
-    u = l < (UINT32_MAX >> 1) ? (l << 1) : UINT32_MAX;
+    l = 1 << k;
+    u = l << 1;
 
     while ((u - l) > 1) {
-        x = (u + l) >> 1;
-        x_h_sq = x * x;
-        if (x_h_sq > x_sq)
-            u = x;
-        else if (x_h_sq < x_sq)
-            l = x;
+        xh = (u + l) >> 1;
+        xh_sq = xh * xh;
+        if (xh_sq > x_sq)
+            u = xh;
+        else if (xh_sq < x_sq)
+            l = xh;
         else
-            return x;
+            return xh;
     }
 
     return l;
