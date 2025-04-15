@@ -1,20 +1,24 @@
+#include <assert.h>
 #include "padkit/intfn.h"
 #include "padkit/swap.h"
 
+uint32_t floor_log2(uint32_t x) {
+    uint32_t log2_x = 0;
+    assert(x != 0);
+    while (x > 1) {
+        x >>= 1;
+        log2_x++;
+    }
+    return log2_x;
+}
+
 uint32_t floor_sqrt(uint32_t const x_sq) {
-    uint32_t k = 0;
-    uint32_t p = x_sq;
-    uint32_t u, l, xh, xh_sq;
+    uint32_t k, u, l, xh, xh_sq;
 
     if (x_sq == 0)
         return 0;
 
-    while (p > 1) {
-        k++;
-        p >>= 1;
-    }
-
-    k >>= 1;
+    k = floor_log2(x_sq) >> 1;
     l = 1 << k;
     u = l << 1;
 
