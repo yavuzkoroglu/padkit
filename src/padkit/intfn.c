@@ -22,7 +22,7 @@ uint32_t floor_sqrt(uint32_t const x_sq) {
     l = 1 << k;
     u = l << 1;
 
-    while ((u - l) > 1) {
+    while (u - l > 1) {
         xh = (u + l) >> 1;
         xh_sq = xh * xh;
         if (xh_sq > x_sq)

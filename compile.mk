@@ -26,7 +26,7 @@ endif
 ifeq (${MODE},debug)
 FLAGS=-std=${STD} -g
 else
-FLAGS=-std=${STD} -Ofast -DNDEBUG
+FLAGS=-std=${STD} -O3 -DNDEBUG
 endif
 
 CCNAME=$(findstring clang,${CC})
