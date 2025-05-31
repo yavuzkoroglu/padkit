@@ -36,7 +36,6 @@ Item addDupN_chunk(
             : *(uint32_t*)get_alist(chunk->offsets, id + n) - orig_first_item.offset;
 
         assert(area_items < SZ32_MAX - area_chunk);
-
         {
             Item const dup_first_item = (Item){
                 addDupN_alist(chunk->items, orig_first_item.offset, area_items);
