@@ -45,7 +45,7 @@ Item addDupN_chunk(
                 area_chunk
             };
             uint32_t const* itr = get_alist(chunk->offsets, id);
-            uint32_t const diff = area_chunk - dup_first_item.offset;
+            uint32_t const diff = AREA_CHUNK(chunk) - dup_first_item.offset;
 
             REPEAT(n) {
                 uint32_t const new_offset = *itr++ + diff;

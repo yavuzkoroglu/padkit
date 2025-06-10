@@ -33,6 +33,22 @@ static bool test_chunk_add_chunk(void) {
 }
 
 static bool test_chunk_addDup_chunk(void) {
+    Item first_item = NOT_AN_ITEM;
+    Chunk chunk[1]  = { NOT_A_CHUNK };
+    constructEmpty_chunk(chunk, 5, 2);
+
+    first_item = add_chunk(chunk, "abc", 3);
+    for (uint32_t i = 1; i <= 2; i++) {
+        Item item = addDup_chunk(chunk, 0);
+        TEST_FAIL_IF(item.p == NULL)
+        TEST_FAIL_IF(item.sz != 3)
+        TEST_FAIL_IF(item.offset != 3*i)
+        TEST_FAIL_IF(memcmp(item.p, "abc", 3) != 0)
+    }
+    first_item = get_chunk(chunk, 0);
+    TEST_FAIL_IF(memcmp(first_item.p, "abcabcabc", 9) != 0)
+
+    destruct_chunk(chunk);
     TEST_PASS
 }
 
