@@ -282,13 +282,12 @@ Item divideEquallyLast_chunk(
     assert(isValid_chunk(chunk));
     assert(LEN_CHUNK(chunk) > 0);
     assert(n > 0);
-    {
+    if (n == 1) {
+        return getLast_chunk(chunk);
+    } else {
         Item first_item         = getLast_chunk(chunk);
         uint32_t const sz_item  = first_item.sz / n;
         uint32_t offset_item    = first_item.offset;
-
-        if (n == 1)
-            return first_item;
 
         assert(first_item.sz > n);
         assert(first_item.sz % n == 0);

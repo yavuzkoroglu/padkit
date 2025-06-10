@@ -36,51 +36,36 @@ static void test_chunk(void) {
 }
 
 static bool test_chunk_addIndeterminate_chunk(void) {
-    /*
-    void* item      = NULL;
-    uint32_t sz     = INVALID_UINT32;
-    */
-    Chunk chunk[1]  = { NOT_A_CHUNK };
+    Item item = NOT_AN_ITEM;
+    Chunk chunk[1] = { NOT_A_CHUNK };
     constructEmpty_chunk(chunk, 5, 2);
 
     TEST_FAIL_IF(AREA_CHUNK(chunk) != 0)
     TEST_FAIL_IF(LEN_CHUNK(chunk) != 0)
 
-    addIndeterminate_chunk(chunk, 4);
+    item = addIndeterminate_chunk(chunk, 4);
+    TEST_FAIL_IF(item.p == NULL)
+    TEST_FAIL_IF(item.sz != 4)
+    TEST_FAIL_IF(item.offset != 0)
 
     TEST_FAIL_IF(AREA_CHUNK(chunk) != 4)
     TEST_FAIL_IF(LEN_CHUNK(chunk) != 1)
 
-    addIndeterminate_chunk(chunk, 1);
+    item = addIndeterminate_chunk(chunk, 1);
+    TEST_FAIL_IF(item.p == NULL)
+    TEST_FAIL_IF(item.sz != 1)
+    TEST_FAIL_IF(item.offset != 4)
 
     TEST_FAIL_IF(AREA_CHUNK(chunk) != 5)
     TEST_FAIL_IF(LEN_CHUNK(chunk) != 2)
 
-    addIndeterminate_chunk(chunk, 3);
+    item = addIndeterminate_chunk(chunk, 3);
+    TEST_FAIL_IF(item.p == NULL)
+    TEST_FAIL_IF(item.sz != 3)
+    TEST_FAIL_IF(item.offset != 5)
 
     TEST_FAIL_IF(AREA_CHUNK(chunk) != 8)
     TEST_FAIL_IF(LEN_CHUNK(chunk) != 3)
-
-/*
-    memcpy(get_chunk(chunk, 0), "abc", sz_item_chunk(chunk, 0));
-    memcpy(get_chunk(chunk, 1), "", sz_item_chunk(chunk, 1));
-    memcpy(get_chunk(chunk, 2), "de", sz_item_chunk(chunk, 2));
-
-    item    = get_chunk(chunk, 0);
-    sz      = sz_item_chunk(chunk, 0);
-    TEST_FAIL_IF(sz != 4)
-    TEST_FAIL_IF(memcmp(item, "abc", sz) != 0)
-
-    item    = get_chunk(chunk, 1);
-    sz      = sz_item_chunk(chunk, 1);
-    TEST_FAIL_IF(sz != 1)
-    TEST_FAIL_IF(memcmp(item, "", sz) != 0)
-
-    item    = get_chunk(chunk, 2);
-    sz      = sz_item_chunk(chunk, 2);
-    TEST_FAIL_IF(sz != 3)
-    TEST_FAIL_IF(memcmp(item, "de", sz) != 0)
-*/
 
     destruct_chunk(chunk);
     TEST_PASS
