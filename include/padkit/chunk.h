@@ -10,7 +10,7 @@
     #define LEN_CHUNK(chunk)                                (chunk->offsets->len)
     #define AREA_CHUNK(chunk)                               (chunk->items->len)
 
-    #define NOT_A_CHUNK                                     (Chunk){ NOT_AN_ALIST, NOT_AN_ALIST }
+    #define NOT_A_CHUNK                                     (Chunk){ {NOT_AN_ALIST}, {NOT_AN_ALIST} }
 
     typedef struct ChunkBody {
         ArrayList offsets[1];
@@ -80,7 +80,7 @@
         uint32_t const sz_item
     );
 
-    void appendZerosLast_chunk(
+    Item appendZerosLast_chunk(
         Chunk* const chunk,
         uint32_t const sz_item
     );

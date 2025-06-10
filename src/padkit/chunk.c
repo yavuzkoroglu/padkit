@@ -1,5 +1,7 @@
 #include <assert.h>
 #include "padkit/chunk.h"
+#include "padkit/repeat.h"
+#include "padkit/size.h"
 
 Item add_chunk(
     Chunk* const chunk,
@@ -32,13 +34,13 @@ Item addDupN_chunk(
         Item const orig_first_item  = get_chunk(chunk, id);
         uint32_t const area_chunk   = AREA_CHUNK(chunk);
         uint32_t const area_items   = (LEN_CHUNK(chunk) - id == n)
-            ?                                    area_chunk - orig_first_item.offset;
+            ?                                    area_chunk - orig_first_item.offset
             : *(uint32_t*)get_alist(chunk->offsets, id + n) - orig_first_item.offset;
 
         assert(area_items < SZ32_MAX - area_chunk);
         {
             Item const dup_first_item = (Item){
-                addDupN_alist(chunk->items, orig_first_item.offset, area_items);
+                addDupN_alist(chunk->items, orig_first_item.offset, area_items),
                 orig_first_item.sz,
                 area_chunk
             };
@@ -84,8 +86,9 @@ Item addIndeterminateN_chunk(
     uint32_t const sz_item
 ) {
     assert(isValid_chunk(chunk));
-    assert(LEN_CHUNK(chunk) > n);
     assert(n > 0);
+    assert(n < SZ32_MAX);
+    assert(LEN_CHUNK(chunk) < SZ32_MAX - n);
     assert(sz_item > 0);
     assert(sz_item < SZ32_MAX - AREA_CHUNK(chunk));
     {
@@ -110,7 +113,7 @@ Item addZeros_chunk(
     {
         uint32_t const area = AREA_CHUNK(chunk);
         return (Item){
-            addZerosN_alist(chunk->items, p_item, sz_item),
+            addZerosN_alist(chunk->items, sz_item),
             sz_item,
             *(uint32_t*)add_alist(chunk->offsets, &area)
         };
@@ -154,6 +157,7 @@ Item appendDupLast_chunk(
     }
 }
 
+/*
 Item appendFromStreamLast_chunk(
     Chunk* const chunk,
     FILE* const stream,
@@ -205,6 +209,7 @@ Item appendFromStreamLast_chunk(
         return item;
     }
 }
+*/
 
 Item appendLast_chunk(
     Chunk* const chunk,
@@ -236,7 +241,7 @@ Item appendZerosLast_chunk(
     {
         Item item = getLast_chunk(chunk);
 
-        addZerosN_alist(chunk->items, p_item, sz_item);
+        addZerosN_alist(chunk->items, sz_item);
         item.sz += sz_item;
 
         return item;
@@ -258,8 +263,8 @@ void constructEmpty_chunk(
     assert(chunk != NULL);
     assert(!isAllocated_chunk(chunk));
 
-    constructEmpty_alist(chunk->offsets, init_cap_len);
-    constructEmpty_alist(chunk->items, init_cap_area);
+    constructEmpty_alist(chunk->offsets, sizeof(uint32_t), init_cap_len);
+    constructEmpty_alist(chunk->items, sizeof(char), init_cap_area);
 }
 
 void destruct_chunk(void* const p_chunk) {
@@ -276,11 +281,14 @@ Item divideEquallyLast_chunk(
 ) {
     assert(isValid_chunk(chunk));
     assert(LEN_CHUNK(chunk) > 0);
-    assert(n > 1);
+    assert(n > 0);
     {
         Item first_item         = getLast_chunk(chunk);
         uint32_t const sz_item  = first_item.sz / n;
         uint32_t offset_item    = first_item.offset;
+
+        if (n == 1)
+            return first_item;
 
         assert(first_item.sz > n);
         assert(first_item.sz % n == 0);
@@ -290,9 +298,12 @@ Item divideEquallyLast_chunk(
             offset_item += sz_item;
             add_alist(chunk->offsets, &offset_item);
         }
+
+        return first_item;
     }
 }
 
+/*
 uint32_t divideLast_chunk(
     Chunk* const chunk,
     char const delimeters[],
@@ -302,6 +313,7 @@ uint32_t divideLast_chunk(
 
     assert
 }
+*/
 
 Item get_chunk(
     Chunk const* const chunk,
@@ -316,7 +328,7 @@ Item get_chunk(
     item.sz     = (LEN_CHUNK(chunk) - 1 == id)
         ? AREA_CHUNK(chunk) - item.offset
         : *(uint32_t*)get_alist(chunk->offsets, id + 1) - item.offset;
-    item.p      = get_alist(chunk->items, item->offset);
+    item.p      = get_alist(chunk->items, item.offset);
 
     return item;
 }
@@ -327,7 +339,7 @@ Item getLast_chunk(Chunk const* const chunk) {
     assert(isValid_chunk(chunk));
     assert(LEN_CHUNK(chunk) > 0);
 
-    item.offset = *(uint32_t)getLast_alist(chunk->offsets);
+    item.offset = *(uint32_t*)getLast_alist(chunk->offsets);
     item.sz     = AREA_CHUNK(chunk) - item.offset;
     item.p      = (item.sz == 0)
         ? getLast_alist(chunk->items)
@@ -337,7 +349,7 @@ Item getLast_chunk(Chunk const* const chunk) {
 }
 
 bool isAllocated_chunk(void const* const p_chunk) {
-    Chunk const* const chunk = (Chunk)p_chunk;
+    Chunk const* const chunk = (Chunk const*)p_chunk;
 
     if (chunk == NULL) {
         return 0;
@@ -351,7 +363,7 @@ bool isAllocated_chunk(void const* const p_chunk) {
 }
 
 bool isValid_chunk(void const* const p_chunk) {
-    Chunk const* const chunk = (Chunk)p_chunk;
+    Chunk const* const chunk = (Chunk const*)p_chunk;
 
     if (chunk == NULL)                  return 0;
     if (!isValid_alist(chunk->offsets)) return 0;
