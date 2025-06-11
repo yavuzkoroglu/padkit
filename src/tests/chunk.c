@@ -4,6 +4,9 @@ static bool test_chunk_addDup_chunk(void);
 static bool test_chunk_addDupN_chunk(void);
 static bool test_chunk_addIndeterminate_chunk(void);
 static bool test_chunk_addIndeterminateN_chunk(void);
+static bool test_chunk_addZeros_chunk(void);
+static bool test_chunk_addZerosN_chunk(void);
+static bool test_chunk_appendDupLast_chunk(void);
 static bool test_chunk_isValid_chunk(void);
 
 static void test_chunk(void) {
@@ -14,6 +17,9 @@ static void test_chunk(void) {
     allTestsPass &= test_chunk_addDupN_chunk();
     allTestsPass &= test_chunk_addIndeterminate_chunk();
     allTestsPass &= test_chunk_addIndeterminateN_chunk();
+    allTestsPass &= test_chunk_addZeros_chunk();
+    allTestsPass &= test_chunk_addZerosN_chunk();
+    allTestsPass &= test_chunk_appendDupLast_chunk();
     allTestsPass &= test_chunk_isValid_chunk();
 
     if (allTestsPass) TESTS_PASS_MESSAGE
@@ -129,6 +135,46 @@ static bool test_chunk_addIndeterminateN_chunk(void) {
     TEST_FAIL_IF(LEN_CHUNK(chunk) != 3)
 
     destruct_chunk(chunk);
+    TEST_PASS
+}
+
+static bool test_chunk_addZeros_chunk(void) {
+    Item item       = NOT_AN_ITEM;
+    Chunk chunk[1]  = { NOT_A_CHUNK };
+    constructEmpty_chunk(chunk, 5, 2);
+
+    for (uint32_t i = 0; i < 3; i++) {
+        TEST_FAIL_IF(LEN_CHUNK(chunk) != i)
+        TEST_FAIL_IF(AREA_CHUNK(chunk) != sizeof(uint32_t) * i)
+        item = addZeros_chunk(chunk, sizeof(uint32_t));
+        TEST_FAIL_IF(item.p == NULL)
+        TEST_FAIL_IF(*(uint32_t*)item.p != 0)
+        TEST_FAIL_IF(item.sz != sizeof(uint32_t))
+        TEST_FAIL_IF(item.offset != sizeof(uint32_t) * i)
+    }
+
+    destruct_chunk(chunk);
+    TEST_PASS
+}
+
+static bool test_chunk_addZerosN_chunk(void) {
+    Item item       = NOT_AN_ITEM;
+    Chunk chunk[1]  = { NOT_A_CHUNK };
+    constructEmpty_chunk(chunk, 5, 2);
+
+    item = addZerosN_chunk(chunk, 3, sizeof(uint32_t));
+    TEST_FAIL_IF(LEN_CHUNK(chunk) != 3)
+    TEST_FAIL_IF(AREA_CHUNK(chunk) != sizeof(uint32_t) * 3)
+    TEST_FAIL_IF(item.p == NULL)
+    TEST_FAIL_IF(*(uint32_t*)item.p != 0)
+    TEST_FAIL_IF(item.sz != sizeof(uint32_t))
+    TEST_FAIL_IF(item.offset != 0)
+
+    destruct_chunk(chunk);
+    TEST_PASS
+}
+
+static bool test_chunk_appendDupLast_chunk(void) {
     TEST_PASS
 }
 

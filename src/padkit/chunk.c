@@ -32,20 +32,20 @@ Item addDupN_chunk(
     assert(n > 0);
     {
         Item const orig_first_item  = get_chunk(chunk, id);
-        uint32_t const area_chunk   = AREA_CHUNK(chunk);
+        uint32_t const dup_offset   = AREA_CHUNK(chunk);
         uint32_t const area_items   = (LEN_CHUNK(chunk) - id == n)
-            ?                                    area_chunk - orig_first_item.offset
+            ?                                    dup_offset - orig_first_item.offset
             : *(uint32_t*)get_alist(chunk->offsets, id + n) - orig_first_item.offset;
 
-        assert(area_items < SZ32_MAX - area_chunk);
+        assert(area_items < SZ32_MAX - dup_offset);
         {
             Item const dup_first_item = (Item){
                 addDupN_alist(chunk->items, orig_first_item.offset, area_items),
                 orig_first_item.sz,
-                area_chunk
+                dup_offset
             };
             uint32_t const* itr = get_alist(chunk->offsets, id);
-            uint32_t const diff = AREA_CHUNK(chunk) - dup_first_item.offset;
+            uint32_t const diff = AREA_CHUNK(chunk) - dup_offset;
 
             REPEAT(n) {
                 uint32_t const new_offset = *itr + diff;
@@ -126,8 +126,9 @@ Item addZerosN_chunk(
     uint32_t const sz_item
 ) {
     assert(isValid_chunk(chunk));
-    assert(LEN_CHUNK(chunk) > n);
     assert(n > 0);
+    assert(n < SZ32_MAX);
+    assert(LEN_CHUNK(chunk) < SZ32_MAX - n);
     assert(sz_item > 0);
     assert(sz_item < SZ32_MAX - AREA_CHUNK(chunk));
     {
