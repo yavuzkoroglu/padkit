@@ -303,6 +303,12 @@ Item divideEquallyLast_chunk(
     }
 }
 
+void flush_chunk(Chunk* const chunk) {
+    assert(isValid_chunk(chunk));
+    flush_alist(chunk->offsets);
+    flush_alist(chunk->items);
+}
+
 /*
 uint32_t divideLast_chunk(
     Chunk* const chunk,

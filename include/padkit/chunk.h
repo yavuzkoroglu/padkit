@@ -108,6 +108,8 @@
 
     #define enlargeLast_chunk(chunk, by)                    appendLast_chunk(chunk, NULL, by)
 
+    void flush_chunk(Chunk* const chunk);
+
     Item get_chunk(
         Chunk const* const chunk,
         uint32_t const id

@@ -7,6 +7,10 @@ static bool test_chunk_addIndeterminateN_chunk(void);
 static bool test_chunk_addZeros_chunk(void);
 static bool test_chunk_addZerosN_chunk(void);
 static bool test_chunk_appendDupLast_chunk(void);
+static bool test_chunk_appendIndeterminateLast_chunk(void);
+static bool test_chunk_appendLast_chunk(void);
+static bool test_chunk_appendZerosLast_chunk(void);
+static bool test_chunk_flush_chunk(void);
 static bool test_chunk_isValid_chunk(void);
 
 static void test_chunk(void) {
@@ -20,6 +24,10 @@ static void test_chunk(void) {
     allTestsPass &= test_chunk_addZeros_chunk();
     allTestsPass &= test_chunk_addZerosN_chunk();
     allTestsPass &= test_chunk_appendDupLast_chunk();
+    allTestsPass &= test_chunk_appendIndeterminateLast_chunk();
+    allTestsPass &= test_chunk_appendLast_chunk();
+    allTestsPass &= test_chunk_appendZerosLast_chunk();
+    allTestsPass &= test_chunk_flush_chunk();
     allTestsPass &= test_chunk_isValid_chunk();
 
     if (allTestsPass) TESTS_PASS_MESSAGE
@@ -188,6 +196,83 @@ static bool test_chunk_appendDupLast_chunk(void) {
     TEST_FAIL_IF(item.offset != 0)
     TEST_FAIL_IF(memcmp(item.p, "abcabcabcabc", 12) != 0)
 
+    destruct_chunk(chunk);
+    TEST_PASS
+}
+
+static bool test_chunk_appendIndeterminateLast_chunk(void) {
+    Item item       = NOT_AN_ITEM;
+    Chunk chunk[1]  = { NOT_A_CHUNK };
+    constructEmpty_chunk(chunk, 5, 2);
+
+    item = add_chunk(chunk, "abc", 3);
+    item = appendIndeterminateLast_chunk(chunk, sizeof("def"));
+    TEST_FAIL_IF(LEN_CHUNK(chunk) != 1)
+    TEST_FAIL_IF(AREA_CHUNK(chunk) != 7)
+    TEST_FAIL_IF(item.p == NULL)
+    TEST_FAIL_IF(item.sz != 7)
+    TEST_FAIL_IF(item.offset != 0)
+    TEST_FAIL_IF(memcmp(item.p, "abc", 3) != 0)
+
+    destruct_chunk(chunk);
+    TEST_PASS
+}
+
+static bool test_chunk_appendLast_chunk(void) {
+    Item item       = NOT_AN_ITEM;
+    Chunk chunk[1]  = { NOT_A_CHUNK };
+    constructEmpty_chunk(chunk, 5, 2);
+
+    item = add_chunk(chunk, "abc", 3);
+    item = appendLast_chunk(chunk, "def", sizeof("def"));
+    TEST_FAIL_IF(LEN_CHUNK(chunk) != 1)
+    TEST_FAIL_IF(AREA_CHUNK(chunk) != 7)
+    TEST_FAIL_IF(item.p == NULL)
+    TEST_FAIL_IF(item.sz != 7)
+    TEST_FAIL_IF(item.offset != 0)
+    TEST_FAIL_IF(memcmp(item.p, "abcdef", 7) != 0)
+
+    destruct_chunk(chunk);
+    TEST_PASS
+}
+
+static bool test_chunk_appendZerosLast_chunk(void) {
+    Item item       = NOT_AN_ITEM;
+    Chunk chunk[1]  = { NOT_A_CHUNK };
+    constructEmpty_chunk(chunk, 5, 2);
+
+    item = add_chunk(chunk, "abc", 3);
+    item = appendZerosLast_chunk(chunk, 1);
+    TEST_FAIL_IF(LEN_CHUNK(chunk) != 1)
+    TEST_FAIL_IF(AREA_CHUNK(chunk) != 4)
+    TEST_FAIL_IF(item.p == NULL)
+    TEST_FAIL_IF(item.sz != 4)
+    TEST_FAIL_IF(item.offset != 0)
+    TEST_FAIL_IF(memcmp(item.p, "abc", 4) != 0)
+
+    destruct_chunk(chunk);
+    TEST_PASS
+}
+
+static bool test_chunk_flush_chunk(void) {
+    Chunk chunk[1]  = { NOT_A_CHUNK };
+    constructEmpty_chunk(chunk, 5, 2);
+
+    flush_chunk(chunk);
+    TEST_FAIL_IF(LEN_CHUNK(chunk) != 0)
+    TEST_FAIL_IF(AREA_CHUNK(chunk) != 0)
+
+    add_chunk(chunk, "abc", 3);
+    appendLast_chunk(chunk, "def", sizeof("def"));
+    add_chunk(chunk, "fedcba", sizeof("fedcba"));
+    TEST_FAIL_IF(LEN_CHUNK(chunk) == 0)
+    TEST_FAIL_IF(AREA_CHUNK(chunk) == 0)
+
+    flush_chunk(chunk);
+    TEST_FAIL_IF(LEN_CHUNK(chunk) != 0)
+    TEST_FAIL_IF(AREA_CHUNK(chunk) != 0)
+
+    destruct_chunk(chunk);
     TEST_PASS
 }
 
