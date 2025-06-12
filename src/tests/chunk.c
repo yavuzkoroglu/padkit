@@ -10,6 +10,7 @@ static bool test_chunk_appendDupLast_chunk(void);
 static bool test_chunk_appendIndeterminateLast_chunk(void);
 static bool test_chunk_appendLast_chunk(void);
 static bool test_chunk_appendZerosLast_chunk(void);
+static bool test_chunk_divideEquallyLast_chunk(void);
 static bool test_chunk_flush_chunk(void);
 static bool test_chunk_isValid_chunk(void);
 
@@ -27,6 +28,7 @@ static void test_chunk(void) {
     allTestsPass &= test_chunk_appendIndeterminateLast_chunk();
     allTestsPass &= test_chunk_appendLast_chunk();
     allTestsPass &= test_chunk_appendZerosLast_chunk();
+    allTestsPass &= test_chunk_divideEquallyLast_chunk();
     allTestsPass &= test_chunk_flush_chunk();
     allTestsPass &= test_chunk_isValid_chunk();
 
@@ -249,6 +251,37 @@ static bool test_chunk_appendZerosLast_chunk(void) {
     TEST_FAIL_IF(item.sz != 4)
     TEST_FAIL_IF(item.offset != 0)
     TEST_FAIL_IF(memcmp(item.p, "abc", 4) != 0)
+
+    destruct_chunk(chunk);
+    TEST_PASS
+}
+
+static bool test_chunk_divideEquallyLast_chunk(void) {
+    Item item       = NOT_AN_ITEM;
+    Chunk chunk[1]  = { NOT_A_CHUNK };
+    constructEmpty_chunk(chunk, 5, 2);
+
+    item = add_chunk(chunk, "aabbcc", 6);
+    item = divideEquallyLast_chunk(chunk, 3);
+    TEST_FAIL_IF(LEN_CHUNK(chunk) != 3)
+    TEST_FAIL_IF(AREA_CHUNK(chunk) != 6)
+    TEST_FAIL_IF(!isValid_item(&item))
+    TEST_FAIL_IF(item.p == NULL)
+    TEST_FAIL_IF(item.sz != 2)
+    TEST_FAIL_IF(item.offset != 0)
+    TEST_FAIL_IF(memcmp(item.p, "aa", 2) != 0)
+    iterateNext_item(&item);
+    TEST_FAIL_IF(!isValid_item(&item))
+    TEST_FAIL_IF(item.p == NULL)
+    TEST_FAIL_IF(item.sz != 2)
+    TEST_FAIL_IF(item.offset != 2)
+    TEST_FAIL_IF(memcmp(item.p, "bb", 2) != 0)
+    iterateNext_item(&item);
+    TEST_FAIL_IF(!isValid_item(&item))
+    TEST_FAIL_IF(item.p == NULL)
+    TEST_FAIL_IF(item.sz != 2)
+    TEST_FAIL_IF(item.offset != 4)
+    TEST_FAIL_IF(memcmp(item.p, "cc", 2) != 0)
 
     destruct_chunk(chunk);
     TEST_PASS
