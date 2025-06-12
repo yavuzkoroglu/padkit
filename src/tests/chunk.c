@@ -175,6 +175,19 @@ static bool test_chunk_addZerosN_chunk(void) {
 }
 
 static bool test_chunk_appendDupLast_chunk(void) {
+    Item item       = NOT_AN_ITEM;
+    Chunk chunk[1]  = { NOT_A_CHUNK };
+    constructEmpty_chunk(chunk, 5, 2);
+
+    item = add_chunk(chunk, "abc", 3);
+    REPEAT(2) item = appendDupLast_chunk(chunk, 0);
+    TEST_FAIL_IF(LEN_CHUNK(chunk) != 1)
+    TEST_FAIL_IF(AREA_CHUNK(chunk) != 12)
+    TEST_FAIL_IF(item.p == NULL)
+    TEST_FAIL_IF(item.sz != 12)
+    TEST_FAIL_IF(item.offset != 0)
+    TEST_FAIL_IF(memcmp(item.p, "abcabcabcabc", 12) != 0)
+
     TEST_PASS
 }
 
