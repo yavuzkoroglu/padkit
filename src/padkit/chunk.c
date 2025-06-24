@@ -1,4 +1,5 @@
 #include <assert.h>
+#include <string.h>
 #include "padkit/chunk.h"
 #include "padkit/repeat.h"
 #include "padkit/size.h"
@@ -150,6 +151,8 @@ Item appendDupLast_chunk(
     {
         Item const orig_item    = get_chunk(chunk, id);
         Item dup_item           = getLast_chunk(chunk);
+        assert(isValid_item(&orig_item));
+        assert(isValid_item(&dup_item));
 
         addDupN_alist(chunk->items, orig_item.offset, orig_item.sz);
         dup_item.sz += orig_item.sz;
@@ -223,6 +226,7 @@ Item appendLast_chunk(
     assert(sz_item < SZ32_MAX - AREA_CHUNK(chunk));
     {
         Item item = getLast_chunk(chunk);
+        assert(isValid_item(&item));
 
         addN_alist(chunk->items, p_item, sz_item);
         item.sz += sz_item;
@@ -241,6 +245,7 @@ Item appendZerosLast_chunk(
     assert(sz_item < SZ32_MAX - AREA_CHUNK(chunk));
     {
         Item item = getLast_chunk(chunk);
+        assert(isValid_item(&item));
 
         addZerosN_alist(chunk->items, sz_item);
         item.sz += sz_item;
@@ -290,6 +295,7 @@ Item divideEquallyLast_chunk(
         uint32_t const sz_item  = first_item.sz / n;
         uint32_t offset_item    = first_item.offset;
 
+        assert(isValid_item(&first_item));
         assert(first_item.sz > n);
         assert(first_item.sz % n == 0);
 
@@ -303,23 +309,40 @@ Item divideEquallyLast_chunk(
     }
 }
 
-void flush_chunk(Chunk* const chunk) {
-    assert(isValid_chunk(chunk));
-    flush_alist(chunk->offsets);
-    flush_alist(chunk->items);
-}
-
-/*
 uint32_t divideLast_chunk(
     Chunk* const chunk,
     char const delimeters[],
     uint32_t const nDelimeters
 ) {
-    uint32_t n = 0;
+    uint32_t n = 1;
 
-    assert
+    assert(isValid_chunk(chunk));
+    assert(LEN_CHUNK(chunk) > 0);
+    assert(delimeters != NULL);
+    assert(nDelimeters > 0);
+    assert(nDelimeters < SZ32_MAX);
+    {
+        Item const item     = getLast_chunk(chunk);
+        char const* const p = item.p;
+        assert(isValid_item(&item));
+
+        for (uint32_t i = 0; i < item.sz; i++) {
+            bool const isDelimeter = (memchr(delimeters, p[i], nDelimeters) != NULL);
+            if (isDelimeter) {
+                uint32_t const new_offset = item.offset + i;
+                add_alist(chunk->offsets, &new_offset);
+                n++;
+            }
+        }
+    }
+    return n;
 }
-*/
+
+void flush_chunk(Chunk* const chunk) {
+    assert(isValid_chunk(chunk));
+    flush_alist(chunk->offsets);
+    flush_alist(chunk->items);
+}
 
 Item get_chunk(
     Chunk const* const chunk,
