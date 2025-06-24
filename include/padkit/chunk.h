@@ -123,6 +123,14 @@
 
     bool isValid_chunk(void const* const p_chunk);
 
+    Item mergeAll_chunk(Chunk* const chunk);
+
+    Item mergeN_chunk(Chunk* const chunk, uint32_t const first_id, uint32_t const n);
+
+    Item mergeLastPair_chunk(Chunk* const chunk);
+
+    Item mergePair_chunk(Chunk* const chunk, uint32_t const first_id);
+
     void vconstruct_chunk(
         void* const p_chunk,
         va_list args

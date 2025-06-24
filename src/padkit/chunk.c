@@ -1,6 +1,7 @@
 #include <assert.h>
 #include <string.h>
 #include "padkit/chunk.h"
+#include "padkit/implication.h"
 #include "padkit/repeat.h"
 #include "padkit/size.h"
 
@@ -64,20 +65,17 @@ Item addFromStream_chunk(
     FILE* const stream,
     char const terminals[const],
     uint32_t const nTerminals,
-    uint32_t const max_sz_item
+    uint32_t const max_sz_item,
+    uint32_t const max_sz_buf
 ) {
-    Item item = NOT_AN_ITEM;
-
     assert(isValid_chunk(chunk));
     assert(stream != NULL);
-    assert(terminals == NULL || (0 < nTerminals && nTerminals < SZ32_MAX));
-    assert(terminals != NULL || max_sz_item > 0);
+    assert(IMPLIES(terminals != NULL, 0 < nTerminals && nTerminals < SZ32_MAX));
+    assert(IMPLIES(terminals == NULL, 0 < max_sz_item));
     assert(max_sz_item < SZ32_MAX - AREA_CHUNK(chunk));
     assert(max_sz_buf > 0);
     assert(max_sz_buf < SZ32_MAX - AREA_CHUNK(chunk));
 
-    item.offset = *(uint32_t*)add_alist(item->offsets, &AREA_CHUNK(chunk));
-    appendFromStreamLast_chunk
 }
 */
 
@@ -173,8 +171,8 @@ Item appendFromStreamLast_chunk(
     assert(isValid_chunk(chunk));
     assert(LEN_CHUNK(chunk) > 0);
     assert(stream != NULL);
-    assert(terminals == NULL || (0 < nTerminals && nTerminals < SZ32_MAX));
-    assert(terminals != NULL || max_sz_item > 0);
+    assert(IMPLIES(terminals != NULL, 0 < nTerminals && nTerminals < SZ32_MAX));
+    assert(IMPLIES(terminals == NULL, 0 < max_sz_item));
     assert(max_sz_item < SZ32_MAX - AREA_CHUNK(chunk));
     assert(max_sz_buf > 0);
     assert(max_sz_buf < SZ32_MAX - AREA_CHUNK(chunk));
@@ -400,6 +398,36 @@ bool isValid_chunk(void const* const p_chunk) {
     if (!isValid_alist(chunk->items))   return 0;
 
     return 1;
+}
+
+Item mergeAll_chunk(Chunk* const chunk) {
+    assert(isValid_chunk(chunk));
+    flush_alist(chunk->offsets);
+    add_alist(chunk->offsets, 0);
+    return getLast_chunk(chunk);
+}
+
+Item mergeN_chunk(Chunk* const chunk, uint32_t const first_id, uint32_t const n) {
+    assert(isValid_chunk(chunk));
+    assert(first_id < LEN_CHUNK(chunk));
+    assert(n >= 2);
+    assert(first_id + n <= LEN_CHUNK(chunk));
+    removeN_alist(chunk->offsets, first_id + 1, n - 1);
+    return get_chunk(chunk, first_id);
+}
+
+Item mergeLastPair_chunk(Chunk* const chunk) {
+    assert(isValid_chunk(chunk));
+    assert(LEN_CHUNK(chunk) > 2);
+    pop_alist(chunk->offsets);
+    return getLast_chunk(chunk);
+}
+
+Item mergePair_chunk(Chunk* const chunk, uint32_t const first_id) {
+    assert(isValid_chunk(chunk));
+    assert(LEN_CHUNK(chunk) > first_id + 1);
+    remove_alist(chunk->offsets, first_id + 1);
+    return get_chunk(chunk, first_id);
 }
 
 void vconstruct_chunk(
