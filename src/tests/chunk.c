@@ -11,6 +11,7 @@ static bool test_chunk_appendIndeterminateLast_chunk(void);
 static bool test_chunk_appendLast_chunk(void);
 static bool test_chunk_appendZerosLast_chunk(void);
 static bool test_chunk_divideEquallyLast_chunk(void);
+static bool test_chunk_divideLast_chunk(void);
 static bool test_chunk_flush_chunk(void);
 static bool test_chunk_isValid_chunk(void);
 
@@ -29,6 +30,7 @@ static void test_chunk(void) {
     allTestsPass &= test_chunk_appendLast_chunk();
     allTestsPass &= test_chunk_appendZerosLast_chunk();
     allTestsPass &= test_chunk_divideEquallyLast_chunk();
+    allTestsPass &= test_chunk_divideLast_chunk();
     allTestsPass &= test_chunk_flush_chunk();
     allTestsPass &= test_chunk_isValid_chunk();
 
@@ -282,6 +284,40 @@ static bool test_chunk_divideEquallyLast_chunk(void) {
     TEST_FAIL_IF(item.sz != 2)
     TEST_FAIL_IF(item.offset != 4)
     TEST_FAIL_IF(memcmp(item.p, "cc", 2) != 0)
+
+    destruct_chunk(chunk);
+    TEST_PASS
+}
+
+static bool test_chunk_divideLast_chunk(void) {
+    uint32_t n      = 0;
+    Item item       = NOT_AN_ITEM;
+    Chunk chunk[1]  = { NOT_A_CHUNK };
+    constructEmpty_chunk(chunk, 5, 2);
+
+    add_chunk(chunk, "a,b,c;d,e,f;g,h,i", sizeof("a,b,c;d,e,f;g,h,i") - 1);
+
+    n = divideLast_chunk(chunk, ";", 1);
+    TEST_FAIL_IF(n != 3)
+    TEST_FAIL_IF(LEN_CHUNK(chunk) != 3)
+
+    n = divideLast_chunk(chunk, "-.*", 3);
+    TEST_FAIL_IF(n != 1)
+    TEST_FAIL_IF(LEN_CHUNK(chunk) != 3)
+
+    item = getLast_chunk(chunk);
+    TEST_FAIL_IF(memcmp(item.p, "g,h,i", 5) != 0)
+    TEST_FAIL_IF(item.sz != 5)
+    TEST_FAIL_IF(item.offset != 12)
+
+    n = divideLast_chunk(chunk, ",;-", 3);
+    TEST_FAIL_IF(n != 3)
+    TEST_FAIL_IF(LEN_CHUNK(chunk) != 5)
+
+    item = getLast_chunk(chunk);
+    TEST_FAIL_IF(*(char const*)item.p != 'i')
+    TEST_FAIL_IF(item.sz != 1)
+    TEST_FAIL_IF(item.offset != 16)
 
     destruct_chunk(chunk);
     TEST_PASS

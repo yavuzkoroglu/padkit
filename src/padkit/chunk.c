@@ -322,14 +322,15 @@ uint32_t divideLast_chunk(
     assert(nDelimeters > 0);
     assert(nDelimeters < SZ32_MAX);
     {
-        Item const item     = getLast_chunk(chunk);
-        char const* const p = item.p;
+        Item const item = getLast_chunk(chunk);
+        char* const p   = item.p;
         assert(isValid_item(&item));
 
         for (uint32_t i = 0; i < item.sz; i++) {
             bool const isDelimeter = (memchr(delimeters, p[i], nDelimeters) != NULL);
             if (isDelimeter) {
-                uint32_t const new_offset = item.offset + i;
+                uint32_t const new_offset = item.offset + i + 1;
+                p[i] = '\0';
                 add_alist(chunk->offsets, &new_offset);
                 n++;
             }
