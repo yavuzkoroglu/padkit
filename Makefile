@@ -99,6 +99,7 @@ include/padkit.h: .FORCE;                                                       
     echo '    #include "padkit/chunk.h"'                    >> include/padkit.h; \
     echo '    #include "padkit/error.h"'                    >> include/padkit.h; \
     echo '    #include "padkit/hash.h"'                     >> include/padkit.h; \
+    echo '    #include "padkit/implication.h"'              >> include/padkit.h; \
     echo '    #include "padkit/intfn.h"'                    >> include/padkit.h; \
     echo '    #include "padkit/invalid.h"'                  >> include/padkit.h; \
     echo '    #include "padkit/item.h"'                     >> include/padkit.h; \
