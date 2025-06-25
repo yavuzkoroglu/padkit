@@ -14,6 +14,10 @@ static bool test_chunk_divideEquallyLast_chunk(void);
 static bool test_chunk_divideLast_chunk(void);
 static bool test_chunk_flush_chunk(void);
 static bool test_chunk_isValid_chunk(void);
+static bool test_chunk_mergeAll_chunk(void);
+static bool test_chunk_mergeN_chunk(void);
+static bool test_chunk_mergeLastPair_chunk(void);
+static bool test_chunk_mergePair_chunk(void);
 
 static void test_chunk(void) {
     bool allTestsPass = 1;
@@ -33,6 +37,10 @@ static void test_chunk(void) {
     allTestsPass &= test_chunk_divideLast_chunk();
     allTestsPass &= test_chunk_flush_chunk();
     allTestsPass &= test_chunk_isValid_chunk();
+    allTestsPass &= test_chunk_mergeAll_chunk();
+    allTestsPass &= test_chunk_mergeN_chunk();
+    allTestsPass &= test_chunk_mergeLastPair_chunk();
+    allTestsPass &= test_chunk_mergePair_chunk();
 
     if (allTestsPass) TESTS_PASS_MESSAGE
 }
@@ -355,5 +363,38 @@ static bool test_chunk_isValid_chunk(void) {
     destruct_chunk(chunk);
     TEST_FAIL_IF(isValid_chunk(chunk))
 
+    TEST_PASS
+}
+
+static bool test_chunk_mergeAll_chunk(void) {
+    Item item       = NOT_AN_ITEM;
+    Chunk chunk[1]  = { NOT_A_CHUNK };
+    constructEmpty_chunk(chunk, 5, 2);
+
+    add_chunk(chunk, "a", 1);
+    add_chunk(chunk, "bc", 2);
+    add_chunk(chunk, "d", 1);
+
+    item = mergeAll_chunk(chunk);
+    TEST_FAIL_IF(item.p == NULL)
+    TEST_FAIL_IF(item.sz != 4)
+    TEST_FAIL_IF(item.offset != 0)
+    TEST_FAIL_IF(LEN_CHUNK(chunk) != 1)
+    TEST_FAIL_IF(AREA_CHUNK(chunk) != 4)
+    TEST_FAIL_IF(memcmp(item.p, "abcd", 4) != 0)
+
+    destruct_chunk(chunk);
+    TEST_PASS
+}
+
+static bool test_chunk_mergeN_chunk(void) {
+    TEST_PASS
+}
+
+static bool test_chunk_mergeLastPair_chunk(void) {
+    TEST_PASS
+}
+
+static bool test_chunk_mergePair_chunk(void) {
     TEST_PASS
 }
