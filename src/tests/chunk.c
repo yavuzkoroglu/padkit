@@ -388,13 +388,79 @@ static bool test_chunk_mergeAll_chunk(void) {
 }
 
 static bool test_chunk_mergeN_chunk(void) {
+    Item item       = NOT_AN_ITEM;
+    Chunk chunk[1]  = { NOT_A_CHUNK };
+    constructEmpty_chunk(chunk, 5, 2);
+
+    add_chunk(chunk, "a", 1);
+    add_chunk(chunk, "bc", 2);
+    add_chunk(chunk, "d", 1);
+    add_chunk(chunk, "ef", 2);
+    add_chunk(chunk, "gh", 2);
+
+    item = mergeN_chunk(chunk, 1, 3);
+    TEST_FAIL_IF(item.p == NULL)
+    TEST_FAIL_IF(item.sz != 5)
+    TEST_FAIL_IF(item.offset != 1)
+    TEST_FAIL_IF(LEN_CHUNK(chunk) != 3)
+    TEST_FAIL_IF(AREA_CHUNK(chunk) != 8)
+    TEST_FAIL_IF(memcmp(item.p, "bcdef", 5) != 0)
+
+    destruct_chunk(chunk);
     TEST_PASS
 }
 
 static bool test_chunk_mergeLastPair_chunk(void) {
+    Item item       = NOT_AN_ITEM;
+    Chunk chunk[1]  = { NOT_A_CHUNK };
+    constructEmpty_chunk(chunk, 5, 2);
+
+    add_chunk(chunk, "a", 1);
+    add_chunk(chunk, "bc", 2);
+    add_chunk(chunk, "d", 1);
+    add_chunk(chunk, "ef", 2);
+    add_chunk(chunk, "gh", 2);
+
+    item = mergeLastPair_chunk(chunk);
+    TEST_FAIL_IF(item.p == NULL)
+    TEST_FAIL_IF(item.sz != 4)
+    TEST_FAIL_IF(item.offset != 4)
+    TEST_FAIL_IF(LEN_CHUNK(chunk) != 4)
+    TEST_FAIL_IF(AREA_CHUNK(chunk) != 8)
+    TEST_FAIL_IF(memcmp(item.p, "efgh", 4) != 0)
+
+    destruct_chunk(chunk);
     TEST_PASS
 }
 
 static bool test_chunk_mergePair_chunk(void) {
+    Item item       = NOT_AN_ITEM;
+    Chunk chunk[1]  = { NOT_A_CHUNK };
+    constructEmpty_chunk(chunk, 5, 2);
+
+    add_chunk(chunk, "a", 1);
+    add_chunk(chunk, "bc", 2);
+    add_chunk(chunk, "d", 1);
+    add_chunk(chunk, "ef", 2);
+    add_chunk(chunk, "gh", 2);
+
+    item = mergePair_chunk(chunk, 0);
+    TEST_FAIL_IF(item.p == NULL)
+    TEST_FAIL_IF(item.sz != 3)
+    TEST_FAIL_IF(item.offset != 0)
+    TEST_FAIL_IF(LEN_CHUNK(chunk) != 4)
+    TEST_FAIL_IF(AREA_CHUNK(chunk) != 8)
+    TEST_FAIL_IF(memcmp(item.p, "abc", 3) != 0)
+
+    item = mergePair_chunk(chunk, 1);
+    item = mergePair_chunk(chunk, 1);
+    TEST_FAIL_IF(item.p == NULL)
+    TEST_FAIL_IF(item.sz != 5)
+    TEST_FAIL_IF(item.offset != 3)
+    TEST_FAIL_IF(LEN_CHUNK(chunk) != 2)
+    TEST_FAIL_IF(AREA_CHUNK(chunk) != 8)
+    TEST_FAIL_IF(memcmp(item.p, "defgh", 5) != 0)
+
+    destruct_chunk(chunk);
     TEST_PASS
 }
