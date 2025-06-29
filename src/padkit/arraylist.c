@@ -10,6 +10,11 @@
     #include "padkit/overlap.h"
 #endif
 
+void (* const addAll_alist)(
+    ArrayList* const head,
+    ArrayList const* const tail
+) = &concat_alist;
+
 void* addDupLastN_alist(
     ArrayList* const list,
     uint32_t const n
@@ -177,6 +182,8 @@ void constructEmpty_alist(
     list->len       = 0;
     list->arr       = mem_alloc(sz);
 }
+
+void (* const deleteAll_alist)(ArrayList* const list) = &flush_alist;
 
 void deleteLastN_alist(
     ArrayList* const list,
@@ -457,6 +464,13 @@ void qsort_alist(
     qsort(list->arr, list->len, list->sz_elem, cmp);
 }
 
+void* removeAll_alist(ArrayList* const list) {
+    assert(isValid_alist(list));
+
+    flush_alist(list);
+    return list->arr;
+}
+
 void* removeLastN_alist(
     ArrayList* const list,
     uint32_t const n
@@ -553,6 +567,28 @@ void rotateUpN_alist(
             setDupN_alist(list, n, 0, len);
             setDupN_alist(list, 0, len, n);
             removeLastN_alist(list, n);
+        }
+    }
+}
+
+void* setAll_alist(
+    ArrayList* const list,
+    void const* const p
+) {
+    assert(isValid_alist(list));
+    assert(list->len > 0);
+    {
+        size_t const sz_total = list->sz_elem * (size_t)list->len;
+        assert(sz_total < SZSZ_MAX);
+        assert(sz_total / list->sz_elem == (size_t)n);
+
+        if (p == NULL) {
+            return memset(list->arr, 0, sz_total);
+        } else {
+            assert(!overlaps_ptr(list->arr, p, sz_total, sz_total));
+
+            /* UB if list->arr and p overlap. */
+            return memcpy(list->arr, p, sz_total);
         }
     }
 }

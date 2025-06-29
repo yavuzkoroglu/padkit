@@ -20,6 +20,13 @@
 
     #define add_alist(list, p)                      addN_alist(list, p, 1)
 
+    extern void (* const addAll_alist)(
+        ArrayList* const head,
+        ArrayList const* const tail
+    );
+
+    #define addAll_alist(head, tail)                concat_alist(head, tail)
+
     #define addDup_alist(list, id)                  addDupN_alist(list, id, 1)
 
     #define addDupFirst_alist(list)                 addDupN_alist(list, 0, 1)
@@ -37,6 +44,13 @@
         ArrayList* const list,
         uint32_t const id,
         uint32_t const n
+    );
+
+    /* TBI */
+    void* addFromStream_chunk(
+        Chunk* const chunk,
+        FILE* const stream,
+        uint32_t const max_sz_buf
     );
 
     #define addIndeterminate_alist(list)            addN_alist(list, NULL, 1)
@@ -77,6 +91,8 @@
     );
 
     #define delete_alist(list, id)                  deleteN_alist(list, id, 1)
+
+    extern void (* const deleteAll_alist)(ArrayList* const list);
 
     #define deleteFirst_alist(list)                 deleteN_alist(list, 0, 1)
 
@@ -257,6 +273,8 @@
 
     #define remove_alist(list, id)                  removeN_alist(list, id, 1)
 
+    void* removeAll_alist(ArrayList* const list);
+
     #define removeFirst_alist(list)                 removeN_alist(list, 0, 1)
 
     #define removeFirstN_alist(list, n)             removeN_alist(list, 0, n)
@@ -299,6 +317,11 @@
 
     #define set_alist(list, id, p)                  setN_alist(list, id, p, 1)
 
+    void* setAll_alist(
+        ArrayList* const list,
+        void const* const p
+    );
+
     #define setDup_alist(list, dup_id, orig_id)     setDupN_alist(list, dup_id, orig_id, 1)
 
     void* setDupN_alist(
@@ -315,7 +338,7 @@
         uint32_t const n
     );
 
-    #define setZeros_alist(list, id)                setZerosN_alist(list, id, 1)
+    #define setZeros_alist(list, id)                setN_alist(list, id, NULL, 1)
 
     #define setZerosN_alist(list, id, n)            setN_alist(list, id, NULL, n)
 

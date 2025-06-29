@@ -69,6 +69,7 @@ static bool test_arraylist_pushZerosTop_alist(void);
 static bool test_arraylist_pushZerosTopN_alist(void);
 static bool test_arraylist_qsort_alist(void);
 static bool test_arraylist_remove_alist(void);
+static bool test_arraylist_removeAll_alist(void);
 static bool test_arraylist_removeFirst_alist(void);
 static bool test_arraylist_removeFirstN_alist(void);
 static bool test_arraylist_removeLast_alist(void);
@@ -166,6 +167,7 @@ static void test_arraylist(void) {
     allTestsPass &= test_arraylist_pushZerosTopN_alist();
     allTestsPass &= test_arraylist_qsort_alist();
     allTestsPass &= test_arraylist_remove_alist();
+    allTestsPass &= test_arraylist_removeAll_alist();
     allTestsPass &= test_arraylist_removeFirst_alist();
     allTestsPass &= test_arraylist_removeFirstN_alist();
     allTestsPass &= test_arraylist_removeLast_alist();
@@ -1666,6 +1668,20 @@ static bool test_arraylist_remove_alist(void) {
 
     TEST_FAIL_IF(list->len != 1)
     TEST_FAIL_IF(strncmp(list->arr, "a", list->len) != 0)
+
+    destruct_alist(list);
+    TEST_PASS
+}
+
+static bool test_arraylist_removeAll_alist(void) {
+    ArrayList list[1] = { NOT_AN_ALIST };
+    construct_alist(list, 1, 7);
+
+    addN_alist(list, "abefgcd", 7);
+
+    TEST_FAIL_IF(strncmp(list->arr, "abefgcd", list->len) != 0)
+    TEST_FAIL_IF(strncmp(removeAll_alist(list), "abefgcd", 7) != 0)
+    TEST_FAIL_IF(list->len != 0)
 
     destruct_alist(list);
     TEST_PASS

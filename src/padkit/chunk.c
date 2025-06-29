@@ -1,9 +1,12 @@
 #include <assert.h>
 #include <string.h>
 #include "padkit/chunk.h"
-#include "padkit/implication.h"
 #include "padkit/repeat.h"
 #include "padkit/size.h"
+
+#ifndef NDEBUG
+    #include "padkit/overlap.h"
+#endif
 
 Item add_chunk(
     Chunk* const chunk,
@@ -59,25 +62,35 @@ Item addDupN_chunk(
     }
 }
 
-/*
 Item addFromStream_chunk(
     Chunk* const chunk,
     FILE* const stream,
-    char const terminals[const],
-    uint32_t const nTerminals,
     uint32_t const max_sz_item,
     uint32_t const max_sz_buf
 ) {
     assert(isValid_chunk(chunk));
     assert(stream != NULL);
-    assert(IMPLIES(terminals != NULL, 0 < nTerminals && nTerminals < SZ32_MAX));
-    assert(IMPLIES(terminals == NULL, 0 < max_sz_item));
+    assert(max_sz_item > 0);
     assert(max_sz_item < SZ32_MAX - AREA_CHUNK(chunk));
     assert(max_sz_buf > 0);
-    assert(max_sz_buf < SZ32_MAX - AREA_CHUNK(chunk));
-
+    assert(max_sz_buf <= max_sz_item);
+    {
+        uint32_t sz_rem = max_sz_item;
+        uint32_t sz_buf = max_sz_buf;
+        Item item       = addIndeterminate_chunk(chunk, sz_buf);
+        size_t sz_rd    = fread(item.p, 1, sz_buf, stream);
+        assert(sz_rd < SZ32_MAX);
+        item.sz = (uint32_t)sz_rd;
+        sz_rem -= sz_rd;
+        while (sz_rd != 0 && sz_rem > 0) {
+            sz_buf  = (max_sz_buf < sz_rem) ? max_sz_buf : sz_rem;
+            item    = appendIndeterminateLast_chunk(chunk, sz_buf);
+            sz_rd   = fread((char*)item.p + item.sz - sz_buf, 1, sz_buf, stream);
+            sz_rem -= sz_rd;
+        }
+        return item;
+    }
 }
-*/
 
 Item addIndeterminateN_chunk(
     Chunk* const chunk,
@@ -119,27 +132,6 @@ Item addZeros_chunk(
     }
 }
 
-Item addZerosN_chunk(
-    Chunk* const chunk,
-    uint32_t const n,
-    uint32_t const sz_item
-) {
-    assert(isValid_chunk(chunk));
-    assert(n > 0);
-    assert(n < SZ32_MAX);
-    assert(LEN_CHUNK(chunk) < SZ32_MAX - n);
-    assert(sz_item > 0);
-    assert(sz_item < SZ32_MAX - AREA_CHUNK(chunk));
-    {
-        uint32_t const sz_total = n * sz_item;
-        assert(sz_total < SZ32_MAX - AREA_CHUNK(chunk));
-        assert(sz_total / n == sz_item);
-
-        addZeros_chunk(chunk, sz_total);
-        return divideEquallyLast_chunk(chunk, n);
-    }
-}
-
 Item appendDupLast_chunk(
     Chunk* const chunk,
     uint32_t const id
@@ -147,71 +139,29 @@ Item appendDupLast_chunk(
     assert(isValid_chunk(chunk));
     assert(LEN_CHUNK(chunk) > id);
     {
-        Item const orig_item    = get_chunk(chunk, id);
-        Item dup_item           = getLast_chunk(chunk);
+        Item const orig_item = get_chunk(chunk, id);
         assert(isValid_item(&orig_item));
-        assert(isValid_item(&dup_item));
-
         addDupN_alist(chunk->items, orig_item.offset, orig_item.sz);
-        dup_item.sz += orig_item.sz;
-
-        return dup_item;
     }
+    return getLast_chunk(chunk);
 }
 
-/*
 Item appendFromStreamLast_chunk(
     Chunk* const chunk,
     FILE* const stream,
-    char const terminals[const],
-    uint32_t const nTerminals,
     uint32_t const max_sz_item,
     uint32_t const max_sz_buf
 ) {
     assert(isValid_chunk(chunk));
     assert(LEN_CHUNK(chunk) > 0);
     assert(stream != NULL);
-    assert(IMPLIES(terminals != NULL, 0 < nTerminals && nTerminals < SZ32_MAX));
-    assert(IMPLIES(terminals == NULL, 0 < max_sz_item));
+    assert(max_sz_item > 0);
     assert(max_sz_item < SZ32_MAX - AREA_CHUNK(chunk));
     assert(max_sz_buf > 0);
-    assert(max_sz_buf < SZ32_MAX - AREA_CHUNK(chunk));
-    {
-        uint32_t sz_total   = 0;
-        Item item           = getLast_chunk(chunk);
-        bool doContinue     = !feof(stream);
-        while (doContinue) {
-            uint32_t const sz_remaining = max_sz_item - sz_total;
-            uint32_t const sz_read      = (sz_remaining > max_sz_buf) ? max_sz_buf : sz_remaining;
-            void* const p_buf           = addIndeterminateN_alist(chunk->items, sz_read);
-            size_t const sz_buf         = fread(p_buf, 1, sz_read, stream);
-            assert(sz_buf > 0);
-            assert(sz_buf < SZ32_MAX);
-            assert(sz_read >= (uint32_t)sz_buf);
-
-            sz_total += sz_buf;
-            item.sz += sz_buf;
-
-            doContinue &= ((uint32_t)sz_buf == sz_read);
-            if (!doContinue)
-                deleteLast_alist(chunk->items, sz_read - (uint32_t)sz_buf);
-
-            if (terminals != NULL) {
-                char const* itr = terminals;
-                REPEAT(nTerminals) {
-                    char const* const p_terminal = memchr(p_buf, *itr++, sz_buf);
-                    if (p_terminal != NULL) {
-                        uint32_t const sz
-                    }
-                }
-            }
-
-            doContinue &= !feof(stream);
-        }
-        return item;
-    }
+    assert(max_sz_buf <= max_sz_item);
+    addFromStream_chunk(chunk, stream, max_sz_item, max_sz_buf);
+    return mergeLastPair_chunk(chunk);
 }
-*/
 
 Item appendLast_chunk(
     Chunk* const chunk,
@@ -222,15 +172,8 @@ Item appendLast_chunk(
     assert(LEN_CHUNK(chunk) > 0);
     assert(sz_item > 0);
     assert(sz_item < SZ32_MAX - AREA_CHUNK(chunk));
-    {
-        Item item = getLast_chunk(chunk);
-        assert(isValid_item(&item));
-
-        addN_alist(chunk->items, p_item, sz_item);
-        item.sz += sz_item;
-
-        return item;
-    }
+    addN_alist(chunk->items, p_item, sz_item);
+    return getLast_chunk(chunk);
 }
 
 Item appendZerosLast_chunk(
@@ -241,15 +184,8 @@ Item appendZerosLast_chunk(
     assert(LEN_CHUNK(chunk) > 0);
     assert(sz_item > 0);
     assert(sz_item < SZ32_MAX - AREA_CHUNK(chunk));
-    {
-        Item item = getLast_chunk(chunk);
-        assert(isValid_item(&item));
-
-        addZerosN_alist(chunk->items, sz_item);
-        item.sz += sz_item;
-
-        return item;
-    }
+    addZerosN_alist(chunk->items, sz_item);
+    return getLast_chunk(chunk);
 }
 
 void construct_chunk(void* const p_chunk, ...) {
@@ -418,7 +354,7 @@ Item mergeN_chunk(Chunk* const chunk, uint32_t const first_id, uint32_t const n)
 
 Item mergeLastPair_chunk(Chunk* const chunk) {
     assert(isValid_chunk(chunk));
-    assert(LEN_CHUNK(chunk) > 2);
+    assert(LEN_CHUNK(chunk) >= 2);
     pop_alist(chunk->offsets);
     return getLast_chunk(chunk);
 }
@@ -429,6 +365,16 @@ Item mergePair_chunk(Chunk* const chunk, uint32_t const first_id) {
     remove_alist(chunk->offsets, first_id + 1);
     return get_chunk(chunk, first_id);
 }
+
+Item (* const peek_chunk)(Chunk const* const chunk) = &getLast_chunk;
+
+Item (* const pop_chunk)(Chunk* const chunk) = &removeLast_chunk;
+
+Item (* const push_chunk)(
+    Chunk* const chunk,
+    void const* const p_item,
+    uint32_t const sz_item
+) = &add_chunk;
 
 void vconstruct_chunk(
     void* const p_chunk,

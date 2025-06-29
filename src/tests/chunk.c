@@ -2,6 +2,7 @@ static void test_chunk(void);
 static bool test_chunk_add_chunk(void);
 static bool test_chunk_addDup_chunk(void);
 static bool test_chunk_addDupN_chunk(void);
+static bool test_chunk_addFromStream_chunk(void);
 static bool test_chunk_addIndeterminate_chunk(void);
 static bool test_chunk_addIndeterminateN_chunk(void);
 static bool test_chunk_addZeros_chunk(void);
@@ -25,6 +26,7 @@ static void test_chunk(void) {
     allTestsPass &= test_chunk_add_chunk();
     allTestsPass &= test_chunk_addDup_chunk();
     allTestsPass &= test_chunk_addDupN_chunk();
+    allTestsPass &= test_chunk_addFromStream_chunk();
     allTestsPass &= test_chunk_addIndeterminate_chunk();
     allTestsPass &= test_chunk_addIndeterminateN_chunk();
     allTestsPass &= test_chunk_addZeros_chunk();
@@ -94,6 +96,23 @@ static bool test_chunk_addDupN_chunk(void) {
 
     item = get_chunk(chunk, 0);
     TEST_FAIL_IF(memcmp(item.p, "abcabcabcabc", 12) != 0)
+
+    destruct_chunk(chunk);
+    TEST_PASS
+}
+
+static bool test_chunk_addFromStream_chunk(void) {
+    Item item       = NOT_AN_ITEM;
+    Chunk chunk[1]  = { NOT_A_CHUNK };
+    FILE* fp        = fopen("test_artifacts/words.txt", "r");
+
+    constructEmpty_chunk(chunk, 5, 2);
+
+    item = addFromStream_chunk(chunk, fp, 512, 4);
+    TEST_FAIL_IF(item.p == NULL)
+    printf("%10s\n", (char*)item.p);
+
+    fclose(fp);
 
     destruct_chunk(chunk);
     TEST_PASS
