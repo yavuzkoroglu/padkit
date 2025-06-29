@@ -355,7 +355,7 @@
     /* TBI */
     Item getNext_chunk(
         Chunk const* const chunk,
-        Item const prev
+        uint32_t const prev_id
     );
 
     #define insert_chunk(chunk, id, p_item, sz_item)        insertN_chunk(chunk, id, p_item, sz_item, 1)
@@ -391,6 +391,35 @@
         uint32_t const n
     );
 
+    #define insertZeros_chunk(chunk, id, sz_item)           insertZerosN_chunk(chunk, id, sz_item, 1)
+
+    /* TBI */
+    Item insertZerosAll_chunk(
+        Chunk* const chunk,
+        uint32_t const sz_item
+    );
+
+    #define insertZerosFirst_chunk(chunk, id, sz_item)      insertZerosN_chunk(chunk, 0, sz_item, 1)
+
+    #define insertZerosFirstN_chunk(chunk, id, sz_item, n)  insertZerosN_chunk(chunk, 0, sz_item, n)
+
+    #define insertZerosLast_chunk(chunk, id, sz_item)       insertZerosLastN_chunk(chunk, sz_item, 1)
+
+    /* TBI */
+    Item insertZerosLastN_chunk(
+        Chunk* const chunk,
+        uint32_t const sz_item,
+        uint32_t const n
+    );
+
+    /* TBI */
+    Item insertZerosN_chunk(
+        Chunk* const chunk,
+        uint32_t const id,
+        uint32_t const sz_item,
+        uint32_t const n
+    );
+
     /* TBI */
     bool isAllocated_chunk(void const* const p_chunk);
 
@@ -422,25 +451,38 @@
         uint32_t const first_id
     );
 
+    /* TBI */
     extern Item (* const peek_chunk)(Chunk const* const chunk);
 
+    /* TBI */
     extern Item (* const pop_chunk)(Chunk* const chunk);
 
+    /* TBI */
     extern Item (* const push_chunk)(
         Chunk* const chunk,
         void const* const p_item,
         uint32_t const sz_item
     );
 
-    #define pushIndeterminate_chunk(chunk, sz_item)     addIndeterminate_chunk(chunk, sz_item)
+    /* TBI */
+    Item removeAll_chunk(Chunk* const chunk);
 
-    Item remove_chunk(
+    #define remove_chunk(chunk, id)                     removeN_chunk(chunk, id, 1)
+
+    /* TBI */
+    Item removeN_chunk(
         Chunk* const chunk,
-        uint32_t const id
+        uint32_t const id,
+        uint32_t const n
     );
 
-    Item removeLast_chunk(Chunk* const chunk);
+    /* TBI */
+    Item removeLastN_chunk(
+        Chunk* const chunk,
+        uint32_t const n
+    );
 
+    /* TBI */
     void* setN_chunk(
         Chunk* const chunk,
         uint32_t const id,
@@ -452,8 +494,7 @@
 
     #define setZerosN_chunk(chunk, id, n)               setN_chunk(chunk, id, NULL, n)
 
-    #define shrink_chunk(
-
+    /* TBI */
     Item shrinkN_chunk(
         Chunk* const chunk,
         uint32_t const id,
@@ -461,15 +502,18 @@
         uint32_t const n
     );
 
-    #define shringFirst_chunk(chunk, by)                shrink_chunk(chunk, 0, by)
+    #define shrinkFirst_chunk(chunk, by)                shrink_chunk(chunk, 0, by)
 
-    Item shrinkLast_chunk(
+    /* TBI */
+    Item shrinkLastN_chunk(
         Chunk* const chunk,
-        uint32_t const by
+        uint32_t const by,
+        uint32_t const n
     );
 
     #define swap_chunk(chunk, id1, id0)                 swapN_chunk(chunk, id1, id0, 1)
 
+    /* TBI */
     void swapN_chunk(
         Chunk* const chunk,
         uint32_t const id1,
@@ -477,6 +521,7 @@
         uint32_t const n
     );
 
+    /* TBI */
     void vconstruct_chunk(
         void* const p_chunk,
         va_list args

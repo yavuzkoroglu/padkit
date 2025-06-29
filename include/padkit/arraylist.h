@@ -63,6 +63,12 @@
         uint32_t const n
     );
 
+    void* addNSame_alist(
+        ArrayList* const list,
+        void const* const p,
+        uint32_t const n
+    );
+
     #define addZeros_alist(list)                    addZerosN_alist(list, 1)
 
     void* addZerosN_alist(
@@ -145,11 +151,26 @@
         uint32_t const n
     );
 
+    void* insertDupNSame_alist(
+        ArrayList* const list,
+        uint32_t const dup_id,
+        uint32_t const orig_id,
+        uint32_t const n
+    );
+
     #define insertIndeterminate_alist(list, id)     insertN_alist(list, id, NULL, 1)
 
     #define insertIndeterminateN_alist(list, id, n) insertN_alist(list, id, NULL, n)
 
     void* insertN_alist(
+        ArrayList* const list,
+        uint32_t const id,
+        void const* const p,
+        uint32_t const n
+    );
+
+    /* TBI */
+    void* insertNSame_alist(
         ArrayList* const list,
         uint32_t const id,
         void const* const p,
@@ -219,6 +240,13 @@
         uint32_t const n
     );
 
+    /* TBI */
+    void* pushBottomNSame_alist(
+        ArrayList* const list,
+        void const* const p,
+        uint32_t const n
+    );
+
     #define pushIndeterminate_alist(list)           addN_alist(list, NULL, 1)
 
     #define pushIndeterminateBottom_alist(list)     pushBottomN_alist(list, NULL, 1)
@@ -232,6 +260,13 @@
     #define pushIndeterminateTopN_alist(list, n)    addN_alist(list, NULL, n)
 
     extern void* (* const pushN_alist)(
+        ArrayList* const list,
+        void const* const p,
+        uint32_t const n
+    );
+
+    /* TBI */
+    extern void* (* const pushNSame_alist)(
         ArrayList* const list,
         void const* const p,
         uint32_t const n

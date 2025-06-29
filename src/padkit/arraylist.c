@@ -85,6 +85,49 @@ void* addN_alist(
     }
 }
 
+void* addNSame_alist(
+    ArrayList* const list,
+    void const* const p,
+    uint32_t const n
+) {
+    assert(isValid_alist(list));
+    assert(n > 0);
+    assert(n < SZ32_MAX - list->len);
+    {
+        uint32_t const old_len  = list->len;
+        uint32_t const new_len  = old_len + n;
+        uint32_t new_cap        = list->cap;
+        while (new_cap < new_len) {
+            new_cap <<= 1;
+            if (new_cap >= SZ32_MAX)
+                REALLOC_ERROR
+        }
+
+        if (new_cap > list->cap) {
+            size_t const sz_new = list->sz_elem * (size_t)new_cap;
+            #ifndef NDEBUG
+                size_t const sz_arr = list->sz_elem * (size_t)list->cap;
+                size_t const sz_tot = list->sz_elem * (size_t)n;
+            #endif
+            assert(sz_new < SZSZ_MAX);
+            assert(sz_tot < SZSZ_MAX);
+            assert(sz_new / list->sz_elem == (size_t)new_cap);
+            assert(sz_tot / list->sz_elem == (size_t)n);
+            assert(!overlaps_ptr(list->arr, p, sz_arr, list->sz_elem));
+
+            /* Invalidates p if p and list->arr overlap. */
+            mem_realloc((void**)&(list->arr), sz_new);
+            list->cap = new_cap;
+        }
+
+        list->len = new_len;
+        if (p == NULL)
+            return getN_alist(list, old_len, n);
+        else
+            return setNSame_alist(list, old_len, p, n);
+    }
+}
+
 void* addZerosN_alist(
     ArrayList* const list,
     uint32_t const n
@@ -190,7 +233,7 @@ void deleteLastN_alist(
     uint32_t const n
 ) {
     assert(isValid_alist(list));
-    assert(list->len >= n);
+https://lichess.org/player    assert(list->len >= n);
     assert(n > 0);
 
     list->len -= n;
@@ -466,6 +509,7 @@ void qsort_alist(
 
 void* removeAll_alist(ArrayList* const list) {
     assert(isValid_alist(list));
+    assert(list->len > 0);
 
     flush_alist(list);
     return list->arr;
