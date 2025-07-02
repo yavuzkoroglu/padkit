@@ -250,7 +250,7 @@
     );
 
     /* TBI */
-    void* pushBottomNSame_alist(
+    void* pushBottomSameN_alist(
         ArrayList* const list,
         void const* const p,
         uint32_t const n
