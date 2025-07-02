@@ -374,7 +374,32 @@ void* insertDupN_alist(
         setDupN_alist(list, dup_id + n, dup_id, len - dup_id);
         {
             void* const p = setDupN_alist(list, dup_id, len + n, n);
-            removeLastN_alist(list, n);
+            deleteLastN_alist(list, n);
+            return p;
+        }
+    }
+}
+
+void* insertDupSameN_alist(
+    ArrayList* const list,
+    uint32_t const dup_id,
+    uint32_t const orig_id,
+    uint32_t const n
+) {
+    assert(isValid_alist(list));
+    assert(list->len > dup_id);
+    assert(list->len > orig_id);
+    assert(dup_id != orig_id);
+    assert(list->len - orig_id >= n);
+    assert(n > 0);
+    {
+        uint32_t const len = list->len;
+        addIndeterminateN_alist(list, n);
+        addDup_alist(list, orig_id);
+        setDupN_alist(list, dup_id + n, dup_id, len - dup_id);
+        {
+            void* const p = setDupSameN_alist(list, dup_id, len + n, n);
+            deleteLast_alist(list);
             return p;
         }
     }
@@ -597,12 +622,12 @@ void* removeN_alist(
         } else if (n <= shft_len) {
             addDupN_alist(list, id, n);
             setDupN_alist(list, id, id + n, shft_len + n);
-            removeLastN_alist(list, n);
+            deleteLastN_alist(list, n);
         } else {
             addIndeterminateN_alist(list, shft_len);
             setDupN_alist(list, new_len, id, old_len - id);
             setDupN_alist(list, id, old_len, shft_len);
-            removeLastN_alist(list, shft_len);
+            deleteLastN_alist(list, shft_len);
         }
     }
     return removeLastN_alist(list, n);
@@ -634,7 +659,7 @@ void rotateDownN_alist(
         } else {
             addDupN_alist(list, 0, n);
             setDupN_alist(list, 0, n, len);
-            removeLastN_alist(list, n);
+            deleteLastN_alist(list, n);
         }
     }
 }
@@ -659,7 +684,7 @@ void rotateUpN_alist(
             addIndeterminateN_alist(list, n);
             setDupN_alist(list, n, 0, len);
             setDupN_alist(list, 0, len, n);
-            removeLastN_alist(list, n);
+            deleteLastN_alist(list, n);
         }
     }
 }
@@ -831,7 +856,7 @@ void swapN_alist(
         setDupN_alist(list, id0, id1, n);
         setDupN_alist(list, id1, len, n);
     }
-    removeLastN_alist(list, n);
+    deleteLastN_alist(list, n);
 }
 
 void vconstruct_alist(

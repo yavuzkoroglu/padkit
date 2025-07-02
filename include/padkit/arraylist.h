@@ -160,7 +160,7 @@
         uint32_t const n
     );
 
-    void* insertDupNSame_alist(
+    void* insertDupSameN_alist(
         ArrayList* const list,
         uint32_t const dup_id,
         uint32_t const orig_id,
@@ -179,7 +179,7 @@
     );
 
     /* TBI */
-    void* insertNSame_alist(
+    void* insertSameN_alist(
         ArrayList* const list,
         uint32_t const id,
         void const* const p,
@@ -275,7 +275,7 @@
     );
 
     /* TBI */
-    extern void* (* const pushNSame_alist)(
+    extern void* (* const pushSameN_alist)(
         ArrayList* const list,
         void const* const p,
         uint32_t const n
