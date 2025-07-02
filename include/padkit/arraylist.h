@@ -20,12 +20,13 @@
 
     #define add_alist(list, p)                      addN_alist(list, p, 1)
 
-    extern void (* const addAll_alist)(
-        ArrayList* const head,
-        ArrayList const* const tail
-    );
+    #define addAll_alist(head, tail)                concatN_alist(head, tail, 1)
 
-    #define addAll_alist(head, tail)                concat_alist(head, tail)
+    extern void (* const addAllN_alist)(
+        ArrayList* const head,
+        ArrayList const* const tail,
+        uint32_t const n
+    );
 
     #define addDup_alist(list, id)                  addDupN_alist(list, id, 1)
 
@@ -46,11 +47,16 @@
         uint32_t const n
     );
 
-    /* TBI */
-    void* addFromStream_chunk(
-        Chunk* const chunk,
-        FILE* const stream,
-        uint32_t const max_sz_buf
+    void* addDupSameN_alist(
+        ArrayList* const list,
+        uint32_t const id,
+        uint32_t const n
+    );
+
+    void* addF_alist(
+        ArrayList* const alist,
+        FILE* const fp,
+        uint32_t const max_n_buf
     );
 
     #define addIndeterminate_alist(list)            addN_alist(list, NULL, 1)
@@ -63,7 +69,7 @@
         uint32_t const n
     );
 
-    void* addNSame_alist(
+    void* addSameN_alist(
         ArrayList* const list,
         void const* const p,
         uint32_t const n
@@ -83,9 +89,12 @@
         int (*cmp)(void const*, void const*)
     );
 
-    void concat_alist(
+    #define concat_alist(head, tail)                concatN_alist(head, tail, 1)
+
+    void concatN_alist(
         ArrayList* const head,
-        ArrayList const* const tail
+        ArrayList const* const tail,
+        uint32_t const n
     );
 
     void construct_alist(void* const p_list, ...);
@@ -366,7 +375,21 @@
         uint32_t const n
     );
 
+    void* setDupSameN_alist(
+        ArrayList* const list,
+        uint32_t const dup_id,
+        uint32_t const orig_id,
+        uint32_t const n
+    );
+
     void* setN_alist(
+        ArrayList* const list,
+        uint32_t const id,
+        void const* const p,
+        uint32_t const n
+    );
+
+    void* setSameN_alist(
         ArrayList* const list,
         uint32_t const id,
         void const* const p,

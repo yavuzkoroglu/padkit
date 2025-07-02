@@ -17,10 +17,10 @@
 
 #include "tests/arraylist.c"
 #include "tests/bitmatrix.c"
-#include "tests/chunk.c"
+/* #include "tests/chunk.c" */
 #include "tests/graphmatrix.c"
 #include "tests/hash.c"
-// #include "tests/indextable.c"
+/* #include "tests/indextable.c" */
 #include "tests/intfn.c"
 #include "tests/item.c"
 #include "tests/jsonparser.c"
@@ -85,10 +85,10 @@ int main(void) {
     puts("-----------");
     test_arraylist();
     test_bitmatrix();
-    test_chunk();
+    /* test_chunk(); */
     test_graphmatrix();
     test_hash();
-    // test_indextable();
+    /* test_indextable(); */
     test_intfn();
     test_item();
     test_jsonparser();

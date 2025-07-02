@@ -17,25 +17,11 @@ uint64_t hash64_item(Item const* const item) {
 bool isValid_item(void const* const p_item) {
     Item const* const item = (Item const*)p_item;
 
-    if (item == NULL)               return 0;
-    if (item->p == NULL)            return 0;
-    if (item->sz == 0)              return 0;
-    if (item->sz >= SZ32_MAX)       return 0;
-    if (item->offset >= SZ32_MAX)   return 0;
+    if (item == NULL)                return 0;
+    if (item->p == NULL)             return 0;
+    if (item->sz == 0)               return 0;
+    if (item->sz >= SZ32_MAX)        return 0;
+    if (item->offset >= SZ32_MAX)    return 0;
 
     return 1;
-}
-
-Item* iterateNext_item(Item* const item) {
-    assert(isValid_item(item));
-    item->p = (char*)item->p + item->sz;
-    item->offset += item->sz;
-    return item;
-}
-
-Item* iteratePrev_item(Item* const item) {
-    assert(isValid_item(item));
-    item->p = (char*)item->p - item->sz;
-    item->offset -= item->sz;
-    return item;
 }

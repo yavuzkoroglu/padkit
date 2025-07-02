@@ -15,7 +15,6 @@ endif
 
 OBJECTS=obj/padkit/arraylist.o          \
         obj/padkit/bitmatrix.o          \
-        obj/padkit/chunk.o              \
         obj/padkit/hash.o               \
         obj/padkit/intfn.o              \
         obj/padkit/item.o               \
@@ -28,7 +27,6 @@ OBJECTS=obj/padkit/arraylist.o          \
 
 SOURCES=src/padkit/arraylist.c          \
         src/padkit/bitmatrix.c          \
-        src/padkit/chunk.c              \
         src/padkit/hash.c               \
         src/padkit/intfn.c              \
         src/padkit/item.c               \
@@ -41,7 +39,6 @@ SOURCES=src/padkit/arraylist.c          \
 
 TESTSRC=src/tests/arraylist.c           \
         src/tests/bitmatrix.c           \
-        src/tests/chunk.c               \
         src/tests/graphmatrix.c         \
         src/tests/hash.c                \
         src/tests/intfn.c               \
@@ -96,7 +93,6 @@ include/padkit.h: .FORCE;                                                       
     echo '    #include "padkit/arraylist.h"'                >> include/padkit.h; \
     echo '    #include "padkit/bitmatrix.h"'                >> include/padkit.h; \
     echo '    #include "padkit/bliterals.h"'                >> include/padkit.h; \
-    echo '    #include "padkit/chunk.h"'                    >> include/padkit.h; \
     echo '    #include "padkit/error.h"'                    >> include/padkit.h; \
     echo '    #include "padkit/hash.h"'                     >> include/padkit.h; \
     echo '    #include "padkit/implication.h"'              >> include/padkit.h; \
@@ -132,6 +128,7 @@ obj/padkit/arraylist.o: .FORCE          \
     include/padkit/invalid.h            \
     include/padkit/memalloc.h           \
     include/padkit/overlap.h            \
+    include/padkit/repeat.h             \
     include/padkit/size.h               \
     include/padkit/unused.h             \
     src/padkit/arraylist.c              \
