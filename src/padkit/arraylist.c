@@ -27,6 +27,16 @@ void* addDupLastN_alist(
     return addDupN_alist(list, list->len - n, n);
 }
 
+void* addDupLastSameN_alist(
+    ArrayList* const list,
+    uint32_t const n
+) {
+    assert(isValid_alist(list));
+    assert(0 < n);
+    assert(n <= list->len);
+    return addDupSameN_alist(list, list->len - n, n);
+}
+
 void* addDupN_alist(
     ArrayList* const list,
     uint32_t const id,
@@ -399,7 +409,7 @@ void* insertN_alist(
                 assert(sz_arr < SZSZ_MAX);
                 assert(sz_p < SZSZ_MAX);
                 assert(sz_arr / list->sz_elem == (size_t)len);
-                assert(sz_p / list->sz_elem == (size_t)n)
+                assert(sz_p / list->sz_elem == (size_t)n);
                 assert(!overlaps_ptr(list->arr, p, sz_arr, sz_p));
             }
         #endif

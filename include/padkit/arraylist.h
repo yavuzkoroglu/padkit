@@ -34,9 +34,16 @@
 
     #define addDupFirstN_alist(list, n)             addDupN_alist(list, 0, n)
 
+    #define addDupFirstSameN_alist(list, n)         addDupSameN_alist(list, 0, n)
+
     #define addDupLast_alist(list)                  addDupLastN_alist(list, 1)
 
     void* addDupLastN_alist(
+        ArrayList* const list,
+        uint32_t const n
+    );
+
+    void* addDupLastSameN_alist(
         ArrayList* const list,
         uint32_t const n
     );
