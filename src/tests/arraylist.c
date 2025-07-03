@@ -404,8 +404,25 @@ static bool test_arraylist_addDupLastN_alist(void) {
     TEST_PASS
 }
 
-/* TBI */
 static bool test_arraylist_addDupLastSameN_alist(void) {
+    ArrayList list[1] = { NOT_AN_ALIST };
+    construct_alist(list, 1, 3);
+
+    TEST_FAIL_IF(list->len != 0)
+    TEST_FAIL_IF(list->cap != 3)
+
+    addN_alist(list, "abc", 3);
+
+    TEST_FAIL_IF(list->len != 3)
+    TEST_FAIL_IF(list->cap != 3)
+
+    addDupLastSameN_alist(list, 3);
+
+    TEST_FAIL_IF(list->len != 6)
+    TEST_FAIL_IF(list->cap != 6)
+    TEST_FAIL_IF(strncmp(list->arr, "abcccc", 6) != 0)
+
+    destruct_alist(list);
     TEST_PASS
 }
 
@@ -2204,8 +2221,23 @@ static bool test_arraylist_setDupN_alist(void) {
     TEST_PASS
 }
 
-/* TBI */
 static bool test_arraylist_setDupSameN_alist(void) {
+    ArrayList list[1] = { NOT_AN_ALIST };
+    construct_alist(list, 1, 1024);
+
+    TEST_FAIL_IF(list->len != 0)
+    TEST_FAIL_IF(list->cap != 1024)
+
+    addN_alist(list, "abc", 3);
+
+    TEST_FAIL_IF(list->len != 3)
+    TEST_FAIL_IF(list->cap != 1024)
+
+    setDupSameN_alist(list, 1, 0, 2);
+
+    TEST_FAIL_IF(strncmp(list->arr, "aaa", 3) != 0)
+
+    destruct_alist(list);
     TEST_PASS
 }
 
@@ -2234,8 +2266,28 @@ static bool test_arraylist_setN_alist(void) {
     TEST_PASS
 }
 
-/* TBI */
 static bool test_arraylist_setSameN_alist(void) {
+    int const grades[]      = { 92, 84, 76, 22, 45 };
+    uint32_t const nGrades  = sizeof(grades) / sizeof(int);
+    ArrayList list[1] = { NOT_AN_ALIST };
+    construct_alist(list, sizeof(int), nGrades);
+
+    TEST_FAIL_IF(list->len != 0)
+    TEST_FAIL_IF(list->cap != nGrades)
+
+    addZerosN_alist(list, nGrades);
+
+    TEST_FAIL_IF(list->len != nGrades)
+    TEST_FAIL_IF(list->cap != nGrades)
+
+    setSameN_alist(list, 0, grades, nGrades);
+
+    for (uint32_t i = 0; i < nGrades; i++) {
+        int const* const grade = get_alist(list, i);
+        TEST_FAIL_IF(*grade != grades[0])
+    }
+
+    destruct_alist(list);
     TEST_PASS
 }
 

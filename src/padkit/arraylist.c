@@ -34,7 +34,7 @@ void* addDupLastSameN_alist(
     assert(isValid_alist(list));
     assert(0 < n);
     assert(n <= list->len);
-    return addDupSameN_alist(list, list->len - n, n);
+    return addDupSameN_alist(list, list->len - 1, n);
 }
 
 void* addDupN_alist(
