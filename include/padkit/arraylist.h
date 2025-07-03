@@ -248,7 +248,6 @@
         uint32_t const n
     );
 
-    /* TBI */
     void* pushBottomSameN_alist(
         ArrayList* const list,
         void const* const p,
@@ -273,7 +272,6 @@
         uint32_t const n
     );
 
-    /* TBI */
     extern void* (* const pushSameN_alist)(
         ArrayList* const list,
         void const* const p,
@@ -283,6 +281,12 @@
     #define pushTop_alist(list, p)                  add_alist(list, p)
 
     extern void* (* const pushTopN_alist)(
+        ArrayList* const list,
+        void const* const p,
+        uint32_t const n
+    );
+
+    extern void* (* const pushTopSameN_alist)(
         ArrayList* const list,
         void const* const p,
         uint32_t const n
@@ -361,6 +365,11 @@
     #define set_alist(list, id, p)                  setN_alist(list, id, p, 1)
 
     void* setAll_alist(
+        ArrayList* const list,
+        void const* const p
+    );
+
+    void* setAllSame_alist(
         ArrayList* const list,
         void const* const p
     );

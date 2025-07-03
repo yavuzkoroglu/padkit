@@ -137,34 +137,9 @@ void* addSameN_alist(
     assert(n < SZ32_MAX - list->len);
     {
         uint32_t const old_len  = list->len;
-        uint32_t const new_len  = old_len + n;
-        uint32_t new_cap        = list->cap;
-        while (new_cap < new_len) {
-            new_cap <<= 1;
-            if (new_cap >= SZ32_MAX)
-                REALLOC_ERROR
-        }
-
-        if (new_cap > list->cap) {
-            size_t const sz_new = list->sz_elem * (size_t)new_cap;
-            #ifndef NDEBUG
-                size_t const sz_arr = list->sz_elem * (size_t)list->cap;
-                size_t const sz_tot = list->sz_elem * (size_t)n;
-            #endif
-            assert(sz_new < SZSZ_MAX);
-            assert(sz_tot < SZSZ_MAX);
-            assert(sz_new / list->sz_elem == (size_t)new_cap);
-            assert(sz_tot / list->sz_elem == (size_t)n);
-            assert(!overlaps_ptr(list->arr, p, sz_arr, list->sz_elem));
-
-            /* Invalidates p if p and list->arr overlap. */
-            mem_realloc((void**)&(list->arr), sz_new);
-            list->cap = new_cap;
-        }
-
-        list->len = new_len;
+        void* const p_first     = addIndeterminateN_alist(list, n);
         if (p == NULL)
-            return getN_alist(list, old_len, n);
+            return p_first;
         else
             return setSameN_alist(list, old_len, p, n);
     }
@@ -420,9 +395,12 @@ void* insertN_alist(
         #ifndef NDEBUG
             if (len + n > list->cap) {
                 size_t const sz_arr = list->sz_elem * (size_t)len;
+                size_t const sz_p   = list->sz_elem * (size_t)n;
                 assert(sz_arr < SZSZ_MAX);
+                assert(sz_p < SZSZ_MAX);
                 assert(sz_arr / list->sz_elem == (size_t)len);
-                assert(!overlaps_ptr(list->arr, p, sz_arr, list->sz_elem));
+                assert(sz_p / list->sz_elem == (size_t)n)
+                assert(!overlaps_ptr(list->arr, p, sz_arr, sz_p));
             }
         #endif
 
@@ -567,17 +545,41 @@ void* pushBottomN_alist(
         return insertN_alist(list, 0, p, n);
 }
 
+void* pushBottomSameN_alist(
+    ArrayList* const list,
+    void const* const p,
+    uint32_t const n
+) {
+    assert(isValid_alist(list));
+    if (list->len == 0)
+        return addSameN_alist(list, p, n);
+    else
+        return insertSameN_alist(list, 0, p, n);
+}
+
 void* (* const pushN_alist)(
     ArrayList* const list,
     void const* const p,
     uint32_t const n
 ) = &addN_alist;
 
+void* (* const pushSameN_alist)(
+    ArrayList* const list,
+    void const* const p,
+    uint32_t const n
+) = &addSameN_alist;
+
 void* (* const pushTopN_alist)(
     ArrayList* const list,
     void const* const p,
     uint32_t const n
 ) = &addN_alist;
+
+void* (* const pushTopSameN_alist)(
+    ArrayList* const list,
+    void const* const p,
+    uint32_t const n
+) = &addSameN_alist;
 
 void* pushZerosBottomN_alist(
     ArrayList* const list,
@@ -740,6 +742,16 @@ void* setAll_alist(
     }
 }
 
+void* setAllSame_alist(
+    ArrayList* const list,
+    void const* const p
+) {
+    assert(isValid_alist(list));
+    assert(list->len > 0);
+
+    return setSameN_alist(list, 0, p, list->len);
+}
+
 void* setDupN_alist(
     ArrayList* const list,
     uint32_t const dup_id,
@@ -775,16 +787,11 @@ void* setDupSameN_alist(
     assert(dup_id != orig_id);
     assert(n <= list->len - dup_id);
     assert(n > 0);
-    {
-        void* const p_first = get_alist(list, dup_id);
-        void* const p_orig  = get_alist(list, orig_id);
-        char* p_dup         = p_first;
-        REPEAT(n) {
-            memmove(p_dup, p_orig, list->sz_elem);
-            p_dup += list->sz_elem;
-        }
-        return p_first;
-    }
+
+    for (uint32_t i = dup_id + n - 1; i > dup_id; i--)
+        setDup_alist(list, i, orig_id);
+
+    return setDup_alist(list, dup_id, orig_id);
 }
 
 void* setN_alist(
@@ -830,34 +837,11 @@ void* setSameN_alist(
     assert(list->len > id);
     assert(n > 0);
     assert(n <= list->len - id);
-    {
-        void* const p_dest  = get_alist(list, id);
-        size_t const sz_tot = list->sz_elem * (size_t)n;
-        assert(sz_tot < SZSZ_MAX);
-        assert(sz_tot / list->sz_elem == (size_t)n);
 
-        if (p == NULL) {
-            return memset(p_dest, 0, sz_tot);
-        } else {
-            #ifndef NDEBUG
-                size_t const sz_dest = list->sz_elem * (size_t)(list->len - id);
-            #endif
-            assert(sz_dest < SZSZ_MAX);
-            assert(sz_dest / list->sz_elem == (size_t)(list->len - id));
-            assert(!overlaps_ptr(p_dest, p, sz_dest, list->sz_elem));
+    for (uint32_t i = id + n - 1; i > id; i--)
+        set_alist(list, i, p);
 
-            {
-                /* UB if itr and p overlap */
-                char* itr = p_dest;
-                REPEAT(n) {
-                    memcpy(itr, p, list->sz_elem);
-                    itr += list->sz_elem;
-                }
-            }
-
-            return p_dest;
-        }
-    }
+    return set_alist(list, id, p);
 }
 
 void swapN_alist(
