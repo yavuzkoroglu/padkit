@@ -434,6 +434,35 @@ void* insertN_alist(
     }
 }
 
+void* insertSameN_alist(
+    ArrayList* const list,
+    uint32_t const id,
+    void const* const p,
+    uint32_t const n
+) {
+    assert(isValid_alist(list));
+    assert(list->len > id);
+    assert(n < SZ32_MAX - list->len);
+    assert(n > 0);
+    {
+        uint32_t const len = list->len;
+        #ifndef NDEBUG
+            if (len + n > list->cap) {
+                size_t const sz_arr = list->sz_elem * (size_t)len;
+                assert(sz_arr < SZSZ_MAX);
+                assert(sz_arr / list->sz_elem == (size_t)len);
+                assert(!overlaps_ptr(list->arr, p, sz_arr, list->sz_elem));
+            }
+        #endif
+
+        /* Invalidates p if list->arr has to be reallocated and list->arr overlaps with p. */
+        addIndeterminateN_alist(list, n);
+
+        setDupN_alist(list, id + n, id, len - id);
+        return setSameN_alist(list, id, p, n);
+    }
+}
+
 void* insertZerosN_alist(
     ArrayList* const list,
     uint32_t const id,
@@ -751,8 +780,7 @@ void* setDupSameN_alist(
         void* const p_orig  = get_alist(list, orig_id);
         char* p_dup         = p_first;
         REPEAT(n) {
-            assert(!overlaps_ptr(p_dup, p_orig, list->sz_elem, list->sz_elem));
-            memcpy(p_dup, p_orig, list->sz_elem);
+            memmove(p_dup, p_orig, list->sz_elem);
             p_dup += list->sz_elem;
         }
         return p_first;
