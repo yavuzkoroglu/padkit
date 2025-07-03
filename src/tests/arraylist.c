@@ -260,14 +260,12 @@ static bool test_arraylist_add_alist(void) {
     TEST_PASS
 }
 
-/* TBI */
 static bool test_arraylist_addAll_alist(void) {
-    TEST_PASS
+    return test_arraylist_concat_alist();
 }
 
-/* TBI */
 static bool test_arraylist_addAllN_alist(void) {
-    TEST_PASS
+    return test_arraylist_concatN_alist();
 }
 
 static bool test_arraylist_addDup_alist(void) {
@@ -339,8 +337,25 @@ static bool test_arraylist_addDupFirstN_alist(void) {
     TEST_PASS
 }
 
-/* TBI */
 static bool test_arraylist_addDupFirstSameN_alist(void) {
+    ArrayList list[1] = { NOT_AN_ALIST };
+    construct_alist(list, 1, 3);
+
+    TEST_FAIL_IF(list->len != 0)
+    TEST_FAIL_IF(list->cap != 3)
+
+    addN_alist(list, "abc", 3);
+
+    TEST_FAIL_IF(list->len != 3)
+    TEST_FAIL_IF(list->cap != 3)
+
+    addDupFirstSameN_alist(list, 3);
+
+    TEST_FAIL_IF(list->len != 6)
+    TEST_FAIL_IF(list->cap != 6)
+    TEST_FAIL_IF(strncmp(list->arr, "abcaaa", 6) != 0)
+
+    destruct_alist(list);
     TEST_PASS
 }
 
