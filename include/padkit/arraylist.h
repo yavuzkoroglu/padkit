@@ -60,7 +60,7 @@
         uint32_t const n
     );
 
-    void* addF_alist(
+    uint32_t addF_alist(
         ArrayList* const alist,
         FILE* const fp,
         uint32_t const max_n_buf

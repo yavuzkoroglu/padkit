@@ -69,7 +69,7 @@ void* addDupSameN_alist(
     }
 }
 
-void* addF_alist(
+uint32_t addF_alist(
     ArrayList* const list,
     FILE* const fp,
     uint32_t max_n_buf
@@ -80,7 +80,7 @@ void* addF_alist(
     assert(max_n_buf > 0);
     assert(max_n_buf < SZ32_MAX);
     {
-        uint32_t const first_id = list->len;
+        uint32_t n_total = 0;
         while (feof(fp) == 0) {
             void* const p       = addIndeterminateN_alist(list, max_n_buf);
             size_t const n_rd   = fread(p, list->sz_elem, max_n_buf, fp);
@@ -89,8 +89,9 @@ void* addF_alist(
                 uint32_t const n_remove = max_n_buf - (uint32_t)n_rd;
                 deleteLastN_alist(list, n_remove);
             }
+            n_total += (uint32_t)n_rd;
         }
-        return get_alist(list, first_id);
+        return n_total;
     }
 }
 

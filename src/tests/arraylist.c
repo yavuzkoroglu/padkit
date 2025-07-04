@@ -448,13 +448,46 @@ static bool test_arraylist_addDupN_alist(void) {
     TEST_PASS
 }
 
-/* TBI */
 static bool test_arraylist_addDupSameN_alist(void) {
+    ArrayList list[1] = { NOT_AN_ALIST };
+    construct_alist(list, 1, 3);
+
+    TEST_FAIL_IF(list->len != 0)
+    TEST_FAIL_IF(list->cap != 3)
+
+    addN_alist(list, "abc", 3);
+
+    TEST_FAIL_IF(list->len != 3)
+    TEST_FAIL_IF(list->cap != 3)
+
+    addDupSameN_alist(list, 1, 2);
+
+    TEST_FAIL_IF(list->len != 5)
+    TEST_FAIL_IF(list->cap != 6)
+    TEST_FAIL_IF(strncmp(list->arr, "abcbb", 5) != 0)
+
+    destruct_alist(list);
     TEST_PASS
 }
 
-/* TBI */
 static bool test_arraylist_addF_alist(void) {
+    ArrayList list[1]   = { NOT_AN_ALIST };
+    FILE* fp            = fopen("test_artifacts/names.txt", "r");
+    TEST_FAIL_IF(fp == NULL)
+    construct_alist(list, 6, 10);
+
+    TEST_FAIL_IF(addF_alist(list, fp, 2) != 6)
+    TEST_FAIL_IF(list->len != 6)
+    TEST_FAIL_IF(list->sz_elem != 6)
+    TEST_FAIL_IF(strncmp(get_alist(list, 0), "Alice", 5) != 0)
+    TEST_FAIL_IF(strncmp(get_alist(list, 1), "Henry", 5) != 0)
+    TEST_FAIL_IF(strncmp(get_alist(list, 2), "Jones", 5) != 0)
+    TEST_FAIL_IF(strncmp(get_alist(list, 3), "Karen", 5) != 0)
+    TEST_FAIL_IF(strncmp(get_alist(list, 4), "Larry", 5) != 0)
+    TEST_FAIL_IF(strncmp(get_alist(list, 5), "Wendy", 5) != 0)
+
+    destruct_alist(list);
+    TEST_FAIL_IF(fclose(fp) != 0)
     TEST_PASS
 }
 
@@ -508,8 +541,20 @@ static bool test_arraylist_addN_alist(void) {
     TEST_PASS
 }
 
-/* TBI */
 static bool test_arraylist_addSameN_alist(void) {
+    ArrayList list[1] = { NOT_AN_ALIST };
+    construct_alist(list, 5, 1);
+
+    TEST_FAIL_IF(list->len != 0)
+    TEST_FAIL_IF(list->cap != 1)
+
+    addSameN_alist(list, "AliceHenryWendy", 3);
+
+    TEST_FAIL_IF(list->len != 3)
+    TEST_FAIL_IF(list->cap != 4)
+    TEST_FAIL_IF(strncmp(list->arr, "AliceAliceAlice", 15) != 0)
+
+    destruct_alist(list);
     TEST_PASS
 }
 
@@ -679,9 +724,8 @@ static bool test_arraylist_delete_alist(void) {
     TEST_PASS
 }
 
-/* TBI */
 static bool test_arraylist_deleteAll_alist(void) {
-    TEST_PASS
+    return test_arraylist_flush_alist();
 }
 
 /* TBI */
