@@ -682,8 +682,25 @@ static bool test_arraylist_concat_alist(void) {
     TEST_PASS
 }
 
-/* TBI */
 static bool test_arraylist_concatN_alist(void) {
+    ArrayList head[1] = { NOT_AN_ALIST };
+    ArrayList tail[1] = { NOT_AN_ALIST };
+
+    construct_alist(head, 1, 5);
+    construct_alist(tail, 1, 5);
+
+    addN_alist(tail, "abc", 3);
+
+    concatN_alist(head, tail, 3);
+
+    TEST_FAIL_IF(head->len != 9)
+    TEST_FAIL_IF(tail->len != 3)
+
+    TEST_FAIL_IF(strncmp(head->arr, "abcabcabc", 9) != 0)
+    TEST_FAIL_IF(strncmp(tail->arr, "abc", 3) != 0)
+
+    destruct_alist(head);
+    destruct_alist(tail);
     TEST_PASS
 }
 
@@ -719,8 +736,22 @@ static bool test_arraylist_constructEmpty_alist(void) {
     TEST_PASS
 }
 
-/* TBI */
 static bool test_arraylist_delete_alist(void) {
+    ArrayList list[1] = { NOT_AN_ALIST };
+    constructEmpty_alist(list, sizeof(int), 10);
+
+    addN_alist(list, (int[]){ 92, 74, 86 }, 3);
+
+    delete_alist(list, 1);
+    TEST_FAIL_IF(list->len != 2)
+    TEST_FAIL_IF(*(int*)get_alist(list, 0) != 92)
+    TEST_FAIL_IF(*(int*)get_alist(list, 1) != 86)
+
+    delete_alist(list, 0);
+    TEST_FAIL_IF(list->len != 1)
+    TEST_FAIL_IF(*(int*)get_alist(list, 0) != 86)
+
+    destruct_alist(list);
     TEST_PASS
 }
 
@@ -728,28 +759,87 @@ static bool test_arraylist_deleteAll_alist(void) {
     return test_arraylist_flush_alist();
 }
 
-/* TBI */
 static bool test_arraylist_deleteFirst_alist(void) {
+    ArrayList list[1] = { NOT_AN_ALIST };
+    constructEmpty_alist(list, sizeof(int), 10);
+
+    addN_alist(list, (int[]){ 92, 74, 86 }, 3);
+
+    deleteFirst_alist(list);
+    TEST_FAIL_IF(list->len != 2)
+    TEST_FAIL_IF(*(int*)get_alist(list, 0) != 74)
+    TEST_FAIL_IF(*(int*)get_alist(list, 1) != 86)
+
+    deleteFirst_alist(list);
+    TEST_FAIL_IF(list->len != 1)
+    TEST_FAIL_IF(*(int*)get_alist(list, 0) != 86)
+
+    deleteFirst_alist(list);
+    TEST_FAIL_IF(list->len != 0)
+
+    destruct_alist(list);
     TEST_PASS
 }
 
-/* TBI */
 static bool test_arraylist_deleteFirstN_alist(void) {
+    ArrayList list[1] = { NOT_AN_ALIST };
+    constructEmpty_alist(list, sizeof(int), 10);
+
+    addN_alist(list, (int[]){ 92, 74, 86 }, 3);
+
+    deleteFirstN_alist(list, 3);
+    TEST_FAIL_IF(list->len != 0)
+
+    destruct_alist(list);
     TEST_PASS
 }
 
-/* TBI */
 static bool test_arraylist_deleteLast_alist(void) {
+    ArrayList list[1] = { NOT_AN_ALIST };
+    constructEmpty_alist(list, sizeof(int), 10);
+
+    addN_alist(list, (int[]){ 92, 74, 86 }, 3);
+
+    deleteLast_alist(list);
+    TEST_FAIL_IF(list->len != 2)
+    TEST_FAIL_IF(*(int*)get_alist(list, 0) != 92)
+    TEST_FAIL_IF(*(int*)get_alist(list, 1) != 74)
+
+    deleteLast_alist(list);
+    TEST_FAIL_IF(list->len != 1)
+    TEST_FAIL_IF(*(int*)get_alist(list, 0) != 92)
+
+    deleteLast_alist(list);
+    TEST_FAIL_IF(list->len != 0)
+
+    destruct_alist(list);
     TEST_PASS
 }
 
-/* TBI */
 static bool test_arraylist_deleteLastN_alist(void) {
+    ArrayList list[1] = { NOT_AN_ALIST };
+    constructEmpty_alist(list, sizeof(int), 10);
+
+    addN_alist(list, (int[]){ 92, 74, 86 }, 3);
+
+    deleteLastN_alist(list, 3);
+    TEST_FAIL_IF(list->len != 0)
+
+    destruct_alist(list);
     TEST_PASS
 }
 
-/* TBI */
 static bool test_arraylist_deleteN_alist(void) {
+    ArrayList list[1] = { NOT_AN_ALIST };
+    constructEmpty_alist(list, sizeof(int), 10);
+
+    addN_alist(list, (int[]){ 92, 74, 86 }, 3);
+
+    deleteN_alist(list, 1, 2);
+    TEST_FAIL_IF(list->len != 1)
+    TEST_FAIL_IF(*(int*)get_alist(list, 0) != 92)
+
+    destruct_alist(list);
     TEST_PASS
 }
 
@@ -981,8 +1071,25 @@ static bool test_arraylist_insertDupN_alist(void) {
     TEST_PASS
 }
 
-/* TBI */
 static bool test_arraylist_insertDupSameN_alist(void) {
+    ArrayList list[1] = { NOT_AN_ALIST };
+    construct_alist(list, 1, 1024);
+
+    TEST_FAIL_IF(list->len != 0)
+    TEST_FAIL_IF(list->cap != 1024)
+
+    addN_alist(list, "abcde", 5);
+
+    TEST_FAIL_IF(list->len != 5)
+    TEST_FAIL_IF(list->cap != 1024)
+
+    insertDupSameN_alist(list, 3, 1, 3);
+
+    TEST_FAIL_IF(list->len != 8)
+    TEST_FAIL_IF(list->cap != 1024)
+    TEST_FAIL_IF(strncmp(list->arr, "abcbbbde", 8) != 0)
+
+    destruct_alist(list);
     TEST_PASS
 }
 
@@ -1054,8 +1161,25 @@ static bool test_arraylist_insertN_alist(void) {
     TEST_PASS
 }
 
-/* TBI */
 static bool test_arraylist_insertSameN_alist(void) {
+    ArrayList list[1] = { NOT_AN_ALIST };
+    construct_alist(list, 1, 1024);
+
+    TEST_FAIL_IF(list->len != 0)
+    TEST_FAIL_IF(list->cap != 1024)
+
+    addN_alist(list, "aefgh", 5);
+
+    TEST_FAIL_IF(list->len != 5)
+    TEST_FAIL_IF(list->cap != 1024)
+
+    insertSameN_alist(list, 1, "b", 3);
+
+    TEST_FAIL_IF(list->len != 8)
+    TEST_FAIL_IF(list->cap != 1024)
+    TEST_FAIL_IF(strncmp(list->arr, "abbbefgh", 8) != 0)
+
+    destruct_alist(list);
     TEST_PASS
 }
 
@@ -1480,8 +1604,20 @@ static bool test_arraylist_pushBottomN_alist(void) {
     TEST_PASS
 }
 
-/* TBI */
 static bool test_arraylist_pushBottomSameN_alist(void) {
+    ArrayList list[1] = { NOT_AN_ALIST };
+    construct_alist(list, 1, 10);
+
+    TEST_FAIL_IF(list->len != 0)
+    TEST_FAIL_IF(list->cap != 10)
+
+    addN_alist(list, "ze", 2);
+    pushBottomSameN_alist(list, "o", 2);
+
+    TEST_FAIL_IF(list->len != 4)
+    TEST_FAIL_IF(strncmp(list->arr, "ooze", 4) != 0)
+
+    destruct_alist(list);
     TEST_PASS
 }
 
@@ -1623,8 +1759,16 @@ static bool test_arraylist_pushN_alist(void) {
     TEST_PASS
 }
 
-/* TBI */
 static bool test_arraylist_pushSameN_alist(void) {
+    ArrayList list[1]   = { NOT_AN_ALIST };
+    construct_alist(list, 1, 2);
+
+    pushSameN_alist(list, "o", 2);
+    pushN_alist(list, "ze", 2);
+
+    TEST_FAIL_IF(strncmp(list->arr, "ooze", 4) != 0)
+
+    destruct_alist(list);
     TEST_PASS
 }
 
@@ -1666,26 +1810,11 @@ static bool test_arraylist_pushTop_alist(void) {
 }
 
 static bool test_arraylist_pushTopN_alist(void) {
-    ArrayList list[1]   = { NOT_AN_ALIST };
-    construct_alist(list, 1, 2);
-
-    TEST_FAIL_IF(list->len != 0)
-    TEST_FAIL_IF(list->cap != 2)
-
-    pushTopN_alist(list, "space", 5);
-    pushTopN_alist(list, "r", 1);
-
-    TEST_FAIL_IF(list->len != 6)
-    TEST_FAIL_IF(list->cap != 8)
-    TEST_FAIL_IF(strncmp(list->arr, "spacer", 6) != 0)
-
-    destruct_alist(list);
-    TEST_PASS
+    return test_arraylist_pushN_alist();
 }
 
-/* TBI */
 static bool test_arraylist_pushTopSameN_alist(void) {
-    TEST_PASS
+    return test_arraylist_pushSameN_alist();
 }
 
 static bool test_arraylist_pushZeros_alist(void) {
@@ -2214,13 +2343,53 @@ static bool test_arraylist_set_alist(void) {
     TEST_PASS
 }
 
-/* TBI */
 static bool test_arraylist_setAll_alist(void) {
+    int const grades[]      = { 92, 84, 76, 22, 45 };
+    uint32_t const nGrades  = sizeof(grades) / sizeof(int);
+    ArrayList list[1] = { NOT_AN_ALIST };
+    construct_alist(list, sizeof(int), nGrades);
+
+    TEST_FAIL_IF(list->len != 0)
+    TEST_FAIL_IF(list->cap != nGrades)
+
+    addZerosN_alist(list, nGrades);
+
+    TEST_FAIL_IF(list->len != nGrades)
+    TEST_FAIL_IF(list->cap != nGrades)
+
+    setAll_alist(list, grades);
+
+    for (uint32_t i = 0; i < nGrades; i++) {
+        int const* const grade = get_alist(list, i);
+        TEST_FAIL_IF(*grade != grades[i])
+    }
+
+    destruct_alist(list);
     TEST_PASS
 }
 
-/* TBI */
 static bool test_arraylist_setAllSame_alist(void) {
+    int const grades[]      = { 92, 84, 76, 22, 45 };
+    uint32_t const nGrades  = sizeof(grades) / sizeof(int);
+    ArrayList list[1] = { NOT_AN_ALIST };
+    construct_alist(list, sizeof(int), nGrades);
+
+    TEST_FAIL_IF(list->len != 0)
+    TEST_FAIL_IF(list->cap != nGrades)
+
+    addZerosN_alist(list, nGrades);
+
+    TEST_FAIL_IF(list->len != nGrades)
+    TEST_FAIL_IF(list->cap != nGrades)
+
+    setAllSame_alist(list, grades);
+
+    for (uint32_t i = 0; i < nGrades; i++) {
+        int const* const grade = get_alist(list, i);
+        TEST_FAIL_IF(*grade != grades[0])
+    }
+
+    destruct_alist(list);
     TEST_PASS
 }
 
