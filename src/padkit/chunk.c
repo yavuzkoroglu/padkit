@@ -26,6 +26,11 @@ Item add_chunk(
     }
 }
 
+void (* const addAll_chunk)(
+    Chunk* const head,
+    Chunk const* const tail
+) = &concat_chunk;
+
 Item addDupN_chunk(
     Chunk* const chunk,
     uint32_t const id,

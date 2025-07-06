@@ -19,7 +19,6 @@
 
     #define add_chunk(chunk, p_item, sz_item)               addN_chunk(chunk, p_item, sz_item, 1)
 
-    /* TBI */
     extern void (* const addAll_chunk)(
         Chunk* const head,
         Chunk const* const tail
