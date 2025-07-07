@@ -5,6 +5,7 @@
 
 #define TEST_FAIL(trigger) TEST_FAIL_MESSAGE(trigger) return 0;
 #define TEST_PASS return 1;
+#define TEST_SAME_AS return
 
 #define TEST_FAIL_MESSAGE(trigger)  \
     printf("FAIL => %s::%s():%d, Trigger => "#trigger"\n", __FILE__, __func__, __LINE__);

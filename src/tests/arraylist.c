@@ -261,11 +261,11 @@ static bool test_arraylist_add_alist(void) {
 }
 
 static bool test_arraylist_addAll_alist(void) {
-    return test_arraylist_concat_alist();
+    TEST_SAME_AS test_arraylist_concat_alist();
 }
 
 static bool test_arraylist_addAllN_alist(void) {
-    return test_arraylist_concatN_alist();
+    TEST_SAME_AS test_arraylist_concatN_alist();
 }
 
 static bool test_arraylist_addDup_alist(void) {
@@ -756,7 +756,7 @@ static bool test_arraylist_delete_alist(void) {
 }
 
 static bool test_arraylist_deleteAll_alist(void) {
-    return test_arraylist_flush_alist();
+    TEST_SAME_AS test_arraylist_flush_alist();
 }
 
 static bool test_arraylist_deleteFirst_alist(void) {
@@ -1810,11 +1810,11 @@ static bool test_arraylist_pushTop_alist(void) {
 }
 
 static bool test_arraylist_pushTopN_alist(void) {
-    return test_arraylist_pushN_alist();
+    TEST_SAME_AS test_arraylist_pushN_alist();
 }
 
 static bool test_arraylist_pushTopSameN_alist(void) {
-    return test_arraylist_pushSameN_alist();
+    TEST_SAME_AS test_arraylist_pushSameN_alist();
 }
 
 static bool test_arraylist_pushZeros_alist(void) {
