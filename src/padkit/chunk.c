@@ -31,6 +31,20 @@ void (* const addAll_chunk)(
     Chunk const* const tail
 ) = &concat_chunk;
 
+Item addDupLastN_chunk(
+    Chunk* const chunk,
+    uint32_t const n
+) {
+    assert(isValid_chunk(chunk));
+    assert(LEN_CHUNK(chunk) > 0);
+    assert(n > 0);
+    assert(n < SZ32_MAX - LEN_CHUNK(chunk))
+    {
+        Item const orig_item        = getLast_chunk(chunk);
+        uint32_t const append_area  = n * orig_item->sz;
+    }
+}
+
 Item addDupN_chunk(
     Chunk* const chunk,
     uint32_t const id,
