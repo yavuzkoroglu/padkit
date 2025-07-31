@@ -8,6 +8,7 @@
     #include "padkit/overlap.h"
 #endif
 
+/* TBD */
 Item add_chunk(
     Chunk* const chunk,
     void const* const p_item,
@@ -40,8 +41,11 @@ Item addDupLastN_chunk(
     assert(n > 0);
     assert(n < SZ32_MAX - LEN_CHUNK(chunk))
     {
-        Item const orig_item        = getLast_chunk(chunk);
-        uint32_t const append_area  = n * orig_item->sz;
+        Item const orig_item    = getLast_chunk(chunk);
+        Item const first_item   = addIndeterminateN_chunk(chunk, orig_item->sz, n);
+        Item item               = first_item;
+        REPEAT(n) item->p = (char*)memcpy(item->p, orig_item->p, item->sz) + item->sz;
+        return first_item;
     }
 }
 
@@ -60,7 +64,6 @@ Item addDupN_chunk(
         uint32_t const area_items   = (LEN_CHUNK(chunk) - id == n)
             ?                                    dup_offset - orig_first_item.offset
             : *(uint32_t*)get_alist(chunk->offsets, id + n) - orig_first_item.offset;
-
         assert(area_items < SZ32_MAX - dup_offset);
         {
             Item const dup_first_item = (Item){
@@ -70,12 +73,10 @@ Item addDupN_chunk(
             };
             uint32_t const* itr = get_alist(chunk->offsets, id);
             uint32_t const diff = AREA_CHUNK(chunk) - dup_offset;
-
             REPEAT(n) {
-                uint32_t const new_offset = *itr + diff;
-                itr = add_alist(chunk->offsets, &new_offset);
+                uint32_t const new_offset = *(itr++) + diff;
+                add_alist(chunk->offsets, &new_offset);
             }
-
             return dup_first_item;
         }
     }

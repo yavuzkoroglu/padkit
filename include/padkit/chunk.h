@@ -32,13 +32,11 @@
 
     #define addDupLast_chunk(chunk)                         addDupLastN_chunk(chunk, 1)
 
-    /* TBI */
     Item addDupLastN_chunk(
         Chunk* const chunk,
         uint32_t const n
     );
 
-    /* TBI */
     Item addDupN_chunk(
         Chunk* const chunk,
         uint32_t const id,
