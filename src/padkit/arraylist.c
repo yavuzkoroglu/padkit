@@ -856,11 +856,19 @@ void* setSameN_alist(
     assert(list->len > id);
     assert(n > 0);
     assert(n <= list->len - id);
-
-    for (uint32_t i = id + n - 1; i > id; i--)
-        set_alist(list, i, p);
-
-    return set_alist(list, id, p);
+    {
+        void* const p_dup   = set_alist(list, id, p);
+        uint32_t nCopies    = 1;
+        size_t sz           = list->sz_elem;
+        while (nCopies << 1 < n) {
+            memcpy(get_alist(list, id + nCopies), p_dup, sz);
+            nCopies <<= 1;
+            sz <<= 1;
+        }
+        sz = list->sz_elem * (n - nCopies);
+        memcpy(get_alist(list, id + nCopies), p_dup, sz);
+        return p_dup;
+    }
 }
 
 void swapN_alist(
