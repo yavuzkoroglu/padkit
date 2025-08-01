@@ -798,11 +798,19 @@ void* setDupSameN_alist(
     assert(dup_id != orig_id);
     assert(n <= list->len - dup_id);
     assert(n > 0);
-
-    for (uint32_t i = dup_id + n - 1; i > dup_id; i--)
-        setDup_alist(list, i, orig_id);
-
-    return setDup_alist(list, dup_id, orig_id);
+    {
+        void* const p       = setDup_alist(list, dup_id, orig_id);
+        uint32_t nCopies    = 1;
+        size_t sz           = list->sz_elem;
+        while (nCopies << 1 < n) {
+            memcpy(get_alist(list, dup_id + nCopies), p, sz);
+            nCopies <<= 1;
+            sz <<= 1;
+        }
+        sz = list->sz_elem * (n - nCopies);
+        memcpy(get_alist(list, dup_id + nCopies), p, sz);
+        return p;
+    }
 }
 
 void* setN_alist(
