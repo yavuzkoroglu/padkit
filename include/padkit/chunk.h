@@ -78,7 +78,6 @@
         uint32_t const n
     );
 
-    /* TBI */
     Item addSameN_chunk(
         Chunk* const chunk,
         void const* const p_item,
@@ -88,7 +87,6 @@
 
     #define addZeros_chunk(chunk, sz_item)                  addZerosN_chunk(chunk, sz_item, 1)
 
-    /* TBI */
     Item addZerosN_chunk(
         Chunk* const chunk,
         uint32_t const sz_item,

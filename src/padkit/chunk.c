@@ -126,9 +126,11 @@ Item addNEq_chunk(
         uint32_t const sz_total = sz_item * n;
         assert(sz_total < SZ32_MAX - AREA_CHUNK(chunk));
         assert(sz_total / sz_item == n);
+        assert(p == NULL || !overlaps_ptr(chunk->items->array, p, AREA_CHUNK(chunk), sz_total));
         {
             Item const first_item = addIndeterminateN_chunk(chunk, sz_item, n);
             if (p == NULL) return first_item;
+            /* UB if chunk->items->array and p overlap. */
             setN_alist(chunk->items, p, sz_total);
             return first_item;
         }
@@ -146,7 +148,7 @@ Item addSameN_chunk(
     assert(sz_item < SZ32_MAX - AREA_CHUNK(chunk));
     assert(n > 0);
     assert(n < SZ32_MAX - LEN_CHUNK(chunk));
-    assert(p == NULL || !overlaps_ptr(chunk->items->array, p_item, AREA_CHUNK(chunk), sz_item));
+    assert(p_item == NULL || !overlaps_ptr(chunk->items->array, p_item, AREA_CHUNK(chunk), sz_item));
     {
         uint32_t const first_offset = AREA_CHUNK(chunk);
         uint32_t const sz_total     = sz_item * n;
@@ -162,12 +164,13 @@ Item addSameN_chunk(
 
             if (p_item != NULL) {
                 uint32_t sz = sz_item;
-                memcpy(first_p, p_item, sz);
+                /* UB if p_item overlaps with chunk->items->array. */
+                setN_alist(chunk->items, first_offset, p_item, sz);
                 while (sz << 1 < sz_total) {
-                    memcpy(first_p + sz, first_p, sz);
+                    setDupN_alist(chunk->items, first_offset + sz, first_offset, sz);
                     sz <<= 1;
                 }
-                memcpy(first_p + sz, first_p, sz_total - sz);
+                setDupN_alist(chunk->items, first_offset + sz, sz_total - sz);
             }
 
             return (Item){ first_p, sz_item, first_offset };
@@ -175,43 +178,26 @@ Item addSameN_chunk(
     }
 }
 
-Item addIndeterminateN_chunk(
+Item addZerosN_chunk(
     Chunk* const chunk,
-    uint32_t const n,
-    uint32_t const sz_item
+    uint32_t const sz_item,
+    uint32_t const n
 ) {
     assert(isValid_chunk(chunk));
+    assert(sz_item > 0);
+    assert(sz_item < SZ32_MAX - AREA_CHUNK(chunk));
     assert(n > 0);
-    assert(n < SZ32_MAX);
-    assert(LEN_CHUNK(chunk) < SZ32_MAX - n);
-    assert(sz_item > 0);
-    assert(sz_item < SZ32_MAX - AREA_CHUNK(chunk));
+    assert(n < SZ32_MAX - LEN_CHUNK(chunk));
     {
-        uint32_t const area = AREA_CHUNK(chunk);
-        uint32_t const sz_total = n * sz_item;
-        assert(sz_total < SZ32_MAX - area);
-        assert(sz_total / n == sz_item);
-
-        addIndeterminateN_alist(chunk->items, sz_total);
-        add_alist(chunk->offsets, &area);
-        return divideEquallyLast_chunk(chunk, n);
-    }
-}
-
-Item addZeros_chunk(
-    Chunk* const chunk,
-    uint32_t const sz_item
-) {
-    assert(isValid_chunk(chunk));
-    assert(sz_item > 0);
-    assert(sz_item < SZ32_MAX - AREA_CHUNK(chunk));
-    {
-        uint32_t const area = AREA_CHUNK(chunk);
-        return (Item){
-            addZerosN_alist(chunk->items, sz_item),
-            sz_item,
-            *(uint32_t*)add_alist(chunk->offsets, &area)
-        };
+        uint32_t const first_offset = AREA_CHUNK(chunk);
+        uint32_t const sz_total     = sz_item * n;
+        assert(sz_total < SZ32_MAX - first_offset);
+        assert(sz_total / sz_item == n);
+        {
+            Item const first_item = addIndeterminateN_chunk(chunk, sz_item, n);
+            memset(first_item.p, 0, sz_total);
+            return first_item;
+        }
     }
 }
 
