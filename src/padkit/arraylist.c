@@ -801,14 +801,11 @@ void* setDupSameN_alist(
     {
         void* const p       = setDup_alist(list, dup_id, orig_id);
         uint32_t nCopies    = 1;
-        size_t sz           = list->sz_elem;
         while (nCopies << 1 < n) {
-            memcpy(get_alist(list, dup_id + nCopies), p, sz);
+            setDupN_alist(list, dup_id + nCopies, dup_id, nCopies);
             nCopies <<= 1;
-            sz <<= 1;
         }
-        sz = list->sz_elem * (n - nCopies);
-        memcpy(get_alist(list, dup_id + nCopies), p, sz);
+        setDupN_alist(list, dup_id + nCopies, dup_id, n - nCopies);
         return p;
     }
 }
@@ -859,14 +856,11 @@ void* setSameN_alist(
     {
         void* const p_dup   = set_alist(list, id, p);
         uint32_t nCopies    = 1;
-        size_t sz           = list->sz_elem;
         while (nCopies << 1 < n) {
-            memcpy(get_alist(list, id + nCopies), p_dup, sz);
+            setDupN_alist(list, id + nCopies, id, nCopies);
             nCopies <<= 1;
-            sz <<= 1;
         }
-        sz = list->sz_elem * (n - nCopies);
-        memcpy(get_alist(list, id + nCopies), p_dup, sz);
+        setDupN_alist(list, id + nCopies, id, n - nCopies);
         return p_dup;
     }
 }
