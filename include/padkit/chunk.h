@@ -95,44 +95,21 @@
 
     #define append_chunk(chunk, id, p_item, sz_item)        appendN_chunk(chunk, id, p_item, sz_item, 1)
 
-    /* TBI */
     Item appendAll_chunk(
         Chunk* const chunk,
         void const* const p_item,
         uint32_t const sz_item
     );
 
-    #define appendDup_chunk(chunk, orig_id, dup_id)         appendDupN_chunk(chunk, orig_id, dup_id, 1)
-
-    #define appendDupFirst_chunk(chunk, dup_id)             appendDupN_chunk(chunk, 0, dup_id, 1)
-
-    #define appendDupFirstN_chunk(chunk, dup_id, n)         appendDupN_chunk(chunk, 0, dup_id, n)
-
-    #define appendDupLast_chunk(chunk, orig_id)             appendDupLastN_chunk(chunk, orig_id, 1)
-
-    /* TBI */
-    Item appendDupLastN_chunk(
+    Item appendDup_chunk(
         Chunk* const chunk,
-        uint32_t const orig_id,
-        uint32_t const n
-    );
-
-    /* TBI */
-    Item appendDupN_chunk(
-        Chunk* const chunk,
-        uint32_t const orig_id,
         uint32_t const dup_id,
-        uint32_t const n
+        uint32_t const orig_id
     );
-
-    #define appendFirst_chunk(chunk, p_item, sz_item)       appendN_chunk(chunk, 0, p_item, sz_item, 1)
-
-    #define appendFirstN_chunk(chunk, p_item, sz_item, n)   appendN_chunk(chunk, 0, p_item, sz_item, n)
 
     #define appendFLast_chunk(chunk, fp, max_sz_item, max_sz_buf)   \
         appendFLastN_chunk(chunk, fp, max_sz_item, max_sz_buf, 1)
 
-    /* TBI */
     Item appendFLastN_chunk(
         Chunk* const chunk,
         FILE* const fp,
@@ -219,10 +196,12 @@
         int (*cmp)(void const*, void const*)
     );
 
-    /* TBI */
-    void concat_chunk(
+    #define concat_chunk(head, tail)                        concatN_chunk(head, tail, 1)
+
+    void concatN_chunk(
         Chunk* const head,
-        Chunk const* const tail
+        Chunk const* const tail,
+        uint32_t const n
     );
 
     void construct_chunk(void* const p_chunk, ...);
@@ -435,27 +414,24 @@
         int (*cmp)(void const*, void const*)
     );
 
-    /* TBI */
     bool isValid_chunk(void const* const p_chunk);
 
-    /* TBI */
     Item mergeAll_chunk(Chunk* const chunk);
 
-    /* TBI */
+    Item mergeLastN_chunk(
+        Chunk* const chunk,
+        uint32_t const n
+    );
+
+    #define mergeLastPair_chunk(chunk)                      mergeLastN_chunk(chunk, 2)
+
     Item mergeN_chunk(
         Chunk* const chunk,
         uint32_t const first_id,
         uint32_t const n
     );
 
-    /* TBI */
-    Item mergeLastPair_chunk(Chunk* const chunk);
-
-    /* TBI */
-    Item mergePair_chunk(
-        Chunk* const chunk,
-        uint32_t const first_id
-    );
+    #define mergePair_chunk(chunk, first_id)                mergeN(chunk, first_id, 2)
 
     /* TBI */
     extern Item (* const peek_chunk)(Chunk const* const chunk);

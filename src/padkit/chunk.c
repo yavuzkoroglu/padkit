@@ -201,25 +201,41 @@ Item addZerosN_chunk(
     }
 }
 
-Item appendDupLast_chunk(
+Item appendAll_chunk(
     Chunk* const chunk,
-    uint32_t const id
+    void const* const p_item,
+    uint32_t const sz_item
 ) {
     assert(isValid_chunk(chunk));
-    assert(LEN_CHUNK(chunk) > id);
-    {
-        Item const orig_item = get_chunk(chunk, id);
-        assert(isValid_item(&orig_item));
-        addDupN_alist(chunk->items, orig_item.offset, orig_item.sz);
-    }
-    return getLast_chunk(chunk);
+    assert(LEN_CHUNK(chunk) > 0);
+    assert(sz_item > 0);
+    assert(sz_item < SZ32_MAX - AREA_CHUNK(chunk));
+    assert(p_item == NULL || !overlaps_ptr(chunk->items->array, p_item, AREA_CHUNK(chunk), sz_item));
+    return appendLastN_chunk(chunk, p_item, sz_item, LEN_CHUNK(chunk));
 }
 
-Item appendFromStreamLast_chunk(
+Item appendDup_chunk(
+    Chunk* const chunk,
+    uint32_t const dup_id,
+    uint32_t const orig_id
+) {
+    assert(isValid_chunk(chunk));
+    assert(LEN_CHUNK(chunk) > dup_id);
+    assert(LEN_CHUNK(chunk) > orig_id);
+    {
+        Item const orig_item = get_chunk(chunk, orig_id);
+        dup_item = appendIndeterminate_chunk(chunk, dup_id, orig_item.sz);
+        setDupN_alist(chunk->items, dup_item.offset + dup_item.sz - orig_item.sz, orig_item.offset, orig_item.sz);
+        return dup_item;
+    }
+}
+
+Item appendFLastN_chunk(
     Chunk* const chunk,
     FILE* const stream,
     uint32_t const max_sz_item,
-    uint32_t const max_sz_buf
+    uint32_t const max_sz_buf,
+    uint32_t const n
 ) {
     assert(isValid_chunk(chunk));
     assert(LEN_CHUNK(chunk) > 0);
@@ -228,8 +244,10 @@ Item appendFromStreamLast_chunk(
     assert(max_sz_item < SZ32_MAX - AREA_CHUNK(chunk));
     assert(max_sz_buf > 0);
     assert(max_sz_buf <= max_sz_item);
-    addFromStream_chunk(chunk, stream, max_sz_item, max_sz_buf);
-    return mergeLastPair_chunk(chunk);
+    assert(n > 0);
+    assert(n < SZ32_MAX - LEN_CHUNK(chunk));
+    addFN_chunk(chunk, stream, max_sz_item, max_sz_buf, n);
+    return mergeLastN_chunk(chunk, n + 1);
 }
 
 Item appendLast_chunk(
@@ -452,8 +470,23 @@ bool isValid_chunk(void const* const p_chunk) {
 
 Item mergeAll_chunk(Chunk* const chunk) {
     assert(isValid_chunk(chunk));
+    assert(LEN_CHUNK(chunk) >= 2);
     flush_alist(chunk->offsets);
-    add_alist(chunk->offsets, 0);
+    addZeros_alist(chunk->offsets);
+    return getLast_chunk(chunk);
+}
+
+Item mergeLastN_chunk(
+    Chunk* const chunk,
+    uint32_t const n
+) {
+    assert(isValid_chunk(chunk));
+    assert(n >= 2);
+    assert(n <= LEN_CHUNK(chunk));
+    if (n == LEN_CHUNK)
+        return mergeAll_chunk(chunk);
+    else
+        deleteLastN_alist(chunk->offsets, n - 1);
     return getLast_chunk(chunk);
 }
 
@@ -462,7 +495,10 @@ Item mergeN_chunk(Chunk* const chunk, uint32_t const first_id, uint32_t const n)
     assert(first_id < LEN_CHUNK(chunk));
     assert(n >= 2);
     assert(first_id + n <= LEN_CHUNK(chunk));
-    removeN_alist(chunk->offsets, first_id + 1, n - 1);
+    if (first_id + n == LEN_CHUNK(chunk))
+        return mergeLastN_chunk(chunk, n);
+    else
+        deleteN_alist(chunk->offsets, first_id + 1, n - 1);
     return get_chunk(chunk, first_id);
 }
 
