@@ -101,6 +101,7 @@
         uint32_t const sz_item
     );
 
+    /* Todo: Expand this functionality to duplicating to N elements, etc. */
     Item appendDup_chunk(
         Chunk* const chunk,
         uint32_t const dup_id,
@@ -120,7 +121,10 @@
 
     #define appendIndeterminate_chunk(chunk, id, sz_item)   appendN_chunk(chunk, id, NULL, sz_item, 1)
 
-    #define appendIndeterminateAll_chunk(chunk, sz_item)    appendAll(chunk, NULL, sz_item)
+    #define appendIndeterminateAll_chunk(chunk, sz_item)    appendAll_chunk(chunk, NULL, sz_item)
+
+    #define appendIndeterminateAllN_chunk(chunk, sz_item, n)        \
+        appendAllN_chunk(chunk, NULL, sz_item, n)
 
     #define appendIndeterminateFirst_chunk(chunk, sz_item)  appendN_chunk(chunk, 0, NULL, sz_item, 1)
 
@@ -135,15 +139,16 @@
     #define appendIndeterminateN_chunk(chunk, id, sz_item, n)       \
         appendN_chunk(chunk, id, NULL, sz_item, n)
 
-    /* TBI */
-    Item appendLast_chunk(
+    #define appendLast(chunk, p_item, sz_item)              appendLastSameN_chunk(chunk, p_item, sz_item, 1)
+
+    Item appendLastN_chunk(
         Chunk* const chunk,
         void const* const p_item,
-        uint32_t const sz_item
+        uint32_t const sz_item,
+        uint32_t const n
     );
 
-    /* TBI */
-    Item appendLastN_chunk(
+    Item appendLastSameN_chunk(
         Chunk* const chunk,
         void const* const p_item,
         uint32_t const sz_item,
@@ -159,9 +164,17 @@
         uint32_t const n
     );
 
+    /* TBI */
+    Item appendSameN_chunk(
+        Chunk* const chunk,
+        uint32_t const id,
+        void const* const p_item,
+        uint32_t const sz_item,
+        uint32_t const n
+    );
+
     #define appendZeros_chunk(chunk, id, sz_item)           appendZerosN_chunk(chunk, id, sz_item, 1)
 
-    /* TBI */
     Item appendZerosAll_chunk(
         Chunk* const chunk,
         uint32_t const sz_item
@@ -171,29 +184,19 @@
 
     #define appendZerosFirstN_chunk(chunk, sz_item, n)      appendZerosN_chunk(chunk, 0, sz_item, n)
 
-    #define appendZerosLast_chunk(chunk, sz_item)           appendZerosLastN_chunk(chunk, sz_item, 1)
+	#define appendZerosLast_chunk(chunk, sz_item)			appendZerosLastN_chunk(chunk, sz_item, 1)
 
-    /* TBI */
     Item appendZerosLastN_chunk(
         Chunk* const chunk,
         uint32_t const sz_item,
         uint32_t const n
     );
 
-    /* TBI */
     Item appendZerosN_chunk(
         Chunk* const chunk,
         uint32_t const id,
         uint32_t const sz_item,
         uint32_t const n
-    );
-
-    /* TBI */
-    uint32_t bsearch_alist(
-        void** const p_key,
-        Chunk const* const chunk,
-        void const* const p_item,
-        int (*cmp)(void const*, void const*)
     );
 
     #define concat_chunk(head, tail)                        concatN_chunk(head, tail, 1)
@@ -407,12 +410,6 @@
     );
 
     bool isAllocated_chunk(void const* const p_chunk);
-
-    /* TBI */
-    bool isSorted_chunk(
-        Chunk const* const chunk,
-        int (*cmp)(void const*, void const*)
-    );
 
     bool isValid_chunk(void const* const p_chunk);
 

@@ -8,7 +8,7 @@
     #include "padkit/overlap.h"
 #endif
 
-void (* const addAll_chunk)(
+void (* const addAllN_chunk)(
     Chunk* const head,
     Chunk const* const tail,
     uint32_t const n
@@ -217,7 +217,7 @@ Item appendAll_chunk(
 Item appendDup_chunk(
     Chunk* const chunk,
     uint32_t const dup_id,
-    uint32_t const orig_id
+    uint32_t const orig_id,
 ) {
     assert(isValid_chunk(chunk));
     assert(LEN_CHUNK(chunk) > dup_id);
@@ -250,20 +250,56 @@ Item appendFLastN_chunk(
     return mergeLastN_chunk(chunk, n + 1);
 }
 
-Item appendLast_chunk(
+Item appendLastN_chunk(
     Chunk* const chunk,
     void const* const p_item,
-    uint32_t const sz_item
+    uint32_t const sz_item,
+    uint32_t const n
+) {
+    assert(isValid_chunk(chunk));
+    assert(sz_item > 0);
+    assert(sz_item < SZ32_MAX - AREA_CHUNK(chunk));
+    assert(n > 0);
+    assert(n < LEN_CHUNK(chunk));
+    assert(p_item == NULL || !overlaps_ptr(chunk->items->array, p_item, AREA_CHUNK(chunk), sz_item));
+    /* UB if chunk->items->array and p_item overlap. */
+    return appendN_chunk(chunk, LEN_CHUNK(chunk) - n, p_item, sz_item, n);
+}
+
+Item appendLastSameN_chunk(
+    Chunk* const chunk,
+    void const* const p_item,
+    uint32_t const sz_item,
+    uint32_t const n
 ) {
     assert(isValid_chunk(chunk));
     assert(LEN_CHUNK(chunk) > 0);
     assert(sz_item > 0);
     assert(sz_item < SZ32_MAX - AREA_CHUNK(chunk));
-    addN_alist(chunk->items, p_item, sz_item);
+    assert(n > 0);
+    assert(n < SZ32_MAX - LEN_CHUNK(chunk));
+    assert(p_item == NULL || !overlaps_ptr(chunk->items->array, p_item, AREA_CHUNK(chunk), sz_item));
+    {
+        uint32_t offset     = AREA_CHUNK(chunk);
+        uint32_t sz_total   = sz_item * n;
+        assert(sz_total < SZ32_MAX - AREA_CHUNK(chunk));
+        assert(sz_total / sz_item == n);
+        addIndeterminateN_alist(chunk->items, sz_total);
+        {
+            uint32_t sz = sz_item;
+            /* UB if chunk->items->array and p_item overlap. */
+            setN_alist(chunk->items, offset, p_item, sz);
+            while (sz << 1 < sz_total) {
+                setDupN_alist(chunk->items, offset + sz, offset, sz);
+                sz <<= 1;
+            }
+            setDupN_alist(chunk->items, offset + sz, offset, sz_total - sz);
+        }
+    }
     return getLast_chunk(chunk);
 }
 
-Item appendZerosLast_chunk(
+Item appendZerosAll_chunk(
     Chunk* const chunk,
     uint32_t const sz_item
 ) {
@@ -271,8 +307,40 @@ Item appendZerosLast_chunk(
     assert(LEN_CHUNK(chunk) > 0);
     assert(sz_item > 0);
     assert(sz_item < SZ32_MAX - AREA_CHUNK(chunk));
-    addZerosN_alist(chunk->items, sz_item);
-    return getLast_chunk(chunk);
+    return appendZerosN_chunk(chunk, 0, sz_item, LEN_CHUNK(chunk));
+}
+
+Item appendZerosLastN_chunk(
+    Chunk* const chunk,
+    uint32_t const sz_item,
+    uint32_t const n
+) {
+    assert(isValid_chunk(chunk));
+    assert(sz_item > 0);
+    assert(sz_item < SZ32_MAX - AREA_CHUNK(chunk));
+    assert(n > 0);
+    assert(n <= LEN_CHUNK(chunk));
+    return appendZerosN_chunk(chunk, LEN_CHUNK(chunk) - n, sz_item, n - 1);
+}
+
+Item appendZerosN_chunk(
+    Chunk* const chunk,
+    uint32_t const id,
+    uint32_t const sz_item,
+    uint32_t const n
+) {
+    assert(isValid_chunk(chunk));
+    assert(id < LEN_CHUNK(chunk));
+    assert(sz_item > 0);
+    assert(sz_item < SZ32_MAX - AREA_CHUNK(chunk));
+    assert(n > 0);
+    assert(n <= LEN_CHUNK(chunk) - id);
+    appendIndeterminateN_chunk(chunk, id, sz_item, n);
+    for (uint32_t i = id; i < id + n; i++) {
+        Item const item = get_chunk(chunk, i);
+        memset(item.p + item.sz - sz_item, 0, sz_item);
+    }
+    return getN_chunk(chunk, id, n);
 }
 
 void construct_chunk(void* const p_chunk, ...) {
@@ -483,11 +551,7 @@ Item mergeLastN_chunk(
     assert(isValid_chunk(chunk));
     assert(n >= 2);
     assert(n <= LEN_CHUNK(chunk));
-    if (n == LEN_CHUNK)
-        return mergeAll_chunk(chunk);
-    else
-        deleteLastN_alist(chunk->offsets, n - 1);
-    return getLast_chunk(chunk);
+    return mergeN_chunk(chunk, LEN_CHUNK(chunk) - n, n);
 }
 
 Item mergeN_chunk(Chunk* const chunk, uint32_t const first_id, uint32_t const n) {
@@ -495,24 +559,7 @@ Item mergeN_chunk(Chunk* const chunk, uint32_t const first_id, uint32_t const n)
     assert(first_id < LEN_CHUNK(chunk));
     assert(n >= 2);
     assert(first_id + n <= LEN_CHUNK(chunk));
-    if (first_id + n == LEN_CHUNK(chunk))
-        return mergeLastN_chunk(chunk, n);
-    else
-        deleteN_alist(chunk->offsets, first_id + 1, n - 1);
-    return get_chunk(chunk, first_id);
-}
-
-Item mergeLastPair_chunk(Chunk* const chunk) {
-    assert(isValid_chunk(chunk));
-    assert(LEN_CHUNK(chunk) >= 2);
-    pop_alist(chunk->offsets);
-    return getLast_chunk(chunk);
-}
-
-Item mergePair_chunk(Chunk* const chunk, uint32_t const first_id) {
-    assert(isValid_chunk(chunk));
-    assert(LEN_CHUNK(chunk) > first_id + 1);
-    remove_alist(chunk->offsets, first_id + 1);
+    deleteN_alist(chunk->offsets, first_id + 1, n - 1);
     return get_chunk(chunk, first_id);
 }
 
