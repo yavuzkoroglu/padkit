@@ -214,6 +214,22 @@ Item appendAll_chunk(
     return appendLastN_chunk(chunk, p_item, sz_item, LEN_CHUNK(chunk));
 }
 
+Item appendDupAll_chunk(
+    Chunk* const chunk,
+    uint32_t const dup_id,
+    uint32_t const orig_id,
+) {
+    assert(isValid_chunk(chunk));
+    assert(LEN_CHUNK(chunk) > dup_id);
+    assert(LEN_CHUNK(chunk) > orig_id);
+    {
+        Item const orig_item = get_chunk(chunk, orig_id);
+        dup_item = appendIndeterminate_chunk(chunk, dup_id, orig_item.sz);
+        setDupN_alist(chunk->items, dup_item.offset + dup_item.sz - orig_item.sz, orig_item.offset, orig_item.sz);
+        return dup_item;
+    }
+}
+
 Item appendDup_chunk(
     Chunk* const chunk,
     uint32_t const dup_id,

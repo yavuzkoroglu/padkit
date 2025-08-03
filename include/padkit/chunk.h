@@ -101,11 +101,43 @@
         uint32_t const sz_item
     );
 
-    /* Todo: Expand this functionality to duplicating to N elements, etc. */
+    /* TBI */
     Item appendDup_chunk(
         Chunk* const chunk,
         uint32_t const dup_id,
-        uint32_t const orig_id
+        uint32_t const orig_id,
+        uint32_t const n
+    );
+
+    /* TBI */
+    Item appendDupOne2All_chunk(
+        Chunk* const chunk,
+        uint32_t const orig_id,
+        uint32_t const n
+    );
+
+    /* TBI */
+    Item appendDupNMany2Many_chunk(
+        Chunk* const chunk,
+        uint32_t const dup_id,
+        uint32_t const orig_id,
+        uint32_t const n
+    );
+
+    /* TBI */
+    Item appendDupNOne2Many_chunk(
+        Chunk* const chunk,
+        uint32_t const dup_id,
+        uint32_t const orig_id,
+        uint32_t const n
+    );
+
+    /* TBI */
+    Item appendDupNMany2One_chunk(
+        Chunk* const chunk,
+        uint32_t const dup_id,
+        uint32_t const orig_id,
+        uint32_t const n
     );
 
     #define appendFLast_chunk(chunk, fp, max_sz_item, max_sz_buf)   \
@@ -141,9 +173,9 @@
 
     #define appendLast(chunk, p_item, sz_item)              appendLastSameN_chunk(chunk, p_item, sz_item, 1)
 
-    Item appendLastN_chunk(
+    Item appendLastNEq_chunk(
         Chunk* const chunk,
-        void const* const p_item,
+        void const* const p,
         uint32_t const sz_item,
         uint32_t const n
     );
@@ -156,7 +188,7 @@
     );
 
     /* TBI */
-    Item appendN_chunk(
+    Item appendNEq_chunk(
         Chunk* const chunk,
         uint32_t const id,
         void const* const p_item,
@@ -439,20 +471,34 @@
     #define set_chunk(chunk, id, p_item, sz_item)           setSameN_chunk(chunk, id, p_item, sz_item, 1)
 
     /* TBI */
-    Item setAll_chunk(
+    Item setAllSame_chunk(
         Chunk* const chunk,
         void const* const p_item,
         uint32_t const sz_item
     );
 
+    #define setAllZeros_chunk(chunk, sz_item)               setAllSame_chunk(chunk, NULL, sz_item)
+
     /* TBI */
-    Item setDup_chunk(
+    Item setDupN_chunk(
         Chunk* const chunk,
         uint32_t const dup_id,
-        uint32_t const orig_id
+        uint32_t const orig_id,
+        uint32_t const n
+    );
+
+    /* TBI */
+    Item setDupSameN_chunk(
+        Chunk* const chunk,
+        uint32_t const dup_id,
+        uint32_t const orig_id,
+        uint32_t const n
     );
 
     #define setFirst_chunk(chunk, id, p_item, sz_item)      set_chunk(chunk, 0, p_item, sz_item)
+
+    #define setFirstSameN_chunk(chunk, id, p_item, sz_item, n)  \
+        setSameN_chunk(chunk, 0, p_item, sz_item, n)
 
     /* TBI */
     Item setLast_chunk(
@@ -460,6 +506,15 @@
         uint32_t const id,
         void const* const p_item,
         uint32_t const sz_item
+    );
+
+    /* TBI */
+    Item setLastSameN_chunk(
+        Chunk* const chunk,
+        uint32_t const id,
+        void const* const p_item,
+        uint32_t const sz_item,
+        uint32_t const n
     );
 
     /* TBI */
@@ -471,11 +526,9 @@
         uint32_t const n
     );
 
-    #define setZerosAll_chunk(chunk, id)                       setAll_chunk(chunk, id, NULL, 1)
+    #define setZeros_chunk(chunk, id)                       setSameN_chunk(chunk, id, NULL, 1)
 
-    #define setZeros_chunk(chunk, id)                       setN_chunk(chunk, id, NULL, 1)
-
-    #define setZerosN_chunk(chunk, id, n)                   setN_chunk(chunk, id, NULL, n)
+    #define setZerosN_chunk(chunk, id, n)                   setSameN_chunk(chunk, id, NULL, n)
 
     Item shrinkAll_chunk(
         Chunk* const chunk,
