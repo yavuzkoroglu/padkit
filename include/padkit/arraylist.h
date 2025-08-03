@@ -381,6 +381,8 @@
         void const* const p
     );
 
+    #define setAllZeros_alist(list)                 setAllSame_alist(list, NULL)
+
     #define setDup_alist(list, dup_id, orig_id)     setDupN_alist(list, dup_id, orig_id, 1)
 
     void* setDupN_alist(

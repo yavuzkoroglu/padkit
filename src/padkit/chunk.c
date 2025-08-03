@@ -479,37 +479,34 @@ void flush_chunk(Chunk* const chunk) {
     flush_alist(chunk->items);
 }
 
-Item get_chunk(
+Item getLastN_chunk(
     Chunk const* const chunk,
-    uint32_t const id
+    uint32_t const n
 ) {
-    Item item = NOT_AN_ITEM;
-
     assert(isValid_chunk(chunk));
-    assert(LEN_CHUNK(chunk) > id);
-
-    item.offset = *(uint32_t*)get_alist(chunk->offsets, id);
-    item.sz     = (LEN_CHUNK(chunk) - 1 == id)
-        ? AREA_CHUNK(chunk) - item.offset
-        : *(uint32_t*)get_alist(chunk->offsets, id + 1) - item.offset;
-    item.p      = get_alist(chunk->items, item.offset);
-
-    return item;
+    assert(n > 0);
+    assert(n <= LEN_CHUNK(chunk));
+    return getN_chunk(chunk, LEN_CHUNK(chunk) - n, n);
 }
 
-Item getLast_chunk(Chunk const* const chunk) {
-    Item item = NOT_AN_ITEM;
-
+Item getN_chunk(
+    Chunk const* const chunk,
+    uint32_t const id,
+    uint32_t const n
+) {
     assert(isValid_chunk(chunk));
-    assert(LEN_CHUNK(chunk) > 0);
-
-    item.offset = *(uint32_t*)getLast_alist(chunk->offsets);
-    item.sz     = AREA_CHUNK(chunk) - item.offset;
-    item.p      = (item.sz == 0)
-        ? getLast_alist(chunk->items)
-        : getLastN_alist(chunk->items, item.sz);
-
-    return item;
+    assert(id < LEN_CHUNK(chunk));
+    assert(n > 0);
+    assert(n <= LEN_CHUNK(chunk) - id);
+    {
+        Item item   = NOT_AN_ITEM;
+        item.offset = *(uint32_t*)get_alist(chunk->offsets, id);
+        item.sz     = (id == LEN_CHUNK(chunk) - 1)
+            ? AREA_CHUNK(chunk) - item.offset
+            : *(uint32_t*)get_alist(chunk->offsets, id + 1) - item.offset;
+        item.p      = get_alist(chunk->items, item.offset);
+        return item;
+    }
 }
 
 bool isAllocated_chunk(void const* const p_chunk) {
@@ -563,15 +560,14 @@ Item mergeN_chunk(Chunk* const chunk, uint32_t const first_id, uint32_t const n)
     return get_chunk(chunk, first_id);
 }
 
-Item (* const peek_chunk)(Chunk const* const chunk) = &getLast_chunk;
-
-Item (* const pop_chunk)(Chunk* const chunk) = &removeLast_chunk;
-
-Item (* const push_chunk)(
+Item setAll_chunk(
     Chunk* const chunk,
     void const* const p_item,
     uint32_t const sz_item
-) = &add_chunk;
+) {
+    assert(isValid_chunk(chunk));
+    assert()
+}
 
 Item shrinkAll_chunk(
     Chunk* const chunk,

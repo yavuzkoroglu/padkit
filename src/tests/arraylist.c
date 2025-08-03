@@ -105,6 +105,7 @@ static bool test_arraylist_rotateUpN_alist(void);
 static bool test_arraylist_set_alist(void);
 static bool test_arraylist_setAll_alist(void);
 static bool test_arraylist_setAllSame_alist(void);
+static bool test_arraylist_setAllZeros_alist(void);
 static bool test_arraylist_setDup_alist(void);
 static bool test_arraylist_setDupN_alist(void);
 static bool test_arraylist_setDupSameN_alist(void);
@@ -227,6 +228,7 @@ static void test_arraylist(void) {
     allTestsPass &= test_arraylist_set_alist();
     allTestsPass &= test_arraylist_setAll_alist();
     allTestsPass &= test_arraylist_setAllSame_alist();
+    allTestsPass &= test_arraylist_setAllZeros_alist();
     allTestsPass &= test_arraylist_setDup_alist();
     allTestsPass &= test_arraylist_setDupN_alist();
     allTestsPass &= test_arraylist_setDupSameN_alist();
@@ -2387,6 +2389,32 @@ static bool test_arraylist_setAllSame_alist(void) {
     for (uint32_t i = 0; i < nGrades; i++) {
         int const* const grade = get_alist(list, i);
         TEST_FAIL_IF(*grade != grades[0])
+    }
+
+    destruct_alist(list);
+    TEST_PASS
+}
+
+static bool test_arraylist_setAllZeros_alist(void) {
+    int const grades[]      = { 92, 84, 76, 22, 45 };
+    uint32_t const nGrades  = sizeof(grades) / sizeof(int);
+    ArrayList list[1] = { NOT_AN_ALIST };
+    construct_alist(list, sizeof(int), nGrades);
+
+    TEST_FAIL_IF(list->len != 0)
+    TEST_FAIL_IF(list->cap != nGrades)
+
+    addIndeterminateN_alist(list, nGrades);
+
+    TEST_FAIL_IF(list->len != nGrades)
+    TEST_FAIL_IF(list->cap != nGrades)
+
+    setAll_alist(list, grades);
+    setAllZeros_alist(list);
+
+    for (uint32_t i = 0; i < nGrades; i++) {
+        int const* const grade = get_alist(list, i);
+        TEST_FAIL_IF(*grade != 0)
     }
 
     destruct_alist(list);
