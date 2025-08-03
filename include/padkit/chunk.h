@@ -101,22 +101,12 @@
         uint32_t const sz_item
     );
 
-    /* TBI */
     Item appendDup_chunk(
         Chunk* const chunk,
         uint32_t const dup_id,
         uint32_t const orig_id,
-        uint32_t const n
     );
 
-    /* TBI */
-    Item appendDupOne2All_chunk(
-        Chunk* const chunk,
-        uint32_t const orig_id,
-        uint32_t const n
-    );
-
-    /* TBI */
     Item appendDupNMany2Many_chunk(
         Chunk* const chunk,
         uint32_t const dup_id,
@@ -124,7 +114,13 @@
         uint32_t const n
     );
 
-    /* TBI */
+    Item appendDupNMany2One_chunk(
+        Chunk* const chunk,
+        uint32_t const dup_id,
+        uint32_t const orig_id,
+        uint32_t const n
+    );
+
     Item appendDupNOne2Many_chunk(
         Chunk* const chunk,
         uint32_t const dup_id,
@@ -132,12 +128,9 @@
         uint32_t const n
     );
 
-    /* TBI */
-    Item appendDupNMany2One_chunk(
+    Item appendDupOne2All_chunk(
         Chunk* const chunk,
-        uint32_t const dup_id,
-        uint32_t const orig_id,
-        uint32_t const n
+        uint32_t const orig_id
     );
 
     #define appendFLast_chunk(chunk, fp, max_sz_item, max_sz_buf)   \

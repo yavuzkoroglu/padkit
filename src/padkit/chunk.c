@@ -211,29 +211,13 @@ Item appendAll_chunk(
     assert(sz_item > 0);
     assert(sz_item < SZ32_MAX - AREA_CHUNK(chunk));
     assert(p_item == NULL || !overlaps_ptr(chunk->items->array, p_item, AREA_CHUNK(chunk), sz_item));
-    return appendLastN_chunk(chunk, p_item, sz_item, LEN_CHUNK(chunk));
-}
-
-Item appendDupAll_chunk(
-    Chunk* const chunk,
-    uint32_t const dup_id,
-    uint32_t const orig_id,
-) {
-    assert(isValid_chunk(chunk));
-    assert(LEN_CHUNK(chunk) > dup_id);
-    assert(LEN_CHUNK(chunk) > orig_id);
-    {
-        Item const orig_item = get_chunk(chunk, orig_id);
-        dup_item = appendIndeterminate_chunk(chunk, dup_id, orig_item.sz);
-        setDupN_alist(chunk->items, dup_item.offset + dup_item.sz - orig_item.sz, orig_item.offset, orig_item.sz);
-        return dup_item;
-    }
+    return appendSameN_chunk(chunk, 0, p_item, sz_item, LEN_CHUNK(chunk));
 }
 
 Item appendDup_chunk(
     Chunk* const chunk,
     uint32_t const dup_id,
-    uint32_t const orig_id,
+    uint32_t const orig_id
 ) {
     assert(isValid_chunk(chunk));
     assert(LEN_CHUNK(chunk) > dup_id);
@@ -244,6 +228,96 @@ Item appendDup_chunk(
         setDupN_alist(chunk->items, dup_item.offset + dup_item.sz - orig_item.sz, orig_item.offset, orig_item.sz);
         return dup_item;
     }
+}
+
+Item appendDupNMany2Many_chunk(
+    Chunk* const chunk,
+    uint32_t const dup_id,
+    uint32_t const orig_id,
+    uint32_t const n
+) {
+    assert(isValid_chunk(chunk));
+    assert(dup_id < LEN_CHUNK(chunk));
+    assert(orig_id < LEN_CHUNK(chunk));
+    assert(n > 0);
+    assert(n <= LEN_CHUNK(chunk) - dup_id);
+    assert(n <= LEN_CHUNK(chunk) - orig_id);
+    {
+        uint32_t sz_total = 0;
+        for (uint32_t i = orig_id; i < orig_id + n; i++) {
+            Item const item = get_chunk(chunk, i);
+            sz_total += item.sz;
+        }
+        addIndeterminate_chunk(chunk, sz_total);
+        deleteLast_chunk(chunk);
+        for (uint32_t i = orig_id, j = dup_id; i < orig_id + n; i++, j++) {
+            Item const orig_item    = get_chunk(chunk, i);
+            Item const dup_item     = appendIndeterminate_chunk(chunk, j, orig_item.sz);
+            setDupN_alist(chunk->items, dup_item.offset + dup_item.sz - orig_item.sz, orig_item.offset, orig_item.sz);
+            return dup_item;
+        }
+    }
+}
+
+Item appendDupNMany2One_chunk(
+    Chunk* const chunk,
+    uint32_t const dup_id,
+    uint32_t const orig_id,
+    uint32_t const n
+) {
+    assert(isValid_chunk(chunk));
+    assert(dup_id < LEN_CHUNK(chunk));
+    assert(orig_id < LEN_CHUNK(chunk));
+    assert(n > 0);
+    assert(n <= LEN_CHUNK(chunk) - orig_id);
+    {
+        uint32_t sz_total = 0;
+        for (uint32_t i = orig_id; i < orig_id + n; i++) {
+            Item const item = get_chunk(chunk, i);
+            sz_total += item.sz;
+        }
+        addIndeterminate_chunk(chunk, sz_total);
+        deleteLast_chunk(chunk);
+        {
+            Item const orig_item    = getN_chunk(chunk, orig_id);
+            Item const dup_item     = appendIndeterminate_chunk(chunk, dup_id, sz_total);
+            setDupN_alist(chunk->items, dup_item.offset + dup_item.sz - sz_total, orig_item.offset, sz_total);
+            return dup_item;
+        }
+    }
+}
+
+Item appendDupNOne2Many_chunk(
+    Chunk* const chunk,
+    uint32_t const dup_id,
+    uint32_t const orig_id,
+    uint32_t const n
+) {
+    assert(isValid_chunk(chunk));
+    assert(dup_id < LEN_CHUNK(chunk));
+    assert(orig_id < LEN_CHUNK(chunk));
+    assert(n > 0);
+    assert(n <= LEN_CHUNK(chunk) - dup_id);
+    {
+        Item const orig_item    = get_chunk(chunk, orig_id);
+        uint32_t const sz_total = orig_item.sz * n;
+        assert(sz_total < SZ32_MAX - AREA_CHUNK(chunk));
+        assert(sz_total / orig_item.sz == n);
+        addIndeterminate_chunk(chunk, sz_total);
+        deleteLast_chunk(chunk);
+        for (uint32_t i = dup_id; i < dup_id + n; i++)
+            appendDup_chunk(chunk, orig_id, i);
+        return getN_chunk(chunk, dup_id, n);
+    }
+}
+
+Item appendDupOne2All_chunk(
+    Chunk* const chunk,
+    uint32_t const orig_id
+) {
+    assert(isValid_chunk(chunk));
+    assert(orig_id < LEN_CHUNK(chunk));
+    return appendDupNOne2Many_chunk(chunk, 0, orig_id, LEN_CHUNK(chunk));
 }
 
 Item appendFLastN_chunk(
