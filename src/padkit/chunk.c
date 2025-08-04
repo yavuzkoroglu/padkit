@@ -197,10 +197,9 @@ Item appendDup_chunk(
     assert(LEN_CHUNK(chunk) > dup_id);
     assert(LEN_CHUNK(chunk) > orig_id);
     {
-        uint32_t const e    = (orig_id > dup_id);
         Item orig_item      = get_chunk(chunk, orig_id);
         Item const dup_item = appendIndeterminate_chunk(chunk, dup_id, orig_item.sz);
-        orig_item.offset += e * orig_item.sz;
+        orig_item.offset += (orig_id > dup_id) * orig_item.sz;
         setDupN_alist(chunk->items, dup_item.offset + dup_item.sz - orig_item.sz, orig_item.offset, orig_item.sz);
         return dup_item;
     }
@@ -263,15 +262,15 @@ Item appendDupNMany2One_chunk(
             Item const item = get_chunk(chunk, i);
             sz_total += item.sz;
         }
-        addIndeterminateN_alist(chunk->items, sz_total);
-        deleteLastN_alist(chunk->items, sz_total);
         {
-            Item const orig_item    = getN_chunk(chunk, orig_id);
-            Item const dup_item     = appendIndeterminate_chunk(chunk, dup_id, sz_total);
-            setDupN_alist(chunk->items, dup_item.offset + dup_item.sz - sz_total, orig_item.offset, sz_total);
-            return dup_item;
+            Item const orig_first   = getN_chunk(chunk, orig_id);
+            Item const tmp          = addIndeterminate_chunk(chunk, sz_total);
+            setDupN_alist(chunk->items, tmp.offset, orig_first.offset, sz_total);
         }
     }
+    appendDup_chunk(chunk->items, dup_id, LEN_CHUNK(chunk) - 1);
+    deleteLast_chunk(chunk);
+    return get_chunk(chunk, dup_id);
 }
 
 Item appendDupNOne2Many_chunk(
@@ -290,22 +289,25 @@ Item appendDupNOne2Many_chunk(
         uint32_t const sz_total = orig_item.sz * n;
         assert(sz_total < SZ32_MAX - AREA_CHUNK(chunk));
         assert(sz_total / orig_item.sz == n);
-        addIndeterminateN_alist(chunk->items, sz_total);
-        deleteLastN_alist(chunk->items, sz_total);
-        for (uint32_t i = LEN_CHUNK(chunk) - 1; i > dup_id; i--) {
-            uint32_t const shft = (i < id + n) ? (i - id) * sz_item : sz_total;
-            Item item           = get_chunk(chunk, i);
-            setDupN_alist(chunk->items, item.offset + shft, item.offset, item.sz);
-            item.offset += shift;
-            set_alist(chunk->offsets, i, &item.offset);
+
+        appendIndeterminateLastN_chunk(chunk, sz_total);
+        {
+            Item const tmp = addDup_chunk(chunk, orig_id);
+            for (uint32_t i = LEN_CHUNK(chunk) - 2; i > dup_id; i--) {
+                uint32_t const shft = (i < orig_id + n) ? (i - orig_id) * sz_item : sz_total;
+                Item item           = get_chunk(chunk, i);
+                setDupN_alist(chunk->items, item.offset + shft, item.offset, item.sz);
+                item.offset += shft;
+                set_alist(chunk->offsets, i, &item.offset);
+            }
+            for (uint32_t i = dup_id; i < dup_id + n; i++) {
+                Item item = get_chunk(chunk, i);
+                setDupN_alist(chunk->items, item.offset + item.sz - orig_item.sz, tmp.offset, orig_item.sz);
+            }
         }
-        for (uint32_t i = id; i < id + n; i++) {
-            Item item = get_chunk(chunk, i);
-            /* UB if chunk->items->array and p overlap. */
-            setN_alist(chunk->items, item.offset + item.sz, p_item, sz_item);
-        }
-        return getN_chunk(chunk, dup_id, n);
     }
+    deleteLast_chunk(chunk);
+    return getN_chunk(chunk, dup_id, n);
 }
 
 Item appendDupOne2All_chunk(
@@ -488,6 +490,33 @@ Item appendZerosN_chunk(
         memset(item.p + item.sz - sz_item, 0, sz_item);
     }
     return getN_chunk(chunk, id, n);
+}
+
+void concatN_chunk(
+    Chunk* const head,
+    Chunk const* const tail,
+    uint32_t const n
+) {
+    assert(isValid_chunk(head));
+    assert(isValid_chunk(tail));
+    assert(n > 0);
+    assert(n < SZ32_MAX);
+    if (LEN_CHUNK(tail) == 0) {
+        return;
+    } else {
+        uint32_t const sz_tail_total = AREA_CHUNK(tail) * n;
+        assert(sz_tail_total < SZ32_MAX - AREA_CHUNK(head));
+        assert(sz_tail_total / AREA_CHUNK(tail) == n);
+
+        addIndeterminateN_alist(head->items, sz_tail_total);
+        deleteLastN_alist(head->items, sz_tail_total);
+        REPEAT(n) {
+            for (uint32_t i = 0; i < LEN_CHUNK(tail); i++) {
+                Item const item = get_chunk(tail, i);
+                add_chunk(head, item.p, item.sz);
+            }
+        }
+    }
 }
 
 void construct_chunk(void* const p_chunk, ...) {
@@ -812,8 +841,8 @@ void swapN_chunk(
     assert(id0 + n <= LEN_CHUNK(chunk));
     for (uint32_t i = id0, j = id1; i < id0 + n; i++, j++) {
         addDup_chunk(chunk, i);
-        setDup_chunk(chunk, j, i);
-        setDup_chunk(chunk, LEN_CHUNK(chunk) - 1, j);
+        setDup_chunk(chunk, i, j);
+        setDup_chunk(chunk, j, LEN_CHUNK(chunk) - 1);
         deleteLast(chunk);
     }
 }
