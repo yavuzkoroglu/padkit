@@ -805,7 +805,8 @@ void* setDupSameN_alist(
             setDupN_alist(list, dup_id + nCopies, dup_id, nCopies);
             nCopies <<= 1;
         }
-        setDupN_alist(list, dup_id + nCopies, dup_id, n - nCopies);
+        if (n > nCopies)
+            setDupN_alist(list, dup_id + nCopies, dup_id, n - nCopies);
         return p;
     }
 }
@@ -860,7 +861,8 @@ void* setSameN_alist(
             setDupN_alist(list, id + nCopies, id, nCopies);
             nCopies <<= 1;
         }
-        setDupN_alist(list, id + nCopies, id, n - nCopies);
+        if (n > nCopies)
+            setDupN_alist(list, id + nCopies, id, n - nCopies);
         return p_dup;
     }
 }

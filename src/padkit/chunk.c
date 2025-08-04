@@ -144,7 +144,8 @@ Item addN_chunk(
                     setDupN_alist(chunk->items, first_offset + sz, first_offset, sz);
                     sz <<= 1;
                 }
-                setDupN_alist(chunk->items, first_offset + sz, sz_total - sz);
+                if (sz_total > sz)
+                    setDupN_alist(chunk->items, first_offset + sz, sz_total - sz);
             }
 
             return (Item){ first_p, sz_item, first_offset };
@@ -436,7 +437,8 @@ Item appendSameN_chunk(
                     setDupN_alist(chunk->items, item.offset + item.sz + sz, item.offset + item.sz, sz);
                     sz <<= 1;
                 }
-                setDupN_alist(chunk->items, item.offset + item.sz + sz, item.offset + item.sz, sz_total - sz);
+                if (sz_total > sz)
+                    setDupN_alist(chunk->items, item.offset + item.sz + sz, item.offset + item.sz, sz_total - sz);
             }
             for (uint32_t i = id + 1; i < LEN_CHUNK(chunk); i++) {
                 uint32_t const new_offset = *(uint32_t*)get_alist(chunk->offsets, i) + sz_total;
@@ -501,20 +503,28 @@ void concatN_chunk(
     assert(isValid_chunk(tail));
     assert(n > 0);
     assert(n < SZ32_MAX);
-    if (LEN_CHUNK(tail) == 0) {
-        return;
-    } else {
+    if (LEN_CHUNK(tail) == 0) return;
+
+    {
         uint32_t const sz_tail_total = AREA_CHUNK(tail) * n;
         assert(sz_tail_total < SZ32_MAX - AREA_CHUNK(head));
         assert(sz_tail_total / AREA_CHUNK(tail) == n);
 
         addIndeterminateN_alist(head->items, sz_tail_total);
         deleteLastN_alist(head->items, sz_tail_total);
-        REPEAT(n) {
-            for (uint32_t i = 0; i < LEN_CHUNK(tail); i++) {
-                Item const item = get_chunk(tail, i);
-                add_chunk(head, item.p, item.sz);
+        for (uint32_t i = 0; i < LEN_CHUNK(tail); i++) {
+            Item const item = get_chunk(tail, i);
+            add_chunk(head, item.p, item.sz);
+        }
+        {
+            uint32_t nElements      = LEN_CHUNK(tail);
+            uint32_t const nTotal   = nElements * n;
+            while (nElements << 1 < nTotal) {
+                addDupLastN_chunk(head, nElements);
+                nElements <<= 1;
             }
+            if (nTotal - nElements > 0)
+                addDupLastN_chunk(head, nTotal - nElements);
         }
     }
 }
@@ -542,57 +552,9 @@ void constructEmpty_chunk(
     constructEmpty_alist(chunk->items, sizeof(char), init_cap_area);
 }
 
-void deleteLastN_chunk(
+Item cutNEquallyLastN_chunk(
     Chunk* const chunk,
-    uint32_t const n
-) {
-    assert(isValid_chunk(chunk));
-    assert(n > 0);
-    assert(n <= LEN_CHUNK(chunk));
-    if (n == LEN_CHUNK) {
-        flush_chunk(chunk);
-    } else {
-        Item const first_item = get_chunk(chunk, LEN_CHUNK(chunk) - n);
-        deleteLastN_alist(chunk->offsets, n);
-        deleteLastN_alist(chunk->items, AREA_CHUNK(chunk) - first_item.offset);
-    }
-}
-
-void deleteN_chunk(
-    Chunk* const chunk,
-    uint32_t const id,
-    uint32_t const n
-) {
-    assert(isValid_chunk(chunk));
-    assert(id < LEN_CHUNK(chunk));
-    assert(n > 0);
-    assert(n <= LEN_CHUNK(chunk) - id);
-    if (n == LEN_CHUNK(chunk) - id) {
-        deleteLastN(chunk, n);
-    } else {
-        Item const first_deleted    = get_chunk(chunk, id);
-        Item const first_shifted    = get_chunk(chunk, id + n);
-        uint32_t const shft         = first_shifted.offset - first_deleted.offset;
-        deleteN_alist(chunk->items, id, shft);
-        deleteN_alist(chunk->offsets, id, n);
-        for (
-            uint32_t* offset = get_alist(chunk->offsets, id), cnt = 0;
-            cnt < LEN_CHUNK(chunk) - id - n;
-            offset++, cnt++
-        ) *offset -= shft;
-    }
-}
-
-void destruct_chunk(void* const p_chunk) {
-    Chunk* const chunk = (Chunk*)p_chunk;
-    assert(isAllocated_chunk(chunk));
-    destruct_alist(chunk->offsets);
-    destruct_alist(chunk->items);
-    *chunk = NOT_A_CHUNK;
-}
-
-Item divideEquallyLast_chunk(
-    Chunk* const chunk,
+    uint32_t const nPieces,
     uint32_t const n
 ) {
     assert(isValid_chunk(chunk));
@@ -647,6 +609,55 @@ uint32_t divideLast_chunk(
         }
     }
     return n;
+}
+
+void deleteLastN_chunk(
+    Chunk* const chunk,
+    uint32_t const n
+) {
+    assert(isValid_chunk(chunk));
+    assert(n > 0);
+    assert(n <= LEN_CHUNK(chunk));
+    if (n == LEN_CHUNK) {
+        flush_chunk(chunk);
+    } else {
+        Item const first_item = get_chunk(chunk, LEN_CHUNK(chunk) - n);
+        deleteLastN_alist(chunk->offsets, n);
+        deleteLastN_alist(chunk->items, AREA_CHUNK(chunk) - first_item.offset);
+    }
+}
+
+void deleteN_chunk(
+    Chunk* const chunk,
+    uint32_t const id,
+    uint32_t const n
+) {
+    assert(isValid_chunk(chunk));
+    assert(id < LEN_CHUNK(chunk));
+    assert(n > 0);
+    assert(n <= LEN_CHUNK(chunk) - id);
+    if (n == LEN_CHUNK(chunk) - id) {
+        deleteLastN(chunk, n);
+    } else {
+        Item const first_deleted    = get_chunk(chunk, id);
+        Item const first_shifted    = get_chunk(chunk, id + n);
+        uint32_t const shft         = first_shifted.offset - first_deleted.offset;
+        deleteN_alist(chunk->items, id, shft);
+        deleteN_alist(chunk->offsets, id, n);
+        for (
+            uint32_t* offset = get_alist(chunk->offsets, id), cnt = 0;
+            cnt < LEN_CHUNK(chunk) - id - n;
+            offset++, cnt++
+        ) *offset -= shft;
+    }
+}
+
+void destruct_chunk(void* const p_chunk) {
+    Chunk* const chunk = (Chunk*)p_chunk;
+    assert(isAllocated_chunk(chunk));
+    destruct_alist(chunk->offsets);
+    destruct_alist(chunk->items);
+    *chunk = NOT_A_CHUNK;
 }
 
 void flush_chunk(Chunk* const chunk) {

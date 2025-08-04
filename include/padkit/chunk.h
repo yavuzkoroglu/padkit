@@ -131,6 +131,10 @@
         uint32_t const orig_id
     );
 
+    #define appendFirst_chunk(chunk, p_item, sz_item)       append_chunk(chunk, 0, p_item, sz_item)
+
+    #define appendFirstN_chunk(chunk, p_item, sz_item, n)   appendN_chunk(chunk, 0, p_item, sz_item, n)
+
     #define appendFLast_chunk(chunk, fp, max_sz_item, max_sz_buf)   \
         appendFLastN_chunk(chunk, fp, max_sz_item, max_sz_buf, 1)
 
@@ -146,13 +150,10 @@
 
     #define appendIndeterminateAll_chunk(chunk, sz_item)    appendAll_chunk(chunk, NULL, sz_item)
 
-    #define appendIndeterminateAllN_chunk(chunk, sz_item, n)        \
-        appendAllN_chunk(chunk, NULL, sz_item, n)
-
-    #define appendIndeterminateFirst_chunk(chunk, sz_item)  appendN_chunk(chunk, 0, NULL, sz_item, 1)
+    #define appendIndeterminateFirst_chunk(chunk, sz_item)  appendFirst_chunk(chunk, NULL, sz_item)
 
     #define appendIndeterminateFirstN_chunk(chunk, sz_item, n)      \
-        appendN_chunk(chunk, 0, NULL, sz_item, n)
+        appendFirstN_chunk(chunk, NULL, sz_item, n)
 
     #define appendIndeterminateLast_chunk(chunk, sz_item)   appendLast_chunk(chunk, NULL, sz_item)
 
@@ -331,19 +332,19 @@
 
     void destruct_chunk(void* const p_chunk);
 
-    #define enlarge_chunk(chunk, id, by)                    appendN_chunk(chunk, id, NULL, by, 1)
+    #define enlarge_chunk(chunk, id, by)                    appendIndeterminate_chunk(chunk, id, by)
 
-    #define enlargeAll_chunk(chunk, by)                     appendAll_chunk(chunk, NULL, by)
+    #define enlargeAll_chunk(chunk, by)                     appendIndeterminateAll_chunk(chunk, by)
 
-    #define enlargeFirst_chunk(chunk, by)                   appendN_chunk(chunk, 0, NULL, by, 1)
+    #define enlargeFirst_chunk(chunk, by)                   appendIndeterminateFirst_chunk(chunk, by)
 
-    #define enlargeFirstN_chunk(chunk, by)                  appendN_chunk(chunk, 0, NULL, by, 1)
+    #define enlargeFirstN_chunk(chunk, by, n)               appendIndeterminateFirstN_chunk(chunk, by, n)
 
-    #define enlargeLast_chunk(chunk, by)                    appendLastN_chunk(chunk, NULL, by, 1)
+    #define enlargeLast_chunk(chunk, by)                    appendIndeterminateLast_chunk(chunk, by)
 
-    #define enlargeLastN_chunk(chunk, by, n)                appendLastN_chunk(chunk, NULL, by, n)
+    #define enlargeLastN_chunk(chunk, by, n)                appendIndeterminateLastN_chunk(chunk, by, n)
 
-    #define enlargeN_chunk(chunk, id, by, n)                appendN_chunk(chunk, id, NULL, by, n)
+    #define enlargeN_chunk(chunk, id, by, n)                appendIndeterminateN_chunk(chunk, id, by, n)
 
     void flush_chunk(Chunk* const chunk);
 
@@ -457,16 +458,16 @@
 
     #define mergePair_chunk(chunk, first_id)                mergeN(chunk, first_id, 2)
 
-    #define set_chunk(chunk, id, p_item, sz_item)           setSameN_chunk(chunk, id, p_item, sz_item, 1)
+    #define set_chunk(chunk, id, p_item, sz_item)           setN_chunk(chunk, id, p_item, sz_item, 1)
 
     /* TBI */
-    Item setAllSame_chunk(
+    Item setAll_chunk(
         Chunk* const chunk,
         void const* const p_item,
         uint32_t const sz_item
     );
 
-    #define setAllZeros_chunk(chunk, sz_item)               setAllSame_chunk(chunk, NULL, sz_item)
+    #define setAllZeros_chunk(chunk, sz_item)               setAll_chunk(chunk, NULL, sz_item)
 
     /* TBI */
     Item setDupN_chunk(
@@ -484,21 +485,14 @@
         uint32_t const n
     );
 
-    #define setFirst_chunk(chunk, id, p_item, sz_item)      set_chunk(chunk, 0, p_item, sz_item)
+    #define setFirst_chunk(chunk, p_item, sz_item)          setFirstN_chunk(chunk, p_item, sz_item, 1)
 
-    #define setFirstSameN_chunk(chunk, id, p_item, sz_item, n)  \
-        setSameN_chunk(chunk, 0, p_item, sz_item, n)
+    #define setFirstN_chunk(chunk, p_item, sz_item, n)      setN_chunk(chunk, 0, p_item, sz_item, n)
 
-    /* TBI */
-    Item setLast_chunk(
-        Chunk* const chunk,
-        uint32_t const id,
-        void const* const p_item,
-        uint32_t const sz_item
-    );
+    #define setLast_chunk(chunk, p_item, sz_item)           setLastN_chunk(chunk, p_item, sz_item, 1)
 
     /* TBI */
-    Item setLastSameN_chunk(
+    Item setLastN_chunk(
         Chunk* const chunk,
         uint32_t const id,
         void const* const p_item,
@@ -507,7 +501,7 @@
     );
 
     /* TBI */
-    Item setSameN_chunk(
+    Item setN_chunk(
         Chunk* const chunk,
         uint32_t const id,
         void const* const p_item,
@@ -515,9 +509,14 @@
         uint32_t const n
     );
 
-    #define setZeros_chunk(chunk, id)                       setSameN_chunk(chunk, id, NULL, 1)
+    #define setZeros_chunk(chunk, id)                       setZerosN_chunk(chunk, id, 1)
 
-    #define setZerosN_chunk(chunk, id, n)                   setSameN_chunk(chunk, id, NULL, n)
+    /* TBI */
+    Item setZerosN_chunk(
+        Chunk* const chunk,
+        uint32_t const id,
+        uint32_t const n
+    );
 
     Item shrinkAll_chunk(
         Chunk* const chunk,
