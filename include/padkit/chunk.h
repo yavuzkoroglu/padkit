@@ -17,7 +17,7 @@
         ArrayList items[1];
     } Chunk;
 
-    #define add_chunk(chunk, p_item, sz_item)               addSameN_chunk(chunk, p_item, sz_item, 1)
+    #define add_chunk(chunk, p_item, sz_item)               addN_chunk(chunk, p_item, sz_item, 1)
 
     #define addAll_chunk(head, tail)                        addAllN_chunk(head, tail, 1)
 
@@ -69,16 +69,9 @@
 
     #define addIndeterminate_chunk(chunk, sz_item)          add_chunk(chunk, NULL, sz_item)
 
-    #define addIndeterminateN_chunk(chunk, sz_item, n)      addSameN_chunk(chunk, NULL, sz_item, n)
+    #define addIndeterminateN_chunk(chunk, sz_item, n)      addN_chunk(chunk, NULL, sz_item, n)
 
-    Item addNEq_chunk(
-        Chunk* const chunk,
-        void const* const p,
-        uint32_t const sz_item,
-        uint32_t const n
-    );
-
-    Item addSameN_chunk(
+    Item addN_chunk(
         Chunk* const chunk,
         void const* const p_item,
         uint32_t const sz_item,
@@ -105,6 +98,11 @@
         Chunk* const chunk,
         uint32_t const dup_id,
         uint32_t const orig_id,
+    );
+
+    Item appendDupAll2One_chunk(
+        Chunk* const chunk,
+        uint32_t const dup_id
     );
 
     Item appendDupNMany2Many_chunk(
@@ -166,9 +164,9 @@
 
     #define appendLast(chunk, p_item, sz_item)              appendLastSameN_chunk(chunk, p_item, sz_item, 1)
 
-    Item appendLastNEq_chunk(
+    Item appendLastN_chunk(
         Chunk* const chunk,
-        void const* const p,
+        void const* const p_item,
         uint32_t const sz_item,
         uint32_t const n
     );
@@ -180,8 +178,7 @@
         uint32_t const n
     );
 
-    /* TBI */
-    Item appendNEq_chunk(
+    Item appendN_chunk(
         Chunk* const chunk,
         uint32_t const id,
         void const* const p_item,
@@ -189,7 +186,6 @@
         uint32_t const n
     );
 
-    /* TBI */
     Item appendSameN_chunk(
         Chunk* const chunk,
         uint32_t const id,
