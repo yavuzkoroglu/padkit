@@ -348,12 +348,14 @@ void* insertDupN_alist(
     uint32_t const n
 ) {
     assert(isValid_alist(list));
-    assert(list->len > dup_id);
+    assert(list->len >= dup_id);
     assert(list->len > orig_id);
     assert(dup_id != orig_id);
     assert(list->len - orig_id >= n);
     assert(n > 0);
-    {
+    if (dup_id == list->len) {
+        return addDupN_alist(list, orig_id, n);
+    } else {
         uint32_t const len = list->len;
         addIndeterminateN_alist(list, n);
         addDupN_alist(list, orig_id, n);
@@ -373,12 +375,14 @@ void* insertDupSameN_alist(
     uint32_t const n
 ) {
     assert(isValid_alist(list));
-    assert(list->len > dup_id);
+    assert(list->len >= dup_id);
     assert(list->len > orig_id);
     assert(dup_id != orig_id);
     assert(list->len - orig_id >= n);
     assert(n > 0);
-    {
+    if (dup_id == list->len) {
+        return addDupSameN_alist(list, orig_id, n);
+    } else {
         uint32_t const len = list->len;
         addIndeterminateN_alist(list, n);
         addDup_alist(list, orig_id);
@@ -398,10 +402,12 @@ void* insertN_alist(
     uint32_t const n
 ) {
     assert(isValid_alist(list));
-    assert(list->len > id);
+    assert(id <= list->len);
     assert(n < SZ32_MAX - list->len);
     assert(n > 0);
-    {
+    if (id == list->len) {
+        return addN_alist(list, p, n);
+    } else {
         uint32_t const len = list->len;
         #ifndef NDEBUG
             if (len + n > list->cap) {
@@ -430,10 +436,12 @@ void* insertSameN_alist(
     uint32_t const n
 ) {
     assert(isValid_alist(list));
-    assert(list->len > id);
+    assert(id <= list->len);
     assert(n < SZ32_MAX - list->len);
     assert(n > 0);
-    {
+    if (id == list->len) {
+        return addSameN_alist(list, p, n);
+    } else {
         uint32_t const len = list->len;
         #ifndef NDEBUG
             if (len + n > list->cap) {
@@ -458,10 +466,12 @@ void* insertZerosN_alist(
     uint32_t const n
 ) {
     assert(isValid_alist(list));
-    assert(list->len > id);
+    assert(id <= list->len);
     assert(n < SZ32_MAX - list->len);
     assert(n > 0);
-    {
+    if (id == list->len) {
+        return addZerosN_alist(list, n);
+    } else {
         uint32_t const len = list->len;
         addIndeterminateN_alist(list, n);
         setDupN_alist(list, id + n, id, len - id);

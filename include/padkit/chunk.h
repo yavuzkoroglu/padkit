@@ -268,7 +268,6 @@
 
     #define cutNEquallyLast_chunk(chunk, n_pieces)          cutNEquallyLastN_chunk(chunk, n_pieces, 1)
 
-    /* TBI */
     Item cutNEquallyLastN_chunk(
         Chunk* const chunk,
         uint32_t const n_pieces,
@@ -277,7 +276,6 @@
 
     #defien cutNEqually_chunk(chunk, n_pieces, id)          cutNEquallyN_chunk(chunk, n_pieces, id, n)
 
-    /* TBI */
     Item cutNEquallyN_chunk(
         Chunk* const chunk,
         uint32_t const n_pieces,
@@ -285,23 +283,22 @@
         uint32_t const n
     );
 
-    #define cutByDelimeters_chunk(chunk, delim, id)         cutByDelimetersN_chunk(chunk, delim, id, 1)
+    #define cutByDelim_chunk(chunk, delim, id)              cutByDelimetersN_chunk(chunk, delim, id, 1)
 
-    #define cutByDelimetersFirst_chunk(chunk, delim)        cutByDelimetersN_chunk(chunk, delim, 0, 1)
+    #define cutByDelimFirst_chunk(chunk, delim)             cutByDelimetersN_chunk(chunk, delim, 0, 1)
 
-    #define cutByDelimetersFirstN_chunk(chunk, delim, n)    cutByDelimetersN_chunk(chunk, delim, 0, n)
+    #define cutByDelimFirstN_chunk(chunk, delim, n)         cutByDelimetersN_chunk(chunk, delim, 0, n)
 
-    #define cutByDelimetersLast_chunk(chunk, delim)         cutByDelimetersLastN_chunk(chunk, delim, 1)
+    #define cutByDelimLast_chunk(chunk, delim)              cutByDelimetersLastN_chunk(chunk, delim, 1)
 
-    /* TBI */
-    Item cutByDelimetersLastN_chunk(
+    Item cutByDelimLastN_chunk(
         Chunk* const chunk,
         char const delim[],
         uint32_t const n
     );
 
     /* TBI */
-    Item cutByDelimetersN_chunk(
+    Item cutByDelimN_chunk(
         Chunk* const chunk,
         char const delim[],
         uint32_t const id,
@@ -310,7 +307,6 @@
 
     #define delete_chunk(chunk, id)                         deleteN_chunk(chunk, id, 1)
 
-    /* TBI */
     extern void (* const deleteAll_chunk)(Chunk* const chunk);
 
     #define deleteFirst_chunk(chunk)                        deleteN_chunk(chunk, 0, 1)

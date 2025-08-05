@@ -1,6 +1,7 @@
 #include <assert.h>
 #include <string.h>
 #include "padkit/chunk.h"
+#include "padkit/invalid.h"
 #include "padkit/repeat.h"
 #include "padkit/size.h"
 
@@ -554,31 +555,56 @@ void constructEmpty_chunk(
 
 Item cutNEquallyLastN_chunk(
     Chunk* const chunk,
-    uint32_t const nPieces,
+    uint32_t const n_pieces,
     uint32_t const n
 ) {
     assert(isValid_chunk(chunk));
-    assert(LEN_CHUNK(chunk) > 0);
+    assert(n_pieces > 0);
+    assert(n_pieces <= AREA_CHUNK(chunk));
     assert(n > 0);
-    if (n == 1) {
-        return getLast_chunk(chunk);
-    } else {
-        Item first_item         = getLast_chunk(chunk);
-        uint32_t const sz_item  = first_item.sz / n;
-        uint32_t offset_item    = first_item.offset;
+    assert(n <= LEN_CHUNK(chunk));
+    return cutNEquallyN_chunk(chunk, n_pieces, LEN_CHUNK(chunk) - n, n);
+}
 
-        assert(isValid_item(&first_item));
-        assert(first_item.sz > n);
-        assert(first_item.sz % n == 0);
+Item cutNEquallyN_chunk(
+    Chunk* const chunk,
+    uint32_t const n_pieces,
+    uint32_t const id,
+    uint32_t const n
+) {
+    assert(isValid_chunk(chunk));
+    assert(n_pieces > 0);
+    assert(n_pieces <= AREA_CHUNK(chunk));
+    assert(id < LEN_CHUNK(chunk));
+    assert(n > 0);
+    assert(n < LEN_CHUNK(chunk) - id);
+    if (n_pieces == 1) return getN_chunk(chunk, id, n);
 
-        first_item.sz = sz_item;
-        REPEAT(n - 1) {
-            offset_item += sz_item;
-            add_alist(chunk->offsets, &offset_item);
+    for (uint32_t i = n - 1; i != INVALID_UINT32; i--) {
+        Item const orig_item    = get_chunk(chunk, id + i);
+        uint32_t const sz_piece = orig_item.sz / n_pieces;
+        assert(orig_item.sz % n_pieces == 0);
+
+        insertIndeterminateN_alist(chunk->offsets, id + i + 1, n_pieces - 1);
+        for (uint32_t j = id + i + 1, shft = sz_piece; j < id + i + n_pieces; j++, shft += sz_piece) {
+            uint32_t const new_offset = orig_item.offset + shft;
+            set_alist(chunk->offsets, j, &new_offset);
         }
-
-        return first_item;
     }
+
+    return getN_chunk(chunk, id, n * n_pieces);
+}
+
+Item cutByDelimLastN_chunk(
+    Chunk* const chunk,
+    char const delim[],
+    uint32_t const n
+) {
+    assert(isValid_chunk(chunk));
+    assert(delim != NULL);
+    assert(n > 0);
+    assert(n <= LEN_CHUNK(chunk));
+    return cutByDelimN_chunk(chunk, delim, LEN_CHUNK(chunk) - n, n);
 }
 
 uint32_t divideLast_chunk(
@@ -610,6 +636,8 @@ uint32_t divideLast_chunk(
     }
     return n;
 }
+
+void (* const deleteAll_chunk)(Chunk* const chunk) = &flush_chunk;
 
 void deleteLastN_chunk(
     Chunk* const chunk,
