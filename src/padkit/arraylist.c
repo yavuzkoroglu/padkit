@@ -821,6 +821,28 @@ void* setDupSameN_alist(
     }
 }
 
+void* setLastN_alist(
+    ArrayList* const list,
+    void const* const p,
+    uint32_t const n
+) {
+    assert(isValid_alist(list));
+    assert(n > 0);
+    assert(n <= list->len);
+    return setN_alist(list, list->len - n, p, n);
+}
+
+void* setLastSameN_alist(
+    ArrayList* const list,
+    void const* const p,
+    uint32_t const n
+) {
+    assert(isValid_alist(list));
+    assert(n > 0);
+    assert(n <= list->len);
+    return setSameN_alist(list, list->len - n, p, n);
+}
+
 void* setN_alist(
     ArrayList* const list,
     uint32_t const id,

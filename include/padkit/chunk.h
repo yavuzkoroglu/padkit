@@ -394,6 +394,8 @@
 
     #define setAllZeros_chunk(chunk, sz_item)               setAll_chunk(chunk, NULL, sz_item)
 
+    #define setDup_chunk(chunk, dup_id, orig_id)            setDupN_chunk(chunk, dup_id, orig_id, 1)
+
     /* TBI */
     Item setDupN_chunk(
         Chunk* const chunk,

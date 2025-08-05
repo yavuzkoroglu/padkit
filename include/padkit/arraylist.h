@@ -399,6 +399,26 @@
         uint32_t const n
     );
 
+    #define setFirst_alist(list, p)                 setFirstN_alist(list, p, 1)
+
+    #define setFirstN_alist(list, p, n)             setN_alist(list, 0, p, n)
+
+    #define setFirstSameN_alist(list, p, n)         setSameN_alist(list, 0, p, n)
+
+    #define setLast_alist(list, p)                  setLastN_alist(list, p, 1)
+
+    void* setLastN_alist(
+        ArrayList* const list,
+        void const* const p,
+        uint32_t const n
+    );
+
+    void* setLastSameN_alist(
+        ArrayList* const list,
+        void const* const p,
+        uint32_t const n
+    );
+
     void* setN_alist(
         ArrayList* const list,
         uint32_t const id,
