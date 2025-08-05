@@ -363,76 +363,6 @@
         uint32_t const n
     );
 
-    #define insert_chunk(chunk, id, p_item, sz_item)        insertN_chunk(chunk, id, p_item, sz_item, 1)
-
-    /* TBI */
-    Item insertAll_chunk(
-        Chunk* const chunk,
-        void const* const p_item,
-        uint32_t const sz_item
-    );
-
-    #define insertDup_chunk(chunk, dup_id, orig_id)         insertDupN_chunk(chunk, dup_id, orig_id, 1)
-
-    /* TBI */
-    Item insertDupN_chunk(
-        Chunk* const chunk,
-        uint32_t const dup_id,
-        uint32_t const orig_id,
-        uint32_t const n
-    );
-
-    /* TBI */
-    Item insertDupSameN_chunk(
-        Chunk* const chunk,
-        uint32_t const dup_id,
-        uint32_t const orig_id,
-        uint32_t const n
-    );
-
-    #define insertIndeterminate_chunk(chunk, id, sz_item)   insertN_chunk(chunk, id, NULL, sz_item, 1)
-
-    #define insertIndeterminateN_chunk(chunk, id, sz_item, n)       \
-        insertN_chunk(chunk, id, NULL, sz_item, 1)
-
-    /* TBI */
-    Item insertN_chunk(
-        Chunk* const chunk,
-        uint32_t const id,
-        void const* const p_item,
-        uint32_t const sz_item,
-        uint32_t const n
-    );
-
-    #define insertZeros_chunk(chunk, id, sz_item)           insertZerosN_chunk(chunk, id, sz_item, 1)
-
-    /* TBI */
-    Item insertZerosAll_chunk(
-        Chunk* const chunk,
-        uint32_t const sz_item
-    );
-
-    #define insertZerosFirst_chunk(chunk, id, sz_item)      insertZerosN_chunk(chunk, 0, sz_item, 1)
-
-    #define insertZerosFirstN_chunk(chunk, id, sz_item, n)  insertZerosN_chunk(chunk, 0, sz_item, n)
-
-    #define insertZerosLast_chunk(chunk, id, sz_item)       insertZerosLastN_chunk(chunk, sz_item, 1)
-
-    /* TBI */
-    Item insertZerosLastN_chunk(
-        Chunk* const chunk,
-        uint32_t const sz_item,
-        uint32_t const n
-    );
-
-    /* TBI */
-    Item insertZerosN_chunk(
-        Chunk* const chunk,
-        uint32_t const id,
-        uint32_t const sz_item,
-        uint32_t const n
-    );
-
     bool isAllocated_chunk(void const* const p_chunk);
 
     bool isValid_chunk(void const* const p_chunk);
@@ -456,7 +386,6 @@
 
     #define set_chunk(chunk, id, p_item, sz_item)           setN_chunk(chunk, id, p_item, sz_item, 1)
 
-    /* TBI */
     Item setAll_chunk(
         Chunk* const chunk,
         void const* const p_item,
@@ -507,7 +436,6 @@
 
     #define setZeros_chunk(chunk, id)                       setZerosN_chunk(chunk, id, 1)
 
-    /* TBI */
     Item setZerosN_chunk(
         Chunk* const chunk,
         uint32_t const id,

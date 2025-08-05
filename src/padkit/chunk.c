@@ -351,7 +351,7 @@ Item appendLastN_chunk(
     assert(sz_item > 0);
     assert(sz_item < SZ32_MAX - AREA_CHUNK(chunk));
     assert(n > 0);
-    assert(n < LEN_CHUNK(chunk));
+    assert(n <= LEN_CHUNK(chunk));
     assert(p_item == NULL || !overlaps_ptr(chunk->items->array, p_item, AREA_CHUNK(chunk), sz_item));
     /* UB if chunk->items->array and p_item overlap. */
     return appendN_chunk(chunk, LEN_CHUNK(chunk) - n, p_item, sz_item, n);
@@ -367,7 +367,7 @@ Item appendLastSameN_chunk(
     assert(sz_item > 0);
     assert(sz_item < SZ32_MAX - AREA_CHUNK(chunk));
     assert(n > 0);
-    assert(n < LEN_CHUNK(chunk));
+    assert(n <= LEN_CHUNK(chunk));
     assert(p_item == NULL || !overlaps_ptr(chunk->items->array, p_item, AREA_CHUNK(chunk), sz_item));
     /* UB if chunk->items->array and p_item overlap. */
     return appendSameN_chunk(chunk, LEN_CHUNK(chunk) - n, p_item, sz_item, n);
@@ -577,7 +577,7 @@ Item cutNEquallyN_chunk(
     assert(n_pieces <= AREA_CHUNK(chunk));
     assert(id < LEN_CHUNK(chunk));
     assert(n > 0);
-    assert(n < LEN_CHUNK(chunk) - id);
+    assert(n <= LEN_CHUNK(chunk) - id);
     if (n_pieces == 1) return getN_chunk(chunk, id, n);
 
     for (uint32_t i = n - 1; i != INVALID_UINT32; i--) {
@@ -781,7 +781,33 @@ Item setAll_chunk(
     uint32_t const sz_item
 ) {
     assert(isValid_chunk(chunk));
-    assert()
+    assert(sz_item > 0);
+    assert(sz_item < SZ32_MAX);
+    assert(p_item == NULL || !overlaps_ptr(chunk->items->array, p_item, AREA_CHUNK(chunk), sz_item));
+    {
+        uint32_t const n = LEN_CHUNK(chunk);
+        flush_chunk(chunk);
+        return addN_chunk(chunk, p_item, sz_item, n);
+    }
+}
+
+Item setZerosN_chunk(
+    Chunk* const chunk,
+    uint32_t const id,
+    uint32_t const n
+) {
+    assert(isValid_chunk(chunk));
+    assert(id < LEN_CHUNK(chunk));
+    assert(n > 0);
+    assert(n <= LEN_CHUNK(chunk) - id);
+    {
+        Item const first_item   = getN_chunk(chunk, id, n);
+        uint32_t const sz_total = (n == LEN_CHUNK(chunk) - id)
+            ?                             AREA_CHUNK(chunk) - first_item.offset
+            : *(uint32_t*)get_alist(chunk->offsets, id + n) - first_item.offset;
+        setZerosN_alist(chunk->items, first_item.offset, sz_total);
+        return first_item;
+    }
 }
 
 Item shrinkAll_chunk(
@@ -875,9 +901,8 @@ void swapN_chunk(
     assert(id0 < LEN_CHUNK(chunk));
     assert(id1 != id0);
     assert(n > 0);
-    assert(n < LEN_CHUNK(chunk));
-    assert(id1 + n <= LEN_CHUNK(chunk));
-    assert(id0 + n <= LEN_CHUNK(chunk));
+    assert(n <= LEN_CHUNK(chunk) - id1);
+    assert(n <= LEN_CHUNK(chunk) - id0);
     for (uint32_t i = id0, j = id1; i < id0 + n; i++, j++) {
         addDup_chunk(chunk, i);
         setDup_chunk(chunk, i, j);
