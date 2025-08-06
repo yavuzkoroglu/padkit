@@ -329,7 +329,7 @@ static bool test_chunk_addDup_chunk(void) {
     item = addDup_chunk(chunk, 0);
     TEST_FAIL_IF(item.offset != 5)
     TEST_FAIL_IF(item.sz != 3)
-    TEST_FAIL_IF(memcmp(item.p, "abc", 1) != 0)
+    TEST_FAIL_IF(memcmp(item.p, "abc", 3) != 0)
 
     TEST_FAIL_IF(LEN_CHUNK(chunk) != 4)
     TEST_FAIL_IF(AREA_CHUNK(chunk) != 8)
@@ -339,16 +339,237 @@ static bool test_chunk_addDup_chunk(void) {
     TEST_PASS
 }
 
-static bool test_chunk_addDupFirst_chunk(void) { TEST_PASS }
-static bool test_chunk_addDupFirstN_chunk(void) { TEST_PASS }
-static bool test_chunk_addDupFirstSameN_chunk(void) { TEST_PASS }
-static bool test_chunk_addDupLast_chunk(void) { TEST_PASS }
-static bool test_chunk_addDupLastN_chunk(void) { TEST_PASS }
-static bool test_chunk_addDupLastSameN_chunk(void) { TEST_PASS }
-static bool test_chunk_addDupN_chunk(void) { TEST_PASS }
-static bool test_chunk_addDupSameN_chunk(void) { TEST_PASS }
-static bool test_chunk_addF_chunk(void) { TEST_PASS }
-static bool test_chunk_addFN_chunk(void) { TEST_PASS }
+static bool test_chunk_addDupFirst_chunk(void) {
+    Chunk chunk[1]  = { NOT_A_CHUNK };
+    Item item       = NOT_AN_ITEM;
+    construct_chunk(chunk, CHUNK_RECOMMENDED_PARAMETERS);
+
+    TEST_FAIL_IF(LEN_CHUNK(chunk) != 0)
+    TEST_FAIL_IF(AREA_CHUNK(chunk) != 0)
+
+    add_chunk(chunk, "abc", 3);
+    add_chunk(chunk, "d", 1);
+
+    item = addDupFirst_chunk(chunk);
+    TEST_FAIL_IF(item.offset != 4)
+    TEST_FAIL_IF(item.sz != 3)
+    TEST_FAIL_IF(memcmp(item.p, "abc", 3) != 0)
+
+    TEST_FAIL_IF(LEN_CHUNK(chunk) != 3)
+    TEST_FAIL_IF(AREA_CHUNK(chunk) != 7)
+    TEST_FAIL_IF(memcmp(chunk->items->arr, "abcdabc", 7) != 0)
+
+    destruct_chunk(chunk);
+    TEST_PASS
+}
+
+static bool test_chunk_addDupFirstN_chunk(void) {
+    Chunk chunk[1]  = { NOT_A_CHUNK };
+    Item item       = NOT_AN_ITEM;
+    construct_chunk(chunk, CHUNK_RECOMMENDED_PARAMETERS);
+
+    TEST_FAIL_IF(LEN_CHUNK(chunk) != 0)
+    TEST_FAIL_IF(AREA_CHUNK(chunk) != 0)
+
+    add_chunk(chunk, "abc", 3);
+    add_chunk(chunk, "d", 1);
+
+    item = addDupFirstN_chunk(chunk, 2);
+    TEST_FAIL_IF(item.offset != 4)
+    TEST_FAIL_IF(item.sz != 3)
+    TEST_FAIL_IF(memcmp(item.p, "abc", 3) != 0)
+
+    item = addDupFirstN_chunk(chunk, 4);
+    TEST_FAIL_IF(item.offset != 8)
+    TEST_FAIL_IF(item.sz != 3)
+    TEST_FAIL_IF(memcmp(item.p, "abc", 3) != 0)
+
+    TEST_FAIL_IF(LEN_CHUNK(chunk) != 8)
+    TEST_FAIL_IF(AREA_CHUNK(chunk) != 16)
+    TEST_FAIL_IF(memcmp(chunk->items->arr, "abcdabcdabcdabcd", 16) != 0)
+
+    destruct_chunk(chunk);
+    TEST_PASS
+}
+
+static bool test_chunk_addDupFirstSameN_chunk(void) {
+    Chunk chunk[1]  = { NOT_A_CHUNK };
+    Item item       = NOT_AN_ITEM;
+    construct_chunk(chunk, CHUNK_RECOMMENDED_PARAMETERS);
+
+    TEST_FAIL_IF(LEN_CHUNK(chunk) != 0)
+    TEST_FAIL_IF(AREA_CHUNK(chunk) != 0)
+
+    add_chunk(chunk, "abc", 3);
+    add_chunk(chunk, "d", 1);
+
+    item = addDupFirstSameN_chunk(chunk, 2);
+    TEST_FAIL_IF(item.offset != 4)
+    TEST_FAIL_IF(item.sz != 3)
+    TEST_FAIL_IF(memcmp(item.p, "abc", 3) != 0)
+
+    TEST_FAIL_IF(LEN_CHUNK(chunk) != 4)
+    TEST_FAIL_IF(AREA_CHUNK(chunk) != 10)
+    TEST_FAIL_IF(memcmp(chunk->items->arr, "abcdabcabc", 10) != 0)
+
+    destruct_chunk(chunk);
+    TEST_PASS
+}
+
+static bool test_chunk_addDupLast_chunk(void) {
+    Chunk chunk[1]  = { NOT_A_CHUNK };
+    Item item       = NOT_AN_ITEM;
+    construct_chunk(chunk, CHUNK_RECOMMENDED_PARAMETERS);
+
+    TEST_FAIL_IF(LEN_CHUNK(chunk) != 0)
+    TEST_FAIL_IF(AREA_CHUNK(chunk) != 0)
+
+    add_chunk(chunk, "abc", 3);
+    add_chunk(chunk, "d", 1);
+
+    item = addDupLast_chunk(chunk);
+    TEST_FAIL_IF(item.offset != 4)
+    TEST_FAIL_IF(item.sz != 1)
+    TEST_FAIL_IF(memcmp(item.p, "d", 1) != 0)
+
+    TEST_FAIL_IF(LEN_CHUNK(chunk) != 3)
+    TEST_FAIL_IF(AREA_CHUNK(chunk) != 5)
+    TEST_FAIL_IF(memcmp(chunk->items->arr, "abcdd", 5) != 0)
+
+    destruct_chunk(chunk);
+    TEST_PASS
+}
+
+static bool test_chunk_addDupLastN_chunk(void) {
+    Chunk chunk[1]  = { NOT_A_CHUNK };
+    Item item       = NOT_AN_ITEM;
+    construct_chunk(chunk, CHUNK_RECOMMENDED_PARAMETERS);
+
+    TEST_FAIL_IF(LEN_CHUNK(chunk) != 0)
+    TEST_FAIL_IF(AREA_CHUNK(chunk) != 0)
+
+    add_chunk(chunk, "abc", 3);
+    add_chunk(chunk, "d", 1);
+
+    item = addDupLastN_chunk(chunk, 2);
+    TEST_FAIL_IF(item.offset != 4)
+    TEST_FAIL_IF(item.sz != 3)
+    TEST_FAIL_IF(memcmp(item.p, "abc", 1) != 0)
+
+    TEST_FAIL_IF(LEN_CHUNK(chunk) != 4)
+    TEST_FAIL_IF(AREA_CHUNK(chunk) != 8)
+    TEST_FAIL_IF(memcmp(chunk->items->arr, "abcdabcd", 8) != 0)
+
+    destruct_chunk(chunk);
+    TEST_PASS
+}
+
+static bool test_chunk_addDupLastSameN_chunk(void) {
+    Chunk chunk[1]  = { NOT_A_CHUNK };
+    Item item       = NOT_AN_ITEM;
+    construct_chunk(chunk, CHUNK_RECOMMENDED_PARAMETERS);
+
+    TEST_FAIL_IF(LEN_CHUNK(chunk) != 0)
+    TEST_FAIL_IF(AREA_CHUNK(chunk) != 0)
+
+    add_chunk(chunk, "abc", 3);
+    add_chunk(chunk, "d", 1);
+
+    item = addDupLastSameN_chunk(chunk, 2);
+    TEST_FAIL_IF(item.offset != 4)
+    TEST_FAIL_IF(item.sz != 1)
+    TEST_FAIL_IF(memcmp(item.p, "d", 1) != 0)
+
+    TEST_FAIL_IF(LEN_CHUNK(chunk) != 4)
+    TEST_FAIL_IF(AREA_CHUNK(chunk) != 6)
+    TEST_FAIL_IF(memcmp(chunk->items->arr, "abcddd", 6) != 0)
+
+    destruct_chunk(chunk);
+    TEST_PASS
+}
+
+static bool test_chunk_addDupN_chunk(void) {
+    Chunk chunk[1]  = { NOT_A_CHUNK };
+    Item item       = NOT_AN_ITEM;
+    construct_chunk(chunk, CHUNK_RECOMMENDED_PARAMETERS);
+
+    TEST_FAIL_IF(LEN_CHUNK(chunk) != 0)
+    TEST_FAIL_IF(AREA_CHUNK(chunk) != 0)
+
+    add_chunk(chunk, "abc", 3);
+    add_chunk(chunk, "d", 1);
+
+    item = addDupN_chunk(chunk, 0, 2);
+    TEST_FAIL_IF(item.offset != 4)
+    TEST_FAIL_IF(item.sz != 3)
+    TEST_FAIL_IF(memcmp(item.p, "abc", 3) != 0)
+
+    TEST_FAIL_IF(LEN_CHUNK(chunk) != 4)
+    TEST_FAIL_IF(AREA_CHUNK(chunk) != 8)
+    TEST_FAIL_IF(memcmp(chunk->items->arr, "abcdabcd", 8) != 0)
+
+    destruct_chunk(chunk);
+    TEST_PASS
+}
+
+static bool test_chunk_addDupSameN_chunk(void) {
+    Chunk chunk[1]  = { NOT_A_CHUNK };
+    Item item       = NOT_AN_ITEM;
+    construct_chunk(chunk, CHUNK_RECOMMENDED_PARAMETERS);
+
+    TEST_FAIL_IF(LEN_CHUNK(chunk) != 0)
+    TEST_FAIL_IF(AREA_CHUNK(chunk) != 0)
+
+    add_chunk(chunk, "abc", 3);
+    add_chunk(chunk, "d", 1);
+
+    item = addDupSameN_chunk(chunk, 0, 2);
+    TEST_FAIL_IF(item.offset != 4)
+    TEST_FAIL_IF(item.sz != 3)
+    TEST_FAIL_IF(memcmp(item.p, "abc", 3) != 0)
+
+    TEST_FAIL_IF(LEN_CHUNK(chunk) != 4)
+    TEST_FAIL_IF(AREA_CHUNK(chunk) != 10)
+    TEST_FAIL_IF(memcmp(chunk->items->arr, "abcdabcabc", 8) != 0)
+
+    destruct_chunk(chunk);
+    TEST_PASS
+}
+
+static bool test_chunk_addF_chunk(void) {
+    Chunk chunk[1]  = { NOT_A_CHUNK };
+    Item item       = NOT_AN_ITEM;
+    FILE* const fp  = fopen("test_artifacts/words.txt", "r");
+    TEST_FAIL_IF(fp == NULL)
+    construct_chunk(chunk, CHUNK_RECOMMENDED_PARAMETERS);
+
+    item = addF_chunk(chunk, fp, 1024, 5);
+    TEST_FAIL_IF(item.offset != 0)
+    TEST_FAIL_IF(item.sz != 26)
+    TEST_FAIL_IF(memcmp(item.p, "first\nsecond\nthird\nfourth\n", 26) != 0)
+
+    destruct_chunk(chunk);
+    TEST_FAIL_IF(fclose(fp) != 0)
+
+    TEST_PASS
+}
+
+static bool test_chunk_addFN_chunk(void) {
+    Chunk chunk[1]  = { NOT_A_CHUNK };
+    FILE* const fp  = fopen("test_artifacts/words.txt", "r");
+    TEST_FAIL_IF(fp == NULL)
+    construct_chunk(chunk, CHUNK_RECOMMENDED_PARAMETERS);
+
+    addFN_chunk(chunk, fp, 1024, 5, 4);
+    TEST_FAIL_IF(LEN_CHUNK(chunk) != 4)
+    TEST_FAIL_IF(AREA_CHUNK(chunk) != 104)
+
+    destruct_chunk(chunk);
+    TEST_FAIL_IF(fclose(fp) != 0)
+
+    TEST_PASS
+}
+
 static bool test_chunk_addIndeterminate_chunk(void) { TEST_PASS }
 static bool test_chunk_addIndeterminateN_chunk(void) { TEST_PASS }
 static bool test_chunk_addN_chunk(void) { TEST_PASS }

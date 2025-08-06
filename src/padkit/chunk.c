@@ -409,10 +409,9 @@ Item appendSameN_chunk(
         uint32_t sz_total = sz_item * n;
         assert(sz_total < SZ32_MAX - AREA_CHUNK(chunk));
         assert(sz_total / sz_item == n);
-        addIndeterminateN_alist(chunk->items, sz_total);
         {
             Item item = get_chunk(chunk, id);
-            setDupN_alist(chunk->items, item.offset + item.sz, item.offset + item.sz + sz_total, sz_total);
+            addIndeterminateN_alist(chunk->items, sz_total);
             {
                 uint32_t sz = sz_item;
                 /* UB if chunk->items->arr and p_item overlap. */
