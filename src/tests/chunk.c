@@ -266,15 +266,79 @@ static void test_chunk(void) {
     allTestsPass &= test_chunk_shrinkN_chunk();
     allTestsPass &= test_chunk_swap_chunk();
     allTestsPass &= test_chunk_swapN_chunk();
-    allTestsPass &= test_chunk_vconstruct_chunk(2, 1, 0);
+    allTestsPass &= test_chunk_vconstruct_chunk(2, 16, 1024);
 
     if (allTestsPass) TESTS_PASS_MESSAGE
 }
 
-static bool test_chunk_add_chunk(void) { TEST_PASS }
-static bool test_chunk_addAll_chunk(void) { TEST_PASS }
-static bool test_chunk_addAllN_chunk(void) { TEST_PASS }
-static bool test_chunk_addDup_chunk(void) { TEST_PASS }
+static bool test_chunk_add_chunk(void) {
+    Chunk chunk[1]  = { NOT_A_CHUNK };
+    Item item       = NOT_AN_ITEM;
+    construct_chunk(chunk, CHUNK_RECOMMENDED_PARAMETERS);
+
+    TEST_FAIL_IF(LEN_CHUNK(chunk) != 0)
+    TEST_FAIL_IF(AREA_CHUNK(chunk) != 0)
+
+    item = add_chunk(chunk, "John", 4);
+    TEST_FAIL_IF(item.offset != 0)
+    TEST_FAIL_IF(item.sz != 4)
+    TEST_FAIL_IF(memcmp(item.p, "John", 4) != 0)
+
+    item = add_chunk(chunk, "Alice", 5);
+    TEST_FAIL_IF(item.offset != 4)
+    TEST_FAIL_IF(item.sz != 5)
+    TEST_FAIL_IF(memcmp(item.p, "Alice", 5) != 0)
+
+    item = add_chunk(chunk, "Tim", 3);
+    TEST_FAIL_IF(item.offset != 9)
+    TEST_FAIL_IF(item.sz != 3)
+    TEST_FAIL_IF(memcmp(item.p, "Tim", 3) != 0)
+
+    TEST_FAIL_IF(LEN_CHUNK(chunk) != 3)
+    TEST_FAIL_IF(AREA_CHUNK(chunk) != 12)
+    TEST_FAIL_IF(memcmp(chunk->items->arr, "JohnAliceTim", 12) != 0)
+
+    destruct_chunk(chunk);
+    TEST_PASS
+}
+
+static bool test_chunk_addAll_chunk(void) {
+    TEST_SAME_AS test_chunk_concat_chunk();
+}
+
+static bool test_chunk_addAllN_chunk(void) {
+    TEST_SAME_AS test_chunk_concatN_chunk();
+}
+
+static bool test_chunk_addDup_chunk(void) {
+    Chunk chunk[1]  = { NOT_A_CHUNK };
+    Item item       = NOT_AN_ITEM;
+    construct_chunk(chunk, CHUNK_RECOMMENDED_PARAMETERS);
+
+    TEST_FAIL_IF(LEN_CHUNK(chunk) != 0)
+    TEST_FAIL_IF(AREA_CHUNK(chunk) != 0)
+
+    add_chunk(chunk, "abc", 3);
+    add_chunk(chunk, "d", 1);
+
+    item = addDup_chunk(chunk, 1);
+    TEST_FAIL_IF(item.offset != 4)
+    TEST_FAIL_IF(item.sz != 1)
+    TEST_FAIL_IF(memcmp(item.p, "d", 1) != 0)
+
+    item = addDup_chunk(chunk, 0);
+    TEST_FAIL_IF(item.offset != 5)
+    TEST_FAIL_IF(item.sz != 3)
+    TEST_FAIL_IF(memcmp(item.p, "abc", 1) != 0)
+
+    TEST_FAIL_IF(LEN_CHUNK(chunk) != 4)
+    TEST_FAIL_IF(AREA_CHUNK(chunk) != 8)
+    TEST_FAIL_IF(memcmp(chunk->items->arr, "abcddabc", 8) != 0)
+
+    destruct_chunk(chunk);
+    TEST_PASS
+}
+
 static bool test_chunk_addDupFirst_chunk(void) { TEST_PASS }
 static bool test_chunk_addDupFirstN_chunk(void) { TEST_PASS }
 static bool test_chunk_addDupFirstSameN_chunk(void) { TEST_PASS }
@@ -330,8 +394,29 @@ static bool test_chunk_areaLast_chunk(void) { TEST_PASS }
 static bool test_chunk_areaLastN_chunk(void) { TEST_PASS }
 static bool test_chunk_concat_chunk(void) { TEST_PASS }
 static bool test_chunk_concatN_chunk(void) { TEST_PASS }
-static bool test_chunk_construct_chunk(void) { TEST_PASS }
-static bool test_chunk_constructEmpty_chunk(void) { TEST_PASS }
+
+static bool test_chunk_construct_chunk(void) {
+    Chunk chunks[3][1]       = { { NOT_A_CHUNK }, { NOT_A_CHUNK } };
+    uint32_t const n_chunks = sizeof(chunks) / sizeof(Chunk);
+
+    TEST_FAIL_IF(n_chunks != 3)
+
+    construct_chunk(chunks[0], 1, 1000000);
+    construct_chunk(chunks[1], 1000000, 1);
+    construct_chunk(chunks[2], 1000000, 1000000);
+
+    for (uint32_t i = 0; i < n_chunks; i++) {
+        TEST_FAIL_IF(!isValid_chunk(chunks[i]))
+        destruct_chunk(chunks[i]);
+    }
+
+    TEST_PASS
+}
+
+static bool test_chunk_constructEmpty_chunk(void) {
+    TEST_SAME_AS test_chunk_construct_chunk();
+}
+
 static bool test_chunk_cut2BySize_chunk(void) { TEST_PASS }
 static bool test_chunk_cut2BySizeFirst_chunk(void) { TEST_PASS }
 static bool test_chunk_cut2BySizeFirstN_chunk(void) { TEST_PASS }
@@ -357,7 +442,11 @@ static bool test_chunk_deleteFirstN_chunk(void) { TEST_PASS }
 static bool test_chunk_deleteLast_chunk(void) { TEST_PASS }
 static bool test_chunk_deleteLastN_chunk(void) { TEST_PASS }
 static bool test_chunk_deleteN_chunk(void) { TEST_PASS }
-static bool test_chunk_destruct_chunk(void) { TEST_PASS }
+
+static bool test_chunk_destruct_chunk(void) {
+    TEST_SAME_AS test_chunk_isValid_chunk();
+}
+
 static bool test_chunk_enlarge_chunk(void) { TEST_PASS }
 static bool test_chunk_enlargeAll_chunk(void) { TEST_PASS }
 static bool test_chunk_enlargeFirst_chunk(void) { TEST_PASS }
@@ -372,8 +461,33 @@ static bool test_chunk_getFirstN_chunk(void) { TEST_PASS }
 static bool test_chunk_getLast_chunk(void) { TEST_PASS }
 static bool test_chunk_getLastN_chunk(void) { TEST_PASS }
 static bool test_chunk_getN_chunk(void) { TEST_PASS }
-static bool test_chunk_isAllocated_chunk(void) { TEST_PASS }
-static bool test_chunk_isValid_chunk(void) { TEST_PASS }
+
+static bool test_chunk_isAllocated_chunk(void) {
+    Chunk chunk[1] = { NOT_A_CHUNK };
+    TEST_FAIL_IF(isAllocated_chunk(chunk))
+
+    construct_chunk(chunk, CHUNK_RECOMMENDED_PARAMETERS);
+    TEST_FAIL_IF(!isAllocated_chunk(chunk))
+
+    destruct_chunk(chunk);
+    TEST_FAIL_IF(isAllocated_chunk(chunk))
+
+    TEST_PASS
+}
+
+static bool test_chunk_isValid_chunk(void) {
+    Chunk chunk[1] = { NOT_A_CHUNK };
+    TEST_FAIL_IF(isValid_chunk(chunk))
+
+    construct_chunk(chunk, CHUNK_RECOMMENDED_PARAMETERS);
+    TEST_FAIL_IF(!isValid_chunk(chunk))
+
+    destruct_chunk(chunk);
+    TEST_FAIL_IF(isValid_chunk(chunk))
+
+    TEST_PASS
+}
+
 static bool test_chunk_mergeAll_chunk(void) { TEST_PASS }
 static bool test_chunk_mergeLastN_chunk(void) { TEST_PASS }
 static bool test_chunk_mergeLastPair_chunk(void) { TEST_PASS }
@@ -402,7 +516,18 @@ static bool test_chunk_shrinkLastN_chunk(void) { TEST_PASS }
 static bool test_chunk_shrinkN_chunk(void) { TEST_PASS }
 static bool test_chunk_swap_chunk(void) { TEST_PASS }
 static bool test_chunk_swapN_chunk(void) { TEST_PASS }
+
 static bool test_chunk_vconstruct_chunk(size_t const nParameters, ...) {
-    MAYBE_UNUSED(nParameters)
+    Chunk chunk[1] = { NOT_A_CHUNK };
+    va_list args;
+
+    assert(nParameters == 2);
+
+    va_start(args, nParameters);
+    vconstruct_chunk(chunk, args);
+
+    TEST_FAIL_IF(!isValid_chunk(chunk))
+
+    destruct_chunk(chunk);
     TEST_PASS
 }

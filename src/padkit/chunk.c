@@ -54,7 +54,7 @@ Item addDupN_chunk(
         }
         addDupN_alist(chunk->items, offsetOf_chunk(chunk, id), total_area - AREA_CHUNK(chunk));
     }
-    return getN_chunk(chunk, id, n);
+    return getLastN_chunk(chunk, n);
 }
 
 Item addDupSameN_chunk(

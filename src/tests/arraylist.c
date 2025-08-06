@@ -720,14 +720,14 @@ static bool test_arraylist_concatN_alist(void) {
 
 static bool test_arraylist_construct_alist(void) {
     ArrayList list[2][1]    = { { NOT_AN_ALIST }, { NOT_AN_ALIST } };
-    uint32_t const nLists   = sizeof(list) / sizeof(ArrayList);
+    uint32_t const n_lists  = sizeof(list) / sizeof(ArrayList);
 
-    TEST_FAIL_IF(nLists != 2)
+    TEST_FAIL_IF(n_lists != 2)
 
     construct_alist(list[0], sizeof(int), 1);
     construct_alist(list[1], sizeof(int), 1000000);
 
-    for (uint32_t i = 0; i < nLists; i++) {
+    for (uint32_t i = 0; i < n_lists; i++) {
         TEST_FAIL_IF(!isValid_alist(list[i]))
         destruct_alist(list[i]);
     }
@@ -736,18 +736,7 @@ static bool test_arraylist_construct_alist(void) {
 }
 
 static bool test_arraylist_constructEmpty_alist(void) {
-    ArrayList list[2][1]    = { { NOT_AN_ALIST }, { NOT_AN_ALIST } };
-    uint32_t const nLists   = sizeof(list) / sizeof(ArrayList);
-
-    constructEmpty_alist(list[0], sizeof(int), 1);
-    constructEmpty_alist(list[1], sizeof(int), 1000000);
-
-    for (uint32_t i = 0; i < nLists; i++) {
-        TEST_FAIL_IF(!isValid_alist(list[i]))
-        destruct_alist(list[i]);
-    }
-
-    TEST_PASS
+    TEST_SAME_AS test_arraylist_construct_alist();
 }
 
 static bool test_arraylist_delete_alist(void) {
