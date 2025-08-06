@@ -18,7 +18,7 @@
 
 #include "tests/arraylist.c"
 #include "tests/bitmatrix.c"
-/* #include "tests/chunk.c" */
+#include "tests/chunk.c"
 #include "tests/graphmatrix.c"
 #include "tests/hash.c"
 /* #include "tests/indextable.c" */
@@ -86,7 +86,7 @@ int main(void) {
     puts("-----------");
     test_arraylist();
     test_bitmatrix();
-    /* test_chunk(); */
+    test_chunk();
     test_graphmatrix();
     test_hash();
     /* test_indextable(); */

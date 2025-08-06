@@ -25,13 +25,15 @@
         Chunk* const head,
         Chunk const* const tail,
         uint32_t const n
-    )
+    );
 
     #define addDup_chunk(chunk, id)                         addDupN_chunk(chunk, id, 1)
 
     #define addDupFirst_chunk(chunk)                        addDup_chunk(chunk, 0)
 
     #define addDupFirstN_chunk(chunk, n)                    addDupN_chunk(chunk, 0, n)
+
+    #define addDupFirstSameN_chunk(chunk, n)                addDupSameN_chunk(chunk, 0, n)
 
     #define addDupLast_chunk(chunk)                         addDupLastN_chunk(chunk, 1)
 
@@ -97,7 +99,7 @@
     Item appendDup_chunk(
         Chunk* const chunk,
         uint32_t const dup_id,
-        uint32_t const orig_id,
+        uint32_t const orig_id
     );
 
     Item appendDupAll2One_chunk(
@@ -135,10 +137,13 @@
 
     #define appendFirstN_chunk(chunk, p_item, sz_item, n)   appendN_chunk(chunk, 0, p_item, sz_item, n)
 
-    #define appendFLast_chunk(chunk, fp, max_sz_item, max_sz_buf)   \
-        appendFLastN_chunk(chunk, fp, max_sz_item, max_sz_buf, 1)
+    #define appendFirstSameN_chunk(chunk, p_item, sz_item, n)       \
+        appendSameN_chunk(chunk, 0, p_item, sz_item, n)
 
-    Item appendFLastN_chunk(
+    #define appendFLast_chunk(chunk, fp, max_sz_item, max_sz_buf)   \
+        appendFLastSameN_chunk(chunk, fp, max_sz_item, max_sz_buf, 1)
+
+    Item appendFLastSameN_chunk(
         Chunk* const chunk,
         FILE* const fp,
         uint32_t const max_sz_item,
@@ -163,7 +168,7 @@
     #define appendIndeterminateN_chunk(chunk, id, sz_item, n)       \
         appendN_chunk(chunk, id, NULL, sz_item, n)
 
-    #define appendLast(chunk, p_item, sz_item)              appendLastSameN_chunk(chunk, p_item, sz_item, 1)
+    #define appendLast_chunk(chunk, p_item, sz_item)        appendLastSameN_chunk(chunk, p_item, sz_item, 1)
 
     Item appendLastN_chunk(
         Chunk* const chunk,
@@ -264,41 +269,16 @@
 
     #define cut2BySizeLast_chunk(chunk, sz_first)           cut2BySizeLastN_chunk(chunk, sz_first, 1)
 
-    /* TBI */
     Item cut2BySizeLastN_chunk(
         Chunk* const chunk,
         uint32_t const sz_first,
         uint32_t const n
     );
 
-    /* TBI */
     Item cut2BySizeN_chunk(
         Chunk* const chunk,
         uint32_t const id,
         uint32_t const sz_first,
-        uint32_t const n
-    );
-
-    #define cutNEqually_chunk(chunk, n_pieces, id)          cutNEquallyN_chunk(chunk, n_pieces, id, 1)
-
-    #define cutNEquallyFirst_chunk(chunk, n_pieces)         cutNEquallyN_chunk(chunk, n_pieces, 0, 1)
-
-    #define cutNEquallyFirstN_chunk(chunk, n_pieces, n)     cutNEquallyN_chunk(chunk, n_pieces, 0, n)
-
-    #define cutNEquallyLast_chunk(chunk, n_pieces)          cutNEquallyLastN_chunk(chunk, n_pieces, 1)
-
-    Item cutNEquallyLastN_chunk(
-        Chunk* const chunk,
-        uint32_t const n_pieces,
-        uint32_t const n
-    );
-
-    #defien cutNEqually_chunk(chunk, n_pieces, id)          cutNEquallyN_chunk(chunk, n_pieces, id, n)
-
-    Item cutNEquallyN_chunk(
-        Chunk* const chunk,
-        uint32_t const n_pieces,
-        uint32_t const id,
         uint32_t const n
     );
 
@@ -316,10 +296,30 @@
         uint32_t const n
     );
 
-    /* TBI */
     Item cutByDelimN_chunk(
         Chunk* const chunk,
         char const delim[],
+        uint32_t const id,
+        uint32_t const n
+    );
+
+    #define cutNEqually_chunk(chunk, n_pieces, id)          cutNEquallyN_chunk(chunk, n_pieces, id, 1)
+
+    #define cutNEquallyFirst_chunk(chunk, n_pieces)         cutNEquallyN_chunk(chunk, n_pieces, 0, 1)
+
+    #define cutNEquallyFirstN_chunk(chunk, n_pieces, n)     cutNEquallyN_chunk(chunk, n_pieces, 0, n)
+
+    #define cutNEquallyLast_chunk(chunk, n_pieces)          cutNEquallyLastN_chunk(chunk, n_pieces, 1)
+
+    Item cutNEquallyLastN_chunk(
+        Chunk* const chunk,
+        uint32_t const n_pieces,
+        uint32_t const n
+    );
+
+    Item cutNEquallyN_chunk(
+        Chunk* const chunk,
+        uint32_t const n_pieces,
         uint32_t const id,
         uint32_t const n
     );
@@ -343,7 +343,7 @@
         Chunk* const chunk,
         uint32_t const id,
         uint32_t const n
-    )
+    );
 
     void destruct_chunk(void* const p_chunk);
 
@@ -463,12 +463,12 @@
         uint32_t const n
     );
 
+    #define shrink_chunk(chunk, id, by)                     shrinkN_chunk(chunk, id, by, 1)
+
     Item shrinkAll_chunk(
         Chunk* const chunk,
         uint32_t const by
     );
-
-    #define shrink_chunk(chunk, id, by)                     shrinkN_chunk(chunk, id, by, 1)
 
     #define shrinkFirst_chunk(chunk, by)                    shrink_chunk(chunk, 0, by)
 

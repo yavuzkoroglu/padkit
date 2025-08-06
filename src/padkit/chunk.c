@@ -46,17 +46,15 @@ Item addDupN_chunk(
     assert(LEN_CHUNK(chunk) - id >= n);
     assert(n > 0);
     {
-        Item const first_orig   = getN_chunk(chunk, id);
         uint32_t total_area     = AREA_CHUNK(chunk);
         uint32_t* offset        = addIndeterminateN_alist(chunk->offsets, n);
         for (uint32_t i = id; i < id + n; i++) {
-            Item item   = get_chunk(chunk, i);
             *(offset++) = total_area;
-            total_area += item.sz;
+            total_area += area_chunk(chunk, i);
         }
-        addDupN_alist(chunk->items, first_orig->p, total_area - AREA_CHUNK(chunk));
-        return getN_chunk(chunk, first_id);
+        addDupN_alist(chunk->items, offsetOf_chunk(chunk, id), total_area - AREA_CHUNK(chunk));
     }
+    return getN_chunk(chunk, id, n);
 }
 
 Item addDupSameN_chunk(
@@ -104,7 +102,7 @@ Item addFN_chunk(
             item    = appendIndeterminateLast_chunk(chunk, sz_buf);
             sz_rd   = fread((char*)item.p + item.sz - sz_buf, 1, sz_buf, stream);
             sz_rem -= sz_rd;
-            if (sz_rd < sz_buf) item = shrinkLast_chunk(chunk, sz_buf - sz_rd);
+            if (sz_rd < sz_buf) item = shrinkLast_chunk(chunk, sz_buf - (uint32_t)sz_rd);
         }
         if (n > 1) addDupLastSameN_chunk(chunk, n - 1);
         return item;
@@ -122,7 +120,7 @@ Item addN_chunk(
     assert(sz_item < SZ32_MAX - AREA_CHUNK(chunk));
     assert(n > 0);
     assert(n < SZ32_MAX - LEN_CHUNK(chunk));
-    assert(p_item == NULL || !overlaps_ptr(chunk->items->array, p_item, AREA_CHUNK(chunk), sz_item));
+    assert(p_item == NULL || !overlaps_ptr(chunk->items->arr, p_item, AREA_CHUNK(chunk), sz_item));
     {
         uint32_t const first_offset = AREA_CHUNK(chunk);
         uint32_t const sz_total     = sz_item * n;
@@ -133,19 +131,19 @@ Item addN_chunk(
             for (
                 uint32_t new_offset = first_offset, *p_offset = addIndeterminateN_alist(chunk->offsets, n);
                 new_offset < AREA_CHUNK(chunk);
-                new_offset += sz_item, p_offset++;
+                new_offset += sz_item, p_offset++
             ) *p_offset = new_offset;
 
             if (p_item != NULL) {
                 uint32_t sz = sz_item;
-                /* UB if p_item overlaps with chunk->items->array. */
+                /* UB if p_item overlaps with chunk->items->arr. */
                 setN_alist(chunk->items, first_offset, p_item, sz);
                 while (sz << 1 < sz_total) {
                     setDupN_alist(chunk->items, first_offset + sz, first_offset, sz);
                     sz <<= 1;
                 }
                 if (sz_total > sz)
-                    setDupN_alist(chunk->items, first_offset + sz, sz_total - sz);
+                    setDupN_alist(chunk->items, first_offset + sz, first_offset, sz_total - sz);
             }
 
             return (Item){ first_p, sz_item, first_offset };
@@ -185,7 +183,7 @@ Item appendAll_chunk(
     assert(LEN_CHUNK(chunk) > 0);
     assert(sz_item > 0);
     assert(sz_item < SZ32_MAX - AREA_CHUNK(chunk));
-    assert(p_item == NULL || !overlaps_ptr(chunk->items->array, p_item, AREA_CHUNK(chunk), sz_item));
+    assert(p_item == NULL || !overlaps_ptr(chunk->items->arr, p_item, AREA_CHUNK(chunk), sz_item));
     return appendSameN_chunk(chunk, 0, p_item, sz_item, LEN_CHUNK(chunk));
 }
 
@@ -237,9 +235,9 @@ Item appendDupNMany2Many_chunk(
             Item const dup_item = appendIndeterminate_chunk(chunk, j, orig_item.sz);
             orig_item.offset += e * orig_item.sz;
             setDupN_alist(chunk->items, dup_item.offset + dup_item.sz - orig_item.sz, orig_item.offset, orig_item.sz);
-            return dup_item;
         }
     }
+    return getN_chunk(chunk, dup_id, n);
 }
 
 Item appendDupNMany2One_chunk(
@@ -253,13 +251,9 @@ Item appendDupNMany2One_chunk(
     assert(orig_id < LEN_CHUNK(chunk));
     assert(n > 0);
     assert(n <= LEN_CHUNK(chunk) - orig_id);
-    {
-        uint32_t const sz_total = areaBtw_chunk(chunk, orig_id, orig_id + n);
-        Item const orig_first   = getN_chunk(chunk, orig_id);
-        Item const tmp          = addIndeterminate_chunk(chunk, sz_total);
-        setDupN_alist(chunk->items, tmp.offset, orig_first.offset, sz_total);
-    }
-    appendDup_chunk(chunk->items, dup_id, LEN_CHUNK(chunk) - 1);
+    addDupN_chunk(chunk, orig_id, n);
+    mergeLastN_chunk(chunk, n);
+    appendDup_chunk(chunk, dup_id, LEN_CHUNK(chunk) - 1);
     deleteLast_chunk(chunk);
     return get_chunk(chunk, dup_id);
 }
@@ -281,11 +275,11 @@ Item appendDupNOne2Many_chunk(
         assert(sz_total < SZ32_MAX - AREA_CHUNK(chunk));
         assert(sz_total / orig_item.sz == n);
 
-        appendIndeterminateLastN_chunk(chunk, sz_total);
+        appendIndeterminateLast_chunk(chunk, sz_total);
         {
             Item const tmp = addDup_chunk(chunk, orig_id);
             for (uint32_t i = LEN_CHUNK(chunk) - 2; i > dup_id; i--) {
-                uint32_t const shft = (i < orig_id + n) ? (i - orig_id) * sz_item : sz_total;
+                uint32_t const shft = (i < orig_id + n) ? (i - orig_id) * orig_item.sz : sz_total;
                 Item item           = get_chunk(chunk, i);
                 setDupN_alist(chunk->items, item.offset + shft, item.offset, item.sz);
                 item.offset += shft;
@@ -310,7 +304,7 @@ Item appendDupOne2All_chunk(
     return appendDupNOne2Many_chunk(chunk, 0, orig_id, LEN_CHUNK(chunk));
 }
 
-Item appendFLastN_chunk(
+Item appendFLastSameN_chunk(
     Chunk* const chunk,
     FILE* const stream,
     uint32_t const max_sz_item,
@@ -341,8 +335,8 @@ Item appendLastN_chunk(
     assert(sz_item < SZ32_MAX - AREA_CHUNK(chunk));
     assert(n > 0);
     assert(n <= LEN_CHUNK(chunk));
-    assert(p_item == NULL || !overlaps_ptr(chunk->items->array, p_item, AREA_CHUNK(chunk), sz_item));
-    /* UB if chunk->items->array and p_item overlap. */
+    assert(p_item == NULL || !overlaps_ptr(chunk->items->arr, p_item, AREA_CHUNK(chunk), sz_item));
+    /* UB if chunk->items->arr and p_item overlap. */
     return appendN_chunk(chunk, LEN_CHUNK(chunk) - n, p_item, sz_item, n);
 }
 
@@ -357,8 +351,8 @@ Item appendLastSameN_chunk(
     assert(sz_item < SZ32_MAX - AREA_CHUNK(chunk));
     assert(n > 0);
     assert(n <= LEN_CHUNK(chunk));
-    assert(p_item == NULL || !overlaps_ptr(chunk->items->array, p_item, AREA_CHUNK(chunk), sz_item));
-    /* UB if chunk->items->array and p_item overlap. */
+    assert(p_item == NULL || !overlaps_ptr(chunk->items->arr, p_item, AREA_CHUNK(chunk), sz_item));
+    /* UB if chunk->items->arr and p_item overlap. */
     return appendSameN_chunk(chunk, LEN_CHUNK(chunk) - n, p_item, sz_item, n);
 }
 
@@ -375,7 +369,7 @@ Item appendN_chunk(
     assert(sz_item < SZ32_MAX - AREA_CHUNK(chunk));
     assert(n > 0);
     assert(n <= LEN_CHUNK(chunk) - id);
-    assert(p_item == NULL || !overlaps_ptr(chunk->items->array, p_item, AREA_CHUNK(chunk), sz_item));
+    assert(p_item == NULL || !overlaps_ptr(chunk->items->arr, p_item, AREA_CHUNK(chunk), sz_item));
     {
         uint32_t sz_total = sz_item * n;
         assert(sz_total < SZ32_MAX - AREA_CHUNK(chunk));
@@ -385,16 +379,16 @@ Item appendN_chunk(
             uint32_t const shft = (i < id + n) ? (i - id) * sz_item : sz_total;
             Item item           = get_chunk(chunk, i);
             setDupN_alist(chunk->items, item.offset + shft, item.offset, item.sz);
-            item.offset += shift;
+            item.offset += shft;
             set_alist(chunk->offsets, i, &item.offset);
         }
         for (uint32_t i = id; i < id + n; i++) {
             Item item = get_chunk(chunk, i);
-            /* UB if chunk->items->array and p overlap. */
+            /* UB if chunk->items->arr and p overlap. */
             setN_alist(chunk->items, item.offset + item.sz, p_item, sz_item);
         }
     }
-    return getN_chunk(chunk, id);
+    return getN_chunk(chunk, id, n);
 }
 
 Item appendSameN_chunk(
@@ -410,7 +404,7 @@ Item appendSameN_chunk(
     assert(sz_item < SZ32_MAX - AREA_CHUNK(chunk));
     assert(n > 0);
     assert(n < SZ32_MAX);
-    assert(p_item == NULL || !overlaps_ptr(chunk->items->array, p_item, AREA_CHUNK(chunk), sz_item));
+    assert(p_item == NULL || !overlaps_ptr(chunk->items->arr, p_item, AREA_CHUNK(chunk), sz_item));
     {
         uint32_t sz_total = sz_item * n;
         assert(sz_total < SZ32_MAX - AREA_CHUNK(chunk));
@@ -421,7 +415,7 @@ Item appendSameN_chunk(
             setDupN_alist(chunk->items, item.offset + item.sz, item.offset + item.sz + sz_total, sz_total);
             {
                 uint32_t sz = sz_item;
-                /* UB if chunk->items->array and p_item overlap. */
+                /* UB if chunk->items->arr and p_item overlap. */
                 setN_alist(chunk->items, item.offset + item.sz, p_item, sz);
                 while (sz << 1 < sz_total) {
                     setDupN_alist(chunk->items, item.offset + item.sz + sz, item.offset + item.sz, sz);
@@ -432,7 +426,7 @@ Item appendSameN_chunk(
             }
             for (uint32_t i = id + 1; i < LEN_CHUNK(chunk); i++) {
                 uint32_t const new_offset = offsetOf_chunk(chunk, i) + sz_total;
-                set_alist(chunk->offsets, &new_offset);
+                set_alist(chunk->offsets, i, &new_offset);
             }
             item.sz += sz_total;
             return item;
@@ -479,7 +473,7 @@ Item appendZerosN_chunk(
     appendIndeterminateN_chunk(chunk, id, sz_item, n);
     for (uint32_t i = id; i < id + n; i++) {
         Item const item = get_chunk(chunk, i);
-        memset(item.p + item.sz - sz_item, 0, sz_item);
+        memset((char*)item.p + item.sz - sz_item, 0, sz_item);
     }
     return getN_chunk(chunk, id, n);
 }
@@ -573,6 +567,87 @@ void constructEmpty_chunk(
     constructEmpty_alist(chunk->items, sizeof(char), init_cap_area);
 }
 
+Item cut2BySizeLastN_chunk(
+    Chunk* const chunk,
+    uint32_t const sz_first,
+    uint32_t const n
+) {
+    assert(isValid_chunk(chunk));
+    assert(n > 0);
+    assert(n <= LEN_CHUNK(chunk));
+    assert(sz_first > 0);
+    assert(sz_first < areaLastN_chunk(chunk, n));
+    return cut2BySizeN_chunk(chunk, LEN_CHUNK(chunk) - n, sz_first, n);
+}
+
+Item cut2BySizeN_chunk(
+    Chunk* const chunk,
+    uint32_t const id,
+    uint32_t const sz_first,
+    uint32_t const n
+) {
+    assert(isValid_chunk(chunk));
+    assert(id < LEN_CHUNK(chunk));
+    assert(n > 0);
+    assert(n <= LEN_CHUNK(chunk) - id);
+    assert(sz_first > 0);
+    assert(sz_first < areaBtw_chunk(chunk, id, id + n));
+
+    for (uint32_t i = id + n; i > id; i--) {
+        uint32_t const new_offset = offsetOf_chunk(chunk, i - 1) + sz_first;
+        insert_alist(chunk->offsets, i, &new_offset);
+    }
+
+    return getN_chunk(chunk, id, n << 1);
+}
+
+Item cutByDelimLastN_chunk(
+    Chunk* const chunk,
+    char const delim[],
+    uint32_t const n
+) {
+    assert(isValid_chunk(chunk));
+    assert(delim != NULL);
+    assert(n > 0);
+    assert(n <= LEN_CHUNK(chunk));
+    return cutByDelimN_chunk(chunk, delim, LEN_CHUNK(chunk) - n, n);
+}
+
+Item cutByDelimN_chunk(
+    Chunk* const chunk,
+    char const delim[],
+    uint32_t const id,
+    uint32_t const n
+) {
+    uint32_t n_total = n;
+
+    assert(isValid_chunk(chunk));
+    assert(delim != NULL);
+    assert(id < LEN_CHUNK(chunk));
+    assert(n > 0);
+    assert(n <= LEN_CHUNK(chunk) - id);
+
+    for (uint32_t i = id + n; i > id; i--) {
+        Item item = get_chunk(chunk, i - 1);
+        for (uint32_t j = item.sz - 1; j > 0; j--) {
+            if (strchr(delim, ((char*)item.p)[j]) == NULL) continue;
+            ((char*)item.p)[j] = '\0';
+            cut2BySize_chunk(chunk, i, j);
+            n_total++;
+            item.sz = j;
+        }
+        if (strchr(delim, ((char*)item.p)[0]) != NULL) {
+            ((char*)item.p)[0] = '\0';
+            if (item.sz > 1) {
+                cut2BySize_chunk(chunk, i, 1);
+                n_total++;
+            }
+        }
+    }
+
+    return getN_chunk(chunk, id, n_total);
+}
+
 Item cutNEquallyLastN_chunk(
     Chunk* const chunk,
     uint32_t const n_pieces,
@@ -615,48 +690,6 @@ Item cutNEquallyN_chunk(
     return getN_chunk(chunk, id, n * n_pieces);
 }
 
-Item cutByDelimLastN_chunk(
-    Chunk* const chunk,
-    char const delim[],
-    uint32_t const n
-) {
-    assert(isValid_chunk(chunk));
-    assert(delim != NULL);
-    assert(n > 0);
-    assert(n <= LEN_CHUNK(chunk));
-    return cutByDelimN_chunk(chunk, delim, LEN_CHUNK(chunk) - n, n);
-}
-
-uint32_t divideLast_chunk(
-    Chunk* const chunk,
-    char const delimeters[],
-    uint32_t const nDelimeters
-) {
-    uint32_t n = 1;
-
-    assert(isValid_chunk(chunk));
-    assert(LEN_CHUNK(chunk) > 0);
-    assert(delimeters != NULL);
-    assert(nDelimeters > 0);
-    assert(nDelimeters < SZ32_MAX);
-    {
-        Item const item = getLast_chunk(chunk);
-        char* const p   = item.p;
-        assert(isValid_item(&item));
-
-        for (uint32_t i = 0; i < item.sz; i++) {
-            bool const isDelimeter = (memchr(delimeters, p[i], nDelimeters) != NULL);
-            if (isDelimeter) {
-                uint32_t const new_offset = item.offset + i + 1;
-                p[i] = '\0';
-                add_alist(chunk->offsets, &new_offset);
-                n++;
-            }
-        }
-    }
-    return n;
-}
-
 void (* const deleteAll_chunk)(Chunk* const chunk) = &flush_chunk;
 
 void deleteLastN_chunk(
@@ -666,7 +699,7 @@ void deleteLastN_chunk(
     assert(isValid_chunk(chunk));
     assert(n > 0);
     assert(n <= LEN_CHUNK(chunk));
-    if (n == LEN_CHUNK) {
+    if (n == LEN_CHUNK(chunk)) {
         flush_chunk(chunk);
     } else {
         Item const first_item = get_chunk(chunk, LEN_CHUNK(chunk) - n);
@@ -685,7 +718,7 @@ void deleteN_chunk(
     assert(n > 0);
     assert(n <= LEN_CHUNK(chunk) - id);
     if (n == LEN_CHUNK(chunk) - id) {
-        deleteLastN(chunk, n);
+        deleteLastN_chunk(chunk, n);
     } else {
         Item const first_deleted    = get_chunk(chunk, id);
         Item const first_shifted    = get_chunk(chunk, id + n);
@@ -810,9 +843,9 @@ Item setAll_chunk(
     assert(isValid_chunk(chunk));
     assert(sz_item > 0);
     assert(sz_item < SZ32_MAX);
-    assert(p_item == NULL || !overlaps_ptr(chunk->items->array, p_item, AREA_CHUNK(chunk), sz_item));
+    assert(p_item == NULL || !overlaps_ptr(chunk->items->arr, p_item, AREA_CHUNK(chunk), sz_item));
 
-    /* UB if chunk->items->array and p_item overlap. */
+    /* UB if chunk->items->arr and p_item overlap. */
     return setLastN_chunk(chunk, p_item, sz_item, LEN_CHUNK(chunk));
 }
 
@@ -837,11 +870,13 @@ Item setDupN_chunk(
         else if (sz_dup < sz_orig)
             enlarge_chunk(chunk, dup_id, sz_orig - sz_dup);
 
-        for (
-            uint32_t i = dup_id + 1, j = orig_id, new_offset = offsetOf_chunk(chunk, dup_id) + area_chunk(chunk, j);
-            i < dup_id + n;
-            ++i, new_offset += area_chunk(chunk, ++j);
-        ) set_alist(chunk->offsets, i, &new_offset);
+        {
+            uint32_t new_offset = offsetOf_chunk(chunk, dup_id);
+            for (uint32_t i = 1; i < n; i++) {
+                new_offset += area_chunk(chunk, orig_id + i - 1);
+                set_alist(chunk->offsets, dup_id + i, &new_offset);
+            }
+        }
 
         {
             uint32_t const off_orig = offsetOf_chunk(chunk, orig_id);
@@ -890,13 +925,13 @@ Item setDupSameN_chunk(
 
         {
             uint32_t sz = sz_orig;
-            setDupN_alist(chunk->items, dup_off, orig_off, sz);
+            setDupN_alist(chunk->items, off_dup, off_orig, sz);
             while (sz << 1 < sz_new) {
-                setDupN_alist(chunk->items, dup_off + sz, dup_off, sz);
+                setDupN_alist(chunk->items, off_dup + sz, off_dup, sz);
                 sz <<= 1;
             }
             if (sz_new > sz)
-                setDupN_alist(chunk->items, dup_off + sz, dup_off, sz_new - sz);
+                setDupN_alist(chunk->items, off_dup + sz, off_dup, sz_new - sz);
         }
     }
     return getN_chunk(chunk, dup_id, n);
@@ -913,11 +948,11 @@ Item setLastN_chunk(
     assert(sz_item < SZ32_MAX);
     assert(n > 0);
     assert(n <= LEN_CHUNK(chunk));
-    assert(p_item == NULL || !overlaps_ptr(chunk->items->array, p_item, AREA_CHUNK(chunk), sz_item));
+    assert(p_item == NULL || !overlaps_ptr(chunk->items->arr, p_item, AREA_CHUNK(chunk), sz_item));
 
     deleteLastN_chunk(chunk, n);
 
-    /* UB if chunk->items->array and p_item overlap. */
+    /* UB if chunk->items->arr and p_item overlap. */
     return addN_chunk(chunk, p_item, sz_item, n);
 }
 
@@ -934,10 +969,10 @@ Item setN_chunk(
     assert(sz_item < SZ32_MAX);
     assert(n > 0);
     assert(n <= LEN_CHUNK(chunk) - id);
-    assert(p_item == NULL || !overlaps_ptr(chunk->items->array, p_item, AREA_CHUNK(chunk), sz_item));
+    assert(p_item == NULL || !overlaps_ptr(chunk->items->arr, p_item, AREA_CHUNK(chunk), sz_item));
     {
         uint32_t const offset   = offsetOf_chunk(chunk, id);
-        uint32_t const sz_total = arewBtw_chunk(chunk, id, id + n);
+        uint32_t const sz_total = areaBtw_chunk(chunk, id, id + n);
         uint32_t const sz_new   = sz_item * n;
         assert(sz_new < SZ32_MAX);
         assert(sz_new / sz_item == n);
@@ -947,12 +982,13 @@ Item setN_chunk(
         else if (sz_total < sz_new)
             enlarge_chunk(chunk, id + n - 1, sz_new - sz_total);
 
-        for (uint32_t i = id, new_offset = offset; i < id + n; i++, offset += sz_item)
+        for (uint32_t i = id, new_offset = offset; i < id + n; i++, new_offset += sz_item)
             set_alist(chunk->offsets, i, &new_offset);
 
         {
             uint32_t sz = sz_item;
-            set_alist(chunk->items, offset, p_item, sz);
+            /* UB if chunk->items->arr and p_item overlap. */
+            setN_alist(chunk->items, offset, p_item, sz);
             while (sz << 1 < sz_new) {
                 setDupN_alist(chunk->items, offset + sz, offset, sz);
                 sz <<= 1;
@@ -1022,7 +1058,7 @@ Item shrinkLastN_chunk(
     assert(n <= LEN_CHUNK(chunk));
     {
         Item item = shrinkLast_chunk(chunk, by);
-        for (i = LEN_CHUNK(chunk) - 1; i > LEN_CHUNK(chunk) - n; item = get_chunk(chunk, --i)) {
+        for (uint32_t i = LEN_CHUNK(chunk) - 1; i > LEN_CHUNK(chunk) - n; item = get_chunk(chunk, --i)) {
             uint32_t const shft = AREA_CHUNK(chunk) - item.offset;
             assert(item.offset > by);
             item.offset -= by;
@@ -1079,7 +1115,7 @@ void swapN_chunk(
         addDup_chunk(chunk, i);
         setDup_chunk(chunk, i, j);
         setDup_chunk(chunk, j, LEN_CHUNK(chunk) - 1);
-        deleteLast(chunk);
+        deleteLast_chunk(chunk);
     }
 }
 
