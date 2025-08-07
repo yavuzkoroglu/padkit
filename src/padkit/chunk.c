@@ -419,25 +419,22 @@ Item appendSameN_chunk(
         uint32_t sz_total = sz_item * n;
         assert(sz_total < SZ32_MAX - AREA_CHUNK(chunk));
         assert(sz_total / sz_item == n);
+
+        appendIndeterminate_chunk(chunk, id, sz_total);
         {
-            Item item = get_chunk(chunk, id);
-            addIndeterminateN_alist(chunk->items, sz_total);
-            {
-                uint32_t sz = sz_item;
-                /* UB if chunk->items->arr and p_item overlap. */
-                setN_alist(chunk->items, item.offset + item.sz, p_item, sz);
-                while (sz << 1 < sz_total) {
-                    setDupN_alist(chunk->items, item.offset + item.sz + sz, item.offset + item.sz, sz);
-                    sz <<= 1;
-                }
-                if (sz_total > sz)
-                    setDupN_alist(chunk->items, item.offset + item.sz + sz, item.offset + item.sz, sz_total - sz);
+            Item const item         = get_chunk(chunk, id);
+            uint32_t const offset   = item.offset + item.sz - sz_total;
+            uint32_t sz             = sz_item;
+
+            /* UB if chunk->items->arr and p_item overlap. */
+            setN_alist(chunk->items, offset, p_item, sz);
+            while (sz << 1 < sz_total) {
+                setDupN_alist(chunk->items, offset + sz, offset, sz);
+                sz <<= 1;
             }
-            for (uint32_t i = id + 1; i < LEN_CHUNK(chunk); i++) {
-                uint32_t const new_offset = offsetOf_chunk(chunk, i) + sz_total;
-                set_alist(chunk->offsets, i, &new_offset);
-            }
-            item.sz += sz_total;
+            if (sz_total > sz)
+                setDupN_alist(chunk->items, offset + sz, offset, sz_total - sz);
+
             return item;
         }
     }

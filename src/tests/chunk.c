@@ -905,7 +905,27 @@ static bool test_chunk_appendN_chunk(void) {
     TEST_PASS
 }
 
-static bool test_chunk_appendSameN_chunk(void) { TEST_PASS }
+static bool test_chunk_appendSameN_chunk(void) {
+    Item item       = NOT_AN_ITEM;
+    Chunk chunk[1]  = { NOT_A_CHUNK };
+    construct_chunk(chunk, CHUNK_RECOMMENDED_PARAMETERS);
+
+    add_chunk(chunk, "|ab|", 4);
+    add_chunk(chunk, "ab", 2);
+    add_chunk(chunk, "ab", 2);
+    add_chunk(chunk, "ab", 2);
+    add_chunk(chunk, "ab|", 3);
+
+    item = appendSameN_chunk(chunk, 1, "|", 1, 3);
+    TEST_FAIL_IF(item.offset != 4)
+    TEST_FAIL_IF(item.sz != 5)
+    TEST_FAIL_IF(LEN_CHUNK(chunk) != 5)
+    TEST_FAIL_IF(AREA_CHUNK(chunk) != 16)
+    TEST_FAIL_IF(memcmp(chunk->items->arr, "|ab|ab|||ababab|", 16) != 0)
+
+    destruct_chunk(chunk);
+    TEST_PASS
+}
 
 static bool test_chunk_appendZeros_chunk(void) { TEST_PASS }
 static bool test_chunk_appendZerosAll_chunk(void) { TEST_PASS }
