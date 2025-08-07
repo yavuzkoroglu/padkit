@@ -270,12 +270,12 @@ Item appendDupNOne2Many_chunk(
     assert(n > 0);
     assert(n <= LEN_CHUNK(chunk) - dup_id);
     {
-        Item const orig_item    = get_chunk(chunk, orig_id);
-        uint32_t const sz_total = orig_item.sz * n;
+        uint32_t const sz_orig  = area_chunk(chunk, orig_id);
+        uint32_t const sz_total = sz_orig * n;
         assert(sz_total < SZ32_MAX - AREA_CHUNK(chunk));
-        assert(sz_total / orig_item.sz == n);
+        assert(sz_total / sz_orig == n);
 
-        addIndeterminate_chunk(chunk, sz_total + orig_item.sz);
+        addIndeterminate_chunk(chunk, sz_total + sz_orig);
         cut2BySizeLast_chunk(chunk, sz_total);
         deleteLast_chunk(chunk);
         {
@@ -288,7 +288,7 @@ Item appendDupNOne2Many_chunk(
                 setDupN_alist(chunk->items, new_offset, offset, sz);
                 set_alist(chunk->offsets, i, &new_offset);
             }
-            for (uint32_t i = dup_id + n - 1, shft = orig_item.sz; i > dup_id; i--, shft += orig_item.sz) {
+            for (uint32_t i = dup_id + n - 1, shft = sz_orig; i > dup_id; i--, shft += sz_orig) {
                 uint32_t const offset       = offsetOf_chunk(chunk, i);
                 uint32_t const new_offset   = offset + sz_total - shft;
                 uint32_t const sz           = new_offset - offset - sz_total + shft + 1;
@@ -297,7 +297,7 @@ Item appendDupNOne2Many_chunk(
             }
             for (uint32_t i = dup_id; i < dup_id + n; i++) {
                 Item const item = get_chunk(chunk, i);
-                setDupN_alist(chunk->items, item.offset + item.sz - orig_item.sz, tmp.offset, orig_item.sz);
+                setDupN_alist(chunk->items, item.offset + item.sz - sz_orig, tmp.offset, sz_orig);
             }
         }
     }
