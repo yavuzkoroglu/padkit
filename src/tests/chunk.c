@@ -866,6 +866,7 @@ static bool test_chunk_appendDupOne2All_chunk(void) {
     destruct_chunk(chunk);
     TEST_PASS
 }
+
 static bool test_chunk_appendFirst_chunk(void) { TEST_PASS }
 static bool test_chunk_appendFirstN_chunk(void) { TEST_PASS }
 static bool test_chunk_appendFirstSameN_chunk(void) { TEST_PASS }
@@ -881,8 +882,31 @@ static bool test_chunk_appendIndeterminateN_chunk(void) { TEST_PASS }
 static bool test_chunk_appendLast_chunk(void) { TEST_PASS }
 static bool test_chunk_appendLastN_chunk(void) { TEST_PASS }
 static bool test_chunk_appendLastSameN_chunk(void) { TEST_PASS }
-static bool test_chunk_appendN_chunk(void) { TEST_PASS }
+
+static bool test_chunk_appendN_chunk(void) {
+    Item item       = NOT_AN_ITEM;
+    Chunk chunk[1]  = { NOT_A_CHUNK };
+    construct_chunk(chunk, CHUNK_RECOMMENDED_PARAMETERS);
+
+    add_chunk(chunk, "|ab|", 4);
+    add_chunk(chunk, "ab", 2);
+    add_chunk(chunk, "ab", 2);
+    add_chunk(chunk, "ab", 2);
+    add_chunk(chunk, "ab|", 3);
+
+    item = appendN_chunk(chunk, 1, "|", 1, 3);
+    TEST_FAIL_IF(item.offset != 4)
+    TEST_FAIL_IF(item.sz != 3)
+    TEST_FAIL_IF(LEN_CHUNK(chunk) != 5)
+    TEST_FAIL_IF(AREA_CHUNK(chunk) != 16)
+    TEST_FAIL_IF(memcmp(chunk->items->arr, "|ab|ab|ab|ab|ab|", 16) != 0)
+
+    destruct_chunk(chunk);
+    TEST_PASS
+}
+
 static bool test_chunk_appendSameN_chunk(void) { TEST_PASS }
+
 static bool test_chunk_appendZeros_chunk(void) { TEST_PASS }
 static bool test_chunk_appendZerosAll_chunk(void) { TEST_PASS }
 static bool test_chunk_appendZerosFirst_chunk(void) { TEST_PASS }
@@ -890,6 +914,7 @@ static bool test_chunk_appendZerosFirstN_chunk(void) { TEST_PASS }
 static bool test_chunk_appendZerosLast_chunk(void) { TEST_PASS }
 static bool test_chunk_appendZerosLastN_chunk(void) { TEST_PASS }
 static bool test_chunk_appendZerosN_chunk(void) { TEST_PASS }
+
 static bool test_chunk_area_chunk(void) { TEST_PASS }
 static bool test_chunk_areaBtw_chunk(void) { TEST_PASS }
 static bool test_chunk_areaFirst_chunk(void) { TEST_PASS }

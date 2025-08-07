@@ -46,8 +46,8 @@ Item addDupN_chunk(
     assert(LEN_CHUNK(chunk) - id >= n);
     assert(n > 0);
     {
-        uint32_t total_area     = AREA_CHUNK(chunk);
-        uint32_t* offset        = addIndeterminateN_alist(chunk->offsets, n);
+        uint32_t total_area = AREA_CHUNK(chunk);
+        uint32_t* offset    = addIndeterminateN_alist(chunk->offsets, n);
         for (uint32_t i = id; i < id + n; i++) {
             *(offset++) = total_area;
             total_area += area_chunk(chunk, i);
@@ -68,8 +68,8 @@ Item addDupSameN_chunk(
     assert(n < SZ32_MAX - LEN_CHUNK(chunk));
     {
         uint32_t const dup_id   = LEN_CHUNK(chunk);
-        Item const orig_item    = get_chunk(chunk, id);
-        addIndeterminateN_chunk(chunk, orig_item.sz, n);
+        uint32_t const sz_orig  = area_chunk(chunk, id);
+        addIndeterminateN_chunk(chunk, sz_orig, n);
         return setDupSameN_chunk(chunk, dup_id, id, n);
     }
 }
