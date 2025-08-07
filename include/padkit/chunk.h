@@ -401,7 +401,7 @@
         uint32_t const n
     );
 
-    #define mergePair_chunk(chunk, first_id)                mergeN(chunk, first_id, 2)
+    #define mergePair_chunk(chunk, first_id)                mergeN_chunk(chunk, first_id, 2)
 
     uint32_t offsetOf_chunk(
         Chunk const* const chunk,
