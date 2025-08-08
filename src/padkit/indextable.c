@@ -7,6 +7,13 @@
 #include "padkit/memalloc.h"
 #include "padkit/size.h"
 
+void construct_itbl(void* const p_tbl, ...) {
+    va_list args;
+    va_start(args, p_tbl);
+    vconstruct_itbl(p_tbl, args);
+    va_end(args);
+}
+
 void constructEmpty_itbl(
     IndexTable* const table,
     uint32_t const min_height,
@@ -219,3 +226,13 @@ IndexMapping* nextMapping_itbl(
     }
 }
 
+void vconstruct_itbl(
+    void* const p_tbl,
+    va_list args
+) {
+    IndexTable* const table         = (IndexTable*)p_tbl;
+    uint32_t const min_height       = va_arg(args, uint32_t);
+    uint32_t const max_percent_load = va_arg(args, uint32_t);
+    uint32_t const initial_cap      = va_arg(args, uint32_t);
+    constructEmpty_itbl(table, min_height, max_percent_load, initial_cap);
+}
