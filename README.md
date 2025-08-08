@@ -11,17 +11,23 @@ The above steps should produce
 1. The libraries in `lib/` and
 2. The automatically generated headers in `include/`.
 
-## Tested Environments (v2.0)
+## Tested Environments (v3.0)
 
 | Date (ISO 8601) |                  OS |                   `uname -sm` |     Compiler |
 |----------------:|--------------------:|------------------------------:|-------------:|
-|      2025-08-07 |   macOS Sonoma 15.6 |                  Darwin arm64 | clang 18.1.8 |
-|      2024-08-22 | macOS Sonoma 14.6.1 |                  Darwin arm64 | clang 18.1.8 |
-|      2024-08-22 | macOS Sonoma 14.6.1 |                  Darwin arm64 |   gcc 14.2.0 |
-|      2024-08-22 |  Ubuntu 22.04.4 LTS |                 Linux aarch64 | clang 18.1.8 |
-|      2024-08-22 |  Ubuntu 22.04.4 LTS |                 Linux aarch64 |   gcc 14.2.0 |
+|      2025-08-08 |   macOS Sonoma 15.6 |                  Darwin arm64 | clang 20.1.8 |
+|      2025-08-08 |   macOS Sonoma 15.6 |                  Darwin arm64 |   gcc 15.1.0 |
+|      2025-08-08 |  Ubuntu 24.04.1 LTS |                 Linux aarch64 | clang 18.1.8 |
+|      2025-08-08 |  Ubuntu 24.04.1 LTS |                 Linux aarch64 |   gcc 13.2.0 |
 
 ## Changes 
+
+### Changes v2.0 -> v3.0
+
+* Most of the codebase is completely rewritten (again!).
+* Removed **C23** branch, will only support the C99 standard from now on.
+* Removed `ChunkTable` in favor of `IndexTable`.
+* Added more tests.
 
 ### Changes v1.1 -> v2.0
 

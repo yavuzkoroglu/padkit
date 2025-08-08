@@ -257,7 +257,7 @@ static void test_arraylist(void) {
 
 static bool test_arraylist_add_alist(void) {
     ArrayList list[1] = { NOT_AN_ALIST };
-    construct_alist(list, 5, 1);
+    constructEmpty_alist(list, (size_t)5, (uint32_t)1);
 
     TEST_FAIL_IF(list->len != 0)
     TEST_FAIL_IF(list->cap != 1)
@@ -284,7 +284,7 @@ static bool test_arraylist_addAllN_alist(void) {
 
 static bool test_arraylist_addDup_alist(void) {
     ArrayList list[1] = { NOT_AN_ALIST };
-    construct_alist(list, 1, 3);
+    constructEmpty_alist(list, 1, 3);
 
     TEST_FAIL_IF(list->len != 0)
     TEST_FAIL_IF(list->cap != 3)
@@ -308,7 +308,7 @@ static bool test_arraylist_addDup_alist(void) {
 
 static bool test_arraylist_addDupFirst_alist(void) {
     ArrayList list[1] = { NOT_AN_ALIST };
-    construct_alist(list, 1, 3);
+    constructEmpty_alist(list, 1, 3);
 
     TEST_FAIL_IF(list->len != 0)
     TEST_FAIL_IF(list->cap != 3)
@@ -331,7 +331,7 @@ static bool test_arraylist_addDupFirst_alist(void) {
 
 static bool test_arraylist_addDupFirstN_alist(void) {
     ArrayList list[1] = { NOT_AN_ALIST };
-    construct_alist(list, 1, 3);
+    constructEmpty_alist(list, 1, 3);
 
     TEST_FAIL_IF(list->len != 0)
     TEST_FAIL_IF(list->cap != 3)
@@ -353,7 +353,7 @@ static bool test_arraylist_addDupFirstN_alist(void) {
 
 static bool test_arraylist_addDupFirstSameN_alist(void) {
     ArrayList list[1] = { NOT_AN_ALIST };
-    construct_alist(list, 1, 3);
+    constructEmpty_alist(list, 1, 3);
 
     TEST_FAIL_IF(list->len != 0)
     TEST_FAIL_IF(list->cap != 3)
@@ -375,7 +375,7 @@ static bool test_arraylist_addDupFirstSameN_alist(void) {
 
 static bool test_arraylist_addDupLast_alist(void) {
     ArrayList list[1] = { NOT_AN_ALIST };
-    construct_alist(list, 1, 3);
+    constructEmpty_alist(list, 1, 3);
 
     TEST_FAIL_IF(list->len != 0)
     TEST_FAIL_IF(list->cap != 3)
@@ -398,7 +398,7 @@ static bool test_arraylist_addDupLast_alist(void) {
 
 static bool test_arraylist_addDupLastN_alist(void) {
     ArrayList list[1] = { NOT_AN_ALIST };
-    construct_alist(list, 1, 3);
+    constructEmpty_alist(list, 1, 3);
 
     TEST_FAIL_IF(list->len != 0)
     TEST_FAIL_IF(list->cap != 3)
@@ -420,7 +420,7 @@ static bool test_arraylist_addDupLastN_alist(void) {
 
 static bool test_arraylist_addDupLastSameN_alist(void) {
     ArrayList list[1] = { NOT_AN_ALIST };
-    construct_alist(list, 1, 3);
+    constructEmpty_alist(list, 1, 3);
 
     TEST_FAIL_IF(list->len != 0)
     TEST_FAIL_IF(list->cap != 3)
@@ -442,7 +442,7 @@ static bool test_arraylist_addDupLastSameN_alist(void) {
 
 static bool test_arraylist_addDupN_alist(void) {
     ArrayList list[1] = { NOT_AN_ALIST };
-    construct_alist(list, 1, 3);
+    constructEmpty_alist(list, 1, 3);
 
     TEST_FAIL_IF(list->len != 0)
     TEST_FAIL_IF(list->cap != 3)
@@ -464,7 +464,7 @@ static bool test_arraylist_addDupN_alist(void) {
 
 static bool test_arraylist_addDupSameN_alist(void) {
     ArrayList list[1] = { NOT_AN_ALIST };
-    construct_alist(list, 1, 3);
+    constructEmpty_alist(list, 1, 3);
 
     TEST_FAIL_IF(list->len != 0)
     TEST_FAIL_IF(list->cap != 3)
@@ -488,7 +488,7 @@ static bool test_arraylist_addF_alist(void) {
     ArrayList list[1]   = { NOT_AN_ALIST };
     FILE* fp            = fopen("test_artifacts/names.txt", "r");
     TEST_FAIL_IF(fp == NULL)
-    construct_alist(list, 6, 10);
+    constructEmpty_alist(list, 6, 10);
 
     TEST_FAIL_IF(addF_alist(list, fp, 2) != 6)
     TEST_FAIL_IF(list->len != 6)
@@ -507,7 +507,7 @@ static bool test_arraylist_addF_alist(void) {
 
 static bool test_arraylist_addIndeterminate_alist(void) {
     ArrayList list[1] = { NOT_AN_ALIST };
-    construct_alist(list, sizeof(int), 1);
+    constructEmpty_alist(list, sizeof(int), 1);
 
     TEST_FAIL_IF(list->len != 0)
     TEST_FAIL_IF(list->cap != 1)
@@ -524,7 +524,7 @@ static bool test_arraylist_addIndeterminate_alist(void) {
 
 static bool test_arraylist_addIndeterminateN_alist(void) {
     ArrayList list[1] = { NOT_AN_ALIST };
-    construct_alist(list, sizeof(int), 1);
+    constructEmpty_alist(list, sizeof(int), 1);
 
     TEST_FAIL_IF(list->len != 0)
     TEST_FAIL_IF(list->cap != 1)
@@ -540,7 +540,7 @@ static bool test_arraylist_addIndeterminateN_alist(void) {
 
 static bool test_arraylist_addN_alist(void) {
     ArrayList list[1] = { NOT_AN_ALIST };
-    construct_alist(list, 5, 1);
+    constructEmpty_alist(list, 5, 1);
 
     TEST_FAIL_IF(list->len != 0)
     TEST_FAIL_IF(list->cap != 1)
@@ -557,7 +557,7 @@ static bool test_arraylist_addN_alist(void) {
 
 static bool test_arraylist_addSameN_alist(void) {
     ArrayList list[1] = { NOT_AN_ALIST };
-    construct_alist(list, 5, 1);
+    constructEmpty_alist(list, 5, 1);
 
     TEST_FAIL_IF(list->len != 0)
     TEST_FAIL_IF(list->cap != 1)
@@ -574,7 +574,7 @@ static bool test_arraylist_addSameN_alist(void) {
 
 static bool test_arraylist_addZeros_alist(void) {
     ArrayList list[1] = { NOT_AN_ALIST };
-    construct_alist(list, sizeof(int), 8);
+    constructEmpty_alist(list, sizeof(int), 8);
 
     TEST_FAIL_IF(list->len != 0)
     TEST_FAIL_IF(list->cap != 8)
@@ -600,7 +600,7 @@ static bool test_arraylist_addZeros_alist(void) {
 
 static bool test_arraylist_addZerosN_alist(void) {
     ArrayList list[1] = { NOT_AN_ALIST };
-    construct_alist(list, sizeof(int), 8);
+    constructEmpty_alist(list, sizeof(int), 8);
 
     TEST_FAIL_IF(list->len != 0)
     TEST_FAIL_IF(list->cap != 8)
@@ -626,7 +626,7 @@ static bool test_arraylist_addZerosN_alist(void) {
 static bool test_arraylist_bsearch_alist(void) {
     char const letters[]    = { 'a', 'd', 'k', 'l', 'm', 'n', 'q', 'x' };
     ArrayList list[1]       = { NOT_AN_ALIST };
-    construct_alist(list, 1, sizeof(letters));
+    constructEmpty_alist(list, 1, sizeof(letters));
 
     TEST_FAIL_IF(list->len != 0)
     TEST_FAIL_IF(list->cap != sizeof(letters))
@@ -651,8 +651,8 @@ static bool test_arraylist_concat_alist(void) {
     ArrayList head[1] = { NOT_AN_ALIST };
     ArrayList tail[1] = { NOT_AN_ALIST };
 
-    construct_alist(head, 1, 5);
-    construct_alist(tail, 1, 5);
+    constructEmpty_alist(head, 1, 5);
+    constructEmpty_alist(tail, 1, 5);
 
     TEST_FAIL_IF(head->len != 0)
     TEST_FAIL_IF(tail->len != 0)
@@ -700,8 +700,8 @@ static bool test_arraylist_concatN_alist(void) {
     ArrayList head[1] = { NOT_AN_ALIST };
     ArrayList tail[1] = { NOT_AN_ALIST };
 
-    construct_alist(head, 1, 5);
-    construct_alist(tail, 1, 5);
+    constructEmpty_alist(head, 1, 5);
+    constructEmpty_alist(tail, 1, 5);
 
     addN_alist(tail, "abc", 3);
 
@@ -848,7 +848,7 @@ static bool test_arraylist_deleteN_alist(void) {
 
 static bool test_arraylist_flush_alist(void) {
     ArrayList list[1] = { NOT_AN_ALIST };
-    construct_alist(list, sizeof(int), 5);
+    constructEmpty_alist(list, sizeof(int), 5);
 
     TEST_FAIL_IF(list->len != 0)
     TEST_FAIL_IF(list->cap != 5)
@@ -874,7 +874,7 @@ static bool test_arraylist_flush_alist(void) {
 
 static bool test_arraylist_destruct_alist(void) {
     ArrayList list[1] = { NOT_AN_ALIST };
-    construct_alist(list, sizeof(int), 1000000);
+    constructEmpty_alist(list, sizeof(int), 1000000);
     destruct_alist(list);
     TEST_PASS
 }
@@ -883,7 +883,7 @@ static bool test_arraylist_get_alist(void) {
     int const grades[]      = { 92, 84, 76, 22, 45 };
     uint32_t const nGrades  = sizeof(grades) / sizeof(int);
     ArrayList list[1]       = { NOT_AN_ALIST };
-    construct_alist(list, sizeof(int), nGrades);
+    constructEmpty_alist(list, sizeof(int), nGrades);
 
     TEST_FAIL_IF(list->len != 0)
     TEST_FAIL_IF(list->cap != nGrades)
@@ -906,7 +906,7 @@ static bool test_arraylist_getFirst_alist(void) {
     int const grades[]      = { 92, 84, 76, 22, 45 };
     uint32_t const nGrades  = sizeof(grades) / sizeof(int);
     ArrayList list[1]       = { NOT_AN_ALIST };
-    construct_alist(list, sizeof(int), nGrades);
+    constructEmpty_alist(list, sizeof(int), nGrades);
 
     TEST_FAIL_IF(list->len != 0)
     TEST_FAIL_IF(list->cap != nGrades)
@@ -926,7 +926,7 @@ static bool test_arraylist_getFirstN_alist(void) {
     int const grades[]      = { 92, 84, 76, 22, 45 };
     uint32_t const nGrades  = sizeof(grades) / sizeof(int);
     ArrayList list[1]       = { NOT_AN_ALIST };
-    construct_alist(list, sizeof(int), nGrades);
+    constructEmpty_alist(list, sizeof(int), nGrades);
 
     TEST_FAIL_IF(list->len != 0)
     TEST_FAIL_IF(list->cap != nGrades)
@@ -946,7 +946,7 @@ static bool test_arraylist_getLast_alist(void) {
     int const grades[]      = { 92, 84, 76, 22, 45 };
     uint32_t const nGrades  = sizeof(grades) / sizeof(int);
     ArrayList list[1]       = { NOT_AN_ALIST };
-    construct_alist(list, sizeof(int), nGrades);
+    constructEmpty_alist(list, sizeof(int), nGrades);
 
     TEST_FAIL_IF(list->len != 0)
     TEST_FAIL_IF(list->cap != nGrades)
@@ -966,7 +966,7 @@ static bool test_arraylist_getLastN_alist(void) {
     int const grades[]      = { 92, 84, 76, 22, 45 };
     uint32_t const nGrades  = sizeof(grades) / sizeof(int);
     ArrayList list[1]       = { NOT_AN_ALIST };
-    construct_alist(list, sizeof(int), nGrades);
+    constructEmpty_alist(list, sizeof(int), nGrades);
 
     TEST_FAIL_IF(list->len != 0)
     TEST_FAIL_IF(list->cap != nGrades)
@@ -986,7 +986,7 @@ static bool test_arraylist_getN_alist(void) {
     int const grades[]      = { 92, 84, 76, 22, 45 };
     uint32_t const nGrades  = sizeof(grades) / sizeof(int);
     ArrayList list[1]       = { NOT_AN_ALIST };
-    construct_alist(list, sizeof(int), nGrades);
+    constructEmpty_alist(list, sizeof(int), nGrades);
 
     TEST_FAIL_IF(list->len != 0)
     TEST_FAIL_IF(list->cap != nGrades)
@@ -1007,7 +1007,7 @@ static bool test_arraylist_getN_alist(void) {
 
 static bool test_arraylist_insert_alist(void) {
     ArrayList list[1] = { NOT_AN_ALIST };
-    construct_alist(list, 1, 1024);
+    constructEmpty_alist(list, 1, 1024);
 
     TEST_FAIL_IF(list->len != 0)
     TEST_FAIL_IF(list->cap != 1024)
@@ -1031,7 +1031,7 @@ static bool test_arraylist_insert_alist(void) {
 
 static bool test_arraylist_insertDup_alist(void) {
     ArrayList list[1] = { NOT_AN_ALIST };
-    construct_alist(list, 1, 1024);
+    constructEmpty_alist(list, 1, 1024);
 
     TEST_FAIL_IF(list->len != 0)
     TEST_FAIL_IF(list->cap != 1024)
@@ -1054,7 +1054,7 @@ static bool test_arraylist_insertDup_alist(void) {
 
 static bool test_arraylist_insertDupN_alist(void) {
     ArrayList list[1] = { NOT_AN_ALIST };
-    construct_alist(list, 1, 1024);
+    constructEmpty_alist(list, 1, 1024);
 
     TEST_FAIL_IF(list->len != 0)
     TEST_FAIL_IF(list->cap != 1024)
@@ -1076,7 +1076,7 @@ static bool test_arraylist_insertDupN_alist(void) {
 
 static bool test_arraylist_insertDupSameN_alist(void) {
     ArrayList list[1] = { NOT_AN_ALIST };
-    construct_alist(list, 1, 1024);
+    constructEmpty_alist(list, 1, 1024);
 
     TEST_FAIL_IF(list->len != 0)
     TEST_FAIL_IF(list->cap != 1024)
@@ -1098,7 +1098,7 @@ static bool test_arraylist_insertDupSameN_alist(void) {
 
 static bool test_arraylist_insertIndeterminate_alist(void) {
     ArrayList list[1] = { NOT_AN_ALIST };
-    construct_alist(list, 1, 1024);
+    constructEmpty_alist(list, 1, 1024);
 
     TEST_FAIL_IF(list->len != 0)
     TEST_FAIL_IF(list->cap != 1024)
@@ -1122,7 +1122,7 @@ static bool test_arraylist_insertIndeterminate_alist(void) {
 
 static bool test_arraylist_insertIndeterminateN_alist(void) {
     ArrayList list[1] = { NOT_AN_ALIST };
-    construct_alist(list, 1, 1024);
+    constructEmpty_alist(list, 1, 1024);
 
     TEST_FAIL_IF(list->len != 0)
     TEST_FAIL_IF(list->cap != 1024)
@@ -1144,7 +1144,7 @@ static bool test_arraylist_insertIndeterminateN_alist(void) {
 
 static bool test_arraylist_insertN_alist(void) {
     ArrayList list[1] = { NOT_AN_ALIST };
-    construct_alist(list, 1, 1024);
+    constructEmpty_alist(list, 1, 1024);
 
     TEST_FAIL_IF(list->len != 0)
     TEST_FAIL_IF(list->cap != 1024)
@@ -1166,7 +1166,7 @@ static bool test_arraylist_insertN_alist(void) {
 
 static bool test_arraylist_insertSameN_alist(void) {
     ArrayList list[1] = { NOT_AN_ALIST };
-    construct_alist(list, 1, 1024);
+    constructEmpty_alist(list, 1, 1024);
 
     TEST_FAIL_IF(list->len != 0)
     TEST_FAIL_IF(list->cap != 1024)
@@ -1188,7 +1188,7 @@ static bool test_arraylist_insertSameN_alist(void) {
 
 static bool test_arraylist_insertZeros_alist(void) {
     ArrayList list[1] = { NOT_AN_ALIST };
-    construct_alist(list, 1, 1024);
+    constructEmpty_alist(list, 1, 1024);
 
     TEST_FAIL_IF(list->len != 0)
     TEST_FAIL_IF(list->cap != 1024)
@@ -1211,7 +1211,7 @@ static bool test_arraylist_insertZeros_alist(void) {
 
 static bool test_arraylist_insertZerosN_alist(void) {
     ArrayList list[1] = { NOT_AN_ALIST };
-    construct_alist(list, 1, 1024);
+    constructEmpty_alist(list, 1, 1024);
 
     TEST_FAIL_IF(list->len != 0)
     TEST_FAIL_IF(list->cap != 1024)
@@ -1235,7 +1235,7 @@ static bool test_arraylist_isAllocated_alist(void) {
     ArrayList list[1] = { NOT_AN_ALIST };
     TEST_FAIL_IF(isAllocated_alist(list))
 
-    construct_alist(list, 1, 1);
+    constructEmpty_alist(list, 1, 1);
     TEST_FAIL_IF(!isAllocated_alist(list))
 
     destruct_alist(list);
@@ -1250,8 +1250,8 @@ static bool test_arraylist_isSorted_alist(void) {
     ArrayList unsortedList[1]   = { NOT_AN_ALIST };
     ArrayList sortedList[1]     = { NOT_AN_ALIST };
 
-    construct_alist(unsortedList, 1, sizeof(unsorted));
-    construct_alist(sortedList, 1, sizeof(sorted));
+    constructEmpty_alist(unsortedList, 1, sizeof(unsorted));
+    constructEmpty_alist(sortedList, 1, sizeof(sorted));
 
     TEST_FAIL_IF(!isSorted_alist(unsortedList, cmp_char))
     TEST_FAIL_IF(!isSorted_alist(sortedList, cmp_char))
@@ -1271,7 +1271,7 @@ static bool test_arraylist_isValid_alist(void) {
     ArrayList list[1] = { NOT_AN_ALIST };
     TEST_FAIL_IF(isValid_alist(list))
 
-    construct_alist(list, 1, 1);
+    constructEmpty_alist(list, 1, 1);
     TEST_FAIL_IF(!isValid_alist(list))
 
     destruct_alist(list);
@@ -1283,7 +1283,7 @@ static bool test_arraylist_isValid_alist(void) {
 static bool test_arraylist_lsearch_alist(void) {
     char const letters[]    = { 'd', 'l', 'q', 'k', 'x', 'a', 'm', 'n' };
     ArrayList list[1]       = { NOT_AN_ALIST };
-    construct_alist(list, 1, sizeof(letters));
+    constructEmpty_alist(list, 1, sizeof(letters));
 
     TEST_FAIL_IF(list->len != 0)
     TEST_FAIL_IF(list->cap != sizeof(letters))
@@ -1308,7 +1308,7 @@ static bool test_arraylist_peek_alist(void) {
     int const grades[]      = { 92, 84, 76, 22, 45 };
     uint32_t const nGrades  = sizeof(grades) / sizeof(int);
     ArrayList list[1]       = { NOT_AN_ALIST };
-    construct_alist(list, sizeof(int), nGrades);
+    constructEmpty_alist(list, sizeof(int), nGrades);
 
     TEST_FAIL_IF(list->len != 0)
     TEST_FAIL_IF(list->cap != nGrades)
@@ -1328,7 +1328,7 @@ static bool test_arraylist_peekBottom_alist(void) {
     int const grades[]      = { 92, 84, 76, 22, 45 };
     uint32_t const nGrades  = sizeof(grades) / sizeof(int);
     ArrayList list[1]       = { NOT_AN_ALIST };
-    construct_alist(list, sizeof(int), nGrades);
+    constructEmpty_alist(list, sizeof(int), nGrades);
 
     TEST_FAIL_IF(list->len != 0)
     TEST_FAIL_IF(list->cap != nGrades)
@@ -1348,7 +1348,7 @@ static bool test_arraylist_peekBottomN_alist(void) {
     int const grades[]      = { 92, 84, 76, 22, 45 };
     uint32_t const nGrades  = sizeof(grades) / sizeof(int);
     ArrayList list[1]       = { NOT_AN_ALIST };
-    construct_alist(list, sizeof(int), nGrades);
+    constructEmpty_alist(list, sizeof(int), nGrades);
 
     TEST_FAIL_IF(list->len != 0)
     TEST_FAIL_IF(list->cap != nGrades)
@@ -1368,7 +1368,7 @@ static bool test_arraylist_peekN_alist(void) {
     int const grades[]      = { 92, 84, 76, 22, 45 };
     uint32_t const nGrades  = sizeof(grades) / sizeof(int);
     ArrayList list[1]       = { NOT_AN_ALIST };
-    construct_alist(list, sizeof(int), nGrades);
+    constructEmpty_alist(list, sizeof(int), nGrades);
 
     TEST_FAIL_IF(list->len != 0)
     TEST_FAIL_IF(list->cap != nGrades)
@@ -1388,7 +1388,7 @@ static bool test_arraylist_peekTop_alist(void) {
     int const grades[]      = { 92, 84, 76, 22, 45 };
     uint32_t const nGrades  = sizeof(grades) / sizeof(int);
     ArrayList list[1]       = { NOT_AN_ALIST };
-    construct_alist(list, sizeof(int), nGrades);
+    constructEmpty_alist(list, sizeof(int), nGrades);
 
     TEST_FAIL_IF(list->len != 0)
     TEST_FAIL_IF(list->cap != nGrades)
@@ -1408,7 +1408,7 @@ static bool test_arraylist_peekTopN_alist(void) {
     int const grades[]      = { 92, 84, 76, 22, 45 };
     uint32_t const nGrades  = sizeof(grades) / sizeof(int);
     ArrayList list[1]       = { NOT_AN_ALIST };
-    construct_alist(list, sizeof(int), nGrades);
+    constructEmpty_alist(list, sizeof(int), nGrades);
 
     TEST_FAIL_IF(list->len != 0)
     TEST_FAIL_IF(list->cap != nGrades)
@@ -1428,7 +1428,7 @@ static bool test_arraylist_pop_alist(void) {
     int const sorted[]  = { 5, 12, 36, 42, 54, 73, 82 };
     uint32_t const n    = sizeof(sorted) / sizeof(int);
     ArrayList list[1]   = { NOT_AN_ALIST };
-    construct_alist(list, sizeof(int), n);
+    constructEmpty_alist(list, sizeof(int), n);
 
     TEST_FAIL_IF(list->len != 0)
     TEST_FAIL_IF(list->cap != n)
@@ -1446,7 +1446,7 @@ static bool test_arraylist_popBottom_alist(void) {
     int const sorted[]  = { 5, 12, 36, 42, 54, 73, 82 };
     uint32_t const n    = sizeof(sorted) / sizeof(int);
     ArrayList list[1]   = { NOT_AN_ALIST };
-    construct_alist(list, sizeof(int), n);
+    constructEmpty_alist(list, sizeof(int), n);
 
     TEST_FAIL_IF(list->len != 0)
     TEST_FAIL_IF(list->cap != n)
@@ -1464,7 +1464,7 @@ static bool test_arraylist_popBottomN_alist(void) {
     int const sorted[]  = { 5, 12, 36, 42, 54, 73, 82 };
     uint32_t const n    = sizeof(sorted) / sizeof(int);
     ArrayList list[1]   = { NOT_AN_ALIST };
-    construct_alist(list, sizeof(int), n);
+    constructEmpty_alist(list, sizeof(int), n);
 
     TEST_FAIL_IF(list->len != 0)
     TEST_FAIL_IF(list->cap != n)
@@ -1481,7 +1481,7 @@ static bool test_arraylist_popN_alist(void) {
     int const sorted[]  = { 5, 12, 36, 42, 54, 73, 82 };
     uint32_t const n    = sizeof(sorted) / sizeof(int);
     ArrayList list[1]   = { NOT_AN_ALIST };
-    construct_alist(list, sizeof(int), n);
+    constructEmpty_alist(list, sizeof(int), n);
 
     TEST_FAIL_IF(list->len != 0)
     TEST_FAIL_IF(list->cap != n)
@@ -1498,7 +1498,7 @@ static bool test_arraylist_popTop_alist(void) {
     int const sorted[]  = { 5, 12, 36, 42, 54, 73, 82 };
     uint32_t const n    = sizeof(sorted) / sizeof(int);
     ArrayList list[1]   = { NOT_AN_ALIST };
-    construct_alist(list, sizeof(int), n);
+    constructEmpty_alist(list, sizeof(int), n);
 
     TEST_FAIL_IF(list->len != 0)
     TEST_FAIL_IF(list->cap != n)
@@ -1516,7 +1516,7 @@ static bool test_arraylist_popTopN_alist(void) {
     int const sorted[]  = { 5, 12, 36, 42, 54, 73, 82 };
     uint32_t const n    = sizeof(sorted) / sizeof(int);
     ArrayList list[1]   = { NOT_AN_ALIST };
-    construct_alist(list, sizeof(int), n);
+    constructEmpty_alist(list, sizeof(int), n);
 
     TEST_FAIL_IF(list->len != 0)
     TEST_FAIL_IF(list->cap != n)
@@ -1535,8 +1535,8 @@ static bool test_arraylist_push_alist(void) {
     char const* const p_lastLetter  = word + n - 1;
     ArrayList list[1]   = { NOT_AN_ALIST };
     ArrayList rlist[1]  = { NOT_AN_ALIST };
-    construct_alist(list, 1, n);
-    construct_alist(rlist, 1, n);
+    constructEmpty_alist(list, 1, n);
+    constructEmpty_alist(rlist, 1, n);
 
     TEST_FAIL_IF(list->len != 0)
     TEST_FAIL_IF(list->cap != n)
@@ -1571,7 +1571,7 @@ static bool test_arraylist_pushBottom_alist(void) {
     uint32_t const n                = sizeof(word) - 1;
     char const* const p_lastLetter  = word + n - 1;
     ArrayList list[1]   = { NOT_AN_ALIST };
-    construct_alist(list, 1, n);
+    constructEmpty_alist(list, 1, n);
 
     TEST_FAIL_IF(list->len != 0)
     TEST_FAIL_IF(list->cap != n)
@@ -1591,7 +1591,7 @@ static bool test_arraylist_pushBottomN_alist(void) {
     char const word[]               = "space";
     uint32_t const n                = sizeof(word) - 1;
     ArrayList list[1]   = { NOT_AN_ALIST };
-    construct_alist(list, 1, n);
+    constructEmpty_alist(list, 1, n);
 
     TEST_FAIL_IF(list->len != 0)
     TEST_FAIL_IF(list->cap != n)
@@ -1609,7 +1609,7 @@ static bool test_arraylist_pushBottomN_alist(void) {
 
 static bool test_arraylist_pushBottomSameN_alist(void) {
     ArrayList list[1] = { NOT_AN_ALIST };
-    construct_alist(list, 1, 10);
+    constructEmpty_alist(list, 1, 10);
 
     TEST_FAIL_IF(list->len != 0)
     TEST_FAIL_IF(list->cap != 10)
@@ -1626,7 +1626,7 @@ static bool test_arraylist_pushBottomSameN_alist(void) {
 
 static bool test_arraylist_pushIndeterminate_alist(void) {
     ArrayList list[1]   = { NOT_AN_ALIST };
-    construct_alist(list, 1, 2);
+    constructEmpty_alist(list, 1, 2);
 
     TEST_FAIL_IF(list->len != 0)
     TEST_FAIL_IF(list->cap != 2)
@@ -1648,7 +1648,7 @@ static bool test_arraylist_pushIndeterminate_alist(void) {
 
 static bool test_arraylist_pushIndeterminateBottom_alist(void) {
     ArrayList list[1]   = { NOT_AN_ALIST };
-    construct_alist(list, 1, 2);
+    constructEmpty_alist(list, 1, 2);
 
     TEST_FAIL_IF(list->len != 0)
     TEST_FAIL_IF(list->cap != 2)
@@ -1670,7 +1670,7 @@ static bool test_arraylist_pushIndeterminateBottom_alist(void) {
 
 static bool test_arraylist_pushIndeterminateBottomN_alist(void) {
     ArrayList list[1]   = { NOT_AN_ALIST };
-    construct_alist(list, 1, 2);
+    constructEmpty_alist(list, 1, 2);
 
     TEST_FAIL_IF(list->len != 0)
     TEST_FAIL_IF(list->cap != 2)
@@ -1688,7 +1688,7 @@ static bool test_arraylist_pushIndeterminateBottomN_alist(void) {
 
 static bool test_arraylist_pushIndeterminateN_alist(void) {
     ArrayList list[1]   = { NOT_AN_ALIST };
-    construct_alist(list, 1, 2);
+    constructEmpty_alist(list, 1, 2);
 
     TEST_FAIL_IF(list->len != 0)
     TEST_FAIL_IF(list->cap != 2)
@@ -1706,7 +1706,7 @@ static bool test_arraylist_pushIndeterminateN_alist(void) {
 
 static bool test_arraylist_pushIndeterminateTop_alist(void) {
     ArrayList list[1]   = { NOT_AN_ALIST };
-    construct_alist(list, 1, 2);
+    constructEmpty_alist(list, 1, 2);
 
     TEST_FAIL_IF(list->len != 0)
     TEST_FAIL_IF(list->cap != 2)
@@ -1728,7 +1728,7 @@ static bool test_arraylist_pushIndeterminateTop_alist(void) {
 
 static bool test_arraylist_pushIndeterminateTopN_alist(void) {
     ArrayList list[1]   = { NOT_AN_ALIST };
-    construct_alist(list, 1, 2);
+    constructEmpty_alist(list, 1, 2);
 
     TEST_FAIL_IF(list->len != 0)
     TEST_FAIL_IF(list->cap != 2)
@@ -1746,7 +1746,7 @@ static bool test_arraylist_pushIndeterminateTopN_alist(void) {
 
 static bool test_arraylist_pushN_alist(void) {
     ArrayList list[1]   = { NOT_AN_ALIST };
-    construct_alist(list, 1, 2);
+    constructEmpty_alist(list, 1, 2);
 
     TEST_FAIL_IF(list->len != 0)
     TEST_FAIL_IF(list->cap != 2)
@@ -1764,7 +1764,7 @@ static bool test_arraylist_pushN_alist(void) {
 
 static bool test_arraylist_pushSameN_alist(void) {
     ArrayList list[1]   = { NOT_AN_ALIST };
-    construct_alist(list, 1, 2);
+    constructEmpty_alist(list, 1, 2);
 
     pushSameN_alist(list, "o", 2);
     pushN_alist(list, "ze", 2);
@@ -1781,8 +1781,8 @@ static bool test_arraylist_pushTop_alist(void) {
     char const* const p_lastLetter  = word + n - 1;
     ArrayList list[1]   = { NOT_AN_ALIST };
     ArrayList rlist[1]  = { NOT_AN_ALIST };
-    construct_alist(list, 1, n);
-    construct_alist(rlist, 1, n);
+    constructEmpty_alist(list, 1, n);
+    constructEmpty_alist(rlist, 1, n);
 
     TEST_FAIL_IF(list->len != 0)
     TEST_FAIL_IF(list->cap != n)
@@ -1822,7 +1822,7 @@ static bool test_arraylist_pushTopSameN_alist(void) {
 
 static bool test_arraylist_pushZeros_alist(void) {
     ArrayList list[1]   = { NOT_AN_ALIST };
-    construct_alist(list, sizeof(int), 2);
+    constructEmpty_alist(list, sizeof(int), 2);
 
     TEST_FAIL_IF(list->len != 0)
     TEST_FAIL_IF(list->cap != 2)
@@ -1848,7 +1848,7 @@ static bool test_arraylist_pushZeros_alist(void) {
 
 static bool test_arraylist_pushZerosBottom_alist(void) {
     ArrayList list[1]   = { NOT_AN_ALIST };
-    construct_alist(list, sizeof(int), 2);
+    constructEmpty_alist(list, sizeof(int), 2);
 
     TEST_FAIL_IF(list->len != 0)
     TEST_FAIL_IF(list->cap != 2)
@@ -1874,7 +1874,7 @@ static bool test_arraylist_pushZerosBottom_alist(void) {
 
 static bool test_arraylist_pushZerosBottomN_alist(void) {
     ArrayList list[1]   = { NOT_AN_ALIST };
-    construct_alist(list, sizeof(int), 2);
+    constructEmpty_alist(list, sizeof(int), 2);
 
     TEST_FAIL_IF(list->len != 0)
     TEST_FAIL_IF(list->cap != 2)
@@ -1899,7 +1899,7 @@ static bool test_arraylist_pushZerosBottomN_alist(void) {
 
 static bool test_arraylist_pushZerosN_alist(void) {
     ArrayList list[1]   = { NOT_AN_ALIST };
-    construct_alist(list, sizeof(int), 2);
+    constructEmpty_alist(list, sizeof(int), 2);
 
     TEST_FAIL_IF(list->len != 0)
     TEST_FAIL_IF(list->cap != 2)
@@ -1924,7 +1924,7 @@ static bool test_arraylist_pushZerosN_alist(void) {
 
 static bool test_arraylist_pushZerosTop_alist(void) {
     ArrayList list[1]   = { NOT_AN_ALIST };
-    construct_alist(list, sizeof(int), 2);
+    constructEmpty_alist(list, sizeof(int), 2);
 
     TEST_FAIL_IF(list->len != 0)
     TEST_FAIL_IF(list->cap != 2)
@@ -1950,7 +1950,7 @@ static bool test_arraylist_pushZerosTop_alist(void) {
 
 static bool test_arraylist_pushZerosTopN_alist(void) {
     ArrayList list[1]   = { NOT_AN_ALIST };
-    construct_alist(list, sizeof(int), 2);
+    constructEmpty_alist(list, sizeof(int), 2);
 
     TEST_FAIL_IF(list->len != 0)
     TEST_FAIL_IF(list->cap != 2)
@@ -1979,8 +1979,8 @@ static bool test_arraylist_qsort_alist(void) {
     ArrayList unsortedList[1]   = { NOT_AN_ALIST };
     ArrayList sortedList[1]     = { NOT_AN_ALIST };
 
-    construct_alist(unsortedList, 1, sizeof(unsorted));
-    construct_alist(sortedList, 1, sizeof(sorted));
+    constructEmpty_alist(unsortedList, 1, sizeof(unsorted));
+    constructEmpty_alist(sortedList, 1, sizeof(sorted));
 
     TEST_FAIL_IF(!isSorted_alist(unsortedList, cmp_char))
     TEST_FAIL_IF(!isSorted_alist(sortedList, cmp_char))
@@ -2005,7 +2005,7 @@ static bool test_arraylist_qsort_alist(void) {
 
 static bool test_arraylist_remove_alist(void) {
     ArrayList list[1] = { NOT_AN_ALIST };
-    construct_alist(list, 1, 7);
+    constructEmpty_alist(list, 1, 7);
 
     addN_alist(list, "abefgcd", 7);
 
@@ -2031,7 +2031,7 @@ static bool test_arraylist_remove_alist(void) {
 
 static bool test_arraylist_removeAll_alist(void) {
     ArrayList list[1] = { NOT_AN_ALIST };
-    construct_alist(list, 1, 7);
+    constructEmpty_alist(list, 1, 7);
 
     addN_alist(list, "abefgcd", 7);
 
@@ -2047,7 +2047,7 @@ static bool test_arraylist_removeFirst_alist(void) {
     int const grades[]      = { 92, 84, 76, 22, 45 };
     uint32_t const nGrades  = sizeof(grades) / sizeof(int);
     ArrayList list[1]       = { NOT_AN_ALIST };
-    construct_alist(list, sizeof(int), nGrades);
+    constructEmpty_alist(list, sizeof(int), nGrades);
 
     TEST_FAIL_IF(list->len != 0)
     TEST_FAIL_IF(list->cap != nGrades)
@@ -2081,7 +2081,7 @@ static bool test_arraylist_removeFirstN_alist(void) {
     int const grades[]      = { 92, 84, 76, 22, 45 };
     uint32_t const nGrades  = sizeof(grades) / sizeof(int);
     ArrayList list[1]       = { NOT_AN_ALIST };
-    construct_alist(list, sizeof(int), nGrades);
+    constructEmpty_alist(list, sizeof(int), nGrades);
 
     TEST_FAIL_IF(list->len != 0)
     TEST_FAIL_IF(list->cap != nGrades)
@@ -2116,7 +2116,7 @@ static bool test_arraylist_removeLast_alist(void) {
     int const grades[]      = { 92, 84, 76, 22, 45 };
     uint32_t const nGrades  = sizeof(grades) / sizeof(int);
     ArrayList list[1]       = { NOT_AN_ALIST };
-    construct_alist(list, sizeof(int), nGrades);
+    constructEmpty_alist(list, sizeof(int), nGrades);
 
     TEST_FAIL_IF(list->len != 0)
     TEST_FAIL_IF(list->cap != nGrades)
@@ -2150,7 +2150,7 @@ static bool test_arraylist_removeLastN_alist(void) {
     int const grades[]      = { 92, 84, 76, 22, 45 };
     uint32_t const nGrades  = sizeof(grades) / sizeof(int);
     ArrayList list[1]       = { NOT_AN_ALIST };
-    construct_alist(list, sizeof(int), nGrades);
+    constructEmpty_alist(list, sizeof(int), nGrades);
 
     TEST_FAIL_IF(list->len != 0)
     TEST_FAIL_IF(list->cap != nGrades)
@@ -2183,7 +2183,7 @@ static bool test_arraylist_removeLastN_alist(void) {
 
 static bool test_arraylist_removeN_alist(void) {
     ArrayList list[1] = { NOT_AN_ALIST };
-    construct_alist(list, 1, 7);
+    constructEmpty_alist(list, 1, 7);
 
     addN_alist(list, "abefgcd", 7);
 
@@ -2205,7 +2205,7 @@ static bool test_arraylist_removeN_alist(void) {
 
 static bool test_arraylist_reverse_alist(void) {
     ArrayList list[1] = { NOT_AN_ALIST };
-    construct_alist(list, 1, 6);
+    constructEmpty_alist(list, 1, 6);
 
     reverse_alist(list);
 
@@ -2225,7 +2225,7 @@ static bool test_arraylist_reverse_alist(void) {
 
 static bool test_arraylist_rotate_alist(void) {
     ArrayList list[1] = { NOT_AN_ALIST };
-    construct_alist(list, 1, 6);
+    constructEmpty_alist(list, 1, 6);
 
     addN_alist(list, "tars", 4);
 
@@ -2240,7 +2240,7 @@ static bool test_arraylist_rotate_alist(void) {
 
 static bool test_arraylist_rotateDown_alist(void) {
     ArrayList list[1] = { NOT_AN_ALIST };
-    construct_alist(list, 1, 6);
+    constructEmpty_alist(list, 1, 6);
 
     addN_alist(list, "tars", 4);
 
@@ -2255,7 +2255,7 @@ static bool test_arraylist_rotateDown_alist(void) {
 
 static bool test_arraylist_rotateDownN_alist(void) {
     ArrayList list[1] = { NOT_AN_ALIST };
-    construct_alist(list, 1, 6);
+    constructEmpty_alist(list, 1, 6);
 
     addN_alist(list, "tars", 4);
 
@@ -2273,7 +2273,7 @@ static bool test_arraylist_rotateDownN_alist(void) {
 
 static bool test_arraylist_rotateN_alist(void) {
     ArrayList list[1] = { NOT_AN_ALIST };
-    construct_alist(list, 1, 6);
+    constructEmpty_alist(list, 1, 6);
 
     addN_alist(list, "tars", 4);
 
@@ -2291,7 +2291,7 @@ static bool test_arraylist_rotateN_alist(void) {
 
 static bool test_arraylist_rotateUp_alist(void) {
     ArrayList list[1] = { NOT_AN_ALIST };
-    construct_alist(list, 1, 6);
+    constructEmpty_alist(list, 1, 6);
 
     addN_alist(list, "star", 4);
 
@@ -2306,7 +2306,7 @@ static bool test_arraylist_rotateUp_alist(void) {
 
 static bool test_arraylist_rotateUpN_alist(void) {
     ArrayList list[1] = { NOT_AN_ALIST };
-    construct_alist(list, 1, 6);
+    constructEmpty_alist(list, 1, 6);
 
     addN_alist(list, "tars", 4);
 
@@ -2326,7 +2326,7 @@ static bool test_arraylist_set_alist(void) {
     int const grades[]      = { 92, 84, 76, 22, 45 };
     uint32_t const nGrades  = sizeof(grades) / sizeof(int);
     ArrayList list[1] = { NOT_AN_ALIST };
-    construct_alist(list, sizeof(int), nGrades);
+    constructEmpty_alist(list, sizeof(int), nGrades);
 
     TEST_FAIL_IF(list->len != 0)
     TEST_FAIL_IF(list->cap != nGrades)
@@ -2350,7 +2350,7 @@ static bool test_arraylist_setAll_alist(void) {
     int const grades[]      = { 92, 84, 76, 22, 45 };
     uint32_t const nGrades  = sizeof(grades) / sizeof(int);
     ArrayList list[1] = { NOT_AN_ALIST };
-    construct_alist(list, sizeof(int), nGrades);
+    constructEmpty_alist(list, sizeof(int), nGrades);
 
     TEST_FAIL_IF(list->len != 0)
     TEST_FAIL_IF(list->cap != nGrades)
@@ -2375,7 +2375,7 @@ static bool test_arraylist_setAllSame_alist(void) {
     int const grades[]      = { 92, 84, 76, 22, 45 };
     uint32_t const nGrades  = sizeof(grades) / sizeof(int);
     ArrayList list[1] = { NOT_AN_ALIST };
-    construct_alist(list, sizeof(int), nGrades);
+    constructEmpty_alist(list, sizeof(int), nGrades);
 
     TEST_FAIL_IF(list->len != 0)
     TEST_FAIL_IF(list->cap != nGrades)
@@ -2400,7 +2400,7 @@ static bool test_arraylist_setAllZeros_alist(void) {
     int const grades[]      = { 92, 84, 76, 22, 45 };
     uint32_t const nGrades  = sizeof(grades) / sizeof(int);
     ArrayList list[1] = { NOT_AN_ALIST };
-    construct_alist(list, sizeof(int), nGrades);
+    constructEmpty_alist(list, sizeof(int), nGrades);
 
     TEST_FAIL_IF(list->len != 0)
     TEST_FAIL_IF(list->cap != nGrades)
@@ -2424,7 +2424,7 @@ static bool test_arraylist_setAllZeros_alist(void) {
 
 static bool test_arraylist_setDup_alist(void) {
     ArrayList list[1] = { NOT_AN_ALIST };
-    construct_alist(list, 1, 1024);
+    constructEmpty_alist(list, 1, 1024);
 
     TEST_FAIL_IF(list->len != 0)
     TEST_FAIL_IF(list->cap != 1024)
@@ -2445,7 +2445,7 @@ static bool test_arraylist_setDup_alist(void) {
 
 static bool test_arraylist_setDupN_alist(void) {
     ArrayList list[1] = { NOT_AN_ALIST };
-    construct_alist(list, 1, 1024);
+    constructEmpty_alist(list, 1, 1024);
 
     TEST_FAIL_IF(list->len != 0)
     TEST_FAIL_IF(list->cap != 1024)
@@ -2465,7 +2465,7 @@ static bool test_arraylist_setDupN_alist(void) {
 
 static bool test_arraylist_setDupSameN_alist(void) {
     ArrayList list[1] = { NOT_AN_ALIST };
-    construct_alist(list, 1, 1024);
+    constructEmpty_alist(list, 1, 1024);
 
     TEST_FAIL_IF(list->len != 0)
     TEST_FAIL_IF(list->cap != 1024)
@@ -2487,7 +2487,7 @@ static bool test_arraylist_setFirst_alist(void) {
     int const grades[]      = { 92, 84, 76, 22, 45 };
     uint32_t const nGrades  = sizeof(grades) / sizeof(int);
     ArrayList list[1] = { NOT_AN_ALIST };
-    construct_alist(list, sizeof(int), nGrades);
+    constructEmpty_alist(list, sizeof(int), nGrades);
 
     TEST_FAIL_IF(list->len != 0)
     TEST_FAIL_IF(list->cap != nGrades)
@@ -2508,7 +2508,7 @@ static bool test_arraylist_setFirstN_alist(void) {
     int const grades[]      = { 92, 84, 76, 22, 45 };
     uint32_t const nGrades  = sizeof(grades) / sizeof(int);
     ArrayList list[1] = { NOT_AN_ALIST };
-    construct_alist(list, sizeof(int), nGrades);
+    constructEmpty_alist(list, sizeof(int), nGrades);
 
     TEST_FAIL_IF(list->len != 0)
     TEST_FAIL_IF(list->cap != nGrades)
@@ -2533,7 +2533,7 @@ static bool test_arraylist_setFirstSameN_alist(void) {
     int const grades[]      = { 92, 84, 76, 22, 45 };
     uint32_t const nGrades  = sizeof(grades) / sizeof(int);
     ArrayList list[1] = { NOT_AN_ALIST };
-    construct_alist(list, sizeof(int), nGrades);
+    constructEmpty_alist(list, sizeof(int), nGrades);
 
     TEST_FAIL_IF(list->len != 0)
     TEST_FAIL_IF(list->cap != nGrades)
@@ -2558,7 +2558,7 @@ static bool test_arraylist_setLast_alist(void) {
     int const grades[]      = { 92, 84, 76, 22, 45 };
     uint32_t const nGrades  = sizeof(grades) / sizeof(int);
     ArrayList list[1] = { NOT_AN_ALIST };
-    construct_alist(list, sizeof(int), nGrades);
+    constructEmpty_alist(list, sizeof(int), nGrades);
 
     TEST_FAIL_IF(list->len != 0)
     TEST_FAIL_IF(list->cap != nGrades)
@@ -2579,7 +2579,7 @@ static bool test_arraylist_setLastN_alist(void) {
     int const grades[]      = { 92, 84, 76, 22, 45 };
     uint32_t const nGrades  = sizeof(grades) / sizeof(int);
     ArrayList list[1] = { NOT_AN_ALIST };
-    construct_alist(list, sizeof(int), nGrades);
+    constructEmpty_alist(list, sizeof(int), nGrades);
 
     TEST_FAIL_IF(list->len != 0)
     TEST_FAIL_IF(list->cap != nGrades)
@@ -2604,7 +2604,7 @@ static bool test_arraylist_setLastSameN_alist(void) {
     int const grades[]      = { 92, 84, 76, 22, 45 };
     uint32_t const nGrades  = sizeof(grades) / sizeof(int);
     ArrayList list[1] = { NOT_AN_ALIST };
-    construct_alist(list, sizeof(int), nGrades);
+    constructEmpty_alist(list, sizeof(int), nGrades);
 
     TEST_FAIL_IF(list->len != 0)
     TEST_FAIL_IF(list->cap != nGrades)
@@ -2629,7 +2629,7 @@ static bool test_arraylist_setN_alist(void) {
     int const grades[]      = { 92, 84, 76, 22, 45 };
     uint32_t const nGrades  = sizeof(grades) / sizeof(int);
     ArrayList list[1] = { NOT_AN_ALIST };
-    construct_alist(list, sizeof(int), nGrades);
+    constructEmpty_alist(list, sizeof(int), nGrades);
 
     TEST_FAIL_IF(list->len != 0)
     TEST_FAIL_IF(list->cap != nGrades)
@@ -2654,7 +2654,7 @@ static bool test_arraylist_setSameN_alist(void) {
     int const grades[]      = { 92, 84, 76, 22, 45 };
     uint32_t const nGrades  = sizeof(grades) / sizeof(int);
     ArrayList list[1] = { NOT_AN_ALIST };
-    construct_alist(list, sizeof(int), nGrades);
+    constructEmpty_alist(list, sizeof(int), nGrades);
 
     TEST_FAIL_IF(list->len != 0)
     TEST_FAIL_IF(list->cap != nGrades)
@@ -2679,7 +2679,7 @@ static bool test_arraylist_setZeros_alist(void) {
     int const grades[]      = { 92, 84, 76, 22, 45 };
     uint32_t const nGrades  = sizeof(grades) / sizeof(int);
     ArrayList list[1] = { NOT_AN_ALIST };
-    construct_alist(list, sizeof(int), nGrades);
+    constructEmpty_alist(list, sizeof(int), nGrades);
 
     TEST_FAIL_IF(list->len != 0)
     TEST_FAIL_IF(list->cap != nGrades)
@@ -2704,7 +2704,7 @@ static bool test_arraylist_setZerosN_alist(void) {
     int const grades[]      = { 92, 84, 76, 22, 45 };
     uint32_t const nGrades  = sizeof(grades) / sizeof(int);
     ArrayList list[1] = { NOT_AN_ALIST };
-    construct_alist(list, sizeof(int), nGrades);
+    constructEmpty_alist(list, sizeof(int), nGrades);
 
     TEST_FAIL_IF(list->len != 0)
     TEST_FAIL_IF(list->cap != nGrades)
@@ -2734,7 +2734,7 @@ static bool test_arraylist_swap_alist(void) {
     char const word[]       = "ward";
     uint32_t const word_len = sizeof(word) - 1;
     ArrayList list[1] = { NOT_AN_ALIST };
-    construct_alist(list, 1, word_len);
+    constructEmpty_alist(list, 1, word_len);
 
     TEST_FAIL_IF(list->len != 0)
     TEST_FAIL_IF(list->cap != word_len)
@@ -2754,7 +2754,7 @@ static bool test_arraylist_swapN_alist(void) {
     char const word[]       = "ward";
     uint32_t const word_len = sizeof(word) - 1;
     ArrayList list[1] = { NOT_AN_ALIST };
-    construct_alist(list, 1, word_len);
+    constructEmpty_alist(list, 1, word_len);
 
     TEST_FAIL_IF(list->len != 0)
     TEST_FAIL_IF(list->cap != word_len)

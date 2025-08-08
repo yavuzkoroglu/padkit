@@ -955,7 +955,7 @@ void vconstruct_jsonp(void* const p_jsonParser, va_list args) {
 
     jsonParser->inputStream     = inputStream;
     jsonParser->stack_cap       = JSON_PARSER_INITIAL_STACK_CAP;
-    jsonParser->stack_len      = 0;
+    jsonParser->stack_len       = 0;
     jsonParser->stack           = mem_alloc(jsonParser->stack_cap);
     jsonParser->str_cap         = JSON_PARSER_INITIAL_STR_CAP;
     jsonParser->str             = mem_alloc(jsonParser->str_cap);
