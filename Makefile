@@ -17,6 +17,7 @@ OBJECTS=obj/padkit/arraylist.o          \
         obj/padkit/bitmatrix.o          \
         obj/padkit/chunk.o              \
         obj/padkit/hash.o               \
+        obj/padkit/indextable.o         \
         obj/padkit/intfn.o              \
         obj/padkit/item.o               \
         obj/padkit/jsonparser.o         \
@@ -30,6 +31,7 @@ SOURCES=src/padkit/arraylist.c          \
         src/padkit/bitmatrix.c          \
         src/padkit/chunk.c              \
         src/padkit/hash.c               \
+        src/padkit/indextable.c         \
         src/padkit/intfn.c              \
         src/padkit/item.c               \
         src/padkit/jsonparser.c         \
@@ -100,6 +102,7 @@ include/padkit.h: .FORCE;                                                       
     echo '    #include "padkit/error.h"'                    >> include/padkit.h; \
     echo '    #include "padkit/hash.h"'                     >> include/padkit.h; \
     echo '    #include "padkit/implication.h"'              >> include/padkit.h; \
+    echo '    #include "padkit/indextable.h"'               >> include/padkit.h; \
     echo '    #include "padkit/intfn.h"'                    >> include/padkit.h; \
     echo '    #include "padkit/invalid.h"'                  >> include/padkit.h; \
     echo '    #include "padkit/item.h"'                     >> include/padkit.h; \
@@ -162,6 +165,18 @@ obj/padkit/hash.o: .FORCE               \
     include/padkit/hash.h               \
     src/padkit/hash.c                   \
     ; ${COMPILE} -Iinclude src/padkit/hash.c -c -o obj/padkit/hash.o
+
+obj/padkit/indextable.o: .FORCE         \
+    obj/padkit                          \
+    include/padkit/arraylist.h          \
+    include/padkit/indextable.h         \
+    include/padkit/intfn.h              \
+    include/padkit/invalid.h            \
+    include/padkit/implication.h        \
+    include/padkit/memalloc.h           \
+    include/padkit/size.h               \
+    src/padkit/indextable.c             \
+    ; ${COMPILE} -Iinclude src/padkit/indextable.c -c -o obj/padkit/indextable.o
 
 obj/padkit/intfn.o: .FORCE              \
     obj/padkit                          \

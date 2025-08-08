@@ -1,7 +1,7 @@
 static void test_indextable(void);
 static bool test_indextable_constructEmpty_itbl(void);
 static bool test_indextable_flush_itbl(void);
-static bool test_indextable_free_itbl(void);
+static bool test_indextable_destruct_itbl(void);
 static bool test_indextable_grow_itbl(void);
 static bool test_indextable_insert_itbl(void);
 static bool test_indextable_isValid_itbl(void);
@@ -11,7 +11,7 @@ static void test_indextable(void) {
 
     allTestsPass &= test_indextable_constructEmpty_itbl();
     allTestsPass &= test_indextable_flush_itbl();
-    allTestsPass &= test_indextable_free_itbl();
+    allTestsPass &= test_indextable_destruct_itbl();
     allTestsPass &= test_indextable_grow_itbl();
     allTestsPass &= test_indextable_insert_itbl();
     allTestsPass &= test_indextable_isValid_itbl();
@@ -22,7 +22,7 @@ static void test_indextable(void) {
 static bool test_indextable_constructEmpty_itbl(void) {
     IndexTable table[1] = { NOT_AN_ITBL };
     constructEmpty_itbl(table, 1000000, 75, 1000000);
-    free_itbl(table);
+    destruct_itbl(table);
     TEST_PASS
 }
 
@@ -44,15 +44,15 @@ static bool test_indextable_flush_itbl(void) {
 
     TEST_FAIL_IF(table->load != 0)
 
-    free_itbl(table);
+    destruct_itbl(table);
     TEST_PASS
 }
 
-static bool test_indextable_free_itbl(void) {
+static bool test_indextable_destruct_itbl(void) {
     IndexTable table[1] = { NOT_AN_ITBL };
     constructEmpty_itbl(table, 1, 1, 1);
     TEST_FAIL_IF(!isValid_itbl(table))
-    free_itbl(table);
+    destruct_itbl(table);
     TEST_FAIL_IF(isValid_itbl(table))
     TEST_PASS
 }
@@ -125,7 +125,7 @@ static bool test_indextable_insert_itbl(void) {
     }
 
     for (uint_fast64_t person = ALICE; person < PEOPLE_COUNT; person++) {
-        IndexMapping* ageMapping = getFirstMapping_itbl(ages, person);
+        IndexMapping* ageMapping = findFirstMapping_itbl(ages, person);
         TEST_FAIL_IF(ageMapping == NULL)
         TEST_FAIL_IF(ageMapping->value != age[person])
 
@@ -134,7 +134,7 @@ static bool test_indextable_insert_itbl(void) {
     }
 
     for (uint_fast64_t person = ALICE; person < PEOPLE_COUNT; person++) {
-        IndexMapping* scoreMapping = getFirstMapping_itbl(scores, person);
+        IndexMapping* scoreMapping = findFirstMapping_itbl(scores, person);
         TEST_FAIL_IF(scoreMapping == NULL)
         TEST_FAIL_IF(scoreMapping->value != score[1][person])
 
@@ -144,8 +144,8 @@ static bool test_indextable_insert_itbl(void) {
     }
 
     #undef PEOPLE_COUNT
-    free_itbl(ages);
-    free_itbl(scores);
+    destruct_itbl(ages);
+    destruct_itbl(scores);
     TEST_PASS
 }
 #undef ALICE
@@ -159,13 +159,13 @@ static bool test_indextable_grow_itbl(void) {
 
     insert_itbl(table, 8215102, 8215102, ITBL_RELATION_ONE_TO_ONE, ITBL_BEHAVIOR_RESPECT);
 
-    TEST_FAIL_IF(getFirstMapping_itbl(table, 8215102) == NULL)
+    TEST_FAIL_IF(findFirstMapping_itbl(table, 8215102) == NULL)
 
     grow_itbl(table);
 
-    TEST_FAIL_IF(getFirstMapping_itbl(table, 8215102) == NULL)
+    TEST_FAIL_IF(findFirstMapping_itbl(table, 8215102) == NULL)
 
-    free_itbl(table);
+    destruct_itbl(table);
     TEST_PASS
 }
 
@@ -178,7 +178,7 @@ static bool test_indextable_isValid_itbl(void) {
 
     TEST_FAIL_IF(!isValid_itbl(table))
 
-    free_itbl(table);
+    destruct_itbl(table);
 
     TEST_FAIL_IF(isValid_itbl(table))
 

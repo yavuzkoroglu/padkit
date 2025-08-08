@@ -33,20 +33,25 @@
         uint32_t*   rows;
     } IndexTable;
 
+    void construct_itbl(void* const p_tbl, ...);
+
     void constructEmpty_itbl(
-        IndexTable table[static const 1],
+        IndexTable* const table,
         uint32_t const min_height,
         uint32_t const max_percent_load,
         uint32_t const initial_cap
     );
 
-    void flush_itbl(IndexTable table[static const 1]);
+    void destruct_itbl(IndexTable* const table);
 
-    void free_itbl(IndexTable table[static const 1]);
+    IndexMapping* findFirstMapping_itbl(
+        IndexTable const* const table,
+        uint_fast64_t const index
+    );
 
-    IndexMapping* getFirstMapping_itbl(IndexTable const table[static const 1], uint_fast64_t const index);
+    void flush_itbl(IndexTable* const table);
 
-    void grow_itbl(IndexTable table[static const 1]);
+    void grow_itbl(IndexTable* const table);
 
     #define ITBL_BEHAVIOR_REPLACE       0
     #define ITBL_BEHAVIOR_RESPECT       1
@@ -55,17 +60,24 @@
     #define ITBL_INSERT_UNIQUE          0
     #define ITBL_INSERT_NOT_UNIQUE      1
     bool insert_itbl(
-        IndexTable table[static const 1],
+        IndexTable* const table,
         uint_fast64_t const index,
         uint32_t const value,
         bool const relationType,
         bool const behavior
     );
 
-    bool isValid_itbl(IndexTable const table[static const 1]);
+    bool isAllocated_itbl(IndexTable const* const table);
+
+    bool isValid_itbl(IndexTable const* const table);
 
     IndexMapping* nextMapping_itbl(
-        IndexTable const table[static const 1],
-        IndexMapping const mapping[static const 1]
+        IndexTable const* const table,
+        IndexMapping const* const mapping
+    );
+
+    void vconstruct_itbl(
+        void* const p_tbl,
+        va_list args
     );
 #endif
