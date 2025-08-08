@@ -2,7 +2,9 @@
     #define PADKIT_TIMESTAMP_H
 
     #ifndef TS_FMT
-        #define TS_FMT  "%F %T"
+        #define TS_FMT  "%Y-%m-%d %H:%M:%S"
+        /* #define TS_FMT  "%F %T" */
+        /* Somehow the above version does NOT work in Windows. */
     #endif
 
     #ifndef TS_LEN
