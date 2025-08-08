@@ -3,6 +3,7 @@
 #include "padkit/chunk.h"
 #include "padkit/repeat.h"
 #include "padkit/size.h"
+#include "padkit/unused.h"
 
 #ifndef NDEBUG
     #include "padkit/overlap.h"
@@ -162,9 +163,8 @@ Item addZerosN_chunk(
     assert(n > 0);
     assert(n < SZ32_MAX - LEN_CHUNK(chunk));
     {
-        uint32_t const first_offset = AREA_CHUNK(chunk);
-        uint32_t const sz_total     = sz_item * n;
-        assert(sz_total < SZ32_MAX - first_offset);
+        uint32_t const sz_total = sz_item * n;
+        assert(sz_total < SZ32_MAX);
         assert(sz_total / sz_item == n);
         {
             Item const first_item = addIndeterminateN_chunk(chunk, sz_item, n);
@@ -768,6 +768,7 @@ Item getN_chunk(
     uint32_t const id,
     uint32_t const n
 ) {
+    MAYBE_UNUSED(n)
     assert(isValid_chunk(chunk));
     assert(id < LEN_CHUNK(chunk));
     assert(n > 0);

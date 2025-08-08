@@ -175,6 +175,7 @@ obj/padkit/indextable.o: .FORCE         \
     include/padkit/implication.h        \
     include/padkit/memalloc.h           \
     include/padkit/size.h               \
+    include/padkit/unused.h             \
     src/padkit/indextable.c             \
     ; ${COMPILE} -Iinclude src/padkit/indextable.c -c -o obj/padkit/indextable.o
 

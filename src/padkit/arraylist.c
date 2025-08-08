@@ -284,13 +284,8 @@ void deleteN_alist(
     assert(list->len - id >= n);
     assert(n > 0);
 
-    if (list->len - id > n) {
-        size_t const sz = list->sz_elem * (size_t)n;
-        assert(sz < SZSZ_MAX);
-        assert(sz / list->sz_elem == (size_t)n);
-
+    if (list->len - id > n)
         setDupN_alist(list, id, id + n, list->len - id - n);
-    }
 
     deleteLastN_alist(list, n);
 }
