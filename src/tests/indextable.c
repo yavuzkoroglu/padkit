@@ -27,16 +27,16 @@ static bool test_indextable_constructEmpty_itbl(void) {
 }
 
 static bool test_indextable_flush_itbl(void) {
-    IndexTable table[1] = { NOT_AN_ITBL };
+    IndexTable table[1]     = { NOT_AN_ITBL };
     constructEmpty_itbl(table, ITBL_RECOMMENDED_PARAMETERS);
 
     TEST_FAIL_IF(table->load != 0)
 
-    insert_itbl(table, 0, 0, ITBL_RELATION_ONE_TO_ONE, ITBL_BEHAVIOR_REPLACE);
+    insert_itbl(NULL, table, 0, 0, ITBL_RELATION_ONE_TO_ONE, ITBL_BEHAVIOR_REPLACE);
 
     TEST_FAIL_IF(table->load != 1)
 
-    insert_itbl(table, 1, 1, ITBL_RELATION_ONE_TO_ONE, ITBL_BEHAVIOR_REPLACE);
+    insert_itbl(NULL, table, 1, 1, ITBL_RELATION_ONE_TO_ONE, ITBL_BEHAVIOR_REPLACE);
 
     TEST_FAIL_IF(table->load != 2)
 
@@ -77,6 +77,7 @@ static bool test_indextable_insert_itbl(void) {
 
     for (uint_fast64_t person = ALICE; person < PEOPLE_COUNT; person++) {
         int const ageInsert = insert_itbl(
+            NULL,
             ages,
             person,
             age[person],
@@ -89,6 +90,7 @@ static bool test_indextable_insert_itbl(void) {
 
     for (uint_fast64_t person = ALICE; person < PEOPLE_COUNT; person++) {
         int const scoreInsert = insert_itbl(
+            NULL,
             scores,
             person,
             score[0][person],
@@ -100,6 +102,7 @@ static bool test_indextable_insert_itbl(void) {
 
     for (uint_fast64_t person = ALICE; person < PEOPLE_COUNT; person++) {
         int const scoreInsert = insert_itbl(
+            NULL,
             scores,
             person,
             score[1][person],
@@ -111,6 +114,7 @@ static bool test_indextable_insert_itbl(void) {
 
     for (uint_fast64_t person = ALICE; person < PEOPLE_COUNT; person++) {
         int const scoreInsert = insert_itbl(
+            NULL,
             scores,
             person,
             score[0][person],
@@ -157,7 +161,7 @@ static bool test_indextable_grow_itbl(void) {
     IndexTable table[1] = { NOT_AN_ITBL };
     constructEmpty_itbl(table, ITBL_RECOMMENDED_PARAMETERS);
 
-    insert_itbl(table, 8215102, 8215102, ITBL_RELATION_ONE_TO_ONE, ITBL_BEHAVIOR_RESPECT);
+    insert_itbl(NULL, table, 8215102, 8215102, ITBL_RELATION_ONE_TO_ONE, ITBL_BEHAVIOR_RESPECT);
 
     TEST_FAIL_IF(findFirstMapping_itbl(table, 8215102) == NULL)
 
