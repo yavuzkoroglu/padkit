@@ -12,10 +12,10 @@ static void test_item(void) {
 }
 
 static bool test_item_hash_item(void) {
-    Item items[3][1] = {
-        { (Item){  "", 1, 0 } },
-        { (Item){ "a", 1, 0 } },
-        { (Item){ "a", 2, 0 } }
+    Item items[3] = {
+        (Item){  "", 1, 0 },
+        (Item){ "a", 1, 0 },
+        (Item){ "a", 2, 0 }
     };
     uint32_t const hashValues[3] = {
         177573,
@@ -33,10 +33,10 @@ static bool test_item_hash_item(void) {
 }
 
 static bool test_item_isValid_item(void) {
-    Item items[3][1] = {
-        { (Item){  "", 0, 0 } },
-        { (Item){ "a", 1, SZ32_MAX } },
-        { (Item){ NULL, 2, 0 } }
+    Item items[3] = {
+        (Item){  "", 0, 0 },
+        (Item){ "a", 1, SZ32_MAX },
+        (Item){ NULL, 2, 0 }
     };
     size_t const nItems = sizeof(items) / sizeof(Item);
 

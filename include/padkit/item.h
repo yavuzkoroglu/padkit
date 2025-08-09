@@ -13,9 +13,14 @@
         uint32_t    offset;
     } Item;
 
-    uint32_t hash32_item(Item const* const item);
+    bool areEquiv_item(
+        Item const i1,
+        Item const i2
+    );
 
-    uint64_t hash64_item(Item const* const item);
+    uint32_t hash32_item(Item const item);
 
-    bool isValid_item(void const* const p_item);
+    uint64_t hash64_item(Item const item);
+
+    bool isValid_item(Item const item);
 #endif
