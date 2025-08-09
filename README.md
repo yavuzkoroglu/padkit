@@ -19,14 +19,14 @@ The above steps should produce
 |      2025-08-08 |  macOS Sequoia 15.6 |                  Darwin arm64 |   gcc 15.1.0 |
 |      2025-08-08 |  Ubuntu 24.04.1 LTS |                 Linux aarch64 | clang 18.1.8 |
 |      2025-08-08 |  Ubuntu 24.04.1 LTS |                 Linux aarch64 |   gcc 13.2.0 |
-|      2025-08-08 |          Windows 11 |  MINGW64_NT-10.0-22631 x86_64 |   gcc 14.2.0 |
+|      2025-08-08 |          Windows 11 |  MINGW64-NT-10.0-22631 x86-64 |   gcc 14.2.0 |
 
 ## Changes 
 
 ### Changes v2.0 -> v3.0
 
 * Most of the codebase is completely rewritten (again!).
-* Removed **C23** branch, will only support the C99 standard from now on.
+* Removed **C23** branch, will only support **C99** from now on.
 * Removed `ChunkTable` in favor of `IndexTable`.
 * Added more tests.
 
