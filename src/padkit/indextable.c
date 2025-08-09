@@ -134,7 +134,6 @@ bool insert_itbl(
     bool const relationType,
     bool const behavior
 ) {
-    (void)relationType;
     assert(isValid_itbl(table));
     {
         uint32_t const row_id           = index % table->height;
