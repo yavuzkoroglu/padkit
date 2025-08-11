@@ -1,5 +1,5 @@
+#include <assert.h>
 #include <stdarg.h>
-#include <stdio.h>
 #include "padkit/timestamp.h"
 #include "padkit/verbose.h"
 
@@ -15,6 +15,26 @@ int printf_verbose(char const* const restrict format, ...) {
         printf("[%s] - ", p_timestamp);
         {
             int const n = vprintf(format, args);
+            va_end(args);
+            puts("");
+            return n;
+        }
+    } else {
+        return 0;
+    }
+}
+
+__attribute__((__format__ (__printf__, 2, 0)))
+int fprintf_verbose(FILE* const stream, char const* const restrict format, ...) {
+    assert(stream != NULL);
+
+    if (verbose) {
+        va_list args;
+        char const* const p_timestamp = get_timestamp();
+        va_start(args, format);
+        fprintf(stream, "[%s] - ", p_timestamp);
+        {
+            int const n = vfprintf(stream, format, args);
             va_end(args);
             puts("");
             return n;
