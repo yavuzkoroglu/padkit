@@ -36,7 +36,7 @@ int fprintf_verbose(FILE* const stream, char const* const restrict format, ...) 
         {
             int const n = vfprintf(stream, format, args);
             va_end(args);
-            puts("");
+            fputs("\n", stream);
             return n;
         }
     } else {
