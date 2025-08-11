@@ -107,12 +107,13 @@ void grow_itbl(IndexTable* const table) {
     }
 
     for (uint32_t mapping_id = 0; mapping_id < table->mappings->len; mapping_id++) {
-        IndexMapping const* const mapping = get_alist(table->mappings, mapping_id);
+        IndexMapping* result_mapping[1]     = { NULL };
+        IndexMapping const* const mapping   = get_alist(table->mappings, mapping_id);
         #ifndef NDEBUG
             bool const insert_result =
         #endif
         insert_itbl(
-            NULL,
+            result_mapping,
             grownTable,
             mapping->index,
             mapping->value,
@@ -127,7 +128,7 @@ void grow_itbl(IndexTable* const table) {
 }
 
 bool insert_itbl(
-    IndexMapping* mapping,
+    IndexMapping* mapping[],
     IndexTable* const table,
     uint_fast64_t const index,
     uint32_t const value,
@@ -135,45 +136,44 @@ bool insert_itbl(
     bool const behavior
 ) {
     assert(isValid_itbl(table));
+
     {
         uint32_t const row_id           = index % table->height;
         uint32_t const first_mapping_id = table->rows[row_id];
+        bool unique                     = ITBL_INSERT_UNIQUE;
 
         if (first_mapping_id >= table->mappings->len) {
-            if (table->load >= table->max_load)
-                grow_itbl(table);
+            if (table->load >= table->max_load) grow_itbl(table);
 
             table->load++;
 
             table->rows[row_id] = table->mappings->len;
-            mapping             = addIndeterminate_alist(table->mappings);
-            mapping->index      = index;
-            mapping->value      = value;
-            mapping->next_id    = INVALID_UINT32;
-
-            return ITBL_INSERT_UNIQUE;
+            mapping[0]          = addIndeterminate_alist(table->mappings);
+            mapping[0]->index   = index;
+            mapping[0]->value   = value;
+            mapping[0]->next_id = INVALID_UINT32;
+            return unique;
         } else {
-            bool unique = ITBL_INSERT_UNIQUE;
-            mapping     = get_alist(table->mappings, first_mapping_id);
+            mapping[0] = get_alist(table->mappings, first_mapping_id);
             while (1) {
-                if (mapping->index == index) {
+                if (mapping[0]->index == index) {
                     if (relationType == ITBL_RELATION_ONE_TO_ONE) {
-                        if (behavior == ITBL_BEHAVIOR_REPLACE) mapping->value = value;
+                        if (behavior == ITBL_BEHAVIOR_REPLACE) mapping[0]->value = value;
                         return ITBL_INSERT_NOT_UNIQUE;
-                    } else if (mapping->value == value) { /* relationType == ITBL_RELATION_ONE_TO_MANY */
+                    } else if (mapping[0]->value == value) { /* relationType == ITBL_RELATION_ONE_TO_MANY */
                         if (behavior == ITBL_BEHAVIOR_REPLACE) return ITBL_INSERT_NOT_UNIQUE;
                         unique = ITBL_INSERT_NOT_UNIQUE;
                     }
                 }
-                if (mapping->next_id >= table->mappings->len) {
-                    mapping->next_id    = table->mappings->len;
-                    mapping             = addIndeterminate_alist(table->mappings);
-                    mapping->index      = index;
-                    mapping->value      = value;
-                    mapping->next_id    = INVALID_UINT32;
+                if (mapping[0]->next_id >= table->mappings->len) {
+                    mapping[0]->next_id = table->mappings->len;
+                    mapping[0]          = addIndeterminate_alist(table->mappings);
+                    mapping[0]->index   = index;
+                    mapping[0]->value   = value;
+                    mapping[0]->next_id = INVALID_UINT32;
                     return unique;
                 }
-                mapping = get_alist(table->mappings, mapping->next_id);
+                mapping[0] = get_alist(table->mappings, mapping[0]->next_id);
             }
         }
     }

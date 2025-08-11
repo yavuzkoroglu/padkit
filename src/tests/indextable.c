@@ -27,16 +27,17 @@ static bool test_indextable_constructEmpty_itbl(void) {
 }
 
 static bool test_indextable_flush_itbl(void) {
-    IndexTable table[1]     = { NOT_AN_ITBL };
+    IndexMapping* mapping[1]    = { NULL };
+    IndexTable table[1]         = { NOT_AN_ITBL };
     constructEmpty_itbl(table, ITBL_RECOMMENDED_PARAMETERS);
 
     TEST_FAIL_IF(table->load != 0)
 
-    insert_itbl(NULL, table, 0, 0, ITBL_RELATION_ONE_TO_ONE, ITBL_BEHAVIOR_REPLACE);
+    insert_itbl(mapping, table, 0, 0, ITBL_RELATION_ONE_TO_ONE, ITBL_BEHAVIOR_REPLACE);
 
     TEST_FAIL_IF(table->load != 1)
 
-    insert_itbl(NULL, table, 1, 1, ITBL_RELATION_ONE_TO_ONE, ITBL_BEHAVIOR_REPLACE);
+    insert_itbl(mapping, table, 1, 1, ITBL_RELATION_ONE_TO_ONE, ITBL_BEHAVIOR_REPLACE);
 
     TEST_FAIL_IF(table->load != 2)
 
@@ -70,14 +71,16 @@ static bool test_indextable_insert_itbl(void) {
         { [ALICE]=32, [HARRY]=28, [LENNY]=85, [WENDY]=22 }
     };
 
-    IndexTable ages[1]      = { NOT_AN_ITBL };
-    IndexTable scores[1]    = { NOT_AN_ITBL };
+    IndexMapping* age_mapping[1]    = { NULL };
+    IndexMapping* score_mapping[1]  = { NULL };
+    IndexTable ages[1]              = { NOT_AN_ITBL };
+    IndexTable scores[1]            = { NOT_AN_ITBL };
     constructEmpty_itbl(ages, ITBL_RECOMMENDED_PARAMETERS);
     constructEmpty_itbl(scores, ITBL_RECOMMENDED_PARAMETERS);
 
     for (uint_fast64_t person = ALICE; person < PEOPLE_COUNT; person++) {
         int const ageInsert = insert_itbl(
-            NULL,
+            age_mapping,
             ages,
             person,
             age[person],
@@ -90,7 +93,7 @@ static bool test_indextable_insert_itbl(void) {
 
     for (uint_fast64_t person = ALICE; person < PEOPLE_COUNT; person++) {
         int const scoreInsert = insert_itbl(
-            NULL,
+            score_mapping,
             scores,
             person,
             score[0][person],
@@ -102,7 +105,7 @@ static bool test_indextable_insert_itbl(void) {
 
     for (uint_fast64_t person = ALICE; person < PEOPLE_COUNT; person++) {
         int const scoreInsert = insert_itbl(
-            NULL,
+            score_mapping,
             scores,
             person,
             score[1][person],
@@ -114,7 +117,7 @@ static bool test_indextable_insert_itbl(void) {
 
     for (uint_fast64_t person = ALICE; person < PEOPLE_COUNT; person++) {
         int const scoreInsert = insert_itbl(
-            NULL,
+            score_mapping,
             scores,
             person,
             score[0][person],
@@ -129,22 +132,22 @@ static bool test_indextable_insert_itbl(void) {
     }
 
     for (uint_fast64_t person = ALICE; person < PEOPLE_COUNT; person++) {
-        IndexMapping* ageMapping = findFirstMapping_itbl(ages, person);
-        TEST_FAIL_IF(ageMapping == NULL)
-        TEST_FAIL_IF(ageMapping->value != age[person])
+        age_mapping[0] = findFirstMapping_itbl(ages, person);
+        TEST_FAIL_IF(age_mapping[0] == NULL)
+        TEST_FAIL_IF(age_mapping[0]->value != age[person])
 
-        ageMapping = nextMapping_itbl(ages, ageMapping);
-        TEST_FAIL_IF(ageMapping != NULL)
+        age_mapping[0] = nextMapping_itbl(ages, age_mapping[0]);
+        TEST_FAIL_IF(age_mapping[0] != NULL)
     }
 
     for (uint_fast64_t person = ALICE; person < PEOPLE_COUNT; person++) {
-        IndexMapping* scoreMapping = findFirstMapping_itbl(scores, person);
-        TEST_FAIL_IF(scoreMapping == NULL)
-        TEST_FAIL_IF(scoreMapping->value != score[1][person])
+        score_mapping[0] = findFirstMapping_itbl(scores, person);
+        TEST_FAIL_IF(score_mapping[0] == NULL)
+        TEST_FAIL_IF(score_mapping[0]->value != score[1][person])
 
-        scoreMapping = nextMapping_itbl(scores, scoreMapping);
-        TEST_FAIL_IF(scoreMapping == NULL)
-        TEST_FAIL_IF(scoreMapping->value != score[0][person])
+        score_mapping[0] = nextMapping_itbl(scores, score_mapping[0]);
+        TEST_FAIL_IF(score_mapping[0] == NULL)
+        TEST_FAIL_IF(score_mapping[0]->value != score[0][person])
     }
 
     #undef PEOPLE_COUNT
@@ -158,10 +161,11 @@ static bool test_indextable_insert_itbl(void) {
 #undef WENDY
 
 static bool test_indextable_grow_itbl(void) {
-    IndexTable table[1] = { NOT_AN_ITBL };
+    IndexMapping* mapping[1]    = { NULL };
+    IndexTable table[1]         = { NOT_AN_ITBL };
     constructEmpty_itbl(table, ITBL_RECOMMENDED_PARAMETERS);
 
-    insert_itbl(NULL, table, 8215102, 8215102, ITBL_RELATION_ONE_TO_ONE, ITBL_BEHAVIOR_RESPECT);
+    insert_itbl(mapping, table, 8215102, 8215102, ITBL_RELATION_ONE_TO_ONE, ITBL_BEHAVIOR_RESPECT);
 
     TEST_FAIL_IF(findFirstMapping_itbl(table, 8215102) == NULL)
 

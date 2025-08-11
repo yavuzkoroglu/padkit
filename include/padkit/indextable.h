@@ -60,7 +60,7 @@
     #define ITBL_INSERT_UNIQUE          0
     #define ITBL_INSERT_NOT_UNIQUE      1
     bool insert_itbl(
-        IndexMapping* mapping,
+        IndexMapping** mapping,
         IndexTable* const table,
         uint_fast64_t const index,
         uint32_t const value,
