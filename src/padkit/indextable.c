@@ -179,7 +179,18 @@ bool insert_itbl(
     }
 }
 
-bool isValid_itbl(IndexTable const* const table) {
+bool isAllocated_itbl(void const* const p_tbl) {
+    IndexTable const* const table = p_tbl;
+
+    if (table == NULL)                          return 0;
+    if (!isAllocated_alist(table->mappings))    return 0;
+
+    return 1;
+}
+
+bool isValid_itbl(void const* const p_tbl) {
+    IndexTable const* const table = p_tbl;
+
     if (table == NULL)                                      return 0;
     if (!isValid_alist(table->mappings))                    return 0;
     if (table->mappings->sz_elem != sizeof(IndexMapping))   return 0;

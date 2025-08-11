@@ -68,9 +68,9 @@
         bool const behavior
     );
 
-    bool isAllocated_itbl(IndexTable const* const table);
+    bool isAllocated_itbl(void const* const p_tbl);
 
-    bool isValid_itbl(IndexTable const* const table);
+    bool isValid_itbl(void const* const p_tbl);
 
     IndexMapping* nextMapping_itbl(
         IndexTable const* const table,
