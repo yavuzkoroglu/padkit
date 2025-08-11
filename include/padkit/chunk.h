@@ -282,13 +282,13 @@
         uint32_t const n
     );
 
-    #define cutByDelim_chunk(chunk, delim, id)              cutByDelimetersN_chunk(chunk, delim, id, 1)
+    #define cutByDelim_chunk(chunk, delim, id)              cutByDelimN_chunk(chunk, delim, id, 1)
 
-    #define cutByDelimFirst_chunk(chunk, delim)             cutByDelimetersN_chunk(chunk, delim, 0, 1)
+    #define cutByDelimFirst_chunk(chunk, delim)             cutByDelimN_chunk(chunk, delim, 0, 1)
 
-    #define cutByDelimFirstN_chunk(chunk, delim, n)         cutByDelimetersN_chunk(chunk, delim, 0, n)
+    #define cutByDelimFirstN_chunk(chunk, delim, n)         cutByDelimN_chunk(chunk, delim, 0, n)
 
-    #define cutByDelimLast_chunk(chunk, delim)              cutByDelimetersLastN_chunk(chunk, delim, 1)
+    #define cutByDelimLast_chunk(chunk, delim)              cutByDelimLastN_chunk(chunk, delim, 1)
 
     Item cutByDelimLastN_chunk(
         Chunk* const chunk,
