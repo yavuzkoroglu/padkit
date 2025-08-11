@@ -38,10 +38,10 @@ static bool test_item_isValid_item(void) {
         (Item){ "a", 1, SZ32_MAX },
         (Item){ NULL, 2, 0 }
     };
-    size_t const nItems = sizeof(items) / sizeof(Item);
 
-    for (size_t i = 0; i < nItems; i++)
-        TEST_FAIL_IF(isValid_item(items[i]))
+    TEST_FAIL_IF(!isValid_item(items[0]))
+    TEST_FAIL_IF(isValid_item(items[1]))
+    TEST_FAIL_IF(isValid_item(items[2]))
 
     TEST_PASS
 }

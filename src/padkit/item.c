@@ -25,10 +25,10 @@ uint64_t hash64_item(Item const item) {
 }
 
 bool isValid_item(Item const item) {
-    if (item.p == NULL)             return 0;
-    if (item.sz == 0)               return 0;
-    if (item.sz >= SZ32_MAX)        return 0;
-    if (item.offset >= SZ32_MAX)    return 0;
+    if (item.p == NULL)                     return 0;
+    if (item.sz >= SZ32_MAX)                return 0;
+    if (item.offset >= SZ32_MAX)            return 0;
+    if (item.sz + item.offset >= SZ32_MAX)  return 0;
 
     return 1;
 }

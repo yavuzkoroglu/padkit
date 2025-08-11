@@ -975,7 +975,38 @@ static bool test_chunk_cut2BySizeN_chunk(void) { TEST_PASS }
 static bool test_chunk_cutByDelim_chunk(void) { TEST_PASS }
 static bool test_chunk_cutByDelimFirst_chunk(void) { TEST_PASS }
 static bool test_chunk_cutByDelimFirstN_chunk(void) { TEST_PASS }
-static bool test_chunk_cutByDelimLast_chunk(void) { TEST_PASS }
+
+static bool test_chunk_cutByDelimLast_chunk(void) {
+    Chunk chunk[1]  = { NOT_A_CHUNK };
+    Item item       = NOT_AN_ITEM;
+    FILE* const fp  = fopen("test_artifacts/words.txt", "r");
+    TEST_FAIL_IF(fp == NULL)
+    construct_chunk(chunk, CHUNK_RECOMMENDED_PARAMETERS);
+
+    item = addF_chunk(chunk, fp, 1024, 5);
+    TEST_FAIL_IF(item.offset != 0)
+    TEST_FAIL_IF(item.sz != 26)
+    TEST_FAIL_IF(memcmp(item.p, "first\nsecond\nthird\nfourth\n", 26) != 0)
+
+    item = cutByDelimLast_chunk(chunk, "\n");
+    {
+        uint32_t n = 0;
+        while (areaLastN_chunk(chunk, n + 1) == 0)
+            n++;
+        deleteLastN_chunk(chunk, n);
+    }
+    TEST_FAIL_IF(item.offset != 0)
+    TEST_FAIL_IF(item.sz != 6)
+    TEST_FAIL_IF(LEN_CHUNK(chunk) != 4)
+    TEST_FAIL_IF(AREA_CHUNK(chunk) != 26)
+    TEST_FAIL_IF(memcmp(item.p, "first\0second\0third\0fourth\0", 26) != 0)
+
+    destruct_chunk(chunk);
+    TEST_FAIL_IF(fclose(fp) != 0)
+
+    TEST_PASS
+}
+
 static bool test_chunk_cutByDelimLastN_chunk(void) { TEST_PASS }
 static bool test_chunk_cutByDelimN_chunk(void) { TEST_PASS }
 static bool test_chunk_cutNEqually_chunk(void) { TEST_PASS }

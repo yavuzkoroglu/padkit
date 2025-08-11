@@ -117,23 +117,24 @@ Item addN_chunk(
     uint32_t const n
 ) {
     assert(isValid_chunk(chunk));
-    assert(sz_item > 0);
     assert(sz_item < SZ32_MAX - AREA_CHUNK(chunk));
     assert(n > 0);
     assert(n < SZ32_MAX - LEN_CHUNK(chunk));
     assert(p_item == NULL || !overlaps_ptr(chunk->items->arr, p_item, AREA_CHUNK(chunk), sz_item));
     {
         uint32_t const first_offset = AREA_CHUNK(chunk);
-        uint32_t const sz_total     = sz_item * n;
+        uint32_t const sz_total     = n * sz_item;
         assert(sz_total < SZ32_MAX - AREA_CHUNK(chunk));
-        assert(sz_total / sz_item == n);
+        assert(sz_total / n == sz_item);
         {
             char* const first_p = addIndeterminateN_alist(chunk->items, sz_total);
-            for (
-                uint32_t new_offset = first_offset, *p_offset = addIndeterminateN_alist(chunk->offsets, n);
-                new_offset < AREA_CHUNK(chunk);
-                new_offset += sz_item, p_offset++
-            ) *p_offset = new_offset;
+            uint32_t* p_offset  = addIndeterminateN_alist(chunk->offsets, n);
+            uint32_t new_offset = first_offset;
+            REPEAT(n) {
+                *p_offset = new_offset;
+                new_offset += sz_item;
+                p_offset++;
+            }
 
             if (p_item != NULL) {
                 uint32_t sz = sz_item;
@@ -158,20 +159,17 @@ Item addZerosN_chunk(
     uint32_t const n
 ) {
     assert(isValid_chunk(chunk));
-    assert(sz_item > 0);
     assert(sz_item < SZ32_MAX - AREA_CHUNK(chunk));
     assert(n > 0);
     assert(n < SZ32_MAX - LEN_CHUNK(chunk));
     {
-        uint32_t const sz_total = sz_item * n;
+        uint32_t const sz_total = n * sz_item;
         assert(sz_total < SZ32_MAX);
-        assert(sz_total / sz_item == n);
-        {
-            Item const first_item = addIndeterminateN_chunk(chunk, sz_item, n);
-            memset(first_item.p, 0, sz_total);
-            return first_item;
-        }
+        assert(sz_total / n == sz_item);
+        addZerosN_alist(chunk->items, sz_total);
+        deleteLastN_alist(chunk->items, sz_total);
     }
+    return addIndeterminateN_chunk(chunk, sz_item, n);
 }
 
 Item appendAll_chunk(
@@ -181,7 +179,6 @@ Item appendAll_chunk(
 ) {
     assert(isValid_chunk(chunk));
     assert(LEN_CHUNK(chunk) > 0);
-    assert(sz_item > 0);
     assert(sz_item < SZ32_MAX - AREA_CHUNK(chunk));
     assert(p_item == NULL || !overlaps_ptr(chunk->items->arr, p_item, AREA_CHUNK(chunk), sz_item));
     return appendN_chunk(chunk, 0, p_item, sz_item, LEN_CHUNK(chunk));
@@ -341,11 +338,11 @@ Item appendLastN_chunk(
     uint32_t const n
 ) {
     assert(isValid_chunk(chunk));
-    assert(sz_item > 0);
     assert(sz_item < SZ32_MAX - AREA_CHUNK(chunk));
     assert(n > 0);
     assert(n <= LEN_CHUNK(chunk));
     assert(p_item == NULL || !overlaps_ptr(chunk->items->arr, p_item, AREA_CHUNK(chunk), sz_item));
+
     /* UB if chunk->items->arr and p_item overlap. */
     return appendN_chunk(chunk, LEN_CHUNK(chunk) - n, p_item, sz_item, n);
 }
@@ -357,11 +354,11 @@ Item appendLastSameN_chunk(
     uint32_t const n
 ) {
     assert(isValid_chunk(chunk));
-    assert(sz_item > 0);
     assert(sz_item < SZ32_MAX - AREA_CHUNK(chunk));
     assert(n > 0);
     assert(n <= LEN_CHUNK(chunk));
     assert(p_item == NULL || !overlaps_ptr(chunk->items->arr, p_item, AREA_CHUNK(chunk), sz_item));
+
     /* UB if chunk->items->arr and p_item overlap. */
     return appendSameN_chunk(chunk, LEN_CHUNK(chunk) - n, p_item, sz_item, n);
 }
@@ -375,15 +372,14 @@ Item appendN_chunk(
 ) {
     assert(isValid_chunk(chunk));
     assert(id < LEN_CHUNK(chunk));
-    assert(sz_item > 0);
     assert(sz_item < SZ32_MAX - AREA_CHUNK(chunk));
     assert(n > 0);
     assert(n <= LEN_CHUNK(chunk) - id);
     assert(p_item == NULL || !overlaps_ptr(chunk->items->arr, p_item, AREA_CHUNK(chunk), sz_item));
     {
-        uint32_t sz_total = sz_item * n;
+        uint32_t sz_total = n * sz_item;
         assert(sz_total < SZ32_MAX - AREA_CHUNK(chunk));
-        assert(sz_total / sz_item == n);
+        assert(sz_total / n == sz_item);
         addIndeterminateN_alist(chunk->items, sz_total);
         for (uint32_t i = LEN_CHUNK(chunk) - 1; i > id; i--) {
             uint32_t const shft = (i < id + n) ? (i - id) * sz_item : sz_total;
@@ -410,15 +406,14 @@ Item appendSameN_chunk(
 ) {
     assert(isValid_chunk(chunk));
     assert(id < LEN_CHUNK(chunk));
-    assert(sz_item > 0);
     assert(sz_item < SZ32_MAX - AREA_CHUNK(chunk));
     assert(n > 0);
     assert(n < SZ32_MAX);
     assert(p_item == NULL || !overlaps_ptr(chunk->items->arr, p_item, AREA_CHUNK(chunk), sz_item));
     {
-        uint32_t sz_total = sz_item * n;
+        uint32_t sz_total = n * sz_item;
         assert(sz_total < SZ32_MAX - AREA_CHUNK(chunk));
-        assert(sz_total / sz_item == n);
+        assert(sz_total / n == sz_item);
 
         appendIndeterminate_chunk(chunk, id, sz_total);
         {
@@ -446,7 +441,6 @@ Item appendZerosAll_chunk(
 ) {
     assert(isValid_chunk(chunk));
     assert(LEN_CHUNK(chunk) > 0);
-    assert(sz_item > 0);
     assert(sz_item < SZ32_MAX - AREA_CHUNK(chunk));
     return appendZerosN_chunk(chunk, 0, sz_item, LEN_CHUNK(chunk));
 }
@@ -457,7 +451,6 @@ Item appendZerosLastN_chunk(
     uint32_t const n
 ) {
     assert(isValid_chunk(chunk));
-    assert(sz_item > 0);
     assert(sz_item < SZ32_MAX - AREA_CHUNK(chunk));
     assert(n > 0);
     assert(n <= LEN_CHUNK(chunk));
@@ -472,14 +465,13 @@ Item appendZerosN_chunk(
 ) {
     assert(isValid_chunk(chunk));
     assert(id < LEN_CHUNK(chunk));
-    assert(sz_item > 0);
     assert(sz_item < SZ32_MAX - AREA_CHUNK(chunk));
     assert(n > 0);
     assert(n <= LEN_CHUNK(chunk) - id);
     appendIndeterminateN_chunk(chunk, id, sz_item, n);
     for (uint32_t i = id; i < id + n; i++) {
         Item const item = get_chunk(chunk, i);
-        memset((char*)item.p + item.sz - sz_item, 0, sz_item);
+        setZerosN_alist(chunk->items, item.offset + item.sz - sz_item, sz_item);
     }
     return getN_chunk(chunk, id, n);
 }
@@ -581,8 +573,7 @@ Item cut2BySizeLastN_chunk(
     assert(isValid_chunk(chunk));
     assert(n > 0);
     assert(n <= LEN_CHUNK(chunk));
-    assert(sz_first > 0);
-    assert(sz_first < areaLastN_chunk(chunk, n));
+    assert(sz_first <= areaLastN_chunk(chunk, n));
     return cut2BySizeN_chunk(chunk, LEN_CHUNK(chunk) - n, sz_first, n);
 }
 
@@ -596,8 +587,7 @@ Item cut2BySizeN_chunk(
     assert(id < LEN_CHUNK(chunk));
     assert(n > 0);
     assert(n <= LEN_CHUNK(chunk) - id);
-    assert(sz_first > 0);
-    assert(sz_first < areaBtw_chunk(chunk, id, id + n));
+    assert(sz_first <= areaBtw_chunk(chunk, id, id + n));
 
     for (uint32_t i = id + n; i > id; i--) {
         uint32_t const new_offset = offsetOf_chunk(chunk, i - 1) + sz_first;
@@ -634,20 +624,12 @@ Item cutByDelimN_chunk(
     assert(n <= LEN_CHUNK(chunk) - id);
 
     for (uint32_t i = id + n; i-- > id;) {
-        Item item = get_chunk(chunk, i);
-        for (uint32_t j = item.sz - 1; j > 0; j--) {
-            if (strchr(delim, ((char*)item.p)[j]) == NULL) continue;
-            ((char*)item.p)[j] = '\0';
+        Item const item = get_chunk(chunk, i);
+        for (uint32_t j = item.sz; j > 0; j--) {
+            if (strchr(delim, ((char*)item.p)[j - 1]) == NULL) continue;
+            ((char*)item.p)[j - 1] = '\0';
             cut2BySize_chunk(chunk, i, j);
             n_total++;
-            item.sz = j;
-        }
-        if (strchr(delim, ((char*)item.p)[0]) != NULL) {
-            ((char*)item.p)[0] = '\0';
-            if (item.sz > 1) {
-                cut2BySize_chunk(chunk, i, 1);
-                n_total++;
-            }
         }
     }
 
@@ -777,7 +759,7 @@ Item getN_chunk(
         Item item   = NOT_AN_ITEM;
         item.offset = offsetOf_chunk(chunk, id);
         item.sz     = area_chunk(chunk, id);
-        item.p      = get_alist(chunk->items, item.offset);
+        item.p      = getN_alist(chunk->items, item.offset, item.sz);
         return item;
     }
 }
@@ -848,7 +830,6 @@ Item setAll_chunk(
     uint32_t const sz_item
 ) {
     assert(isValid_chunk(chunk));
-    assert(sz_item > 0);
     assert(sz_item < SZ32_MAX);
     assert(p_item == NULL || !overlaps_ptr(chunk->items->arr, p_item, AREA_CHUNK(chunk), sz_item));
 
@@ -865,11 +846,10 @@ Item setDupN_chunk(
     assert(isValid_chunk(chunk));
     assert(dup_id < LEN_CHUNK(chunk));
     assert(orig_id < LEN_CHUNK(chunk));
-    assert(dup_id != orig_id);
     assert(n > 0);
     assert(n <= LEN_CHUNK(chunk) - dup_id);
     assert(n <= LEN_CHUNK(chunk) - orig_id);
-    {
+    if (dup_id != orig_id) {
         uint32_t const sz_orig  = areaBtw_chunk(chunk, orig_id, orig_id + n);
         uint32_t const sz_dup   = areaBtw_chunk(chunk, dup_id, dup_id + n);
         if (sz_dup > sz_orig)
@@ -903,10 +883,9 @@ Item setDupSameN_chunk(
     assert(isValid_chunk(chunk));
     assert(dup_id < LEN_CHUNK(chunk));
     assert(orig_id < LEN_CHUNK(chunk));
-    assert(dup_id != orig_id);
     assert(n > 0);
     assert(n <= LEN_CHUNK(chunk) - dup_id);
-    {
+    if (dup_id != orig_id) {
         uint32_t const off_orig = offsetOf_chunk(chunk, orig_id);
         uint32_t const off_dup  = offsetOf_chunk(chunk, dup_id);
         uint32_t const sz_orig  = area_chunk(chunk, orig_id);
@@ -951,7 +930,6 @@ Item setLastN_chunk(
     uint32_t const n
 ) {
     assert(isValid_chunk(chunk));
-    assert(sz_item > 0);
     assert(sz_item < SZ32_MAX);
     assert(n > 0);
     assert(n <= LEN_CHUNK(chunk));
@@ -972,7 +950,6 @@ Item setN_chunk(
 ) {
     assert(isValid_chunk(chunk));
     assert(id < LEN_CHUNK(chunk));
-    assert(sz_item > 0);
     assert(sz_item < SZ32_MAX);
     assert(n > 0);
     assert(n <= LEN_CHUNK(chunk) - id);
@@ -980,9 +957,9 @@ Item setN_chunk(
     {
         uint32_t const offset   = offsetOf_chunk(chunk, id);
         uint32_t const sz_total = areaBtw_chunk(chunk, id, id + n);
-        uint32_t const sz_new   = sz_item * n;
+        uint32_t const sz_new   = n * sz_item;
         assert(sz_new < SZ32_MAX);
-        assert(sz_new / sz_item == n);
+        assert(sz_new / n == sz_item);
 
         if (sz_total > sz_new)
             shrink_chunk(chunk, id + n - 1, sz_total - sz_new);
@@ -1043,10 +1020,10 @@ Item shrinkLast_chunk(
     assert(isValid_chunk(chunk));
     assert(LEN_CHUNK(chunk) > 0);
     assert(by > 0);
-    assert(by < AREA_CHUNK(chunk));
+    assert(by <= AREA_CHUNK(chunk));
     {
         Item last_item = getLast_chunk(chunk);
-        assert(by < last_item.sz);
+        assert(by <= last_item.sz);
         deleteLastN_alist(chunk->items, by);
         last_item.sz -= by;
         return last_item;
@@ -1060,14 +1037,14 @@ Item shrinkLastN_chunk(
 ) {
     assert(isValid_chunk(chunk));
     assert(by > 0);
-    assert(by < AREA_CHUNK(chunk));
+    assert(by <= AREA_CHUNK(chunk));
     assert(n > 0);
     assert(n <= LEN_CHUNK(chunk));
     {
         Item item = shrinkLast_chunk(chunk, by);
         for (uint32_t i = LEN_CHUNK(chunk) - 1; i > LEN_CHUNK(chunk) - n; item = get_chunk(chunk, --i)) {
             uint32_t const shft = AREA_CHUNK(chunk) - item.offset;
-            assert(item.offset > by);
+            assert(item.offset >= by);
             item.offset -= by;
             set_alist(chunk->offsets, i, &(item.offset));
             setDupN_alist(chunk->items, item.offset, item.offset + by, shft);
@@ -1085,7 +1062,7 @@ Item shrinkN_chunk(
     assert(isValid_chunk(chunk));
     assert(id < LEN_CHUNK(chunk));
     assert(by > 0);
-    assert(by < AREA_CHUNK(chunk));
+    assert(by <= AREA_CHUNK(chunk));
     assert(n > 0);
     assert(n <= LEN_CHUNK(chunk) - id);
     if (id + n == LEN_CHUNK(chunk)) {
@@ -1096,7 +1073,7 @@ Item shrinkN_chunk(
         for (uint32_t i = id + n; i > id; i--) {
             item = get_chunk(chunk, i);
             shft = AREA_CHUNK(chunk) - item.offset;
-            assert(item.offset > by);
+            assert(item.offset >= by);
             item.offset -= by;
             set_alist(chunk->offsets, i, &(item.offset));
             setDupN_alist(chunk->items, item.offset, item.offset + by, shft);
@@ -1114,10 +1091,9 @@ void swapN_chunk(
     assert(isValid_chunk(chunk));
     assert(id1 < LEN_CHUNK(chunk));
     assert(id0 < LEN_CHUNK(chunk));
-    assert(id1 != id0);
-    assert(n > 0);
     assert(n <= LEN_CHUNK(chunk) - id1);
     assert(n <= LEN_CHUNK(chunk) - id0);
+    if (id1 == id0 || n == 0) return;
     for (uint32_t i = id0, j = id1; i < id0 + n; i++, j++) {
         addDup_chunk(chunk, i);
         setDup_chunk(chunk, i, j);

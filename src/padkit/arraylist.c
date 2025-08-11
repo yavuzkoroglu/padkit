@@ -22,7 +22,6 @@ void* addDupLastN_alist(
     uint32_t const n
 ) {
     assert(isValid_alist(list));
-    assert(0 < n);
     assert(n <= list->len);
     return addDupN_alist(list, list->len - n, n);
 }
@@ -32,7 +31,6 @@ void* addDupLastSameN_alist(
     uint32_t const n
 ) {
     assert(isValid_alist(list));
-    assert(0 < n);
     assert(n <= list->len);
     return addDupSameN_alist(list, list->len - 1, n);
 }
@@ -44,7 +42,6 @@ void* addDupN_alist(
 ) {
     assert(isValid_alist(list));
     assert(list->len > id);
-    assert(n > 0);
     assert(n < SZ32_MAX - list->len);
     {
         uint32_t const len = list->len;
@@ -60,7 +57,6 @@ void* addDupSameN_alist(
 ) {
     assert(isValid_alist(list));
     assert(list->len > id);
-    assert(n > 0);
     assert(n < SZ32_MAX - list->len);
     {
         uint32_t const len = list->len;
@@ -101,7 +97,6 @@ void* addN_alist(
     uint32_t const n
 ) {
     assert(isValid_alist(list));
-    assert(n > 0);
     assert(n < SZ32_MAX - list->len);
     {
         uint32_t const old_len  = list->len;
@@ -161,7 +156,6 @@ void* addZerosN_alist(
     uint32_t const n
 ) {
     assert(isValid_alist(list));
-    assert(n > 0);
     assert(n < SZ32_MAX - list->len);
     {
         uint32_t const len = list->len;
@@ -204,7 +198,6 @@ void concatN_alist(
 ) {
     assert(isValid_alist(head));
     assert(isValid_alist(tail));
-    assert(n > 0);
     assert(n < SZ32_MAX);
 
     if (tail->len == 0) {
@@ -269,7 +262,6 @@ void deleteLastN_alist(
 ) {
     assert(isValid_alist(list));
     assert(list->len >= n);
-    assert(n > 0);
 
     list->len -= n;
 }
@@ -282,10 +274,10 @@ void deleteN_alist(
     assert(isValid_alist(list));
     assert(list->len > id);
     assert(list->len - id >= n);
-    assert(n > 0);
 
-    if (list->len - id > n)
-        setDupN_alist(list, id, id + n, list->len - id - n);
+    if (n == 0) return;
+
+    if (list->len - id > n) setDupN_alist(list, id, id + n, list->len - id - n);
 
     deleteLastN_alist(list, n);
 }
@@ -308,7 +300,6 @@ void* getLastN_alist(
 ) {
     assert(isValid_alist(list));
     assert(list->len >= n);
-    assert(n > 0);
     {
         size_t const offset = list->sz_elem * (size_t)(list->len - n);
         assert(offset < SZSZ_MAX);
@@ -325,9 +316,8 @@ void* getN_alist(
     MAYBE_UNUSED(n)
 
     assert(isValid_alist(list));
-    assert(list->len > id);
     assert(list->len - id >= n);
-    assert(n > 0);
+    assert(list->len > id || (list->len == id && n == 0));
     {
         size_t const offset = list->sz_elem * (size_t)id;
         assert(offset < SZSZ_MAX);
@@ -345,9 +335,7 @@ void* insertDupN_alist(
     assert(isValid_alist(list));
     assert(list->len >= dup_id);
     assert(list->len > orig_id);
-    assert(dup_id != orig_id);
     assert(list->len - orig_id >= n);
-    assert(n > 0);
     if (dup_id == list->len) {
         return addDupN_alist(list, orig_id, n);
     } else {
@@ -372,9 +360,7 @@ void* insertDupSameN_alist(
     assert(isValid_alist(list));
     assert(list->len >= dup_id);
     assert(list->len > orig_id);
-    assert(dup_id != orig_id);
     assert(list->len - orig_id >= n);
-    assert(n > 0);
     if (dup_id == list->len) {
         return addDupSameN_alist(list, orig_id, n);
     } else {
@@ -399,7 +385,6 @@ void* insertN_alist(
     assert(isValid_alist(list));
     assert(id <= list->len);
     assert(n < SZ32_MAX - list->len);
-    assert(n > 0);
     if (id == list->len) {
         return addN_alist(list, p, n);
     } else {
@@ -433,7 +418,6 @@ void* insertSameN_alist(
     assert(isValid_alist(list));
     assert(id <= list->len);
     assert(n < SZ32_MAX - list->len);
-    assert(n > 0);
     if (id == list->len) {
         return addSameN_alist(list, p, n);
     } else {
@@ -463,7 +447,6 @@ void* insertZerosN_alist(
     assert(isValid_alist(list));
     assert(id <= list->len);
     assert(n < SZ32_MAX - list->len);
-    assert(n > 0);
     if (id == list->len) {
         return addZerosN_alist(list, n);
     } else {
@@ -630,8 +613,6 @@ void qsort_alist(
 
 void* removeAll_alist(ArrayList* const list) {
     assert(isValid_alist(list));
-    assert(list->len > 0);
-
     flush_alist(list);
     return list->arr;
 }
@@ -641,7 +622,6 @@ void* removeLastN_alist(
     uint32_t const n
 ) {
     assert(isValid_alist(list));
-    assert(n > 0);
     assert(list->len >= n);
     {
         void* const p = getN_alist(list, list->len - n, n);
@@ -662,7 +642,6 @@ void* removeN_alist(
         uint32_t const shft_len = new_len - id;
         assert(old_len > id);
         assert(old_len - id >= n);
-        assert(n > 0);
 
         if (shft_len == 0) {
             /* Do Nothing */
@@ -763,8 +742,6 @@ void* setAllSame_alist(
     void const* const p
 ) {
     assert(isValid_alist(list));
-    assert(list->len > 0);
-
     return setSameN_alist(list, 0, p, list->len);
 }
 
@@ -777,11 +754,11 @@ void* setDupN_alist(
     assert(isValid_alist(list));
     assert(list->len > dup_id);
     assert(list->len > orig_id);
-    assert(dup_id != orig_id);
     assert(n <= list->len - dup_id);
     assert(n <= list->len - orig_id);
-    assert(n > 0);
-    {
+    if (dup_id == orig_id) {
+        return getN_alist(list, dup_id, n);
+    } else {
         void* const p_dup   = get_alist(list, dup_id);
         void* const p_orig  = get_alist(list, orig_id);
         size_t const sz_p   = list->sz_elem * (size_t)n;
@@ -800,10 +777,10 @@ void* setDupSameN_alist(
     assert(isValid_alist(list));
     assert(list->len > dup_id);
     assert(list->len > orig_id);
-    assert(dup_id != orig_id);
     assert(n <= list->len - dup_id);
-    assert(n > 0);
-    {
+    if (dup_id == orig_id) {
+        return getN_alist(list, dup_id, n);
+    } else {
         void* const p       = setDup_alist(list, dup_id, orig_id);
         uint32_t nCopies    = 1;
         while (nCopies << 1 < n) {
@@ -822,7 +799,6 @@ void* setLastN_alist(
     uint32_t const n
 ) {
     assert(isValid_alist(list));
-    assert(n > 0);
     assert(n <= list->len);
     return setN_alist(list, list->len - n, p, n);
 }
@@ -833,7 +809,6 @@ void* setLastSameN_alist(
     uint32_t const n
 ) {
     assert(isValid_alist(list));
-    assert(n > 0);
     assert(n <= list->len);
     return setSameN_alist(list, list->len - n, p, n);
 }
@@ -846,12 +821,12 @@ void* setN_alist(
 ) {
     assert(isValid_alist(list));
     assert(list->len > id);
-    assert(n > 0);
     assert(n <= list->len - id);
-    {
+    if (n == 0) {
+        return getN_alist(list, id, n);
+    } else {
         void* const p_dest  = get_alist(list, id);
         size_t const sz_p   = list->sz_elem * (size_t)n;
-
         assert(sz_p < SZSZ_MAX);
         assert(sz_p / list->sz_elem == (size_t)n);
 
@@ -879,9 +854,10 @@ void* setSameN_alist(
 ) {
     assert(isValid_alist(list));
     assert(list->len > id);
-    assert(n > 0);
     assert(n <= list->len - id);
-    {
+    if (n == 0) {
+        return getN_alist(list, id, n);
+    } else {
         void* const p_dup   = set_alist(list, id, p);
         uint32_t nCopies    = 1;
         while (nCopies << 1 < n) {
@@ -903,11 +879,11 @@ void swapN_alist(
     assert(isValid_alist(list));
     assert(id1 < list->len);
     assert(id0 < list->len);
-    assert(id1 != id0);
     assert(n <= list->len - id1);
     assert(n <= list->len - id0);
-    assert(n > 0);
-    {
+    if (id0 == id1 || n == 0) {
+        return;
+    } else {
         uint32_t const len = list->len;
         if (id1 < id0)
             assert(id1 + n <= id0);
