@@ -633,8 +633,8 @@ Item cutByDelimN_chunk(
     assert(n > 0);
     assert(n <= LEN_CHUNK(chunk) - id);
 
-    for (uint32_t i = id + n; i > id; i--) {
-        Item item = get_chunk(chunk, i - 1);
+    for (uint32_t i = id + n; i-- > id;) {
+        Item item = get_chunk(chunk, i);
         for (uint32_t j = item.sz - 1; j > 0; j--) {
             if (strchr(delim, ((char*)item.p)[j]) == NULL) continue;
             ((char*)item.p)[j] = '\0';
