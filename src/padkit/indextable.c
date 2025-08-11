@@ -140,16 +140,16 @@ bool insert_itbl(
         uint32_t const first_mapping_id = table->rows[row_id];
 
         if (first_mapping_id >= table->mappings->len) {
+            if (table->load >= table->max_load)
+                grow_itbl(table);
+
+            table->load++;
+
             table->rows[row_id] = table->mappings->len;
             mapping             = addIndeterminate_alist(table->mappings);
             mapping->index      = index;
             mapping->value      = value;
             mapping->next_id    = INVALID_UINT32;
-
-            if (table->load >= table->max_load)
-                grow_itbl(table);
-
-            table->load++;
 
             return ITBL_INSERT_UNIQUE;
         } else {
