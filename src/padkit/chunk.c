@@ -98,13 +98,13 @@ Item addFN_chunk(
         assert(sz_rd < SZ32_MAX);
         item.sz = (uint32_t)sz_rd;
         sz_rem -= sz_rd;
-        while (sz_rd != 0 && 0 < sz_rem && sz_rem < SZ32_MAX) {
+        while (sz_buf == sz_rd && 0 < sz_rem && sz_rem < SZ32_MAX) {
             sz_buf  = (max_sz_buf < sz_rem) ? max_sz_buf : sz_rem;
             item    = appendIndeterminateLast_chunk(chunk, sz_buf);
             sz_rd   = fread((char*)item.p + item.sz - sz_buf, 1, sz_buf, stream);
             sz_rem -= sz_rd;
-            if (sz_rd < sz_buf) item = shrinkLast_chunk(chunk, sz_buf - (uint32_t)sz_rd);
         }
+        if (sz_buf > sz_rd) item = shrinkLast_chunk(chunk, sz_buf - (uint32_t)sz_rd);
         if (n > 1) addDupLastSameN_chunk(chunk, n - 1);
         return item;
     }
