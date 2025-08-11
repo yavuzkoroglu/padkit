@@ -11,7 +11,11 @@ bool areEquiv_item(
     assert(isValid_item(i1));
     assert(isValid_item(i2));
 
-    return i1.sz == i2.sz && memcmp(i1.p, i2.p, i1.sz) == 0;
+    if (i1.sz != i2.sz)                     return 0;
+    if (i1.p == i2.p)                       return 1;
+    if (memcmp(i1.p, i2.p, i1.sz) == 0)     return 1;
+
+    return 0;
 }
 
 uint32_t hash32_item(Item const item) {
