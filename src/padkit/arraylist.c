@@ -294,6 +294,11 @@ void flush_alist(ArrayList* const list) {
     list->len = 0;
 }
 
+void* getAll_alist(ArrayList const* const list) {
+    assert(isValid_alist(list));
+    return getLastN_alist(list, list->len);
+}
+
 void* getLastN_alist(
     ArrayList const* const list,
     uint32_t const n

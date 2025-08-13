@@ -139,6 +139,8 @@
 
     #define get_alist(list, id)                     getN_alist(list, id, 1)
 
+    void* getAll_alist(ArrayList const* const list);
+
     #define getFirst_alist(list)                    getN_alist(list, 0, 1)
 
     #define getFirstN_alist(list, n)                getN_alist(list, 0, n)
