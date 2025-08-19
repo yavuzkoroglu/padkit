@@ -60,6 +60,77 @@ bool isValid_ctbl(void const* const p_tbl) {
     return 1;
 }
 
+ChunkMapping* searchInsert_ctbl(
+    bool* const p_result,
+    ChunkTable* const ctbl,
+    Item const key_item,
+    uint32_t const value,
+    uint32_t const mode
+) {
+    IndexMapping* i_mapping;
+    ChunkMapping* c_mapping;
+    Item dup_item;
+    uint_fast64_t key_index;
+
+    assert(isValid_ctbl(ctbl));
+    assert(isValid_item(key_item));
+    assert(mode <= CTBL_MODE_FINAL);
+
+    key_index = hash64_item(key_item);
+    i_mapping = findFirstMapping_itbl(ctbl->itbl, key_index);
+    while (i_mapping != NULL) {
+        c_mapping   = get_alist(ctbl->list, i_mapping->value);
+        dup_item    = get_chunk(ctbl->chnk, c_mapping->chunk_id);
+        if (areEquiv_item(key_item, dup_item)) {
+            switch (mode) {
+                case CTBL_MODE_INSERT_REPLACE:
+                    if (c_mapping->value == value) {
+                        if (p_result != NULL) *p_result = CTBL_REPLACE_NO_CHANGES;
+                    } else {
+                        if (p_result != NULL) *p_result = CTBL_REPLACE_CHANGED;
+                        c_mapping->value = value;
+                    }
+                    return c_mapping;
+                case CTBL_MODE_INSERT_RESPECT:
+                    if (c_mapping->value == value) {
+                        if (p_result != NULL) *p_result = CTBL_RESPECT_NOT_UNIQUE;
+                    } else {
+                        if (p_result != NULL) *p_result = CTBL_RESPECT_UNIQUE;
+                    }
+                    return c_mapping;
+                case CTBL_MODE_SEARCH:
+                default:
+                    if (c_mapping->value == value || value == INVALID_UINT32) {
+                        if (p_result != NULL) *p_result = CTBL_SEARCH_FOUND;
+                    } else {
+                        if (p_result != NULL) *p_result = CTBL_SEARCH_NOT_FOUND;
+                    }
+                    return NULL;
+            }
+        }
+        i_mapping = nextMapping_itbl(ctbl->itbl, i_mapping);
+    }
+
+    switch (mode) {
+        case CTBL_MODE_INSERT_REPLACE:
+        case CTBL_MODE_INSERT_RESPECT:
+            i_mapping = insert_itbl(
+                NULL, ctbl->itbl, key_index, ctbl->list->len,
+                ITBL_RELATION_ONE_TO_ONE, ITBL_BEHAVIOR_RESPECT
+            );
+            c_mapping           = addIndeterminate_alist(ctbl->list);
+            c_mapping->chunk_id = LEN_CHUNK(ctbl->chnk);
+            c_mapping->value    = value;
+            add_chunk(ctbl->chnk, key_item.p, key_item.sz);
+            if (p_result != NULL) *p_result = CTBL_REPLACE_CHANGED || CTBL_RESPECT_UNIQUE;
+            return c_mapping;
+        case CTBL_MODE_SEARCH:
+        default:
+            if (p_result != NULL) *p_result = CTBL_SEARCH_NOT_FOUND;
+            return NULL;
+    }
+}
+
 void vconstruct_ctbl(
     void* const p_tbl,
     va_list args
