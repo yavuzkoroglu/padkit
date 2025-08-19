@@ -30,6 +30,7 @@ void constructEmpty_ctbl(
 
     constructEmpty_itbl(ctbl->itbl, itbl_min_height, itbl_max_percent_load, itbl_initial_cap);
     constructEmpty_chunk(ctbl->chnk, chnk_init_cap_len, chnk_init_cap_area);
+    constructEmpty_alist(ctbl->list, sizeof(ChunkMapping), chnk_init_cap_len);
 }
 
 void destruct_ctbl(void* const p_tbl) {
@@ -37,13 +38,14 @@ void destruct_ctbl(void* const p_tbl) {
     assert(isValid_ctbl(ctbl));
     destruct_itbl(ctbl->itbl);
     destruct_chunk(ctbl->chnk);
-    *ctbl = NOT_A_CTBL;
+    destruct_alist(ctbl->list);
 }
 
 bool isAllocated_ctbl(void const* const p_tbl) {
     ChunkTable const* const ctbl = p_tbl;
     if (!isAllocated_itbl(ctbl->itbl)) return 0;
     assert(isAllocated_chunk(ctbl->chnk));
+    assert(isAllocated_alist(ctbl->list));
     return 1;
 }
 
@@ -53,6 +55,7 @@ bool isValid_ctbl(void const* const p_tbl) {
     if (ctbl == NULL)               return 0;
     if (!isValid_itbl(ctbl->itbl))  return 0;
     if (!isValid_chunk(ctbl->chnk)) return 0;
+    if (!isValid_alist(ctbl->list)) return 0;
 
     return 1;
 }

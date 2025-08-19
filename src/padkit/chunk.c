@@ -726,7 +726,6 @@ void destruct_chunk(void* const p_chunk) {
     assert(isAllocated_chunk(chunk));
     destruct_alist(chunk->offsets);
     destruct_alist(chunk->items);
-    *chunk = NOT_A_CHUNK;
 }
 
 void flush_chunk(Chunk* const chunk) {
