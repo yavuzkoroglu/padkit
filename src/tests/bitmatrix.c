@@ -12,21 +12,21 @@ static bool test_bitmatrix_unset_bmtx(void);
 static bool test_bitmatrix_unsetAll_bmtx(void);
 
 static void test_bitmatrix(void) {
-    bool allTestsPass = 1;
+    bool all_tests_pass = 1;
 
-    allTestsPass &= test_bitmatrix_construct_bmtx();
-    allTestsPass &= test_bitmatrix_destruct_bmtx();
-    allTestsPass &= test_bitmatrix_findInCol_bmtx();
-    allTestsPass &= test_bitmatrix_findInRow_bmtx();
-    allTestsPass &= test_bitmatrix_get_bmtx();
-    allTestsPass &= test_bitmatrix_isValid_bmtx();
-    allTestsPass &= test_bitmatrix_resizeIfNecessary_bmtx();
-    allTestsPass &= test_bitmatrix_set_bmtx();
-    allTestsPass &= test_bitmatrix_setAll_bmtx();
-    allTestsPass &= test_bitmatrix_unset_bmtx();
-    allTestsPass &= test_bitmatrix_unsetAll_bmtx();
+    all_tests_pass &= test_bitmatrix_construct_bmtx();
+    all_tests_pass &= test_bitmatrix_destruct_bmtx();
+    all_tests_pass &= test_bitmatrix_findInCol_bmtx();
+    all_tests_pass &= test_bitmatrix_findInRow_bmtx();
+    all_tests_pass &= test_bitmatrix_get_bmtx();
+    all_tests_pass &= test_bitmatrix_isValid_bmtx();
+    all_tests_pass &= test_bitmatrix_resizeIfNecessary_bmtx();
+    all_tests_pass &= test_bitmatrix_set_bmtx();
+    all_tests_pass &= test_bitmatrix_setAll_bmtx();
+    all_tests_pass &= test_bitmatrix_unset_bmtx();
+    all_tests_pass &= test_bitmatrix_unsetAll_bmtx();
 
-    if (allTestsPass) TESTS_PASS_MESSAGE
+    if (all_tests_pass) TESTS_PASS_MESSAGE
 }
 
 static bool test_bitmatrix_construct_bmtx(void) {

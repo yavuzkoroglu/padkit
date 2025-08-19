@@ -2,11 +2,11 @@ static void test_overlap(void);
 static bool test_overlap_overlaps_ptr(void);
 
 static void test_overlap(void) {
-    bool allTestsPass = 1;
+    bool all_tests_pass = 1;
 
-    allTestsPass &= test_overlap_overlaps_ptr();
+    all_tests_pass &= test_overlap_overlaps_ptr();
 
-    if (allTestsPass) TESTS_PASS_MESSAGE
+    if (all_tests_pass) TESTS_PASS_MESSAGE
 }
 
 static bool test_overlap_overlaps_ptr(void) {

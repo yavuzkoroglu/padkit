@@ -54,7 +54,8 @@ void constructEmpty_itbl(
     }
 }
 
-void destruct_itbl(IndexTable* const table) {
+void destruct_itbl(void* const p_tbl) {
+    IndexTable* const table = p_tbl;
     assert(isValid_itbl(table));
     destruct_alist(table->mappings);
     free(table->rows);

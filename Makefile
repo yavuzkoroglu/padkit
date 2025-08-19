@@ -16,6 +16,7 @@ endif
 OBJECTS=obj/padkit/arraylist.o          \
         obj/padkit/bitmatrix.o          \
         obj/padkit/chunk.o              \
+        obj/padkit/chunktable.o         \
         obj/padkit/hash.o               \
         obj/padkit/indextable.o         \
         obj/padkit/intfn.o              \
@@ -30,6 +31,7 @@ OBJECTS=obj/padkit/arraylist.o          \
 SOURCES=src/padkit/arraylist.c          \
         src/padkit/bitmatrix.c          \
         src/padkit/chunk.c              \
+        src/padkit/chunktable.c         \
         src/padkit/hash.c               \
         src/padkit/indextable.c         \
         src/padkit/intfn.c              \
@@ -44,6 +46,7 @@ SOURCES=src/padkit/arraylist.c          \
 TESTSRC=src/tests/arraylist.c           \
         src/tests/bitmatrix.c           \
         src/tests/chunk.c               \
+        src/tests/chunktable.c          \
         src/tests/graphmatrix.c         \
         src/tests/hash.c                \
         src/tests/intfn.c               \
@@ -99,6 +102,7 @@ include/padkit.h: .FORCE;                                                       
     echo '    #include "padkit/bitmatrix.h"'                >> include/padkit.h; \
     echo '    #include "padkit/bliterals.h"'                >> include/padkit.h; \
     echo '    #include "padkit/chunk.h"'                    >> include/padkit.h; \
+    echo '    #include "padkit/chunktable.h"'               >> include/padkit.h; \
     echo '    #include "padkit/error.h"'                    >> include/padkit.h; \
     echo '    #include "padkit/hash.h"'                     >> include/padkit.h; \
     echo '    #include "padkit/implication.h"'              >> include/padkit.h; \
@@ -159,6 +163,15 @@ obj/padkit/chunk.o: .FORCE              \
     include/padkit/repeat.h             \
     include/padkit/size.h               \
     ; ${COMPILE} -Iinclude src/padkit/chunk.c -c -o obj/padkit/chunk.o
+
+obj/padkit/chunktable.o: .FORCE         \
+    obj/padkit                          \
+    include/padkit/arraylist.h          \
+    include/padkit/chunk.h              \
+    include/padkit/indextable.h         \
+    include/padkit/item.h               \
+    include/padkit/size.h               \
+    ; ${COMPILE} -Iinclude src/padkit/chunktable.c -c -o obj/padkit/chunktable.o
 
 obj/padkit/hash.o: .FORCE               \
     obj/padkit                          \

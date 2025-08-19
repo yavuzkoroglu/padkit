@@ -5,14 +5,14 @@ static bool test_memalloc_mem_realloc(void);
 static bool test_memalloc_mem_recalloc(void);
 
 static void test_memalloc(void) {
-    bool allTestsPass = 1;
+    bool all_tests_pass = 1;
 
-    allTestsPass &= test_memalloc_mem_alloc();
-    allTestsPass &= test_memalloc_mem_calloc();
-    allTestsPass &= test_memalloc_mem_realloc();
-    allTestsPass &= test_memalloc_mem_recalloc();
+    all_tests_pass &= test_memalloc_mem_alloc();
+    all_tests_pass &= test_memalloc_mem_calloc();
+    all_tests_pass &= test_memalloc_mem_realloc();
+    all_tests_pass &= test_memalloc_mem_recalloc();
 
-    if (allTestsPass) TESTS_PASS_MESSAGE
+    if (all_tests_pass) TESTS_PASS_MESSAGE
 }
 
 static bool test_memalloc_mem_alloc(void) {

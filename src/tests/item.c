@@ -3,12 +3,12 @@ static bool test_item_hash_item(void);
 static bool test_item_isValid_item(void);
 
 static void test_item(void) {
-    bool allTestsPass = 1;
+    bool all_tests_pass = 1;
 
-    allTestsPass &= test_item_hash_item();
-    allTestsPass &= test_item_isValid_item();
+    all_tests_pass &= test_item_hash_item();
+    all_tests_pass &= test_item_isValid_item();
 
-    if (allTestsPass) TESTS_PASS_MESSAGE
+    if (all_tests_pass) TESTS_PASS_MESSAGE
 }
 
 static bool test_item_hash_item(void) {
@@ -17,7 +17,7 @@ static bool test_item_hash_item(void) {
         (Item){ "a", 1, 0 },
         (Item){ "a", 2, 0 }
     };
-    uint32_t const hashValues[3] = {
+    uint32_t const hash_values[3] = {
         177573,
         177670,
         5863110
@@ -25,8 +25,8 @@ static bool test_item_hash_item(void) {
     size_t const nItems = sizeof(items) / sizeof(Item);
 
     for (size_t i = 0; i < nItems; i++) {
-        TEST_FAIL_IF(hash32_item(items[i]) != hashValues[i])
-        TEST_FAIL_IF(hash64_item(items[i]) != (uint64_t)hashValues[i])
+        TEST_FAIL_IF(hash32_item(items[i]) != hash_values[i])
+        TEST_FAIL_IF(hash64_item(items[i]) != (uint64_t)hash_values[i])
     }
 
     TEST_PASS

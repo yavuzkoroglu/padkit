@@ -42,7 +42,7 @@
         uint32_t const initial_cap
     );
 
-    void destruct_itbl(IndexTable* const table);
+    void destruct_itbl(void* const p_tbl);
 
     IndexMapping* findFirstMapping_itbl(
         IndexTable const* const table,

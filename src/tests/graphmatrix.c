@@ -12,21 +12,21 @@ static bool test_graphmatrix_isValid_gmtx(void);
 static bool test_graphmatrix_resizeIfNecessary_gmtx(void);
 
 static void test_graphmatrix(void) {
-    bool allTestsPass = 1;
+    bool all_tests_pass = 1;
 
-    allTestsPass &= test_graphmatrix_connect_gmtx();
-    allTestsPass &= test_graphmatrix_connectAll_gmtx();
-    allTestsPass &= test_graphmatrix_construct_gmtx();
-    allTestsPass &= test_graphmatrix_destruct_gmtx();
-    allTestsPass &= test_graphmatrix_disconnect_gmtx();
-    allTestsPass &= test_graphmatrix_disconnectAll_gmtx();
-    allTestsPass &= test_graphmatrix_findSink_gmtx();
-    allTestsPass &= test_graphmatrix_findSource_gmtx();
-    allTestsPass &= test_graphmatrix_isConnected_gmtx();
-    allTestsPass &= test_graphmatrix_isValid_gmtx();
-    allTestsPass &= test_graphmatrix_resizeIfNecessary_gmtx();
+    all_tests_pass &= test_graphmatrix_connect_gmtx();
+    all_tests_pass &= test_graphmatrix_connectAll_gmtx();
+    all_tests_pass &= test_graphmatrix_construct_gmtx();
+    all_tests_pass &= test_graphmatrix_destruct_gmtx();
+    all_tests_pass &= test_graphmatrix_disconnect_gmtx();
+    all_tests_pass &= test_graphmatrix_disconnectAll_gmtx();
+    all_tests_pass &= test_graphmatrix_findSink_gmtx();
+    all_tests_pass &= test_graphmatrix_findSource_gmtx();
+    all_tests_pass &= test_graphmatrix_isConnected_gmtx();
+    all_tests_pass &= test_graphmatrix_isValid_gmtx();
+    all_tests_pass &= test_graphmatrix_resizeIfNecessary_gmtx();
 
-    if (allTestsPass) TESTS_PASS_MESSAGE
+    if (all_tests_pass) TESTS_PASS_MESSAGE
 }
 
 static bool test_graphmatrix_connect_gmtx(void) {

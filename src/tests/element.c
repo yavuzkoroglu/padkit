@@ -2,11 +2,11 @@ static void test_element(void);
 static bool test_element_isValid_elem(void);
 
 static void test_hash(void) {
-    bool allTestsPass = 1;
+    bool all_tests_pass = 1;
 
-    allTestsPass &= test_element_isValid_elem();
+    all_tests_pass &= test_element_isValid_elem();
 
-    if (allTestsPass) TESTS_PASS_MESSAGE
+    if (all_tests_pass) TESTS_PASS_MESSAGE
 }
 
 static bool test_element_isValid_elem(void) {

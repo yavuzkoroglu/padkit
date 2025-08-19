@@ -5,14 +5,14 @@ static bool test_intfn_isPrime(void);
 static bool test_intfn_nextPrime(void);
 
 static void test_intfn(void) {
-    bool allTestsPass = 1;
+    bool all_tests_pass = 1;
 
-    allTestsPass &= test_intfn_floor_sqrt();
-    allTestsPass &= test_intfn_gcd();
-    allTestsPass &= test_intfn_isPrime();
-    allTestsPass &= test_intfn_nextPrime();
+    all_tests_pass &= test_intfn_floor_sqrt();
+    all_tests_pass &= test_intfn_gcd();
+    all_tests_pass &= test_intfn_isPrime();
+    all_tests_pass &= test_intfn_nextPrime();
 
-    if (allTestsPass) TESTS_PASS_MESSAGE
+    if (all_tests_pass) TESTS_PASS_MESSAGE
 }
 
 static bool test_intfn_floor_sqrt(void) {

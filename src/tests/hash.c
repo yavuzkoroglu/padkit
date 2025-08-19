@@ -3,12 +3,12 @@ static bool test_hash_hash32_str(void);
 static bool test_hash_hash64_str(void);
 
 static void test_hash(void) {
-    bool allTestsPass = 1;
+    bool all_tests_pass = 1;
 
-    allTestsPass &= test_hash_hash32_str();
-    allTestsPass &= test_hash_hash64_str();
+    all_tests_pass &= test_hash_hash32_str();
+    all_tests_pass &= test_hash_hash64_str();
 
-    if (allTestsPass) TESTS_PASS_MESSAGE
+    if (all_tests_pass) TESTS_PASS_MESSAGE
 }
 
 static bool test_hash_hash32_str(void) {

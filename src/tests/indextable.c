@@ -7,16 +7,16 @@ static bool test_indextable_insert_itbl(void);
 static bool test_indextable_isValid_itbl(void);
 
 static void test_indextable(void) {
-    bool allTestsPass = 1;
+    bool all_tests_pass = 1;
 
-    allTestsPass &= test_indextable_constructEmpty_itbl();
-    allTestsPass &= test_indextable_flush_itbl();
-    allTestsPass &= test_indextable_destruct_itbl();
-    allTestsPass &= test_indextable_grow_itbl();
-    allTestsPass &= test_indextable_insert_itbl();
-    allTestsPass &= test_indextable_isValid_itbl();
+    all_tests_pass &= test_indextable_constructEmpty_itbl();
+    all_tests_pass &= test_indextable_flush_itbl();
+    all_tests_pass &= test_indextable_destruct_itbl();
+    all_tests_pass &= test_indextable_grow_itbl();
+    all_tests_pass &= test_indextable_insert_itbl();
+    all_tests_pass &= test_indextable_isValid_itbl();
 
-    if (allTestsPass) TESTS_PASS_MESSAGE
+    if (all_tests_pass) TESTS_PASS_MESSAGE
 }
 
 static bool test_indextable_constructEmpty_itbl(void) {

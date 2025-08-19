@@ -2,11 +2,11 @@ static void test_verbose(void);
 static bool test_verbose_printf_verbose(void);
 
 static void test_verbose(void) {
-    bool allTestsPass = 1;
+    bool all_tests_pass = 1;
 
-    allTestsPass &= test_verbose_printf_verbose();
+    all_tests_pass &= test_verbose_printf_verbose();
 
-    if (allTestsPass) TESTS_PASS_MESSAGE
+    if (all_tests_pass) TESTS_PASS_MESSAGE
 }
 
 static bool test_verbose_printf_verbose(void) {

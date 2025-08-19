@@ -11,11 +11,11 @@ static void test_jsonp_countObjects(JSONParser* const jp) {
 }
 
 static void test_jsonparser(void) {
-    bool allTestsPass = 1;
+    bool all_tests_pass = 1;
 
-    allTestsPass &= test_jsonparser_parseStream_jsonp();
+    all_tests_pass &= test_jsonparser_parseStream_jsonp();
 
-    if (allTestsPass) TESTS_PASS_MESSAGE
+    if (all_tests_pass) TESTS_PASS_MESSAGE
 }
 
 static bool test_jsonparser_parseStream_jsonp(void) {
