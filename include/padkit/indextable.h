@@ -53,14 +53,14 @@
 
     void grow_itbl(IndexTable* const table);
 
-    #define ITBL_BEHAVIOR_REPLACE       0
-    #define ITBL_BEHAVIOR_RESPECT       1
-    #define ITBL_RELATION_ONE_TO_ONE    0
-    #define ITBL_RELATION_ONE_TO_MANY   1
-    #define ITBL_INSERT_UNIQUE          0
-    #define ITBL_INSERT_NOT_UNIQUE      1
+    #define ITBL_BEHAVIOR_REPLACE       (0)
+    #define ITBL_BEHAVIOR_RESPECT       (1)
+    #define ITBL_RELATION_ONE_TO_ONE    (0)
+    #define ITBL_RELATION_ONE_TO_MANY   (1)
+    #define ITBL_INSERT_UNIQUE          (0)
+    #define ITBL_INSERT_NOT_UNIQUE      (1)
     IndexMapping* insert_itbl(
-        bool* p_ins_result,
+        bool* const p_ins_result,
         IndexTable* const table,
         uint_fast64_t const index,
         uint32_t const value,
