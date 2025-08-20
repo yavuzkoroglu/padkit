@@ -5,8 +5,6 @@
     #include <stddef.h>
     #include <stdint.h>
 
-    #define ITEM_LIT(lit)       ((Item){ (lit), sizeof(lit) - 1, 0 })
-
     #define NOT_AN_ITEM         ((Item){ NULL, 0, 0 })
 
     typedef struct ItemBody {

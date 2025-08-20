@@ -187,6 +187,7 @@ obj/padkit/indextable.o: .FORCE         \
     include/padkit/invalid.h            \
     include/padkit/implication.h        \
     include/padkit/memalloc.h           \
+    include/padkit/repeat.h             \
     include/padkit/size.h               \
     include/padkit/unused.h             \
     src/padkit/indextable.c             \

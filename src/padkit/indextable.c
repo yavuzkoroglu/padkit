@@ -5,6 +5,7 @@
 #include "padkit/invalid.h"
 #include "padkit/implication.h"
 #include "padkit/memalloc.h"
+#include "padkit/repeat.h"
 #include "padkit/size.h"
 
 void construct_itbl(void* const p_tbl, ...) {
@@ -101,24 +102,25 @@ void grow_itbl(IndexTable* const table) {
     IndexTable grownTable[1] = { NOT_AN_ITBL };
     assert(isValid_itbl(table));
     {
-        uint32_t const grownHeight = table->height << 1;
+        IndexMapping const* mapping = getFirst_alist(table->mappings);
+        uint32_t const grownHeight  = table->height << 1;
         assert(grownHeight < SZ32_MAX);
         assert(grownHeight >> 1 == table->height);
-        constructEmpty_itbl(grownTable, grownHeight, table->max_percent_load, table->mappings->cap);
-    }
 
-    for (uint32_t mapping_id = 0; mapping_id < table->mappings->len; mapping_id++) {
-        IndexMapping const* const mapping = get_alist(table->mappings, mapping_id);
-        bool ins_result;
-        insert_itbl(
-            &ins_result,
-            grownTable,
-            mapping->index,
-            mapping->value,
-            ITBL_RELATION_ONE_TO_MANY,
-            ITBL_BEHAVIOR_RESPECT
-        );
-        assert(ins_result == ITBL_INSERT_UNIQUE);
+        constructEmpty_itbl(grownTable, grownHeight, table->max_percent_load, table->mappings->cap);
+        REPEAT (table->mappings->len) {
+            bool ins_result;
+            insert_itbl(
+                &ins_result,
+                grownTable,
+                mapping->index,
+                mapping->value,
+                ITBL_RELATION_ONE_TO_MANY,
+                ITBL_BEHAVIOR_RESPECT
+            );
+            assert(ins_result == ITBL_INSERT_UNIQUE);
+            mapping++;
+        }
     }
 
     destruct_itbl(table);
@@ -133,9 +135,9 @@ IndexMapping* insert_itbl(
     bool const relationType,
     bool const behavior
 ) {
-    IndexMapping* mapping;
-
     assert(isValid_itbl(table));
+    if (table->load >= table->max_load) grow_itbl(table);
+
     {
         uint32_t const row_id           = index % table->height;
         uint32_t const first_mapping_id = table->rows[row_id];
@@ -143,18 +145,15 @@ IndexMapping* insert_itbl(
         if (p_ins_result != NULL) *p_ins_result = ITBL_INSERT_UNIQUE;
 
         if (first_mapping_id >= table->mappings->len) {
-            if (table->load >= table->max_load) grow_itbl(table);
-
+            IndexMapping* const mapping = addIndeterminate_alist(table->mappings);
+            mapping->index              = index;
+            mapping->value              = value;
+            mapping->next_id            = INVALID_UINT32;
+            table->rows[row_id]         = table->mappings->len - 1;
             table->load++;
-
-            table->rows[row_id] = table->mappings->len;
-            mapping             = addIndeterminate_alist(table->mappings);
-            mapping->index      = index;
-            mapping->value      = value;
-            mapping->next_id    = INVALID_UINT32;
             return mapping;
         } else {
-            mapping = get_alist(table->mappings, first_mapping_id);
+            IndexMapping* mapping = get_alist(table->mappings, first_mapping_id);
             while (1) {
                 if (mapping->index == index) {
                     if (relationType == ITBL_RELATION_ONE_TO_ONE) {
@@ -198,7 +197,7 @@ bool isValid_itbl(void const* const p_tbl) {
     if (table->height <= 100)                               return 0;
     if (table->height >= SZ32_MAX)                          return 0;
     if (!isPrime(table->height))                            return 0;
-    if (table->load >= table->max_load)                     return 0;
+    if (table->load > table->max_load)                      return 0;
     if (table->max_percent_load == 0)                       return 0;
     if (table->max_percent_load > 100)                      return 0;
     if (table->max_load == 0)                               return 0;
