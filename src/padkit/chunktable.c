@@ -100,9 +100,9 @@ ChunkMapping* searchInsert_ctbl(
                     return c_mapping;
                 case CTBL_MODE_INSERT_RESPECT:
                     if (c_mapping->value == value) {
-                        if (p_result != NULL) *p_result = CTBL_RESPECT_NOT_UNIQUE;
-                    } else {
                         if (p_result != NULL) *p_result = CTBL_RESPECT_UNIQUE;
+                    } else {
+                        if (p_result != NULL) *p_result = CTBL_RESPECT_NOT_UNIQUE;
                     }
                     return c_mapping;
                 case CTBL_MODE_SEARCH:
@@ -111,8 +111,9 @@ ChunkMapping* searchInsert_ctbl(
                         if (p_result != NULL) *p_result = CTBL_SEARCH_FOUND;
                     } else {
                         if (p_result != NULL) *p_result = CTBL_SEARCH_NOT_FOUND;
+                        c_mapping = NULL;
                     }
-                    return NULL;
+                    return c_mapping;
             }
         }
         i_mapping = nextMapping_itbl(ctbl->itbl, i_mapping);
