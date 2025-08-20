@@ -6,6 +6,8 @@
 
     #define CTBL_RECOMMENDED_PARAMETERS     ITBL_RECOMMENDED_PARAMETERS, CHUNK_RECOMMENDED_PARAMETERS
 
+    #define LEN_CTBL(ctbl)                  ((ctbl)->list->len)
+
     #define NOT_A_CTBL                      ((ChunkTable){ { NOT_AN_ITBL }, { NOT_A_CHUNK }, { NOT_AN_ALIST } })
 
     typedef struct ChunkMappingBody {
@@ -31,6 +33,8 @@
     );
 
     void destruct_ctbl(void* const p_tbl);
+
+    void flush_ctbl(ChunkTable* const ctbl);
 
     bool isAllocated_ctbl(void const* const p_tbl);
 

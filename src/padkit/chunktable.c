@@ -41,6 +41,13 @@ void destruct_ctbl(void* const p_tbl) {
     destruct_alist(ctbl->list);
 }
 
+void flush_ctbl(ChunkTable* const ctbl) {
+    assert(isValid_ctbl(ctbl));
+    flush_itbl(ctbl->itbl);
+    flush_chunk(ctbl->chnk);
+    flush_alist(ctbl->list);
+}
+
 bool isAllocated_ctbl(void const* const p_tbl) {
     ChunkTable const* const ctbl = p_tbl;
     if (!isAllocated_itbl(ctbl->itbl)) return 0;

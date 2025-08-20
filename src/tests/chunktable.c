@@ -3,8 +3,10 @@ static void test_chunktable(void);
 static bool test_chunktable_construct_ctbl(void);
 static bool test_chunktable_constructEmpty_ctbl(void);
 static bool test_chunktable_destruct_ctbl(void);
+static bool test_chunktable_flush_ctbl(void);
 static bool test_chunktable_isAllocated_ctbl(void);
 static bool test_chunktable_isValid_ctbl(void);
+static bool test_chunktable_searchInsert_ctbl(void);
 static bool test_chunktable_vconstruct_ctbl(size_t const n_parameters, ...);
 
 static void test_chunktable(void) {
@@ -13,8 +15,10 @@ static void test_chunktable(void) {
     all_tests_pass &= test_chunktable_construct_ctbl();
     all_tests_pass &= test_chunktable_constructEmpty_ctbl();
     all_tests_pass &= test_chunktable_destruct_ctbl();
+    all_tests_pass &= test_chunktable_flush_ctbl();
     all_tests_pass &= test_chunktable_isAllocated_ctbl();
     all_tests_pass &= test_chunktable_isValid_ctbl();
+    all_tests_pass &= test_chunktable_searchInsert_ctbl();
     all_tests_pass &= test_chunktable_vconstruct_ctbl(5, CTBL_RECOMMENDED_PARAMETERS);
 
     if (all_tests_pass) TESTS_PASS_MESSAGE
@@ -60,12 +64,26 @@ static bool test_chunktable_destruct_ctbl(void) {
     TEST_SAME_AS test_chunktable_construct_ctbl();
 }
 
+static bool test_chunktable_flush_ctbl(void) {
+    TEST_SAME_AS test_chunktable_searchInsert_ctbl();
+}
+
 static bool test_chunktable_isAllocated_ctbl(void) {
     TEST_SAME_AS test_chunktable_construct_ctbl();
 }
 
 static bool test_chunktable_isValid_ctbl(void) {
     TEST_SAME_AS test_chunktable_construct_ctbl();
+}
+
+static bool test_chunktable_searchInsert_ctbl(void) {
+    ChunkTable ctbl[1] = { NOT_A_CTBL };
+    construct_ctbl(ctbl, CTBL_RECOMMENDED_PARAMETERS);
+
+    TEST_FAIL_IF(LEN_CTBL(ctbl) != 0)
+
+    destruct_ctbl(ctbl);
+    TEST_PASS
 }
 
 static bool test_chunktable_vconstruct_ctbl(size_t const n_parameters, ...) {
