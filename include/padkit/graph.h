@@ -5,13 +5,23 @@
 
     #define GRAPH_INITIAL_ELEMENT_VERTEX    (0)
     #define GRAPH_INITIAL_ELEMENT_EDGE      (1)
+    /*
+        #define GRAPH_STATE_ADJ_TBL         (0)
+        #define GRAPH_STATE_ADJ_MTX         (1)
+        #define GRAPH_STATE_BOTH            (2)
+    */
     typedef GraphBody {
         ArrayList   initial_elements[1];
         ArrayList   vertex_list[1];
         ArrayList   edge_list[1];
         ArrayList   vertex_label_list[1];
         ArrayList   edge_label_list[1];
-        IndexTable  vertex_tbl[1];
+        IndexTable  adj_tbl[1];
+        /*
+        TODO: Add GraphMatrix and make things switchable.
+        GraphMatrix adj_mtx[1];
+        uint64_t    state;
+        */
     } Graph;
 
     void flush_graph(Graph* const graph);
