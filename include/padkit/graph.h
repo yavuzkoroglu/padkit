@@ -3,25 +3,20 @@
     #include "padkit/graphmatrix.h"
     #include "padkit/indextable.h"
 
-    #define GRAPH_INITIAL_ELEMENT_VERTEX    (0)
-    #define GRAPH_INITIAL_ELEMENT_EDGE      (1)
-    /*
-        #define GRAPH_STATE_ADJ_TBL         (0)
-        #define GRAPH_STATE_ADJ_MTX         (1)
-        #define GRAPH_STATE_BOTH            (2)
-    */
+    #define GRAPH_ELEMENT_TYPE_VERTEX   (0)
+    #define GRAPH_ELEMENT_TYPE_EDGE     (1)
+    typedef struct GraphElementBody {
+        uint32_t    id:31;
+        uint32_t    type:1;
+    } GraphElement;
+
     typedef GraphBody {
         ArrayList   initial_elements[1];
         ArrayList   vertex_list[1];
         ArrayList   edge_list[1];
         ArrayList   vertex_label_list[1];
         ArrayList   edge_label_list[1];
-        IndexTable  adj_tbl[1];
-        /*
-        TODO: Add GraphMatrix and make things switchable.
-        GraphMatrix adj_mtx[1];
-        uint64_t    state;
-        */
+        ArrayList   adj_list[1];
     } Graph;
 
     void flush_graph(Graph* const graph);
