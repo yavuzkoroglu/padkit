@@ -1,23 +1,20 @@
-#ifndef GRAPH_H
-    #define GRAPH_H
+#ifndef SIMPLE_GRAPH_H
+    #define SIMPLE_GRAPH_H
     #include "padkit/graphmatrix.h"
     #include "padkit/indextable.h"
 
-    #define GRAPH_ELEMENT_TYPE_VERTEX   (0)
-    #define GRAPH_ELEMENT_TYPE_EDGE     (1)
-    typedef struct GraphElementBody {
-        uint32_t    id:31;
-        uint32_t    type:1;
-    } GraphElement;
+    typedef uint32_t Vertex;
 
-    typedef GraphBody {
-        ArrayList   initial_elements[1];
+    typedef struct EdgeBody {
+        Vertex predecessor,
+        Vertex successor
+    } Edge;
+
+    typedef SimpleGraphBody {
         ArrayList   vertex_list[1];
-        ArrayList   edge_list[1];
-        ArrayList   vertex_label_list[1];
-        ArrayList   edge_label_list[1];
+        ArrayList   vertex_label_id_list[1];
         ArrayList   adj_list[1];
-    } Graph;
+    } SimpleGraph;
 
     void flush_graph(Graph* const graph);
 
