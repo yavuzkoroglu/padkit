@@ -48,7 +48,7 @@ Item addDupN_chunk(
     assert(n > 0);
     {
         uint32_t total_area = AREA_CHUNK(chunk);
-        uint32_t* offset    = addIndeterminateN_alist(chunk->offsets, n);
+        uint32_t* offset    = (uint32_t*)addIndeterminateN_alist(chunk->offsets, n);
         for (uint32_t i = id; i < id + n; i++) {
             *(offset++) = total_area;
             total_area += area_chunk(chunk, i);
@@ -127,8 +127,8 @@ Item addN_chunk(
         assert(sz_total < SZ32_MAX - AREA_CHUNK(chunk));
         assert(sz_total / n == sz_item);
         {
-            char* const first_p = addIndeterminateN_alist(chunk->items, sz_total);
-            uint32_t* p_offset  = addIndeterminateN_alist(chunk->offsets, n);
+            char* const first_p = (char*)addIndeterminateN_alist(chunk->items, sz_total);
+            uint32_t* p_offset  = (uint32_t*)addIndeterminateN_alist(chunk->offsets, n);
             uint32_t new_offset = first_offset;
             REPEAT(n) {
                 *p_offset = new_offset;
@@ -714,7 +714,7 @@ void deleteN_chunk(
         deleteN_alist(chunk->items, id, shft);
         deleteN_alist(chunk->offsets, id, n);
         for (
-            uint32_t* offset = get_alist(chunk->offsets, id), cnt = 0;
+            uint32_t* offset = (uint32_t*)get_alist(chunk->offsets, id), cnt = 0;
             cnt < LEN_CHUNK(chunk) - id - n;
             offset++, cnt++
         ) *offset -= shft;

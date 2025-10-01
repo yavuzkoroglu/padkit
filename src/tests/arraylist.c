@@ -493,12 +493,12 @@ static bool test_arraylist_addF_alist(void) {
     TEST_FAIL_IF(addF_alist(list, fp, 2) != 6)
     TEST_FAIL_IF(list->len != 6)
     TEST_FAIL_IF(list->sz_elem != 6)
-    TEST_FAIL_IF(strncmp(get_alist(list, 0), "Alice", 5) != 0)
-    TEST_FAIL_IF(strncmp(get_alist(list, 1), "Henry", 5) != 0)
-    TEST_FAIL_IF(strncmp(get_alist(list, 2), "Jones", 5) != 0)
-    TEST_FAIL_IF(strncmp(get_alist(list, 3), "Karen", 5) != 0)
-    TEST_FAIL_IF(strncmp(get_alist(list, 4), "Larry", 5) != 0)
-    TEST_FAIL_IF(strncmp(get_alist(list, 5), "Wendy", 5) != 0)
+    TEST_FAIL_IF(strncmp((char*)get_alist(list, 0), "Alice", 5) != 0)
+    TEST_FAIL_IF(strncmp((char*)get_alist(list, 1), "Henry", 5) != 0)
+    TEST_FAIL_IF(strncmp((char*)get_alist(list, 2), "Jones", 5) != 0)
+    TEST_FAIL_IF(strncmp((char*)get_alist(list, 3), "Karen", 5) != 0)
+    TEST_FAIL_IF(strncmp((char*)get_alist(list, 4), "Larry", 5) != 0)
+    TEST_FAIL_IF(strncmp((char*)get_alist(list, 5), "Wendy", 5) != 0)
 
     destruct_alist(list);
     TEST_FAIL_IF(fclose(fp) != 0)
@@ -586,8 +586,8 @@ static bool test_arraylist_addZeros_alist(void) {
     TEST_FAIL_IF(list->cap != 8)
 
     {
-        int const* const p_lastValue    = getLast_alist(list);
-        int const* p_value              = getFirst_alist(list);
+        int const* const p_lastValue    = (int const*)getLast_alist(list);
+        int const* p_value              = (int const*)getFirst_alist(list);
         while (p_value <= p_lastValue) {
             TEST_FAIL_IF(*p_value != 0)
             p_value++;
@@ -611,8 +611,8 @@ static bool test_arraylist_addZerosN_alist(void) {
     TEST_FAIL_IF(list->cap != 8)
 
     {
-        int const* const p_lastValue    = getLast_alist(list);
-        int const* p_value              = getFirst_alist(list);
+        int const* const p_lastValue    = (int const*)getLast_alist(list);
+        int const* p_value              = (int const*)getFirst_alist(list);
         while (p_value <= p_lastValue) {
             TEST_FAIL_IF(*p_value != 0)
             p_value++;
@@ -894,7 +894,7 @@ static bool test_arraylist_get_alist(void) {
     TEST_FAIL_IF(list->cap != nGrades)
 
     for (uint32_t i = 0; i < list->len; i++) {
-        int const* const grade = get_alist(list, i);
+        int const* const grade = (int const*)get_alist(list, i);
         TEST_FAIL_IF(*grade != grades[i])
     }
 
@@ -997,7 +997,7 @@ static bool test_arraylist_getN_alist(void) {
     TEST_FAIL_IF(list->cap != nGrades)
 
     for (uint32_t i = 0; i < list->len; i++) {
-        int const* const grade = getN_alist(list, i, list->len - i);
+        int const* const grade = (int const*)getN_alist(list, i, list->len - i);
         TEST_FAIL_IF(*grade != grades[i])
     }
 
@@ -1551,7 +1551,7 @@ static bool test_arraylist_push_alist(void) {
     TEST_FAIL_IF(strncmp(list->arr, word, n) != 0)
 
     while (list->len > 0) {
-        char* const p_letter = pop_alist(list);
+        char* const p_letter = (char*)pop_alist(list);
         push_alist(rlist, p_letter);
     }
 
@@ -1797,7 +1797,7 @@ static bool test_arraylist_pushTop_alist(void) {
     TEST_FAIL_IF(strncmp(list->arr, word, n) != 0)
 
     while (list->len > 0) {
-        char* const p_letter = popTop_alist(list);
+        char* const p_letter = (char*)popTop_alist(list);
         pushTop_alist(rlist, p_letter);
     }
 
@@ -1834,8 +1834,8 @@ static bool test_arraylist_pushZeros_alist(void) {
     TEST_FAIL_IF(list->cap != 4)
 
     {
-        int const* const p_last = getLast_alist(list);
-        int const* p_value      = getFirst_alist(list);
+        int const* const p_last = (int const*)getLast_alist(list);
+        int const* p_value      = (int const*)getFirst_alist(list);
         while (p_value <= p_last) {
             TEST_FAIL_IF(*p_value != 0)
             p_value++;
@@ -1860,8 +1860,8 @@ static bool test_arraylist_pushZerosBottom_alist(void) {
     TEST_FAIL_IF(list->cap != 4)
 
     {
-        int const* const p_last = getLast_alist(list);
-        int const* p_value      = getFirst_alist(list);
+        int const* const p_last = (int const*)getLast_alist(list);
+        int const* p_value      = (int const*)getFirst_alist(list);
         while (p_value <= p_last) {
             TEST_FAIL_IF(*p_value != 0)
             p_value++;
@@ -1885,8 +1885,8 @@ static bool test_arraylist_pushZerosBottomN_alist(void) {
     TEST_FAIL_IF(list->cap != 4)
 
     {
-        int const* const p_last = getLast_alist(list);
-        int const* p_value      = getFirst_alist(list);
+        int const* const p_last = (int const*)getLast_alist(list);
+        int const* p_value      = (int const*)getFirst_alist(list);
         while (p_value <= p_last) {
             TEST_FAIL_IF(*p_value != 0)
             p_value++;
@@ -1910,8 +1910,8 @@ static bool test_arraylist_pushZerosN_alist(void) {
     TEST_FAIL_IF(list->cap != 4)
 
     {
-        int const* const p_last = getLast_alist(list);
-        int const* p_value      = getFirst_alist(list);
+        int const* const p_last = (int const*)getLast_alist(list);
+        int const* p_value      = (int const*)getFirst_alist(list);
         while (p_value <= p_last) {
             TEST_FAIL_IF(*p_value != 0)
             p_value++;
@@ -1936,8 +1936,8 @@ static bool test_arraylist_pushZerosTop_alist(void) {
     TEST_FAIL_IF(list->cap != 4)
 
     {
-        int const* const p_last = getLast_alist(list);
-        int const* p_value      = getFirst_alist(list);
+        int const* const p_last = (int const*)getLast_alist(list);
+        int const* p_value      = (int const*)getFirst_alist(list);
         while (p_value <= p_last) {
             TEST_FAIL_IF(*p_value != 0)
             p_value++;
@@ -1961,8 +1961,8 @@ static bool test_arraylist_pushZerosTopN_alist(void) {
     TEST_FAIL_IF(list->cap != 4)
 
     {
-        int const* const p_last = getLast_alist(list);
-        int const* p_value      = getFirst_alist(list);
+        int const* const p_last = (int const*)getLast_alist(list);
+        int const* p_value      = (int const*)getFirst_alist(list);
         while (p_value <= p_last) {
             TEST_FAIL_IF(*p_value != 0)
             p_value++;
@@ -2011,16 +2011,16 @@ static bool test_arraylist_remove_alist(void) {
 
     TEST_FAIL_IF(strncmp(list->arr, "abefgcd", list->len) != 0)
 
-    TEST_FAIL_IF(strncmp(remove_alist(list, 2), "e", 1) != 0)
-    TEST_FAIL_IF(strncmp(remove_alist(list, 2), "f", 1) != 0)
-    TEST_FAIL_IF(strncmp(remove_alist(list, 2), "g", 1) != 0)
+    TEST_FAIL_IF(strncmp((char*)remove_alist(list, 2), "e", 1) != 0)
+    TEST_FAIL_IF(strncmp((char*)remove_alist(list, 2), "f", 1) != 0)
+    TEST_FAIL_IF(strncmp((char*)remove_alist(list, 2), "g", 1) != 0)
 
     TEST_FAIL_IF(list->len != 4)
     TEST_FAIL_IF(strncmp(list->arr, "abcd", list->len) != 0)
 
-    TEST_FAIL_IF(strncmp(remove_alist(list, 1), "b", 1) != 0)
-    TEST_FAIL_IF(strncmp(remove_alist(list, 1), "c", 1) != 0)
-    TEST_FAIL_IF(strncmp(remove_alist(list, 1), "d", 1) != 0)
+    TEST_FAIL_IF(strncmp((char*)remove_alist(list, 1), "b", 1) != 0)
+    TEST_FAIL_IF(strncmp((char*)remove_alist(list, 1), "c", 1) != 0)
+    TEST_FAIL_IF(strncmp((char*)remove_alist(list, 1), "d", 1) != 0)
 
     TEST_FAIL_IF(list->len != 1)
     TEST_FAIL_IF(strncmp(list->arr, "a", list->len) != 0)
@@ -2036,7 +2036,7 @@ static bool test_arraylist_removeAll_alist(void) {
     addN_alist(list, "abefgcd", 7);
 
     TEST_FAIL_IF(strncmp(list->arr, "abefgcd", list->len) != 0)
-    TEST_FAIL_IF(strncmp(removeAll_alist(list), "abefgcd", 7) != 0)
+    TEST_FAIL_IF(strncmp((char*)removeAll_alist(list), "abefgcd", 7) != 0)
     TEST_FAIL_IF(list->len != 0)
 
     destruct_alist(list);
@@ -2058,7 +2058,7 @@ static bool test_arraylist_removeFirst_alist(void) {
     TEST_FAIL_IF(list->cap != nGrades)
 
     for (uint32_t i = 0; i < nGrades - 1; i++) {
-        int* const value = removeFirst_alist(list);
+        int* const value = (int*)removeFirst_alist(list);
         TEST_FAIL_IF(*value != grades[i])
     }
 
@@ -2066,7 +2066,7 @@ static bool test_arraylist_removeFirst_alist(void) {
     TEST_FAIL_IF(list->cap != nGrades << 1)
 
     {
-        int* const grade = removeFirst_alist(list);
+        int* const grade = (int*)removeFirst_alist(list);
         TEST_FAIL_IF(*grade != grades[nGrades - 1])
     }
 
@@ -2092,7 +2092,7 @@ static bool test_arraylist_removeFirstN_alist(void) {
     TEST_FAIL_IF(list->cap != nGrades)
 
     {
-        int* const values = removeFirstN_alist(list, nGrades - 1);
+        int* const values = (int*)removeFirstN_alist(list, nGrades - 1);
         for (uint32_t i = 0; i < nGrades - 1; i++)
             TEST_FAIL_IF(values[i] != grades[i])
     }
@@ -2101,7 +2101,7 @@ static bool test_arraylist_removeFirstN_alist(void) {
     TEST_FAIL_IF(list->cap != nGrades << 1)
 
     {
-        int* const grade = removeFirstN_alist(list, 1);
+        int* const grade = (int*)removeFirstN_alist(list, 1);
         TEST_FAIL_IF(*grade != grades[nGrades - 1])
     }
 
@@ -2127,7 +2127,7 @@ static bool test_arraylist_removeLast_alist(void) {
     TEST_FAIL_IF(list->cap != nGrades)
 
     for (uint32_t i = nGrades - 1; i >= 1; i--) {
-        int* const grade = removeLast_alist(list);
+        int* const grade = (int*)removeLast_alist(list);
         TEST_FAIL_IF(*grade != grades[i])
     }
 
@@ -2135,7 +2135,7 @@ static bool test_arraylist_removeLast_alist(void) {
     TEST_FAIL_IF(list->cap != nGrades)
 
     {
-        int* const grade = removeLast_alist(list);
+        int* const grade = (int*)removeLast_alist(list);
         TEST_FAIL_IF(*grade != grades[0])
     }
 
@@ -2161,7 +2161,7 @@ static bool test_arraylist_removeLastN_alist(void) {
     TEST_FAIL_IF(list->cap != nGrades)
 
     {
-        int* const values = removeLastN_alist(list, nGrades - 1);
+        int* const values = (int*)removeLastN_alist(list, nGrades - 1);
         for (uint32_t i = 0; i < nGrades - 1; i++)
             TEST_FAIL_IF(values[i] != grades[i + 1])
     }
@@ -2170,7 +2170,7 @@ static bool test_arraylist_removeLastN_alist(void) {
     TEST_FAIL_IF(list->cap != nGrades)
 
     {
-        int* const grade = removeLastN_alist(list, 1);
+        int* const grade = (int*)removeLastN_alist(list, 1);
         TEST_FAIL_IF(*grade != grades[0])
     }
 
@@ -2189,12 +2189,12 @@ static bool test_arraylist_removeN_alist(void) {
 
     TEST_FAIL_IF(strncmp(list->arr, "abefgcd", list->len) != 0)
 
-    TEST_FAIL_IF(strncmp(removeN_alist(list, 2, 3), "efg", 3) != 0)
+    TEST_FAIL_IF(strncmp((char*)removeN_alist(list, 2, 3), "efg", 3) != 0)
 
     TEST_FAIL_IF(list->len != 4)
     TEST_FAIL_IF(strncmp(list->arr, "abcd", list->len) != 0)
 
-    TEST_FAIL_IF(strncmp(removeN_alist(list, 1, 3), "bcd", 3) != 0)
+    TEST_FAIL_IF(strncmp((char*)removeN_alist(list, 1, 3), "bcd", 3) != 0)
 
     TEST_FAIL_IF(list->len != 1)
     TEST_FAIL_IF(strncmp(list->arr, "a", list->len) != 0)
@@ -2337,7 +2337,7 @@ static bool test_arraylist_set_alist(void) {
     TEST_FAIL_IF(list->cap != nGrades)
 
     for (uint32_t i = 0; i < nGrades; i++) {
-        int const* const grade = get_alist(list, i);
+        int const* const grade = (int const*)get_alist(list, i);
         set_alist(list, i, grades + i);
         TEST_FAIL_IF(*grade != grades[i])
     }
@@ -2363,7 +2363,7 @@ static bool test_arraylist_setAll_alist(void) {
     setAll_alist(list, grades);
 
     for (uint32_t i = 0; i < nGrades; i++) {
-        int const* const grade = get_alist(list, i);
+        int const* const grade = (int const*)get_alist(list, i);
         TEST_FAIL_IF(*grade != grades[i])
     }
 
@@ -2388,7 +2388,7 @@ static bool test_arraylist_setAllSame_alist(void) {
     setAllSame_alist(list, grades);
 
     for (uint32_t i = 0; i < nGrades; i++) {
-        int const* const grade = get_alist(list, i);
+        int const* const grade = (int const*)get_alist(list, i);
         TEST_FAIL_IF(*grade != grades[0])
     }
 
@@ -2414,7 +2414,7 @@ static bool test_arraylist_setAllZeros_alist(void) {
     setAllZeros_alist(list);
 
     for (uint32_t i = 0; i < nGrades; i++) {
-        int const* const grade = get_alist(list, i);
+        int const* const grade = (int const*)get_alist(list, i);
         TEST_FAIL_IF(*grade != 0)
     }
 
@@ -2521,7 +2521,7 @@ static bool test_arraylist_setFirstN_alist(void) {
     setFirstN_alist(list, grades, nGrades);
 
     for (uint32_t i = 0; i < nGrades; i++) {
-        int const* const grade = get_alist(list, i);
+        int const* const grade = (int const*)get_alist(list, i);
         TEST_FAIL_IF(*grade != grades[i])
     }
 
@@ -2546,7 +2546,7 @@ static bool test_arraylist_setFirstSameN_alist(void) {
     setFirstSameN_alist(list, grades, nGrades);
 
     for (uint32_t i = 0; i < nGrades; i++) {
-        int const* const grade = get_alist(list, i);
+        int const* const grade = (int const*)get_alist(list, i);
         TEST_FAIL_IF(*grade != grades[0])
     }
 
@@ -2592,7 +2592,7 @@ static bool test_arraylist_setLastN_alist(void) {
     setLastN_alist(list, grades, nGrades);
 
     for (uint32_t i = 0; i < nGrades; i++) {
-        int const* const grade = get_alist(list, i);
+        int const* const grade = (int const*)get_alist(list, i);
         TEST_FAIL_IF(*grade != grades[i])
     }
 
@@ -2617,7 +2617,7 @@ static bool test_arraylist_setLastSameN_alist(void) {
     setLastSameN_alist(list, grades, nGrades);
 
     for (uint32_t i = 0; i < nGrades; i++) {
-        int const* const grade = get_alist(list, i);
+        int const* const grade = (int const*)get_alist(list, i);
         TEST_FAIL_IF(*grade != grades[0])
     }
 
@@ -2642,7 +2642,7 @@ static bool test_arraylist_setN_alist(void) {
     setN_alist(list, 0, grades, nGrades);
 
     for (uint32_t i = 0; i < nGrades; i++) {
-        int const* const grade = get_alist(list, i);
+        int const* const grade = (int const*)get_alist(list, i);
         TEST_FAIL_IF(*grade != grades[i])
     }
 
@@ -2667,7 +2667,7 @@ static bool test_arraylist_setSameN_alist(void) {
     setSameN_alist(list, 0, grades, nGrades);
 
     for (uint32_t i = 0; i < nGrades; i++) {
-        int const* const grade = get_alist(list, i);
+        int const* const grade = (int const*)get_alist(list, i);
         TEST_FAIL_IF(*grade != grades[0])
     }
 
@@ -2690,7 +2690,7 @@ static bool test_arraylist_setZeros_alist(void) {
     TEST_FAIL_IF(list->cap != nGrades)
 
     for (uint32_t i = 0; i < nGrades; i++) {
-        int const* const grade = get_alist(list, i);
+        int const* const grade = (int const*)get_alist(list, i);
         TEST_FAIL_IF(*grade != grades[i])
         setZeros_alist(list, i);
         TEST_FAIL_IF(*grade != 0)
@@ -2715,14 +2715,14 @@ static bool test_arraylist_setZerosN_alist(void) {
     TEST_FAIL_IF(list->cap != nGrades)
 
     for (uint32_t i = 0; i < nGrades; i++) {
-        int const* const grade = get_alist(list, i);
+        int const* const grade = (int const*)get_alist(list, i);
         TEST_FAIL_IF(*grade != grades[i])
     }
 
     setZerosN_alist(list, 0, nGrades);
 
     for (uint32_t i = 0; i < nGrades; i++) {
-        int const* const grade = get_alist(list, i);
+        int const* const grade = (int const*)get_alist(list, i);
         TEST_FAIL_IF(*grade != 0)
     }
 

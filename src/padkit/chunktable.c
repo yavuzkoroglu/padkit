@@ -34,7 +34,7 @@ void constructEmpty_ctbl(
 }
 
 void destruct_ctbl(void* const p_tbl) {
-    ChunkTable* const ctbl = p_tbl;
+    ChunkTable* const ctbl = (ChunkTable*)p_tbl;
     assert(isValid_ctbl(ctbl));
     destruct_itbl(ctbl->itbl);
     destruct_chunk(ctbl->chnk);
@@ -49,7 +49,7 @@ void flush_ctbl(ChunkTable* const ctbl) {
 }
 
 bool isAllocated_ctbl(void const* const p_tbl) {
-    ChunkTable const* const ctbl = p_tbl;
+    ChunkTable const* const ctbl = (ChunkTable const*)p_tbl;
     if (!isAllocated_itbl(ctbl->itbl)) return 0;
     assert(isAllocated_chunk(ctbl->chnk));
     assert(isAllocated_alist(ctbl->list));
@@ -57,7 +57,7 @@ bool isAllocated_ctbl(void const* const p_tbl) {
 }
 
 bool isValid_ctbl(void const* const p_tbl) {
-    ChunkTable const* const ctbl = p_tbl;
+    ChunkTable const* const ctbl = (ChunkTable const*)p_tbl;
 
     if (ctbl == NULL)               return 0;
     if (!isValid_itbl(ctbl->itbl))  return 0;
@@ -86,7 +86,7 @@ ChunkMapping* searchInsert_ctbl(
     key_index = hash64_item(key_item);
     i_mapping = findFirstMapping_itbl(ctbl->itbl, key_index);
     while (i_mapping != NULL) {
-        c_mapping   = get_alist(ctbl->list, i_mapping->value);
+        c_mapping   = (ChunkMapping*)get_alist(ctbl->list, i_mapping->value);
         dup_item    = get_chunk(ctbl->chnk, c_mapping->chunk_id);
         if (areEquiv_item(key_item, dup_item)) {
             switch (mode) {
@@ -126,7 +126,7 @@ ChunkMapping* searchInsert_ctbl(
                 NULL, ctbl->itbl, key_index, ctbl->list->len,
                 ITBL_RELATION_ONE_TO_ONE, ITBL_BEHAVIOR_RESPECT
             );
-            c_mapping           = addIndeterminate_alist(ctbl->list);
+            c_mapping           = (ChunkMapping*)addIndeterminate_alist(ctbl->list);
             c_mapping->chunk_id = LEN_CHUNK(ctbl->chnk);
             c_mapping->value    = value;
             add_chunk(ctbl->chnk, key_item.p, key_item.sz);
@@ -143,7 +143,7 @@ void vconstruct_ctbl(
     void* const p_tbl,
     va_list args
 ) {
-    ChunkTable* const ctbl                  = p_tbl;
+    ChunkTable* const ctbl                  = (ChunkTable*)p_tbl;
     uint32_t const itbl_min_height          = va_arg(args, uint32_t);
     uint32_t const itbl_max_percent_load    = va_arg(args, uint32_t);
     uint32_t const itbl_initial_cap         = va_arg(args, uint32_t);

@@ -35,7 +35,7 @@ bool overlaps_ptr(
     size_t const sz0,
     size_t const sz1
 ) {
-    char const* const p[2] = { p0, p1 };
+    char const* const p[2] = { (char const*)p0, (char const*)p1 };
 
     assert(sz0 < SZSZ_MAX);
     assert(sz1 < SZSZ_MAX);

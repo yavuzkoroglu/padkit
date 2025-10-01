@@ -251,7 +251,7 @@ void constructEmpty_alist(
     list->sz_elem   = sz_elem;
     list->cap       = init_cap;
     list->len       = 0;
-    list->arr       = mem_alloc(sz);
+    list->arr       = (char*)mem_alloc(sz);
 }
 
 void (* const deleteAll_alist)(ArrayList* const list) = &flush_alist;
@@ -481,13 +481,12 @@ bool isSorted_alist(
     if (list->len <= 1) {
         return 1;
     } else {
-        char const* p[] = { NULL, getFirst_alist(list) };
-        for (uint32_t i = 1; i < list->len; i++) {
-            p[0] = p[1];
-            p[1] += list->sz_elem;
-
-            if (cmp(p[0], p[1]) > 0)
+        char const* p = (char*)getFirst_alist(list);
+        REPEAT(list->len - 1) {
+            if (cmp(p, p + list->sz_elem) > 0)
                 return 0;
+
+            p += list->sz_elem;
         }
 
         return 1;

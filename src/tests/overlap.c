@@ -16,8 +16,8 @@ static bool test_overlap_overlaps_ptr(void) {
     char const b1[]             = "jklmn";
     char const b2[]             = "opqr";
     char const* const b3        = b1 + 1;
-    char* const c1              = mem_calloc(6, 1);
-    char* const c2              = mem_calloc(4, 1);
+    char* const c1              = (char*)mem_calloc(6, 1);
+    char* const c2              = (char*)mem_calloc(4, 1);
     char const* const c3        = c1 + 1;
     memcpy(c1, "stuvw", 6);
     memcpy(c2, "xyz", 4);

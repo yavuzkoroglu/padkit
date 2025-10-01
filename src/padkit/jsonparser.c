@@ -10,28 +10,28 @@
 
 #define POP_JP(jp) jp->stack_len--
 
-#define PUSH_JP(jp, element)                                                \
-    if (jp->stack_len == jp->stack_cap) {                                  \
-        jp->stack_cap <<= 1;                                                \
-        if (jp->stack_cap >= SZSZ_MAX) {                                    \
-            jp->errorCode = JSON_PARSER_STACK_ERROR;                        \
-            return;                                                         \
-        }                                                                   \
-        {                                                                   \
-            unsigned char* new_stack = realloc(jp->stack, jp->stack_cap);   \
-            if (new_stack == NULL) {                                        \
-                jp->errorCode = JSON_PARSER_MEMORY_ERROR;                   \
-                return;                                                     \
-            }                                                               \
-            jp->stack = new_stack;                                          \
-        }                                                                   \
-    }                                                                       \
+#define PUSH_JP(jp, element)                                                                \
+    if (jp->stack_len == jp->stack_cap) {                                                   \
+        jp->stack_cap <<= 1;                                                                \
+        if (jp->stack_cap >= SZSZ_MAX) {                                                    \
+            jp->errorCode = JSON_PARSER_STACK_ERROR;                                        \
+            return;                                                                         \
+        }                                                                                   \
+        {                                                                                   \
+            unsigned char* new_stack = (unsigned char*)realloc(jp->stack, jp->stack_cap);   \
+            if (new_stack == NULL) {                                                        \
+                jp->errorCode = JSON_PARSER_MEMORY_ERROR;                                   \
+                return;                                                                     \
+            }                                                                               \
+            jp->stack = new_stack;                                                          \
+        }                                                                                   \
+    }                                                                                       \
     jp->stack[jp->stack_len++] = element
 
-#define UNREAD_JP(jp)                                                       \
-    if (ungetc(jp->str[0], jp->inputStream) == EOF) {                       \
-        jp->errorCode = JSON_PARSER_STREAM_ERROR;                           \
-        return;                                                             \
+#define UNREAD_JP(jp)                                                                       \
+    if (ungetc(jp->str[0], jp->inputStream) == EOF) {                                       \
+        jp->errorCode = JSON_PARSER_STREAM_ERROR;                                           \
+        return;                                                                             \
     }
 
 typedef void(*ParseFunction)(JSONParser* const);
@@ -343,7 +343,7 @@ static void s07_jp(JSONParser* const jp) {
         }
         jp->str_cap = new_cap;
         {
-            char* new_str = realloc(jp->str, new_cap);
+            char* new_str = (char*)realloc(jp->str, new_cap);
             if (new_str == NULL) {
                 jp->errorCode = JSON_PARSER_MEMORY_ERROR;
                 return;
@@ -493,7 +493,7 @@ static void s11_jp(JSONParser* const jp) {
         }
         jp->str_cap = new_cap;
         {
-            char* new_str = realloc(jp->str, new_cap);
+            char* new_str = (char*)realloc(jp->str, new_cap);
             if (new_str == NULL) {
                 jp->errorCode = JSON_PARSER_MEMORY_ERROR;
                 return;
@@ -681,7 +681,7 @@ static void s15_jp(JSONParser* const jp) {
         }
         jp->str_cap = new_cap;
         {
-            char* new_str = realloc(jp->str, new_cap);
+            char* new_str = (char*)realloc(jp->str, new_cap);
             if (new_str == NULL) {
                 jp->errorCode = JSON_PARSER_MEMORY_ERROR;
                 return;
@@ -956,9 +956,9 @@ void vconstruct_jsonp(void* const p_jsonParser, va_list args) {
     jsonParser->inputStream     = inputStream;
     jsonParser->stack_cap       = JSON_PARSER_INITIAL_STACK_CAP;
     jsonParser->stack_len       = 0;
-    jsonParser->stack           = mem_alloc(jsonParser->stack_cap);
+    jsonParser->stack           = (unsigned char*)mem_alloc(jsonParser->stack_cap);
     jsonParser->str_cap         = JSON_PARSER_INITIAL_STR_CAP;
-    jsonParser->str             = mem_alloc(jsonParser->str_cap);
+    jsonParser->str             = (char*)mem_alloc(jsonParser->str_cap);
     jsonParser->errorCode       = JSON_PARSER_OK;
     jsonParser->atArrayEnd      =    eventAtArrayEnd == NULL ?   emptyVoidEvent_jsonp : eventAtArrayEnd;
     jsonParser->atArrayStart    =  eventAtArrayStart == NULL ?   emptyVoidEvent_jsonp : eventAtArrayStart;

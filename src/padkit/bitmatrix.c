@@ -314,7 +314,7 @@ void vconstruct_bmtx(void* const p_bmtx, va_list args) {
     *bmtx = (GraphMatrix){
         initial_height,
         initial_width,
-        mem_calloc((size_t)nBlocks, sizeof(uint64_t))
+        (uint64_t*)mem_calloc((size_t)nBlocks, sizeof(uint64_t))
     };
 }
 

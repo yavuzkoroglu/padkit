@@ -50,13 +50,13 @@ void constructEmpty_itbl(
         assert(sz_rows < SZSZ_MAX);
         assert(sz_rows / sizeof(uint32_t) == (size_t)table->height);
 
-        table->rows = mem_alloc(sz_rows);
+        table->rows = (uint32_t*)mem_alloc(sz_rows);
         memset(table->rows, 0xFF, sz_rows);
     }
 }
 
 void destruct_itbl(void* const p_tbl) {
-    IndexTable* const table = p_tbl;
+    IndexTable* const table = (IndexTable*)p_tbl;
     assert(isValid_itbl(table));
     destruct_alist(table->mappings);
     free(table->rows);
@@ -74,12 +74,12 @@ IndexMapping* findFirstMapping_itbl(
         if (mapping_id >= table->mappings->len) {
             return NULL;
         } else {
-            IndexMapping* mapping = get_alist(table->mappings, mapping_id);
+            IndexMapping* mapping = (IndexMapping*)get_alist(table->mappings, mapping_id);
             while (mapping->index != index) {
                 if (mapping->next_id >= table->mappings->len)
                     return NULL;
 
-                mapping = get_alist(table->mappings, mapping->next_id);
+                mapping = (IndexMapping*)get_alist(table->mappings, mapping->next_id);
             }
             return mapping;
         }
@@ -102,7 +102,7 @@ void grow_itbl(IndexTable* const table) {
     IndexTable grownTable[1] = { NOT_AN_ITBL };
     assert(isValid_itbl(table));
     {
-        IndexMapping const* mapping = getFirst_alist(table->mappings);
+        IndexMapping const* mapping = (IndexMapping const*)getFirst_alist(table->mappings);
         uint32_t const grownHeight  = table->height << 1;
         assert(grownHeight < SZ32_MAX);
         assert(grownHeight >> 1 == table->height);
@@ -145,7 +145,7 @@ IndexMapping* insert_itbl(
         if (p_ins_result != NULL) *p_ins_result = ITBL_INSERT_UNIQUE;
 
         if (first_mapping_id >= table->mappings->len) {
-            IndexMapping* const mapping = addIndeterminate_alist(table->mappings);
+            IndexMapping* const mapping = (IndexMapping*)addIndeterminate_alist(table->mappings);
             mapping->index              = index;
             mapping->value              = value;
             mapping->next_id            = INVALID_UINT32;
@@ -153,7 +153,7 @@ IndexMapping* insert_itbl(
             table->load++;
             return mapping;
         } else {
-            IndexMapping* mapping = get_alist(table->mappings, first_mapping_id);
+            IndexMapping* mapping = (IndexMapping*)get_alist(table->mappings, first_mapping_id);
             while (1) {
                 if (mapping->index == index) {
                     if (relationType == ITBL_RELATION_ONE_TO_ONE) {
@@ -167,20 +167,20 @@ IndexMapping* insert_itbl(
                 }
                 if (mapping->next_id >= table->mappings->len) {
                     mapping->next_id    = table->mappings->len;
-                    mapping             = addIndeterminate_alist(table->mappings);
+                    mapping             = (IndexMapping*)addIndeterminate_alist(table->mappings);
                     mapping->index      = index;
                     mapping->value      = value;
                     mapping->next_id    = INVALID_UINT32;
                     return mapping;
                 }
-                mapping = get_alist(table->mappings, mapping->next_id);
+                mapping = (IndexMapping*)get_alist(table->mappings, mapping->next_id);
             }
         }
     }
 }
 
 bool isAllocated_itbl(void const* const p_tbl) {
-    IndexTable const* const table = p_tbl;
+    IndexTable const* const table = (IndexTable const*)p_tbl;
 
     if (table == NULL)                          return 0;
     if (!isAllocated_alist(table->mappings))    return 0;
@@ -189,7 +189,7 @@ bool isAllocated_itbl(void const* const p_tbl) {
 }
 
 bool isValid_itbl(void const* const p_tbl) {
-    IndexTable const* const table = p_tbl;
+    IndexTable const* const table = (IndexTable const*)p_tbl;
 
     if (table == NULL)                                      return 0;
     if (!isValid_alist(table->mappings))                    return 0;
@@ -216,12 +216,12 @@ IndexMapping* nextMapping_itbl(
     if (mapping->next_id >= table->mappings->len) {
         return NULL;
     } else {
-        IndexMapping* next = get_alist(table->mappings, mapping->next_id);
+        IndexMapping* next = (IndexMapping*)get_alist(table->mappings, mapping->next_id);
         while (next->index != mapping->index) {
             if (next->next_id >= table->mappings->len)
                 return NULL;
 
-            next = get_alist(table->mappings, next->next_id);
+            next = (IndexMapping*)get_alist(table->mappings, next->next_id);
         }
         return next;
     }
