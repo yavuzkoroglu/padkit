@@ -1,6 +1,5 @@
 include compile.mk
 
-
 ifeq (${OS},Darwin)
 DYNAMIC_LIB=lib/libpadkit.dylib
 TESTS_OUT=bin/tests.out
