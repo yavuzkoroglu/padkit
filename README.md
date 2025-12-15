@@ -55,6 +55,5 @@
         - [E3a. JsonParser](#)
         - [E3b. XMLParser](#)
     - [E4. Encoders and Decoders](#)
-        - [E4a. B64Encoder](#)
-- [C. PADKIT Manual](padkit-manual)
+        - [E4a. Base64](#)
 - [Acknowledgment](acknowledgment)
