@@ -6,5 +6,7 @@
 
 Why tidy the room NOW? Well, I had to spend the effort to prepare PADKIT and you are willing to spend time to read this, so this has to be the time.
 
+There are tons of languages out there trying to add new features on top of C. Even then, C is not going away. Probably never. But, C is not standing still; it is slowly evolving even as you read this sentence. So, there has to be a PADKIT for those everyday C users out there.
+
 - Prev: [Table of Contents](..)
 - Next: [Abstract](../abstract) 
