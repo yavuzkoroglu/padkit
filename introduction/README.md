@@ -21,5 +21,5 @@ The number of programming languages steadily grow. Researchers even predict the 
 [^2]: R. Chatley, A. Donaldson, and A. Mycroft, 2019. "The next 7000 programming languages", Computing and software science: State of the art and perspectives, p. 250-282, https://doi.org/10.1007/978-3-319-91908-9_15 -- last accessed @ `[2024-08-31 21:45:31]`
 
 - Prev: [Abstract](../abstract)
-- Next: [Using PADKIT](../using-padkit)
+- Next: [Why C](why-c)
 
