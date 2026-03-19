@@ -4,7 +4,7 @@
     #include <stddef.h>
 
     /* => A null pointer overlaps only with another null pointer.
-     * => A pointer that points to a zero-byte object cannot overlap with anything. */
+     * => A pointer that points to a zero-byte entity cannot overlap with anything. */
     bool overlaps_ptr(
         void const* const p0,
         void const* const p1,

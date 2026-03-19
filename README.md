@@ -26,6 +26,14 @@ The above steps should produce
 
 ## Changes 
 
+### 10.12.2025
+
+* Added comments to "object".
+* Added comments to "item".
+* Added new category: "containers", which contains "list", "table", and "matrix" objects.
+* Added new category: "graphs".
+* Added new category: "trees".
+
 ### Changes v2.0 -> v3.0
 
 * Most of the codebase is completely rewritten (again!).

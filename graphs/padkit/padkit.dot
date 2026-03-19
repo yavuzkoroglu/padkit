@@ -1,0 +1,14 @@
+digraph PADKIT {
+    graph [ranksep=0.01];
+    node [shape="rectangle",style="rounded",width=1];
+    subgraph cluster_0 {
+        graph [label="padkit (C99)"];
+        subgraph cluster_0_a {
+            graph [label="misc"];
+            bliterals->error->hash->implication->inffn->invalid->item->object->overlap->preprocessor->repeat->sz->swap->timestamp->unused->verbose [style="invis"];
+            error -> memalloc [label="included by  "];
+            sz [label="size"];
+            {rank=same error memalloc}
+        }
+    }
+}

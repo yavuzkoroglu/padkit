@@ -1,5 +1,9 @@
-#ifndef SIMPLE_GRAPH_H
-    #define SIMPLE_GRAPH_H
+#ifndef PADKIT_CONTAINERS_SIMPLEGRAPH_H
+    #ifdef PADKIT_CONTAINERS_GRAPH_H
+        #error
+    #endif
+    #define PADKIT_CONTAINERS_GRAPH_H
+    #define PADKIT_CONTAINERS_SIMPLEGRAPH_H
     #include "padkit/graphmatrix.h"
     #include "padkit/indextable.h"
 

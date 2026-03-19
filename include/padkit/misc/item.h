@@ -1,3 +1,4 @@
+// An Item is a special element of a container with a size of its own.
 #ifndef PADKIT_ITEM_H
     #define PADKIT_ITEM_H
     #include <stdarg.h>
@@ -8,9 +9,9 @@
     #define NOT_AN_ITEM         ((Item){ NULL, 0, 0 })
 
     typedef struct ItemBody {
-        void*       p;
-        uint32_t    sz;
-        uint32_t    offset;
+        void*       p;          // A pointer to the Item.
+        uint32_t    sz;         // The size of the pointed Item in bytes.
+        uint32_t    offset;     // The # of bytes from the pointer of the first Item in the container to this Item.
     } Item;
 
     bool areEquiv_item(

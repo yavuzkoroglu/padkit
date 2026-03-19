@@ -1,3 +1,11 @@
+/*
+ * An ArrayList is a list of elements, where every element has the same fixed size.
+ *
+ * Properties:
+ *  => Reallocatable.
+ *  => Implements stack.
+ *  => Implements the Object interface.
+ */
 #ifndef PADKIT_ARRAYLIST_H
     #define PADKIT_ARRAYLIST_H
     #include <stdarg.h>
@@ -7,15 +15,16 @@
 
     #define NOT_AN_ALIST                            ((ArrayList){ 0, 0, 0, NULL })
 
+    // Typically, 1024
     #ifndef ALIST_RECOMMENDED_INITIAL_CAP
         #define ALIST_RECOMMENDED_INITIAL_CAP       (BUFSIZ)
     #endif
 
     typedef struct ArrayListBody {
-        size_t      sz_elem;
-        uint32_t    cap;
-        uint32_t    len;
-        char*       arr;
+        size_t      sz_elem;    // Size of an element.
+        uint32_t    cap;        // The maximum # of elements the ArrayList can currently hold.
+        uint32_t    len;        // The # of elements in the ArrayList.
+        char*       arr;        // A pointer to the contents of the ArrayList.
     } ArrayList;
 
     #define add_alist(list, p)                      addN_alist((list), (p), 1)
