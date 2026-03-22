@@ -4,9 +4,10 @@
  * @author Yavuz KÖROĞLU
  * @see https://stackoverflow.com/questions/2611764/can-i-use-a-binary-literal-in-c-or-c/78961030#78961030
  * @warning Supports binary literals up to 64 bits.
+ * @todo Add support for 128-bit integers.
  */
-#ifndef PADKIT_BLITERALS_H
-    #define PADKIT_BLITERALS_H
+#ifndef PADKIT_MISC_BLITERALS_H
+    #define PADKIT_MISC_BLITERALS_H
     #include <stdint.h>
 
     /**
