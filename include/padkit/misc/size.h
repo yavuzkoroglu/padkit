@@ -1,5 +1,5 @@
-#ifndef PADKIT_SIZE_H
-    #define PADKIT_SIZE_H
+#ifndef PADKIT_MISC_SIZE_H
+    #define PADKIT_MISC_SIZE_H
     #include <stdint.h>
 
     #ifndef SZSZ_MAX

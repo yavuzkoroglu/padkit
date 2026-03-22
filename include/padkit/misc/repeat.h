@@ -1,5 +1,5 @@
-#ifndef PADKIT_REPEAT_H
-    #define PADKIT_REPEAT_H
+#ifndef PADKIT_MISC_REPEAT_H
+    #define PADKIT_MISC_REPEAT_H
     #include <stdint.h>
 
     #define REPEAT(n)               REPEAT_CNTR(r_dcntr, n)

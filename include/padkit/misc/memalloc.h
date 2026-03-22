@@ -1,5 +1,5 @@
-#ifndef PADKIT_MEMALLOC_H
-    #define PADKIT_MEMALLOC_H
+#ifndef PADKIT_MISC_MEMALLOC_H
+    #define PADKIT_MISC_MEMALLOC_H
     #include <stddef.h>
     #include "padkit/error.h"
 

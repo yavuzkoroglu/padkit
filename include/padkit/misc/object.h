@@ -16,8 +16,8 @@
  *   I use the ObjectInterface for every complex C struct even if some of the above properties result in trivial
      functions.
  */
-#ifndef PADKIT_OBJECT_H
-    #define PADKIT_OBJECT_H
+#ifndef PADKIT_MISC_OBJECT_H
+    #define PADKIT_MISC_OBJECT_H
     #include <stdarg.h>
     #include <stdbool.h>
 

@@ -1,5 +1,5 @@
-#ifndef PADKIT_OVERLAP_H
-    #define PADKIT_OVERLAP_H
+#ifndef PADKIT_MISC_OVERLAP_H
+    #define PADKIT_MISC_OVERLAP_H
     #include <stdbool.h>
     #include <stddef.h>
 

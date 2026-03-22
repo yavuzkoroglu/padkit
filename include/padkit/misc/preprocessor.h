@@ -1,5 +1,5 @@
-#ifndef PADKIT_PREPROCESSOR_H
-    #define PADKIT_PREPROCESSOR_H
+#ifndef PADKIT_MISC_PREPROCESSOR_H
+    #define PADKIT_MISC_PREPROCESSOR_H
 
     #define MKSTR(x)    #x
     #define STR(x)      MKSTR(x)

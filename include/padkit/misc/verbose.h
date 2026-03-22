@@ -1,5 +1,5 @@
-#ifndef VERBOSE_H
-    #define VERBOSE_H
+#ifndef PADKIT_MISC_VERBOSE_H
+    #define PADKIT_MISC_VERBOSE_H
     #include <stdbool.h>
     #include <stdio.h>
 
