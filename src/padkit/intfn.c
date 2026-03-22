@@ -2,7 +2,7 @@
 #include "padkit/intfn.h"
 #include "padkit/swap.h"
 
-uint32_t floor_log2(uint32_t x) {
+uint32_t floorLog2(uint32_t x) {
     uint32_t log2_x = 0;
     assert(x != 0);
     while (x > 1) {
@@ -12,13 +12,14 @@ uint32_t floor_log2(uint32_t x) {
     return log2_x;
 }
 
-uint32_t floor_sqrt(uint32_t const x_sq) {
+uint32_t floorSqrt(uint32_t const x_sq) {
     uint32_t k, u, l, xh, xh_sq;
 
     if (x_sq == 0)
         return 0;
 
-    k = floor_log2(x_sq) >> 1;
+    /* Perform binary search on floorLog2(x_sq) to find floorSqrt(x_sq). */
+    k = floorLog2(x_sq) >> 1;
     l = 1 << k;
     u = l << 1;
 
@@ -57,7 +58,7 @@ uint32_t gcd(uint32_t a, uint32_t b) {
 }
 
 bool isPrime(uint32_t const x) {
-    uint32_t n = floor_sqrt(x) + 1;
+    uint32_t n = floorSqrt(x) + 1;
 
     if (x == 1) return 0;
     if (IS_EVEN_I(x)) return (x == 2);
