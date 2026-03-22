@@ -4,10 +4,7 @@
 #include "padkit/item.h"
 #include "padkit/size.h"
 
-bool areEquiv_item(
-    Item const i1,
-    Item const i2
-) {
+bool areEquiv_item(Item const i1, Item const i2) {
     // An implementation should NEVER call this function with invalid items.
     assert(isValid_item(i1));
     assert(isValid_item(i2));
