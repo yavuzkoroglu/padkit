@@ -1,3 +1,8 @@
+/**
+ * @file preprocessor.h
+ * @brief Commonly used preprocessor macros for stringization and concatenation.
+ * @author Yavuz KÖROĞLU
+ */
 #ifndef PADKIT_MISC_PREPROCESSOR_H
     #define PADKIT_MISC_PREPROCESSOR_H
 
