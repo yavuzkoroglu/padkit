@@ -8,13 +8,13 @@
     #define REALLOC_ERROR   TERMINATE_ERROR_MSG("Cause => REALLOC_ERROR")
     #define RECALLOC_ERROR  TERMINATE_ERROR_MSG("Cause => RECALLOC_ERROR")
 
-    void* mem_alloc(size_t const sz);
+    void* memalloc(size_t const sz);
 
-    void* mem_calloc(size_t const n, size_t const sz_elem);
+    void* memcalloc(size_t const n, size_t const sz_elem);
 
-    void mem_realloc(void** const p_p, size_t const new_sz);
+    void memrealloc(void** const p_p, size_t const new_sz);
 
-    void mem_recalloc(
+    void memrecalloc(
         void** const p_p,
         size_t const old_n,
         size_t const new_n,

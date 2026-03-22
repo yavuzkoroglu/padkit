@@ -4,20 +4,20 @@
 #include "padkit/memalloc.h"
 #include "padkit/size.h"
 
-void* mem_alloc(size_t const sz) {
+void* memalloc(size_t const sz) {
     assert(sz > 0);
 
     if (sz >= SZSZ_MAX) {
         MALLOC_ERROR
     } else {
-        void* const ptr = malloc(sz);
-        if (ptr == NULL) MALLOC_ERROR
+        void* const p = malloc(sz);
+        if (p == NULL) MALLOC_ERROR
 
-        return ptr;
+        return p;
     }
 }
 
-void* mem_calloc(size_t const n, size_t const sz_elem) {
+void* memcalloc(size_t const n, size_t const sz_elem) {
     size_t const sz = sz_elem * n;
 
     assert(n > 0);
@@ -31,14 +31,14 @@ void* mem_calloc(size_t const n, size_t const sz_elem) {
     } else if (sz >= SZSZ_MAX) {
         CALLOC_ERROR
     } else {
-        void* const ptr = calloc(n, sz_elem);
-        if (ptr == NULL) CALLOC_ERROR
+        void* const p = calloc(n, sz_elem);
+        if (p == NULL) CALLOC_ERROR
 
-        return ptr;
+        return p;
     }
 }
 
-void mem_realloc(void** const p_p, size_t const new_sz) {
+void memrealloc(void** const p_p, size_t const new_sz) {
     assert(p_p != NULL);
     assert(*p_p != NULL);
     assert(new_sz > 0);
@@ -53,7 +53,7 @@ void mem_realloc(void** const p_p, size_t const new_sz) {
     }
 }
 
-void mem_recalloc(
+void memrecalloc(
     void** const p_p,
     size_t const old_n,
     size_t const new_n,
