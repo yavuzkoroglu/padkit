@@ -950,7 +950,7 @@ WARN_LOGFILE           =
 # Note: If this tag is empty the current directory is searched.
 
 # INPUT                  = .
-INPUT                  = ./include/padkit/misc/bliterals.h ./include/padkit/misc/hash.h
+INPUT                  = ./include/padkit/misc/bliterals.h ./include/padkit/misc/error.h ./include/padkit/misc/hash.h ./include/padkit/misc/implication.h ./include/padkit/misc/intfn.h ./include/padkit/misc/invalid.h ./include/padkit/misc/item.h ./include/padkit/misc/memalloc.h ./include/padkit/misc/object.h ./include/padkit/misc/overlap.h ./include/padkit/misc/preprocessor.h ./include/padkit/misc/repeat.h ./include/padkit/misc/size.h ./include/padkit/misc/swap.h ./include/padkit/misc/timestamp.h ./include/padkit/misc/unused.h ./include/padkit/misc/verbose.h
 
 # This tag can be used to specify the character encoding of the source files
 # that doxygen parses. Internally doxygen uses the UTF-8 encoding. Doxygen uses

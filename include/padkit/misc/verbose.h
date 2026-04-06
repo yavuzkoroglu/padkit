@@ -15,7 +15,7 @@
         #define VERBOSE_DEFAULT (0)
     #endif
 
-    /** The Boolean toggle for verbose operations. */
+    /** The global Boolean toggle for verbose operations. */
     extern bool verbose;
 
     /**
