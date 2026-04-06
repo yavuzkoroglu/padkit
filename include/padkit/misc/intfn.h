@@ -21,21 +21,21 @@
      * @param a A 16-bit integer.
      * @returns The absolute value of <tt>a</tt> as <tt>uint16_t</tt>.
      */
-    #define ABS_I16(a)      ((uint16_t)(((a) > 0) ? (a) : (-a)))
+    #define ABS_I16(a) ((uint16_t)(((a) > 0) ? (a) : (-a)))
 
     /**
      * @brief Takes the absolute value of a 32-bit integer and converts it to <tt>uint32_t</tt>.
      * @param a A 32-bit integer.
      * @returns The absolute value of <tt>a</tt> as <tt>uint32_t</tt>.
      */
-    #define ABS_I32(a)      ((uint32_t)(((a) > 0) ? (a) : (-a)))
+    #define ABS_I32(a) ((uint32_t)(((a) > 0) ? (a) : (-a)))
 
     /**
      * @brief Takes the absolute value of a 64-bit integer and converts it to <tt>uint64_t</tt>.
      * @param a A 64-bit integer.
      * @returns The absolute value of <tt>a</tt> as <tt>uint64_t</tt>.
      */
-    #define ABS_I64(a)      ((uint64_t)(((a) > 0) ? (a) : (-a)))
+    #define ABS_I64(a) ((uint64_t)(((a) > 0) ? (a) : (-a)))
 
     /**
      * @brief Computes a Boolean value about the evenness of a given integer.
@@ -43,14 +43,14 @@
      * @returns <tt>1</tt> if <tt>a</tt> is even, <tt>0</tt> otherwise.
      * @see <tt>IS_ODD_I(a)</tt>.
      */
-    #define IS_EVEN_I(a)    !IS_ODD_I(a)
+    #define IS_EVEN_I(a) !IS_ODD_I(a)
 
     /**
      * @brief Computes a Boolean value about the oddness of a given integer.
      * @param a An integer.
      * @returns <tt>1</tt> if <tt>a</tt> is odd, <tt>0</tt> otherwise.
      */
-    #define IS_ODD_I(a)     ((a) & 1)
+    #define IS_ODD_I(a) ((a) & 1)
 
     /**
      * @brief Computes maximum of two given integers.
@@ -58,7 +58,7 @@
      * @param b The second integer.
      * @returns <tt>a</tt> if <tt>a > b</tt>, <tt>b</tt> otherwise.
      */
-    #define MAX_I(a,b)      (((a) > (b)) ? (a) : (b))
+    #define MAX_I(a,b) (((a) > (b)) ? (a) : (b))
 
     /**
      * @brief Computes minimum of two given integers.
@@ -66,7 +66,7 @@
      * @param b The second integer.
      * @returns <tt>a</tt> if <tt>a < b</tt>, <tt>b</tt> otherwise.
      */
-    #define MIN_I(a,b)      (((a) < (b)) ? (a) : (b))
+    #define MIN_I(a,b) (((a) < (b)) ? (a) : (b))
 
     /**
      * @brief Computes the largest 32-bit unsigned integer <tt>y</tt> s.t. <tt>2^y <= x</tt>.
