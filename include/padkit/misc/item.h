@@ -56,6 +56,7 @@
      * @brief Checks if an \c Item is valid.
      * @param item A constant <tt>Item</tt>.
      * @returns <tt>1</tt> if valid, <tt>0</tt> otherwise.
+     * @important An \c Item of zero size may seem counter-intuitive, but it is useful in containers.
      */
     bool isValid_item(Item const item);
 #endif

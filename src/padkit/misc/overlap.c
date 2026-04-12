@@ -1,8 +1,14 @@
+/**
+ * @file overlap.c
+ * @brief A function to check if an \c Item overlaps with another.
+ * @author Yavuz KÖROĞLU
+ * @see overlap.h
+ */
 #include <assert.h>
 #include "padkit/overlap.h"
 #include "padkit/size.h"
 
-/**
+/*
  * The following implementation comes from the second snippet of the accepted answer @
  *   https://stackoverflow.com/questions/74946095/is-it-possible-in-c-not-invoking-ub-to-check-if-two-objects-overlap
  *

@@ -1,3 +1,10 @@
+/**
+ * @file verbose.c
+ * @brief Verbose printing functions.
+ * @author Yavuz KÖROĞLU
+ * @see timestamp.h
+ * @see verbose.h
+ */
 #include <assert.h>
 #include <stdarg.h>
 #include "padkit/timestamp.h"
@@ -5,7 +12,7 @@
 
 bool verbose = VERBOSE_DEFAULT;
 
-/* https://stackoverflow.com/questions/36120717/correcting-format-string-is-not-a-string-literal-warning#36120843 */
+// https://stackoverflow.com/questions/36120717/correcting-format-string-is-not-a-string-literal-warning#36120843
 __attribute__((__format__ (__printf__, 1, 0)))
 int printf_verbose(char const* const restrict format, ...) {
     if (verbose) {

@@ -1,3 +1,9 @@
+/**
+ * @file item.c
+ * @brief \c Item related functions.
+ * @author Yavuz Köroğlu
+ * @see item.h
+ */
 #include <assert.h>
 #include <string.h>
 #include "padkit/hash.h"

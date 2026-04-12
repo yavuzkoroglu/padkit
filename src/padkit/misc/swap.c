@@ -1,3 +1,10 @@
+/**
+ * @file swap.c
+ * @brief A function for swapping an \c Item with another.
+ * @author Yavuz KÖROĞLU
+ * @see swap.h
+ * @see \c Item
+ */
 #include <assert.h>
 #include <stdint.h>
 #include <string.h>
@@ -29,7 +36,7 @@ void swap(void* const p1, void* const p2, size_t const sz) {
         *(uint64_t*)p1  = *(uint64_t*)p2;
         *(uint64_t*)p2  = tmp;
     } else {
-        void* const p3  = mem_alloc(sz);
+        void* const p3  = memalloc(sz);
         memcpy(p3, p1, sz);
         memcpy(p1, p2, sz);
         memcpy(p2, p3, sz);

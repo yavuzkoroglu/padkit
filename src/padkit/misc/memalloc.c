@@ -1,3 +1,9 @@
+/**
+ * @file memalloc.c
+ * @brief Memory allocation functions.
+ * @author Yavuz KÖROĞLU
+ * @see memalloc.h
+ */
 #include <assert.h>
 #include <stdint.h>
 #include <string.h>

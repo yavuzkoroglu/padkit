@@ -1,3 +1,9 @@
+/**
+ * @file timestamp.c
+ * @brief A function that produces a timestamp on a static memory area.
+ * @author Yavuz KÖRÖĞLU
+ * @see timestamp.h
+ */
 #include <assert.h>
 #include <time.h>
 #include "padkit/timestamp.h"

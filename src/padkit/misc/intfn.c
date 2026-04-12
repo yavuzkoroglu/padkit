@@ -1,3 +1,9 @@
+/**
+ * @file intfn.c
+ * @brief Integer-related functions.
+ * @author Yavuz KÖROĞLU
+ * @see intfn.h
+ */
 #include <assert.h>
 #include "padkit/intfn.h"
 #include "padkit/swap.h"

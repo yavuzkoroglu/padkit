@@ -1,3 +1,9 @@
+/**
+ * @file hash.c
+ * @brief DJB2 hash functions for strings.
+ * @author Yavuz KÖROĞLU
+ * @see hash.h
+ */
 #include <assert.h>
 #include "padkit/hash.h"
 
